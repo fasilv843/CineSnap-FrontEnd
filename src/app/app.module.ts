@@ -8,6 +8,9 @@ import { UserLoginComponent } from './components/user/user-login/user-login.comp
 import { UserRegisterComponent } from './components/user/user-register/user-register.component'
 import { UserRoutingModule } from './components/user/user.routing';
 import { UserHomeComponent } from './components/user/user-home/user-home.component'
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
+import { TransformUrlInterceptor } from './interceptors/transform-url.interceptor'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 @NgModule({
   declarations: [
@@ -19,9 +22,14 @@ import { UserHomeComponent } from './components/user/user-home/user-home.compone
   imports: [
     BrowserModule,
     AppRoutingModule,
-    UserRoutingModule
+    UserRoutingModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: TransformUrlInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
