@@ -11,6 +11,7 @@ import { UserHomeComponent } from './components/user/user-home/user-home.compone
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 import { TransformUrlInterceptor } from './interceptors/transform-url.interceptor'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { JwtInterceptor } from './interceptors/jwt.interceptor'
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
     FormsModule
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: TransformUrlInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

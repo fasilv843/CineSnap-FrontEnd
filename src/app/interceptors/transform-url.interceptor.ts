@@ -16,6 +16,7 @@ export class TransformUrlInterceptor implements HttpInterceptor {
     const newReq = request.clone(
       { url: baseUrl + request.url }
     )
+    console.log(newReq.url, 'new url from interceptor')
     return next.handle(newReq)
   }
 }
