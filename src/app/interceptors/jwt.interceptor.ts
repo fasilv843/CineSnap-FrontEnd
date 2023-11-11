@@ -17,6 +17,11 @@ export class JwtInterceptor implements HttpInterceptor {
 
   intercept (request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     console.log(request.url)
+    if (request.headers.has('Bypass-Interceptor')) {
+      // request.headers.delete('Bypass-Interceptor')
+      request.headers.append('Access-Control-Allow-Origin', 'http://localhost:4200')
+      return next.handle(request)
+    }
     // return next.handle(request)
     const jwt = localStorage.getItem('userToken')
     let authorizedRequest: HttpRequest<unknown>

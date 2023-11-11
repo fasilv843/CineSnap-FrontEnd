@@ -12,6 +12,13 @@ import { environments } from 'src/environments/environment'
 export class TransformUrlInterceptor implements HttpInterceptor {
   // constructor () {}
   intercept (request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if (request.headers.has('Bypass-Interceptor')) {
+      const bypassedRequest = request.clone({
+        headers: request.headers.delete('bypass-interceptor')
+      })
+      console.log(bypassedRequest.headers, 'handling request')
+      return next.handle(bypassedRequest)
+    }
     const { baseUrl } = environments
     const newReq = request.clone(
       { url: baseUrl + request.url }

@@ -11,19 +11,29 @@ import { UserHomeComponent } from './components/user/user-home/user-home.compone
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 import { TransformUrlInterceptor } from './interceptors/transform-url.interceptor'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { JwtInterceptor } from './interceptors/jwt.interceptor'
+import { JwtInterceptor } from './interceptors/jwt.interceptor';
+import { ThrLoginComponent } from './components/theater/thr-login/thr-login.component';
+import { ThrRegisterComponent } from './components/theater/thr-register/thr-register.component';
+import { ThrHomeComponent } from './components/theater/thr-home/thr-home.component';
+import { ThrNavComponent } from './components/theater/thr-nav/thr-nav.component'
+import { TheaterRoutingModule } from './components/theater/theater.routing'
 
 @NgModule({
   declarations: [
     AppComponent,
     UserLoginComponent,
     UserRegisterComponent,
-    UserHomeComponent
+    UserHomeComponent,
+    ThrLoginComponent,
+    ThrRegisterComponent,
+    ThrHomeComponent,
+    ThrNavComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     UserRoutingModule,
+    TheaterRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule
