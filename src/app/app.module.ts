@@ -12,7 +12,6 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 import { TransformUrlInterceptor } from './interceptors/transform-url.interceptor'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
-import { AdminRegisterComponent } from './components/admin/admin-register/admin-register.component';
 import { AdminLoginComponent } from './components/admin/admin-login/admin-login.component';
 import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
 import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.component'
@@ -24,7 +23,6 @@ import { AdminRoutingModule } from './components/admin/admin.routing'
     UserLoginComponent,
     UserRegisterComponent,
     UserHomeComponent,
-    AdminRegisterComponent,
     AdminLoginComponent,
     AdminHomeComponent,
     AdminNavComponent

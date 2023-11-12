@@ -4,6 +4,7 @@ import { Component, Inject, type OnInit } from '@angular/core';
 import { type AbstractControl, FormBuilder, type FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { emailRegex, passwordMinLength } from 'src/app/shared/constants';
 
 @Component({
   selector: 'app-admin-login',
@@ -17,14 +18,14 @@ export class AdminLoginComponent implements OnInit {
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
     @Inject(Router) private readonly router: Router,
-    @Inject(FormBuilder) private readonly fromBuilder: FormBuilder
+    @Inject(FormBuilder) private readonly formBuilder: FormBuilder
   ) {}
 
   ngOnInit (): void {
-    this.form = this.fromBuilder.group({
-      email: ['', Validators.required, Validators.email],
-      password: ['', Validators.required]
-    })
+    this.form = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
+      password: ['', [Validators.required, Validators.minLength(passwordMinLength)]]
+    });
   }
 
   get f (): Record<string, AbstractControl> {
@@ -33,19 +34,21 @@ export class AdminLoginComponent implements OnInit {
 
   onSubmit (): void {
     this.isSubmitted = true
+    console.log(this.form.controls);
     if (!this.form.invalid) {
       const admin = this.form.getRawValue()
       console.log('sending http request')
-      this.http.post('admin/login', admin).subscribe(
-        (res: any) => {
+      this.http.post('admin/login', admin).subscribe({
+        next: (res: any) => {
           console.log('navigating to home', res.token)
           localStorage.setItem('adminToken', res.token)
           void this.router.navigate(['/admin/home'])
         },
-        (err) => {
-          void Swal.fire('Error', err.message, 'error')
+        error: (err) => {
+          console.log(err);
+          void Swal.fire('Error', err.error.message, 'error')
         }
-      )
+      })
     }
   }
 }

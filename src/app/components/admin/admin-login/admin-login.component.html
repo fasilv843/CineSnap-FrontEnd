@@ -6,15 +6,15 @@
         <div class="col-12 col-md-9 col-lg-7 col-xl-6">
           <div class="card" style="border-radius: 15px;">
             <div class="card-body p-5">
-              <h2 class="text-uppercase text-center mb-5">Log In</h2>
+              <h2 class="text-uppercase text-center mb-5">Admin Log In</h2>
 
               <form [formGroup]="form" (submit)="onSubmit()">
 
                 <div class="form-outline mb-3 ">
-                  <input type="email"  formControlName="email" id="form3Example3cg" class="form-control form-control-lg" placeholder="Enter Email" />
+                  <input type="text" formControlName="email" id="form3Example3cg" class="form-control form-control-lg" placeholder="Enter Email" />
                   <div *ngIf="isSubmitted && form.controls['email'].errors">
                     <div *ngIf="form.controls['email'].errors['required']" style="color: red;">Email is required</div>
-                    <div *ngIf="form.controls['email'].errors['email']" style="color: red;">Invalid email format</div>
+                    <div *ngIf="form.controls['email'].errors['pattern']" style="color: red;">Invalid email format</div>
                   </div>
                 </div>
 
@@ -22,7 +22,7 @@
                     <input type="password" formControlName="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Enter Password" />
                     <div *ngIf="isSubmitted && f['password'].errors">
                       <div *ngIf="f['password'].errors['required']" style="color: red;">Password is required</div>
-                      <div *ngIf="f['password'].errors['passwordMismatch']" style="color: red;">Passwords do not match</div>
+                      <div *ngIf="f['password'].errors['minlength']" style="color: red;">Password must contain {{ f['password'].errors['minlength'].requiredLength }} characters</div>
                     </div>
                 </div>
                   
@@ -31,10 +31,6 @@
                   <button type="submit"
                     class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Login</button>
                 </div>
-
-                <p class="text-center text-muted mt-3 mb-0">Not a member yet? 
-                    <a routerLink="/user/register" class="fw-bold text-body"><u>Register here</u></a>
-                </p>
 
               </form>
 
