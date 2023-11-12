@@ -45,7 +45,7 @@ export class ThrLoginComponent {
           void this.router.navigate(['/theater/home'])
         },
         error: (err) => {
-          void Swal.fire('Error', err.message, 'error')
+          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     }

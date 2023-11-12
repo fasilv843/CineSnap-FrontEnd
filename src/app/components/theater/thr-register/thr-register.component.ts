@@ -126,11 +126,10 @@ export class ThrRegisterComponent {
           this.form.get('otp')?.enable()
         },
         error: (err) => {
-          void Swal.fire('Error', err.message, 'error')
+          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     } else if (!this.form.invalid && this.showOtpField) {
-      // const otp: number = this.form.get('otp').value;
       const theater = this.form.getRawValue()
       console.log(theater);
       console.log(theater.otp);
@@ -140,7 +139,7 @@ export class ThrRegisterComponent {
           void this.router.navigate(['/theater/home'])
         },
         error: (err) => {
-          void Swal.fire('Error', err.message, 'error')
+          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     } else {

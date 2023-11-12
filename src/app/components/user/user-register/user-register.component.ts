@@ -67,7 +67,7 @@ export class UserRegisterComponent implements OnInit {
           this.form.get('otp')?.enable();
         },
         error: (err) => {
-          void Swal.fire('Error', err.message, 'error')
+          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     } else if (!this.form.invalid && this.showOtpField) {
@@ -81,7 +81,7 @@ export class UserRegisterComponent implements OnInit {
           void this.router.navigate(['/'])
         },
         error: (err) => {
-          void Swal.fire('Error', err.message, 'error')
+          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     } else {
