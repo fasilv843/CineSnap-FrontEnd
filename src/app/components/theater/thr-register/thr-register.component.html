@@ -14,6 +14,7 @@
                   <input type="text"  formControlName="name" id="form3Example1cg" class="form-control form-control-lg" placeholder="Theater Name" />
                   <div *ngIf="isSubmitted && f['name'].errors">
                     <div *ngIf="f['name'].errors['required']" style="color: red;">Name is required</div>
+                    <div *ngIf="f['name'].errors['minlength']" style="color: red;">Name must contain {{ f['name'].errors['minlength'].requiredLength }} characters</div>
                   </div>
                 </div>
 
@@ -21,110 +22,97 @@
                   <input type="email"  formControlName="email" id="form3Example3cg" class="form-control form-control-lg" placeholder="Business Mail" />
                   <div *ngIf="isSubmitted && form.controls['email'].errors">
                     <div *ngIf="form.controls['email'].errors['required']" style="color: red;">Email is required</div>
-                    <div *ngIf="form.controls['email'].errors['email']" style="color: red;">Invalid email format</div>
+                    <div *ngIf="form.controls['email'].errors['pattern']" style="color: red;">Invalid email format</div>
                   </div>
                 </div>
 
                 <div *ngIf="!showOtpField" class="form-outline mb-3" (click)="getLocation()">
                     <input type="radio" class="mx-2 "> <label for=""> Get Location</label>
-                    <!-- <div *ngIf="getLocationClicked && form.controls['name'].errors">
-                      <div *ngIf="form.controls['email'].errors['required']" style="color: red;">Error while checking location</div>
-                    </div> -->
                 </div>
 
-                <div class="form-outline mb-3 d-flex column-gap-2 ">
+                <div *ngIf="!showOtpField" class="form-outline mb-3 d-flex column-gap-2 ">
                     <div>
                         <input type="text"  formControlName="country" [(ngModel)]="country"  id="" class=" form-control form-control-lg " placeholder="Country" />
                         <div *ngIf="isSubmitted && form.controls['country'].errors">
                             <div *ngIf="form.controls['country'].errors['required']" style="color: red;">country is required</div>
-                            <!-- <div *ngIf="form.controls['country'].errors['email']" style="color: red;">Invalid email format</div> -->
                         </div>
                     </div>
                     <div>
                         <input type="text"  formControlName="state"  [(ngModel)]="state" id="" class=" form-control form-control-lg" placeholder="State" />
                         <div *ngIf="isSubmitted && form.controls['state'].errors">
                             <div *ngIf="form.controls['state'].errors['required']" style="color: red;">State is required</div>
-                            <!-- <div *ngIf="form.controls['state'].errors['required']" style="color: red;">Invalid email format</div> -->
                         </div>
                     </div>
                 </div>
 
-                <div class="form-outline mb-3 d-flex column-gap-2 ">
+                <div *ngIf="!showOtpField" class="form-outline mb-3 d-flex column-gap-2 ">
                     <div>
                         <input type="text"  formControlName="district"  [(ngModel)]="district" id="" class=" form-control form-control-lg " placeholder="District" />
                         <div *ngIf="isSubmitted && form.controls['district'].errors">
                             <div *ngIf="form.controls['district'].errors['required']" style="color: red;">District is required</div>
-                            <!-- <div *ngIf="form.controls['email'].errors['email']" style="color: red;">Invalid email format</div> -->
                         </div>
                     </div>
                     <div>
                         <input type="text"  formControlName="city"  [(ngModel)]="city" id="" class=" form-control form-control-lg" placeholder="City" />
                         <div *ngIf="isSubmitted && form.controls['city'].errors">
                             <div *ngIf="form.controls['city'].errors['required']" style="color: red;">City is required</div>
-                            <!-- <div *ngIf="form.controls['city'].errors['email']" style="color: red;">Invalid email format</div> -->
                         </div>
                     </div>
                 </div>
 
 
-                <div class="form-outline mb-3 d-flex column-gap-2 ">
-                    <input type="number"  formControlName="zip"  [(ngModel)]="zip" id="" class="col-mda-6 form-control form-control-lg " placeholder="ZIP Code" />
-                    <!-- <input type="radio"><label for="">Get Location</label> -->
-                    <!-- <button type="" class="btn btn-dark ">Get Location</button> -->
-                    <!-- <input type="email"  formControlName="text" id="" class="col-mda-6 form-control form-control-lg" placeholder="City" /> -->
+                <div *ngIf="!showOtpField" class="form-outline mb-3 d-flex column-gap-2 ">
+                    <input type="text"  formControlName="zip"  [(ngModel)]="zip" id="" class="col-mda-6 form-control form-control-lg " placeholder="ZIP Code" />
                     <div *ngIf="isSubmitted && form.controls['zip'].errors">
                       <div *ngIf="form.controls['zip'].errors['required']" style="color: red;">ZIP is required</div>
-                      <!-- <div *ngIf="form.controls['email'].errors['email']" style="color: red;">Invalid email format</div> -->
+                      <div *ngIf="form.controls['zip'].errors['pattern']" style="color: red;">Invalid zip format</div>
                     </div>
                 </div>
 
-
-
-                <div class="form-outline mb-3 ">
+                <div *ngIf="!showOtpField" class="form-outline mb-3 ">
                     <input type="text" formControlName="landmark" id="form3Example4cg" class="form-control form-control-lg" placeholder="Landmark" />
-                    <!-- <div *ngIf="isSubmitted && f['landmark'].errors">
-                      <div *ngIf="f['landmark'].errors['required']" style="color: red;">landmark is required</div>
-                      <div *ngIf="f['password'].errors['passwordMismatch']" style="color: red;">Passwords do not match</div>
-                    </div> -->
                 </div>
 
-                <div class="form-outline mb-3 ">
+                <div *ngIf="!showOtpField" class="form-outline mb-3 ">
                     <input type="text" formControlName="liscenceId" id="form3Example4cg" class="form-control form-control-lg" placeholder="Liscence ID" />
                     <div *ngIf="isSubmitted && f['liscenceId'].errors">
                       <div *ngIf="f['liscenceId'].errors['required']" style="color: red;">Liscence ID is required</div>
-                      <!-- <div *ngIf="f['password'].errors['passwordMismatch']" style="color: red;">Passwords do not match</div> -->
                     </div>
                 </div>
 
-                <div class="form-outline mb-3 ">
+                <div  *ngIf="!showOtpField" class="form-outline mb-3 ">
                     <input type="password" formControlName="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Enter Password" />
                     <div *ngIf="isSubmitted && f['password'].errors">
                       <div *ngIf="f['password'].errors['required']" style="color: red;">Password is required</div>
-                      <div *ngIf="f['password'].errors['passwordMismatch']" style="color: red;">Passwords do not match</div>
+                      <div *ngIf="f['password'].errors['minlength']" style="color: red;">Password must contain {{ f['password'].errors['minlength'].requiredLength }} characters</div>
                     </div>
                 </div>
                   
-                <div class="form-outline mb-3 ">
+                <div  *ngIf="!showOtpField" class="form-outline mb-3 ">
                     <input type="password" formControlName="repeatPassword" id="form3Example4cdg" class="form-control form-control-lg" placeholder="Repeat Password" />
+                    <div *ngIf="form.hasError('passwordMismatch') && (form.get('repeatPassword')?.dirty || form.get('repeatPassword')?.touched)" style="color: red;">
+                      Passwords do not match.
+                    </div>
                     <div *ngIf="isSubmitted && f['repeatPassword'].errors">
                       <div *ngIf="f['repeatPassword'].errors['required']" style="color: red;">Password is required</div>
-                      <div *ngIf="f['repeatPassword'].errors['passwordMismatch']" style="color: red;">Passwords do not match</div>
                     </div>
                 </div>
 
                 <div *ngIf="showOtpField">
-                    <!-- <label for="otp">Enter OTP:</label> -->
                     <input type="text" formControlName="otp" id="otp" class="form-control form-control-lg" placeholder="Enter OTP" />
-                    <!-- <input type="text" formControlName="otp" id="otp" /> -->
+                    <div *ngIf="isSubmitted && form.controls['otp'].errors">
+                      <div *ngIf="form.controls['otp'].errors['required']" style="color: red;">OTP required</div>
+                      <div *ngIf="form.controls['otp'].errors['pattern']" style="color: red;">OTP has exactly 4 digits</div>
+                    </div>
                 </div>
                   
 
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center my-2 ">
                   <button type="submit"
-                    class="btn btn-warning btn-block btn-lg gradient-custom-4 text-body">Register</button>
+                    class="btn btn-warning btn-block btn-lg gradient-custom-4 text-body">{{ showOtpField ? 'Verify' : 'Register' }}</button>
                 </div>
 
-                <p class="text-center text-muted mt-3 mb-0">Have already an account? 
+                <p *ngIf="!showOtpField" class="text-center text-muted mt-3 mb-0">Have already an account? 
                     <a routerLink="/theater/login" class="fw-bold text-body"><u>Login here</u></a>
                 </p>
 

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, Validators, type FormGroup, type AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { emailRegex, passwordMinLength } from 'src/app/shared/constants';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -22,8 +23,8 @@ export class ThrLoginComponent {
 
   ngOnInit (): void {
     this.form = this.fromBuilder.group({
-      email: ['', Validators.required, Validators.email],
-      password: ['', Validators.required]
+      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
+      password: ['', [Validators.required, Validators.minLength(passwordMinLength)]]
     })
   }
 

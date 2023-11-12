@@ -4,6 +4,7 @@ import { Component, Inject, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { type FormGroup, FormBuilder, Validators, type AbstractControl } from '@angular/forms'
 import Swal from 'sweetalert2';
+import { emailRegex, passwordMinLength } from 'src/app/shared/constants';
 
 @Component({
   selector: 'app-user-login',
@@ -22,8 +23,8 @@ export class UserLoginComponent implements OnInit {
 
   ngOnInit (): void {
     this.form = this.fromBuilder.group({
-      email: ['', Validators.required, Validators.email],
-      password: ['', Validators.required]
+      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
+      password: ['', [Validators.required, Validators.minLength(passwordMinLength)]]
     })
   }
 
@@ -37,16 +38,17 @@ export class UserLoginComponent implements OnInit {
     if (!this.form.invalid) {
       const user = this.form.getRawValue()
       console.log('sending http request');
-      this.http.post('user/login', user).subscribe(
-        (res: any) => {
+      this.http.post('user/login', user).subscribe({
+        next: (res: any) => {
           console.log('navigating to home', res.token);
           localStorage.setItem('userToken', res.token)
           void this.router.navigate(['/'])
         },
-        (err) => {
-          void Swal.fire('Error', err.message, 'error')
+        error: (err) => {
+          console.log(err);
+          void Swal.fire('Error', err.error.message, 'error')
         }
-      )
+      })
     }
   }
 }

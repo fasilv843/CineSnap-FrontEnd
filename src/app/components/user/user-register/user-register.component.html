@@ -14,45 +14,53 @@
                   <input type="text"  formControlName="name" id="form3Example1cg" class="form-control form-control-lg" placeholder="Enter Name" />
                   <div *ngIf="isSubmitted && f['name'].errors">
                     <div *ngIf="f['name'].errors['required']" style="color: red;">Name is required</div>
+                    <div *ngIf="f['name'].errors['minlength']" style="color: red;">Name must contain {{ f['name'].errors['minlength'].requiredLength }} characters</div>
+                    <div *ngIf="f['name'].errors['maxlength']" style="color: red;">Name max contain {{ f['name'].errors['maxlength'].requiredLength }} characters</div>
+                    <div *ngIf="f['name'].errors['pattern'] && !f['name'].errors['minlength'] && !f['name'].errors['maxlength']" style="color: red;">Name only contains alphabets</div>
                   </div>
                 </div>
 
                 <div class="form-outline mb-3 ">
                   <input type="email"  formControlName="email" id="form3Example3cg" class="form-control form-control-lg" placeholder="Enter Email" />
-                  <div *ngIf="isSubmitted && form.controls['email'].errors">
-                    <div *ngIf="form.controls['email'].errors['required']" style="color: red;">Email is required</div>
-                    <div *ngIf="form.controls['email'].errors['email']" style="color: red;">Invalid email format</div>
+                  <div *ngIf="isSubmitted && f['email'].errors">
+                    <div *ngIf="f['email'].errors['required']" style="color: red;">Email is required</div>
+                    <div *ngIf="f['email'].errors['pattern']" style="color: red;">Invalid email format</div>
                   </div>
                 </div>
 
-                <div class="form-outline mb-3 ">
+                <div *ngIf="!showOtpField" class="form-outline mb-3 ">
                     <input type="password" formControlName="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Enter Password" />
                     <div *ngIf="isSubmitted && f['password'].errors">
                       <div *ngIf="f['password'].errors['required']" style="color: red;">Password is required</div>
-                      <div *ngIf="f['password'].errors['passwordMismatch']" style="color: red;">Passwords do not match</div>
+                      <div *ngIf="f['password'].errors['minlength']" style="color: red;">Password must contain {{ f['password'].errors['minlength'].requiredLength }} characters</div>
                     </div>
                 </div>
                   
-                <div class="form-outline mb-3 ">
+                <div *ngIf="!showOtpField" class="form-outline mb-3 ">
                     <input type="password" formControlName="repeatPassword" id="form3Example4cdg" class="form-control form-control-lg" placeholder="Repeat Password" />
+                    <div *ngIf="form.hasError('passwordMismatch') && (form.get('repeatPassword')?.dirty || form.get('repeatPassword')?.touched)" style="color: red;">
+                      Passwords do not match.
+                    </div>
                     <div *ngIf="isSubmitted && f['repeatPassword'].errors">
                       <div *ngIf="f['repeatPassword'].errors['required']" style="color: red;">Password is required</div>
-                      <div *ngIf="f['repeatPassword'].errors['passwordMismatch']" style="color: red;">Passwords do not match</div>
                     </div>
                 </div>
 
                 <div *ngIf="showOtpField">
-                    <label for="otp">Enter OTP:</label>
-                    <input type="text" formControlName="otp" id="otp" />
+                  <input type="text" formControlName="otp" id="otp" class="form-control form-control-lg" placeholder="Enter OTP" />
+                  <div *ngIf="isSubmitted && f['otp'].errors">
+                    <div *ngIf="f['otp'].errors['required']" style="color: red;">OTP required</div>
+                    <div *ngIf="f['otp'].errors['pattern']" style="color: red;">OTP has exactly 4 digits</div>
                   </div>
+                </div>
                   
 
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center my-2 ">
                   <button type="submit"
-                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Register</button>
+                    class="btn btn-warning btn-block btn-lg gradient-custom-4 text-body">{{ showOtpField ? 'Verify' : 'Register' }}</button>
                 </div>
 
-                <p class="text-center text-muted mt-3 mb-0">Have already an account? 
+                <p *ngIf="!showOtpField" class="text-center text-muted mt-3 mb-0">Have already an account? 
                     <a routerLink="/user/login" class="fw-bold text-body"><u>Login here</u></a>
                 </p>
 

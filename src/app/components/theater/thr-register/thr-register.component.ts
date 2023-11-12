@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
-import { FormBuilder, Validators, type FormGroup, type AbstractControl } from '@angular/forms';
+import { FormBuilder, Validators, type FormGroup, type AbstractControl, type ValidatorFn, type ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
+import { OTPRegex, ZipRegex, emailRegex, passwordMinLength, userNameMinLength } from 'src/app/shared/constants';
 import { environments } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
@@ -20,7 +21,7 @@ export class ThrRegisterComponent {
   state: string = ''
   district: string = ''
   city: string = ''
-  zip: number = 0
+  zip: string = ''
   latitude: number | undefined;
   longitude: number | undefined;
 
@@ -32,20 +33,32 @@ export class ThrRegisterComponent {
 
   ngOnInit (): void {
     this.form = this.fromBuilder.group({
-      name: ['', Validators.required],
-      email: ['', Validators.required, Validators.email],
-      password: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(userNameMinLength)]],
+      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
+      password: ['', [Validators.required, Validators.minLength(passwordMinLength)]],
       repeatPassword: ['', Validators.required],
       country: ['', Validators.required],
       state: ['', Validators.required],
       district: ['', Validators.required],
       city: ['', Validators.required],
-      zip: ['', Validators.required],
+      zip: ['', [Validators.required, Validators.pattern(ZipRegex)]],
       landmark: [''],
       liscenceId: ['LI-ID3983KHS098SL', Validators.required],
-      otp: [{ value: '', disabled: true }, Validators.required]
-    })
+      otp: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(OTPRegex)]]
+    }, { validators: this.passwordMatchValidator })
   }
+
+  passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const password = control.get('password');
+    const repeatPassword = control.get('repeatPassword');
+
+    if ((password != null) && (repeatPassword != null) && password.value !== repeatPassword.value) {
+      repeatPassword.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
+    }
+    repeatPassword?.setErrors(null);
+    return null
+  };
 
   get f (): Record<string, AbstractControl> {
     return this.form.controls
@@ -91,7 +104,7 @@ export class ThrRegisterComponent {
 
   onSubmit (): void {
     this.isSubmitted = true
-
+    console.log('submitted');
     if (!this.form.invalid && !this.showOtpField) {
       const theater = this.form.getRawValue()
       theater.latitude = this.latitude
