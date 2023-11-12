@@ -17,6 +17,10 @@ import { ThrRegisterComponent } from './components/theater/thr-register/thr-regi
 import { ThrHomeComponent } from './components/theater/thr-home/thr-home.component';
 import { ThrNavComponent } from './components/theater/thr-nav/thr-nav.component'
 import { TheaterRoutingModule } from './components/theater/theater.routing'
+import { AdminLoginComponent } from './components/admin/admin-login/admin-login.component';
+import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
+import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.component'
+import { AdminRoutingModule } from './components/admin/admin.routing'
 
 @NgModule({
   declarations: [
@@ -27,13 +31,17 @@ import { TheaterRoutingModule } from './components/theater/theater.routing'
     ThrLoginComponent,
     ThrRegisterComponent,
     ThrHomeComponent,
-    ThrNavComponent
+    ThrNavComponent,
+    AdminLoginComponent,
+    AdminHomeComponent,
+    AdminNavComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     UserRoutingModule,
     TheaterRoutingModule,
+    AdminRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule
