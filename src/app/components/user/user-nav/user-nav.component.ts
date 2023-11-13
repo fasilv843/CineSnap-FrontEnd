@@ -9,13 +9,19 @@ import { Router } from '@angular/router';
 })
 export class UserNavComponent {
   isLoggedIn: boolean = false
+  burgerClicked = false
 
   constructor (
     @Inject(Router) private readonly router: Router
   ) {}
 
+  toggleSideBar (): void {
+    this.burgerClicked = !this.burgerClicked
+  }
+
   onLogout (): void {
     localStorage.removeItem('userToken')
     void this.router.navigate(['/user/home'])
+    this.toggleSideBar()
   }
 }

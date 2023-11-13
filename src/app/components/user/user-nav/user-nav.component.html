@@ -1,134 +1,108 @@
-<!-- <nav class="px-4 navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between ">
-    <div class="d-flex ">
-        <a class="navbar-brand" routerLink="/user/home">CineSnap</a> -->
-        <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button> -->
-        <!-- <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav">
-            <li class="nav-item active">
-              <a class="nav-link" routerLink="/user/home">Home </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/user/movies">Movies</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/user/theaters">Theaters</a>
-            </li>
-          </ul>
+<div class="flex flex-wrap w-screen">
+  <section class="relative mx-auto">
+    <!-- navbar -->
+    <nav class="flex justify-between bg-black text-amber-300 w-screen">
+      <div class="px-5 xl:px-12 py-6 flex w-full items-center">
+        <a class="" routerLink="/user/home">
+          <img class="h-9" src="../../../../assets/logo.png" alt="CineSnap Logo" />
+          <!-- Logo Here. -->
+        </a>
+        <!-- Nav Links -->
+        <ul class="hidden sm:flex px-4 mx-auto font-heading space-x-12">
+          <li>
+            <a class="hover:text-amber-500" routerLink="/user/home">Home</a>
+          </li>
+          <li>
+            <a class="hover:text-amber-500" routerLink="/user/movies">Movies</a>
+          </li>
+          <li>
+            <a class="hover:text-amber-500" routerLink="/user/theaters">Theaters</a>
+          </li>
+        </ul>
+        <!-- Header Icons -->
+        <div class="hidden sm:flex items-center space-x-5">
+          <a class="flex items-center hover:text-amber-500" routerLink="/user/profile">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </a>
         </div>
-    </div>
-    <div>
-        <ul class="navbar-nav">
-            <li class="nav-item active">
-              <a class="nav-link" routerLink="/user/profile">Profile </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="" (click)="onLogout()">Logout</a>
-            </li>
-          </ul>
-    </div>
-</nav> -->
-
-
-
-<!-- <nav class="bg-white border-gray-200 dark:bg-gray-900">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-    <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
-        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
-    </a>
-    <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-        <button type="button" class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
-          <span class="sr-only">Open user menu</span>
-          <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-3.jpg" alt="user photo">
-        </button>
-         ////////////////////////////Dropdown menu 
-        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
-          <div class="px-4 py-3">
-            <span class="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
-            <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
-          </div>
-          <ul class="py-2" aria-labelledby="user-menu-button">
-            <li>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard</a>
-            </li>
-            <li>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
-            </li>
-            <li>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Earnings</a>
-            </li>
-            <li>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
-            </li>
-          </ul>
-        </div>
-        <button data-collapse-toggle="navbar-user" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-user" aria-expanded="false">
-          <span class="sr-only">Open main menu</span>
-          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+      </div>
+      <!-- Responsive navbar -->
+      <div class="flex items-end sm:hidden">
+        <a class="hover:text-amber-500 mx-2 self-center" routerLink="/user/profile">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-      </button>
-    </div>
-    <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
-      <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-        <li>
-          <a href="#" class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
-        </li>
-        <li>
-          <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">About</a>
-        </li>
-        <li>
-          <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Services</a>
-        </li>
-        <li>
-          <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Pricing</a>
-        </li>
-        <li>
-          <a href="#" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contact</a>
-        </li>
-      </ul>
-    </div>
-    </div>
-  </nav> -->
-  
+        </a>
+        <a class="navbar-burger self-center mr-12 cursor-pointer" (click)="toggleSideBar()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </a>
+      </div>
+    </nav>
+  </section>
+</div>
 
-  <nav class="flex justify-between">
-    <div>
-        <img src="" alt="">
-    </div>
-    <div>
-        <ul>
-            <li>
-                <a href="">
-                    <span>Home</span>
-                </a>
-            </li>
-            <li>
-                <a href="">
-                    <span>Movies</span>
-                </a>
-            </li>            
-            <li>
-                <a href="">
-                    <span>Theaters</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-    <div>
-        <ul class="">
-            <li>
-                <a href="">
-                    <span>Profile</span>
-                </a>
-            </li>
-            <li>
-                <a href="">
-                    <span>Logout</span>
-                </a>
-            </li>
-        </ul>
-    </div>
-  </nav>
+<div>
+  <!-- component -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet" />
+
+  <!--dark mode - wide side navigation-->
+  <div *ngIf="burgerClicked"
+    class="w-60 py-4 px-2 text-amber-300 bg-black text-left capitalize font-medium shadow-lg sm:hidden fixed right-0">
+
+    <a routerLink="/user/home" (click)="toggleSideBar()">
+      <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-5">
+        <i class="w-8 fas fa-stream p-2 rounded-full"></i>
+        <span class="mx-2">Home</span>
+      </span>
+    </a>
+
+    <a routerLink="/user/movies" (click)="toggleSideBar()">
+      <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-5">
+        <i class="w-8 fas fa-stream p-2 rounded-full"></i>
+        <span class="mx-2">Movies</span>
+      </span>
+    </a>
+
+    <a routerLink="/user/theaters" (click)="toggleSideBar()">
+      <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-5">
+        <i class="w-8 fas fa-search p-2 bg-gray-800 rounded-full"></i>
+        <span class="mx-2">Theaters</span>
+      </span>
+    </a>
+
+    <!-- <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-5">
+            <a routerLink="/user/">
+                <span class="w-8 mb-5 relative">
+                    <i class="w-8 fas fa-user p-2 bg-gray-800 rounded-full"></i>
+                    <span
+                      class="absolute right-0 top-0 -mt-2 -mr-1 text-xs bg-yellow-500 text-black font-medium px-2 rounded-full">3</span>
+                  </span>
+                  <span class="mx-2">Notifications</span>
+            </a>
+        </span> -->
+
+    <a routerLink="/user/messages" (click)="toggleSideBar()">
+      <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-5">
+        <i class="w-8 fas fa-th p-2 bg-gray-800 rounded-full"></i>
+        <span class="mx-2">Messages</span>
+      </span>
+    </a>
+
+    <a routerLink="/user/home" (click)="onLogout()">
+      <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-5">
+        <i class="w-8 fas fa-calendar-alt p-2 bg-gray-800 rounded-full"></i>
+        <span class="mx-2">Logout</span>
+      </span>
+    </a>
+
+  </div>
+</div>
