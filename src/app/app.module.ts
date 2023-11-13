@@ -4,47 +4,27 @@ import { BrowserModule } from '@angular/platform-browser'
 
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
-import { UserLoginComponent } from './components/user/user-login/user-login.component'
-import { UserRegisterComponent } from './components/user/user-register/user-register.component'
-import { UserRoutingModule } from './components/user/user.routing';
-import { UserHomeComponent } from './components/user/user-home/user-home.component'
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 import { TransformUrlInterceptor } from './interceptors/transform-url.interceptor'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
-import { ThrLoginComponent } from './components/theater/thr-login/thr-login.component';
-import { ThrRegisterComponent } from './components/theater/thr-register/thr-register.component';
-import { ThrHomeComponent } from './components/theater/thr-home/thr-home.component';
-import { ThrNavComponent } from './components/theater/thr-nav/thr-nav.component'
-import { TheaterRoutingModule } from './components/theater/theater.routing'
-import { AdminLoginComponent } from './components/admin/admin-login/admin-login.component';
-import { AdminHomeComponent } from './components/admin/admin-home/admin-home.component';
-import { AdminNavComponent } from './components/admin/admin-nav/admin-nav.component'
-import { AdminRoutingModule } from './components/admin/admin.routing'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { MaterialModule } from './module/material/material.module';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
 
 @NgModule({
   declarations: [
     AppComponent,
-    UserLoginComponent,
-    UserRegisterComponent,
-    UserHomeComponent,
-    ThrLoginComponent,
-    ThrRegisterComponent,
-    ThrHomeComponent,
-    ThrNavComponent,
-    AdminLoginComponent,
-    AdminHomeComponent,
-    AdminNavComponent
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    UserRoutingModule,
-    TheaterRoutingModule,
-    AdminRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    MaterialModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

@@ -1,0 +1,31 @@
+<nav class="px-4 navbar navbar-expand-lg navbar-light bg-light d-flex justify-content-between ">
+    <div class="d-flex ">
+        <a class="navbar-brand" routerLink="/user/home">CineSnap</a>
+        <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button> -->
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" routerLink="/user/home">Home </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/user/movies">Movies</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/user/theaters">Theaters</a>
+            </li>
+          </ul>
+        </div>
+    </div>
+    <div>
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" routerLink="/user/profile">Profile </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="" (click)="onLogout()">Logout</a>
+            </li>
+          </ul>
+    </div>
+</nav>
