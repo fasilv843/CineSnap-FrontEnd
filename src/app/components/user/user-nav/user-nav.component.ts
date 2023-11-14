@@ -9,14 +9,14 @@ import { Router } from '@angular/router';
 })
 export class UserNavComponent {
   isLoggedIn: boolean = false
-  burgerClicked = false
+  showSidebar = false
 
   constructor (
     @Inject(Router) private readonly router: Router
   ) {}
 
   toggleSideBar (): void {
-    this.burgerClicked = !this.burgerClicked
+    this.showSidebar = !this.showSidebar
   }
 
   onLogout (): void {

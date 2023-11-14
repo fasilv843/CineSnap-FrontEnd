@@ -55,7 +55,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet" />
 
   <!--dark mode - wide side navigation-->
-  <div *ngIf="burgerClicked"
+  <div *ngIf="showSidebar"
     class="w-60 py-4 px-2 text-amber-300 bg-black text-left capitalize font-medium shadow-lg sm:hidden fixed right-0">
 
     <a routerLink="/user/home" (click)="toggleSideBar()">
