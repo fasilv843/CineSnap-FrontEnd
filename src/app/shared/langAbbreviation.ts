@@ -1,0 +1,5 @@
+export const MALAYALAM = 'ml'
+export const ENGLISH = 'en'
+export const HINDI = 'hi'
+export const TELUGU = 'tl'
+export const TAMIL = 'ta'

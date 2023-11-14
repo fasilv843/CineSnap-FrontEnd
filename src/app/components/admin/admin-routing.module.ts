@@ -6,6 +6,7 @@ import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { AdminMoviesComponent } from './admin-movies/admin-movies.component';
 import { AdminUsersComponent } from './admin-users/admin-users.component';
 import { AdminMessagesComponent } from './admin-messages/admin-messages.component';
+import { AdminTheatersComponent } from './admin-theaters/admin-theaters.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,7 @@ const routes: Routes = [
   {
     path: 'theaters',
     title: 'CineSnap | Theaters',
-    component: AdminMoviesComponent
+    component: AdminTheatersComponent
   },
   {
     path: 'users',
