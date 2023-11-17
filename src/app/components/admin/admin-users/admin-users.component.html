@@ -1,3 +1,68 @@
 <app-admin-nav></app-admin-nav>
 
-<p>admin-users works!</p>
+<!-- <p>admin-users works!</p> -->
+<div class="container p-2 mx-auto sm:p-4 dark:text-gray-100">
+	<h2 class="mb-4 text-2xl font-semibold leadi">Contacts</h2>
+	<div class="overflow-x-auto">
+		<table class="w-full p-6 text-xs text-left whitespace-nowrap">
+			<!-- <colgroup>
+				<col class="w-5">
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col class="w-5">
+			</colgroup> -->
+			<thead>
+				<tr class="dark:bg-gray-700">
+					<th class="p-3">No</th>
+					<th class="p-3">Name</th>
+					<th class="p-3">Contact</th>
+					<th class="p-3">Wallet</th>
+					<th class="p-3">DOB</th>
+					<th class="p-3">Address</th>
+					<th class="p-3">Block
+						<!-- <span class="sr-only"></span> -->
+					</th>
+				</tr>
+			</thead>
+			<tbody class="border-b dark:bg-gray-900 dark:border-gray-700">
+
+				<tr *ngFor="let user of users; index as i">
+					<td class="px-3 font-medium dark:text-gray-400">{{ i+1 }}</td>
+					<td class="px-3 py-2">
+						<p>{{ user.name }}</p>
+					</td>
+					<td class="px-3 py-2">
+						<span>{{ user.email }}</span>
+						<p class="dark:text-gray-400">{{ user.mobile }}</p>
+					</td>
+					<td class="px-3 py-2">
+						<p>{{ user.wallet }}</p>
+					</td>
+					<td class="px-3 py-2">
+						<p>{{ user.dob | date:'MMM d, y' }}</p>
+					</td>
+					<td class="px-3 py-2">
+                        <div *ngIf="user.address">
+                            <p>{{ user.address.city }} {{ user.address.state }}</p>
+                            <p class="dark:text-gray-400"> {{ user.address.country }}</p>
+                        </div>
+                        <div *ngIf="!user.address">
+                            <p class="dark:text-gray-400">N/A</p>
+                        </div>
+					</td>
+					<td class="px-3 py-2">
+						<button type="button" title="Open details" class="px-2 rounded-full dark:text-black  focus:dark:bg-gray-700" 
+                        [ngClass]="user.isBlocked ? 'bg-green-400 focus:dark:bg-green-600' : 'bg-red-500 focus:dark:bg-red-600'"
+                        (click)="onBlock(user._id, user.isBlocked ?  'Unblock' : 'Block')"
+                        >
+							{{ user.isBlocked ?  'Unblock' : 'Block' }}
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

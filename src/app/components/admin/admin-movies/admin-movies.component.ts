@@ -6,7 +6,8 @@ import { Component, OnInit } from '@angular/core';
 import { IMovie } from 'src/app/models/movie';
 import { MovieService } from 'src/app/services/movie.service';
 import { TMDBService } from 'src/app/services/tmdb.service';
-import { HINDI, MALAYALAM, TAMIL } from 'src/app/shared/langAbbreviation';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { BENGALI, ENGLISH, HINDI, KANNADA, MALAYALAM, TAMIL, TELUGU } from 'src/app/shared/langAbbreviation';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -23,11 +24,19 @@ export class AdminMoviesComponent implements OnInit {
   malayalamMovies: IMovie[] = []
   tamilMovies: IMovie[] = []
   hindiMovies: IMovie[] = []
+  // teluguMovies: IMovie[] = []
+  // kannadaMovies: IMovie[] = []
+  // englishMovies: IMovie[] = []
+  // bengaliMovies: IMovie[] = []
 
   ngOnInit (): void {
     this.getMalayalmMovies()
     this.getTamilMovies()
     this.getHindiMovies()
+    // this.getTeluguMovies()
+    // this.getKannadaMovies()
+    // this.getEnglishMovies()
+    // this.getBenaliMovies()
   }
 
   addMovie (movie: IMovie): void {
@@ -37,11 +46,15 @@ export class AdminMoviesComponent implements OnInit {
     });
   }
 
+  onSearch (): void {
+
+  }
+
   getMalayalmMovies (): void {
     this.tmdbService.fetchMovieByLanguage(MALAYALAM).subscribe({
       next: (res) => {
         this.malayalamMovies = res
-        console.log(res)
+        console.log(res, 'res mal')
       }
     })
   }
@@ -50,7 +63,7 @@ export class AdminMoviesComponent implements OnInit {
     this.tmdbService.fetchMovieByLanguage(TAMIL).subscribe({
       next: (res) => {
         this.tamilMovies = res
-        console.log(res)
+        console.log(res, 'res, tamil')
       }
     })
   }
@@ -59,8 +72,46 @@ export class AdminMoviesComponent implements OnInit {
     this.tmdbService.fetchMovieByLanguage(HINDI).subscribe({
       next: (res) => {
         this.hindiMovies = res
-        console.log(res)
+        // console.log(res, 'res, hindi')
       }
     })
   }
+
+  // getTeluguMovies (): void {
+  //   this.tmdbService.fetchMovieByLanguage(TELUGU).subscribe({
+  //     next: (res) => {
+  //       this.teluguMovies = res
+  //       // console.log(res, 'res, hindi')
+  //     }
+  //   })
+  // }
+
+  // getKannadaMovies (): void {
+  //   this.tmdbService.fetchMovieByLanguage(KANNADA).subscribe({
+  //     next: (res) => {
+  //       this.kannadaMovies = res
+  //       console.log(res, 'res, kannada')
+  //     }
+  //   })
+  // }
+
+  // getEnglishMovies (): void {
+  //   this.tmdbService.fetchMovieByLanguage(ENGLISH).subscribe({
+  //     next: (res) => {
+  //       this.englishMovies = res
+  //       console.log(res, 'res, english')
+  //     }
+  //   })
+  // }
+
+  // getBenaliMovies (): void {
+  //   this.tmdbService.fetchMovieByLanguage(BENGALI).subscribe({
+  //     next: (res) => {
+  //       this.bengaliMovies = res
+  //       // console.log(res, 'res, hindi')
+  //     }
+  //   })
+  // }
 }
+
+// Remove Unused Languages that imported from constants

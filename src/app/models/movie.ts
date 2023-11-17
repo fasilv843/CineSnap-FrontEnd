@@ -1,16 +1,42 @@
 /* eslint-disable @typescript-eslint/member-delimiter-style */
 /* eslint-disable @typescript-eslint/indent */
 export interface IMovie {
-    backdrop_path: string;
-    id: number;
-    original_title: string;
-    overview: string;
-    poster_path: string;
+    _id?: string
+    title: string
+    original_title?: string
+    poster_path: string
+    backdrop_path?: string
+    overview: string
+    language: string
+    tmdbId: number
+    release_date: Date
+    genre_ids: number[]
+    review?: MovieReview[]
+    isDeleted?: boolean
+}
+
+interface ITMDBMovie {
+    title: string
+    original_title?: string
+    poster_path: string
+    backdrop_path?: string
+    overview: string
+    original_language: string
+    id: number
+    release_date: Date
+    genre_ids: number[]
+    adult: boolean
 }
 
 export interface IMoviesObj {
     page: number;
-    results: IMovie[];
+    results: ITMDBMovie[];
     total_pages: number;
     total_results: number;
+}
+
+interface MovieReview {
+    rating: number
+    review: string
+    userId: string
 }

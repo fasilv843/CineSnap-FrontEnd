@@ -14,6 +14,6 @@ export class MovieService {
   ) { }
 
   saveMovie (movie: IMovie): Observable<any> {
-    return this.http.post('admin/movies/add', movie)
+    return this.http.post('admin/movies/add', { movie })
   }
 }

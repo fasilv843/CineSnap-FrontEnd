@@ -1,35 +1,34 @@
 <app-admin-nav></app-admin-nav>
 <!-- <p>admin-movies works!</p> -->
-<!-- Filter Div -->
-<div></div>
 
+<div class="mx-3 mt-4 flex justify-between">
+  <div>
+    <button class="mx-2">TMDB</button>
+    <button class="mx-2">CineSnap</button>
+  </div>
 
-
-<!-- <div class="ml-1">
-    <div class="flex justify-between my-3">
-        <div class="text-lg font-bold ms-3">
-            <h3>Malayalam Movies</h3>
+  <form  (ngSubmit)="onSearch()">
+    <div class="flex justify-between">
+        <div class="mb-3 col-lg-10">
+            <input type="text" class="form-control" formControlName="movieName" placeholder="Search Movies Here...">
+            <!-- <p *ngIf="isSubmitted&&form.movieName.errors" class="text-danger">Enter a Movie Name</p> -->
         </div>
-        <div class="text-blue-700 text-sm font-semibold me-3">
-            <p>More...</p>
-        </div>
-    </div>
-
-    <div class="flex my-2 overflow-x-scroll scrolling-touch">
-        <div *ngFor="let movie of malayalamMovies" class="w-40 m-1 h-60 bg-amber-800 flex-shrink-0 overflow-hidden">
-          <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
-          <div class="p-2 bg-gray-500 text-white text-center">ADD</div>
+  
+        <div class="col-lg-2 mx-2">
+            <button class="btn bg-amber-500 text-black">Search</button>
         </div>
     </div>
-      
-</div> -->
+  </form>
+</div>
 
+
+<!-- Malyalam Movies Row  -->
 <div class="ml-1">
     <div class="flex justify-between my-3">
       <div class="text-lg font-bold ms-3">
         <h3>Malayalam Movies</h3>
       </div>
-      <div class="text-blue-700 text-sm font-semibold me-3">
+      <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
         <p>More...</p>
       </div>
     </div>
@@ -41,95 +40,118 @@
       </div>
     </div>
 </div>
+  
 
+<!-- Tamil Movies Row  -->
+<div class="ml-1">
+  <div class="flex justify-between my-3">
+    <div class="text-lg font-bold ms-3">
+      <h3>Tamil Movies</h3>
+    </div>
+    <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
+      <p>More...</p>
+    </div>
+  </div>
+
+  <div class="flex my-2 overflow-x-scroll scrolling-touch">
+    <div *ngFor="let movie of tamilMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
+      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
+    </div>
+  </div>
+</div>
+
+<!-- Hindi Movies Row  -->
+<div class="ml-1">
+  <div class="flex justify-between my-3">
+    <div class="text-lg font-bold ms-3">
+      <h3>Hindi Movies</h3>
+    </div>
+    <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
+      <p>More...</p>
+    </div>
+  </div>
+
+  <div class="flex my-2 overflow-x-scroll scrolling-touch">
+    <div *ngFor="let movie of hindiMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
+      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
+    </div>
+  </div>
+</div>
+
+<!-- Telugu Movies Row  -->
 <!-- <div class="ml-1">
-    <div class="flex justify-between my-3">
-      <div class="text-lg font-bold ms-3">
-        <h3>Malayalam Movies</h3>
-      </div>
-      <div class="text-blue-700 text-sm font-semibold me-3">
-        <p>More...</p>
-      </div>
+  <div class="flex justify-between my-3">
+    <div class="text-lg font-bold ms-3">
+      <h3>Telugu Movies</h3>
     </div>
-  
-    <div class="flex my-2 overflow-x-scroll scrolling-touch">
-      <div *ngFor="let movie of malayalamMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-        <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-2/3 object-cover" />
-        <div class="p-2 bg-gray-500 text-white text-center">
-          <h4 class="text-lg font-semibold mb-2">{{ 'Movie Name here' }}</h4>
-          <button class="bg-blue-500 text-white px-3 py-1 rounded">ADD</button>
-        </div>
-      </div>
+    <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
+      <p>More...</p>
     </div>
-  </div> -->
-  
-  
-  
+  </div>
 
-<div class="ml-1">
-    <div class="flex justify-between my-3">
-        <div class="text-lg font-bold ms-3">
-            <h3>Tamil Movies</h3>
-        </div>
-        <div class="text-blue-700 text-sm font-semibold me-3">
-            <p>More...</p>
-        </div>
+  <div class="flex my-2 overflow-x-scroll scrolling-touch">
+    <div *ngFor="let movie of teluguMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
+      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
     </div>
+  </div>
+</div> -->
 
-    <div class="flex my-2 overflow-x-scroll scrolling-touch">
-        <div *ngFor="let movie of tamilMovies"  class="w-40 m-1 h-60 bg-amber-800 flex-shrink-0 overflow-hidden">
-          <img src="your_image_url" alt="Image 1" class="w-full h-full object-cover" />
-        </div>
+<!-- Kannada Movies Row  -->
+<!-- <div class="ml-1">
+  <div class="flex justify-between my-3">
+    <div class="text-lg font-bold ms-3">
+      <h3>Kannada Movies</h3>
     </div>
-</div>
+    <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
+      <p>More...</p>
+    </div>
+  </div>
 
-<div class="ml-1">
-    <div class="flex justify-between my-3">
-        <div class="text-lg font-bold ms-3">
-            <h3>Hindi Movies</h3>
-        </div>
-        <div class="text-blue-700 text-sm font-semibold me-3">
-            <p>More...</p>
-        </div>
+  <div class="flex my-2 overflow-x-scroll scrolling-touch">
+    <div *ngFor="let movie of kannadaMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
+      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
     </div>
+  </div>
+</div> -->
 
-    <div class="flex my-2 overflow-x-scroll scrolling-touch">
-        <div  *ngFor="let movie of hindiMovies" class="w-40 m-1 h-60 bg-amber-800 flex-shrink-0 overflow-hidden">
-          <img src="your_image_url" alt="Image 1" class="w-full h-full object-cover" />
-        </div>
+<!-- English Movies Row  -->
+<!-- <div class="ml-1">
+  <div class="flex justify-between my-3">
+    <div class="text-lg font-bold ms-3">
+      <h3>English Movies</h3>
     </div>
-</div>
+    <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
+      <p>More...</p>
+    </div>
+  </div>
 
-<div class="ml-1">
-    <div class="flex justify-between my-3">
-        <div class="text-lg font-bold ms-3">
-            <h3>New Movies</h3>
-        </div>
-        <div class="text-blue-700 text-sm font-semibold me-3">
-            <p>More...</p>
-        </div>
+  <div class="flex my-2 overflow-x-scroll scrolling-touch">
+    <div *ngFor="let movie of englishMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
+      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
     </div>
+  </div>
+</div> -->
 
-    <div class="flex my-2 overflow-x-scroll scrolling-touch">
-        <div class="w-40 m-1 h-60 bg-amber-800 flex-shrink-0 overflow-hidden">
-          <img src="your_image_url" alt="Image 1" class="w-full h-full object-cover" />
-        </div>
+<!-- Bengali Movies Row  -->
+<!-- <div class="ml-1">
+  <div class="flex justify-between my-3">
+    <div class="text-lg font-bold ms-3">
+      <h3>Bengali Movies</h3>
     </div>
-</div>
+    <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
+      <p>More...</p>
+    </div>
+  </div>
 
-<div class="ml-1">
-    <div class="flex justify-between my-3">
-        <div class="text-lg font-bold ms-3">
-            <h3>New Movies</h3>
-        </div>
-        <div class="text-blue-700 text-sm font-semibold me-3">
-            <p>More...</p>
-        </div>
+  <div class="flex my-2 overflow-x-scroll scrolling-touch">
+    <div *ngFor="let movie of bengaliMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
+      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
     </div>
-
-    <div class="flex my-2 overflow-x-scroll scrolling-touch">
-        <div class="w-40 m-1 h-60 bg-amber-800 flex-shrink-0 overflow-hidden">
-          <img src="your_image_url" alt="Image 1" class="w-full h-full object-cover" />
-        </div>
-    </div>
-</div>
+  </div>
+</div> -->
