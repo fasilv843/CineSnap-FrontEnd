@@ -1,1 +1,110 @@
-<p>thr-nav works!</p>
+<div class="flex flex-wrap w-screen">
+    <section class="relative mx-auto">
+      <!-- navbar -->
+      <nav class="flex justify-between bg-black text-amber-300 w-screen">
+        <div class="px-5 xl:px-12 py-6 flex w-full items-center">
+          <a class="" routerLink="/theater/home">
+            <img class="h-9" src="../../../../assets/logo.png" alt="CineSnap Logo" />
+            <!-- Logo Here. -->
+          </a>
+          <!-- Nav Links -->
+          <ul class="hidden md:flex px-4 mx-auto font-heading space-x-12">
+            <li>
+              <a class="hover:text-amber-500" routerLink="/theater/home">Dashboard</a>
+            </li>
+            <li>
+              <a class="hover:text-amber-500" routerLink="/theater/shows">Shows</a>
+            </li>
+            <li>
+              <a class="hover:text-amber-500" routerLink="/theater/screens">Screens</a>
+            </li>
+            <li>
+                <a class="hover:text-amber-500" routerLink="/theater/messages">Messages</a>
+            </li>
+            <li>
+                <a class="hover:text-amber-500" routerLink="/theater/movies">Movies</a>
+            </li>
+          </ul>
+          <!-- Header Icons -->
+          <div class="hidden md:flex items-center space-x-5">
+            <a class="flex items-center hover:text-amber-500" routerLink="/theater/profile">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <!-- Responsive navbar -->
+        <div class="flex items-end md:hidden">
+          <a class="hover:text-amber-500 mx-2 self-center" routerLink="/theater/profile">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </a>
+          <a class="navbar-burger self-center mr-12 cursor-pointer" (click)="toggleSideBar()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </a>
+        </div>
+      </nav>
+    </section>
+  </div>
+  
+  <div>
+    <!-- component -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet" />
+  
+    <!--dark mode - wide side navigation-->
+    <div *ngIf="showSidebar"
+      class="w-60 py-4 px-2 text-amber-300 bg-black text-left rounded mr-3 capitalize font-medium shadow-lg md:hidden fixed right-0 top-24">
+  
+      <a routerLink="/theater/home" (click)="toggleSideBar()">
+        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+          <i class="w-8 fas fa-stream p-2 rounded-full"></i>
+          <span class="mx-2">Home</span>
+        </span>
+      </a>
+
+      <a routerLink="/theater/shows" (click)="toggleSideBar()">
+        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+          <i class="w-8 fas fa-search p-2 bg-gray-800 rounded-full"></i>
+          <span class="mx-2">Shows</span>
+        </span>
+      </a>
+
+      <a routerLink="/theater/screens" (click)="toggleSideBar()">
+        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+          <i class="w-8 fas fa-th p-2 bg-gray-800 rounded-full"></i>
+          <span class="mx-2">Screens</span>
+        </span>
+      </a>
+
+      <a routerLink="/theater/messages" (click)="toggleSideBar()">
+        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+          <i class="w-8 fas fa-th p-2 bg-gray-800 rounded-full"></i>
+          <span class="mx-2">Messages</span>
+        </span>
+      </a>
+  
+      <a routerLink="/theater/movies" (click)="toggleSideBar()">
+        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+          <i class="w-8 fas fa-stream p-2 rounded-full"></i>
+          <span class="mx-2">Movies</span>
+        </span>
+      </a>
+  
+      <a routerLink="/theater/login" (click)="onLogout()">
+        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+          <i class="w-8 fas fa-calendar-alt p-2 bg-gray-800 rounded-full"></i>
+          <span class="mx-2">Logout</span>
+        </span>
+      </a>
+  
+    </div>
+  </div>
