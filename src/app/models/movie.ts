@@ -40,3 +40,8 @@ interface MovieReview {
     review: string
     userId: string
 }
+
+export interface CSMovieRes {
+    message: string
+    movies: IMovie[]
+}

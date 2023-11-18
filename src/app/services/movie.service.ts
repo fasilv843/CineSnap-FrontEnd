@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/semi */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Injectable } from '@angular/core';
-import { type IMovie } from '../models/movie';
+import { CSMovieRes, type IMovie } from '../models/movie';
 import { HttpClient } from '@angular/common/http';
 import { type Observable } from 'rxjs';
 
@@ -16,4 +16,24 @@ export class MovieService {
   saveMovie (movie: IMovie): Observable<any> {
     return this.http.post('admin/movies/add', { movie })
   }
+
+  findAllMovies (): Observable<CSMovieRes> {
+    return this.http.get<CSMovieRes>('user/movies')
+  }
+
+  // findMoviesByGenre (genreId: string) {
+
+  // }
+
+  // findMovieByLanguage (lang: string){
+
+  // }
+
+  // searchMovie(title: string){
+
+  // }
+
+  // deleteMovie(movieId: string){
+
+  // }
 }

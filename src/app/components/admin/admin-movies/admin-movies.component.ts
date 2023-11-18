@@ -26,7 +26,7 @@ export class AdminMoviesComponent implements OnInit {
   hindiMovies: IMovie[] = []
   // teluguMovies: IMovie[] = []
   // kannadaMovies: IMovie[] = []
-  // englishMovies: IMovie[] = []
+  englishMovies: IMovie[] = []
   // bengaliMovies: IMovie[] = []
 
   ngOnInit (): void {
@@ -35,7 +35,7 @@ export class AdminMoviesComponent implements OnInit {
     this.getHindiMovies()
     // this.getTeluguMovies()
     // this.getKannadaMovies()
-    // this.getEnglishMovies()
+    this.getEnglishMovies()
     // this.getBenaliMovies()
   }
 
@@ -95,14 +95,14 @@ export class AdminMoviesComponent implements OnInit {
   //   })
   // }
 
-  // getEnglishMovies (): void {
-  //   this.tmdbService.fetchMovieByLanguage(ENGLISH).subscribe({
-  //     next: (res) => {
-  //       this.englishMovies = res
-  //       console.log(res, 'res, english')
-  //     }
-  //   })
-  // }
+  getEnglishMovies (): void {
+    this.tmdbService.fetchMovieByLanguage(ENGLISH).subscribe({
+      next: (res) => {
+        this.englishMovies = res
+        console.log(res, 'res, english')
+      }
+    })
+  }
 
   // getBenaliMovies (): void {
   //   this.tmdbService.fetchMovieByLanguage(BENGALI).subscribe({

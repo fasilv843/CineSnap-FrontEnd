@@ -7,16 +7,16 @@
     <button class="mx-2">CineSnap</button>
   </div>
 
-  <form  (ngSubmit)="onSearch()">
+  <form (ngSubmit)="onSearch()">
     <div class="flex justify-between">
-        <div class="mb-3 col-lg-10">
-            <input type="text" class="form-control" formControlName="movieName" placeholder="Search Movies Here...">
-            <!-- <p *ngIf="isSubmitted&&form.movieName.errors" class="text-danger">Enter a Movie Name</p> -->
-        </div>
-  
-        <div class="col-lg-2 mx-2">
-            <button class="btn bg-amber-500 text-black">Search</button>
-        </div>
+      <div class="mb-3 col-lg-10">
+        <input type="text" class="form-control" formControlName="movieName" placeholder="Search Movies Here...">
+        <!-- <p *ngIf="isSubmitted&&form.movieName.errors" class="text-danger">Enter a Movie Name</p> -->
+      </div>
+
+      <div class="col-lg-2 mx-2">
+        <button class="btn bg-amber-500 text-black">Search</button>
+      </div>
     </div>
   </form>
 </div>
@@ -24,23 +24,26 @@
 
 <!-- Malyalam Movies Row  -->
 <div class="ml-1">
-    <div class="flex justify-between my-3">
-      <div class="text-lg font-bold ms-3">
-        <h3>Malayalam Movies</h3>
-      </div>
-      <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
-        <p>More...</p>
+  <div class="flex justify-between my-3">
+    <div class="text-lg font-bold ms-3">
+      <h3>Malayalam Movies</h3>
+    </div>
+    <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
+      <p>More...</p>
+    </div>
+  </div>
+
+  <div class="flex my-2 overflow-x-scroll scrolling-touch">
+    <div *ngFor="let movie of malayalamMovies"
+      class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
+      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
+        class="w-full h-full object-cover" />
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD
       </div>
     </div>
-  
-    <div class="flex my-2 overflow-x-scroll scrolling-touch">
-      <div *ngFor="let movie of malayalamMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-        <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
-        <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
-      </div>
-    </div>
+  </div>
 </div>
-  
+
 
 <!-- Tamil Movies Row  -->
 <div class="ml-1">
@@ -55,8 +58,10 @@
 
   <div class="flex my-2 overflow-x-scroll scrolling-touch">
     <div *ngFor="let movie of tamilMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
+      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
+        class="w-full h-full object-cover" />
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD
+      </div>
     </div>
   </div>
 </div>
@@ -74,8 +79,10 @@
 
   <div class="flex my-2 overflow-x-scroll scrolling-touch">
     <div *ngFor="let movie of hindiMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
+      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
+        class="w-full h-full object-cover" />
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD
+      </div>
     </div>
   </div>
 </div>
@@ -119,7 +126,7 @@
 </div> -->
 
 <!-- English Movies Row  -->
-<!-- <div class="ml-1">
+<div class="ml-1">
   <div class="flex justify-between my-3">
     <div class="text-lg font-bold ms-3">
       <h3>English Movies</h3>
@@ -131,11 +138,13 @@
 
   <div class="flex my-2 overflow-x-scroll scrolling-touch">
     <div *ngFor="let movie of englishMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
+      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
+        class="w-full h-full object-cover" />
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD
+      </div>
     </div>
   </div>
-</div> -->
+</div>
 
 <!-- Bengali Movies Row  -->
 <!-- <div class="ml-1">
@@ -155,3 +164,72 @@
     </div>
   </div>
 </div> -->
+
+<!-- Movie Poster and Add button only design  -->
+<!-- <div class="container mx-auto px-4">
+  <div class="text-lg font-bold mb-3">
+    <h3>English Movies</h3>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div *ngFor="let movie of englishMovies" class="bg-amber-800 overflow-hidden relative">
+      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-80 object-cover" />
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
+    </div>
+  </div>
+</div> -->
+
+
+
+<!-- <div class="container mx-auto px-4">
+  <div class="text-lg font-bold mb-3">
+    <h3>English Movies</h3>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <ng-container *ngFor="let movie of englishMovies"> -->
+<!-- For larger screens, use the original design -->
+<!-- <div class="bg-amber-800 overflow-hidden">
+        <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-80 object-cover" />
+        <div class="bg-gray-500 text-white text-center">{{ movie.title }} - {{ movie.release_date.getFullYear() }}</div>
+        <div class="bg-green-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
+      </div> -->
+
+<!-- For smaller screens, use a split layout -->
+<!-- <div class="flex flex-col sm:flex-row sm:space-x-4 my-4 sm:my-0" *ngIf="true">
+        <div class="w-full sm:w-1/2 bg-amber-800 overflow-hidden relative">
+          <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-80 object-cover" />
+        </div>
+        <div class="w-full sm:w-1/2 bg-gray-500 text-white p-4">
+          <p class="text-lg font-bold">{{ movie.title }}</p>
+          <p>{{ movie.release_date }}</p> -->
+<!-- Add more details or buttons here as needed -->
+<!-- <button class="bg-blue-700 text-white px-4 py-2 mt-2" (click)="addMovie(movie)">ADD</button>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div> -->
+
+
+<div class="container mx-auto px-4">
+  <div class="text-lg font-bold mb-3">
+    <h3>English Movies</h3>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <ng-container *ngFor="let movie of englishMovies">
+      <!-- For larger screens, use the adjusted design -->
+      <div class="bg-amber-800 overflow-hidden relative">
+        <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
+          class="w-full h-80 object-cover" />
+        <div class="bg-gray-900 text-white text-center p-2">
+          <p class="text-base font-medium line-clamp-1">{{ movie.title }}</p>
+          <p class="text-sm">{{ movie.release_date.getFullYear() }}</p>
+        </div>
+        <div class="bg-gray-500 text-white text-center p-2 cursor-pointer" (click)="addMovie(movie)">ADD</div>
+      </div>
+
+    </ng-container>
+  </div>
+</div>
