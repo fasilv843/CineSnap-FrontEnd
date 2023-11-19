@@ -1,3 +1,4 @@
+/* eslint-disable no-void */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component } from '@angular/core'
 import { IMovie } from 'src/app/models/movie'
@@ -20,8 +21,18 @@ export class AdminCsMoviesComponent {
     this.findCineSnapMovies()
   }
 
+  deleteMovie (id: string): void {
+    this.movieService.deleteMovie(id).subscribe({
+      next: () => {
+        void Swal.fire('Success', 'CineSnap Database Updated', 'success')
+        window.location.reload()
+      },
+      error: (err) => void Swal.fire('Error', err.error.message, 'error')
+    })
+  }
+
   findCineSnapMovies (): void {
-    this.movieService.findAllMovies().subscribe({
+    this.movieService.findAllMoviesByAdmin().subscribe({
       next: (res) => {
         console.log(res, 'res from findAllMovies')
         this.movies = res.movies

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/semi */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Injectable } from '@angular/core';
-import { CSMovieRes, type IMovie } from '../models/movie';
+import { CSMovieRes, Movie } from '../models/movie';
 import { HttpClient } from '@angular/common/http';
 import { type Observable } from 'rxjs';
 
@@ -13,12 +13,16 @@ export class MovieService {
     private readonly http: HttpClient
   ) { }
 
-  saveMovie (movie: IMovie): Observable<any> {
+  saveMovie (movie: Movie): Observable<any> {
     return this.http.post('admin/movies/add', { movie })
   }
 
   findAllMovies (): Observable<CSMovieRes> {
     return this.http.get<CSMovieRes>('user/movies')
+  }
+
+  findAllMoviesByAdmin (): Observable<CSMovieRes> {
+    return this.http.get<CSMovieRes>('admin/movies')
   }
 
   // findMoviesByGenre (genreId: string) {
@@ -33,7 +37,7 @@ export class MovieService {
     return this.http.get<CSMovieRes>(`user/movies?title=${title}`)
   }
 
-  // deleteMovie(movieId: string){
-
-  // }
+  deleteMovie (movieId: string): Observable<CSMovieRes> {
+    return this.http.patch<CSMovieRes>(`admin/movies/delete/${movieId}`, {})
+  }
 }

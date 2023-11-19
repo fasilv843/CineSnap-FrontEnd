@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environments } from 'src/environments/environment';
-import { IMovie, IMoviesObj } from '../models/movie';
+import { Movie, IMoviesObj } from '../models/movie';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class TMDBService {
     headers: new HttpHeaders({ 'Bypass-Interceptor': 'true' })
   }
 
-  fetchMovieByLanguage (lang: string, page: number = 2): Observable<IMovie[]> {
+  fetchMovieByLanguage (lang: string, page: number = 2): Observable<Movie[]> {
     return this.http.get<IMoviesObj>(`${this.tmdbApi}/discover/movie?api_key=${this.tmdbKey}&with_original_language=${lang}&sort_by=release_date.desc&page=${page}`, this.httpOptions).pipe(
       map((result) => result.results
         .filter(movie => movie.poster_path)
@@ -39,7 +39,7 @@ export class TMDBService {
     );
   }
 
-  searchMovieByName (movieTitle: string): Observable<IMovie[]> {
+  searchMovieByName (movieTitle: string): Observable<Movie[]> {
     return this.http.get<IMoviesObj>(`${this.tmdbApi}/search/movie?query=${movieTitle}&api_key=${this.tmdbKey}`, this.httpOptions).pipe(
       map((result) => result.results
         .filter(movie => movie.poster_path)
@@ -58,7 +58,7 @@ export class TMDBService {
     );
   }
 
-  fetchMoviesByGenreId (genreId: number): Observable<IMovie[]> {
+  fetchMoviesByGenreId (genreId: number): Observable<Movie[]> {
     return this.http.get<IMoviesObj>(`${this.tmdbApi}discover/movie?with_genres=${genreId}&api_key=${this.tmdbKey}`, this.httpOptions).pipe(
       map((result) => result.results
         .filter(movie => movie.poster_path)

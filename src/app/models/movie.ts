@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-delimiter-style */
 /* eslint-disable @typescript-eslint/indent */
 export interface IMovie {
-    _id?: string
+    _id: string
     title: string
     original_title?: string
     poster_path: string
@@ -15,7 +15,9 @@ export interface IMovie {
     isDeleted?: boolean
 }
 
-interface ITMDBMovie {
+export type Movie = Omit<IMovie, '_id'>
+
+export interface ITMDBMovie {
     title: string
     original_title?: string
     poster_path: string

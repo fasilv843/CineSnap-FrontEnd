@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, type OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { IMovie } from 'src/app/models/movie'
+import { Movie } from 'src/app/models/movie'
 import { MovieService } from 'src/app/services/movie.service'
 import { TMDBService } from 'src/app/services/tmdb.service'
 import Swal from 'sweetalert2'
@@ -14,7 +14,7 @@ import Swal from 'sweetalert2'
 })
 export class AdminMoviesExploreComponent implements OnInit {
   routeParam: string = ''
-  movies: IMovie[] = []
+  movies: Movie[] = []
   page: number = 1
 
   constructor (
@@ -32,7 +32,7 @@ export class AdminMoviesExploreComponent implements OnInit {
     this.exploreLanguage(this.routeParam)
   }
 
-  addMovie (movie: IMovie): void {
+  addMovie (movie: Movie): void {
     this.movieService.saveMovie(movie).subscribe({
       next: async () => await Swal.fire('Success', 'Movie Successfully Added', 'success'),
       error: async (err: { error: { message: string | undefined } }) => await Swal.fire('Error', err.error.message, 'error')

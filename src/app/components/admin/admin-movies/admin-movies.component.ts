@@ -4,7 +4,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 // import { Observable } from 'rxjs';
-import { IMovie } from 'src/app/models/movie';
+import { Movie } from 'src/app/models/movie';
 import { MovieService } from 'src/app/services/movie.service';
 import { TMDBService } from 'src/app/services/tmdb.service';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -23,14 +23,14 @@ export class AdminMoviesComponent implements OnInit {
     private readonly router: Router
   ) {}
 
-  searchResultMovies: IMovie[] = []
-  malayalamMovies: IMovie[] = []
-  tamilMovies: IMovie[] = []
-  hindiMovies: IMovie[] = []
-  // teluguMovies: IMovie[] = []
-  // kannadaMovies: IMovie[] = []
-  englishMovies: IMovie[] = []
-  // bengaliMovies: IMovie[] = []
+  searchResultMovies: Movie[] = []
+  malayalamMovies: Movie[] = []
+  tamilMovies: Movie[] = []
+  hindiMovies: Movie[] = []
+  // teluguMovies: Movie[] = []
+  // kannadaMovies: Movie[] = []
+  englishMovies: Movie[] = []
+  // bengaliMovies: Movie[] = []
 
   ngOnInit (): void {
     this.getMalayalmMovies()
@@ -42,7 +42,7 @@ export class AdminMoviesComponent implements OnInit {
     // this.getBenaliMovies()
   }
 
-  addMovie (movie: IMovie): void {
+  addMovie (movie: Movie): void {
     this.movieService.saveMovie(movie).subscribe({
       next: async () => await Swal.fire('Success', 'Movie Successfully Added', 'success'),
       error: async (err: { error: { message: string | undefined } }) => await Swal.fire('Error', err.error.message, 'error')
