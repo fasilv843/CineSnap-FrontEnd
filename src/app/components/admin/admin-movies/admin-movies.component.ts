@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/semi */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 // import { Observable } from 'rxjs';
 import { IMovie } from 'src/app/models/movie';
 import { MovieService } from 'src/app/services/movie.service';
@@ -18,9 +19,11 @@ import Swal from 'sweetalert2';
 export class AdminMoviesComponent implements OnInit {
   constructor (
     private readonly tmdbService: TMDBService,
-    private readonly movieService: MovieService
+    private readonly movieService: MovieService,
+    private readonly router: Router
   ) {}
 
+  searchResultMovies: IMovie[] = []
   malayalamMovies: IMovie[] = []
   tamilMovies: IMovie[] = []
   hindiMovies: IMovie[] = []
@@ -46,8 +49,20 @@ export class AdminMoviesComponent implements OnInit {
     });
   }
 
-  onSearch (): void {
+  searchTmdbMovies (title: string): void {
+    console.log(title, 'search on tmdb fn')
+    this.tmdbService.searchMovieByName(title).subscribe({
+      next: (res) => {
+        this.searchResultMovies = res
+      },
+      error: () => {
+        void Swal.fire('Sorry :<', 'Didn\'t find searched movie', 'info')
+      }
+    })
+  }
 
+  exploreLanguage (lang: string): void {
+    void this.router.navigate(['/admin/movies/', lang])
   }
 
   getMalayalmMovies (): void {
@@ -72,7 +87,6 @@ export class AdminMoviesComponent implements OnInit {
     this.tmdbService.fetchMovieByLanguage(HINDI).subscribe({
       next: (res) => {
         this.hindiMovies = res
-        // console.log(res, 'res, hindi')
       }
     })
   }

@@ -11,6 +11,9 @@ import { AdminTheatersComponent } from './admin-theaters/admin-theaters.componen
 import { AdminUsersComponent } from './admin-users/admin-users.component';
 import { AdminMessagesComponent } from './admin-messages/admin-messages.component';
 import { AdminMoviesComponent } from './admin-movies/admin-movies.component';
+import { AdminCsMoviesComponent } from './admin-cs-movies/admin-cs-movies.component';
+import { AdminMoviesSearchComponent } from './admin-movies-search/admin-movies-search.component';
+import { AdminMoviesExploreComponent } from './admin-movies-explore/admin-movies-explore.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,10 @@ import { AdminMoviesComponent } from './admin-movies/admin-movies.component';
     AdminTheatersComponent,
     AdminUsersComponent,
     AdminMessagesComponent,
-    AdminMoviesComponent
+    AdminMoviesComponent,
+    AdminCsMoviesComponent,
+    AdminMoviesSearchComponent,
+    AdminMoviesExploreComponent
   ],
   imports: [
     CommonModule,

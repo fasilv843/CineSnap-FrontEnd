@@ -29,9 +29,9 @@ export class MovieService {
 
   // }
 
-  // searchMovie(title: string){
-
-  // }
+  searchMovie (title: string): Observable<CSMovieRes> {
+    return this.http.get<CSMovieRes>(`user/movies?title=${title}`)
+  }
 
   // deleteMovie(movieId: string){
 

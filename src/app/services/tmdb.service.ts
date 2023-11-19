@@ -21,8 +21,8 @@ export class TMDBService {
     headers: new HttpHeaders({ 'Bypass-Interceptor': 'true' })
   }
 
-  fetchMovieByLanguage (lang: string): Observable<IMovie[]> {
-    return this.http.get<IMoviesObj>(`${this.tmdbApi}/discover/movie?api_key=${this.tmdbKey}&with_original_language=${lang}&sort_by=release_date.desc&page=2`, this.httpOptions).pipe(
+  fetchMovieByLanguage (lang: string, page: number = 2): Observable<IMovie[]> {
+    return this.http.get<IMoviesObj>(`${this.tmdbApi}/discover/movie?api_key=${this.tmdbKey}&with_original_language=${lang}&sort_by=release_date.desc&page=${page}`, this.httpOptions).pipe(
       map((result) => result.results
         .filter(movie => movie.poster_path)
         .map(movie => ({
