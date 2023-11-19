@@ -11,6 +11,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserMoviesComponent } from './user-movies/user-movies.component';
 import { UserTheatersComponent } from './user-theaters/user-theaters.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { StoreModule } from '@ngrx/store';
+import { userReducer } from 'src/app/states/user/user.reducer';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     CommonModule,
     UserRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forFeature('user', userReducer)
   ]
 })
 export class UserModule { }

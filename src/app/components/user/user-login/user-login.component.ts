@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { type FormGroup, FormBuilder, Validators, type AbstractControl } from '@angular/forms'
 import Swal from 'sweetalert2';
 import { emailRegex, passwordMinLength } from 'src/app/shared/constants';
+import { Store } from '@ngrx/store';
+import { saveUserOnStore } from 'src/app/states/user/user.actions';
 
 @Component({
   selector: 'app-user-login',
@@ -18,7 +20,8 @@ export class UserLoginComponent implements OnInit {
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
     @Inject(Router) private readonly router: Router,
-    @Inject(FormBuilder) private readonly fromBuilder: FormBuilder
+    @Inject(FormBuilder) private readonly fromBuilder: FormBuilder,
+    @Inject(Store) private readonly store: Store
   ) {}
 
   ngOnInit (): void {
@@ -40,8 +43,9 @@ export class UserLoginComponent implements OnInit {
       console.log('sending http request');
       this.http.post('user/login', user).subscribe({
         next: (res: any) => {
-          console.log('navigating to home', res.token);
+          console.log('navigating to home', res);
           localStorage.setItem('userToken', res.token)
+          this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
           void this.router.navigate(['/'])
         },
         error: (err) => {

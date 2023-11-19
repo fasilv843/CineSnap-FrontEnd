@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/semi */
-import { NgModule } from '@angular/core'
+import { NgModule, isDevMode } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 
 import { AppRoutingModule } from './app-routing.module'
@@ -12,6 +12,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MaterialModule } from './module/material/material.module';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
 import { CloudinaryModule } from '@cloudinary/ng';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { UserModule } from './components/user/user.module'
 
 @NgModule({
   declarations: [
@@ -26,7 +29,10 @@ import { CloudinaryModule } from '@cloudinary/ng';
     FormsModule,
     BrowserAnimationsModule,
     MaterialModule,
-    CloudinaryModule
+    CloudinaryModule,
+    UserModule,
+    StoreModule.forRoot({}, {}),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
