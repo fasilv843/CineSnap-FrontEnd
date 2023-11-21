@@ -2,6 +2,8 @@
 import { Component, Inject, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
+import { saveCoords } from 'src/app/states/coords/coords.actions';
+import { selectCoords } from 'src/app/states/coords/coords.selector';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
 
 @Component({
@@ -13,6 +15,9 @@ export class UserNavComponent implements OnInit {
   isLoggedIn: boolean = false
   showSidebar = false
   userDetails$ = this.store.pipe(select(selectUserDetails))
+  coords$ = this.store.pipe(select(selectCoords))
+  latitude: number | undefined;
+  longitude: number | undefined;
 
   constructor (
     @Inject(Router) private readonly router: Router,
@@ -20,15 +25,22 @@ export class UserNavComponent implements OnInit {
   ) {}
 
   ngOnInit (): void {
-    this.userDetails$.subscribe((userDetails) => {
-      if (userDetails !== null) {
-        // userDetails is defined, do something with it
-        console.log('User Details:', userDetails);
-      } else {
-        // userDetails is undefined, handle the case where the user is not logged in
-        console.log('User is not logged in');
-      }
-    });
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        console.log(position.coords, 'position.coords');
+        this.latitude = position.coords.latitude;
+        this.longitude = position.coords.longitude;
+        this.store.dispatch(saveCoords({ coords: { coordinates: [this.longitude, this.latitude] } }))
+      });
+    } else {
+      console.log('No support for geolocation')
+    }
+
+    this.coords$.subscribe((coords) => {
+      if (coords !== null) console.log(coords)
+      else console.log('coords not available now')
+    })
   }
 
   toggleSideBar (): void {

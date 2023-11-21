@@ -17,3 +17,8 @@ export interface IWalletHistory {
   message: string
   date: Date
 }
+
+export interface ICoords {
+  type?: string
+  coordinates: [number, number]
+}

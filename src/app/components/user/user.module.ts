@@ -16,6 +16,7 @@ import { userReducer } from 'src/app/states/user/user.reducer';
 import { SocialLoginModule, GoogleLoginProvider } from '@abacritt/angularx-social-login';
 
 import { environments } from 'src/environments/environment';
+import { coordsReducer } from 'src/app/states/coords/coords.reducer';
 // const socialAuthServiceConfig: SocialAuthServiceConfig = {
 //   autoLogin: false,
 //   providers: [
@@ -46,6 +47,7 @@ import { environments } from 'src/environments/environment';
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forFeature('user', userReducer),
+    StoreModule.forFeature('coords', coordsReducer),
     SocialLoginModule
   ],
   providers: [
@@ -60,8 +62,7 @@ import { environments } from 'src/environments/environment';
           }
         ]
       } // as SocialAuthServiceConfig,
-    },
-
+    }
   ]
 })
 export class UserModule { }
