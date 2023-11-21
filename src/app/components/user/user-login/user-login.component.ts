@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { emailRegex, passwordMinLength } from 'src/app/shared/constants';
 import { Store } from '@ngrx/store';
 import { saveUserOnStore } from 'src/app/states/user/user.actions';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-user-login',
@@ -21,6 +22,7 @@ export class UserLoginComponent implements OnInit {
     @Inject(HttpClient) private readonly http: HttpClient,
     @Inject(Router) private readonly router: Router,
     @Inject(FormBuilder) private readonly fromBuilder: FormBuilder,
+    @Inject(SocialAuthService) private readonly authService: SocialAuthService,
     @Inject(Store) private readonly store: Store
   ) {}
 
@@ -29,6 +31,27 @@ export class UserLoginComponent implements OnInit {
       email: ['', [Validators.required, Validators.pattern(emailRegex)]],
       password: ['', [Validators.required, Validators.minLength(passwordMinLength)]]
     })
+
+    this.authService.authState.subscribe((user) => {
+      const userData = {
+        name: user.name,
+        email: user.email,
+        profilePic: user.photoUrl
+      }
+
+      console.log(user, 'user from auth service');
+      this.http.post('user/auth/google', userData).subscribe({
+        next: (res: any) => {
+          localStorage.setItem('userToken', res.token)
+          this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+          void this.router.navigate(['/'])
+        },
+        error: (err) => {
+          console.error(err);
+          void Swal.fire('Error', err.error.message, 'error')
+        }
+      })
+    });
   }
 
   get f (): Record<string, AbstractControl> {

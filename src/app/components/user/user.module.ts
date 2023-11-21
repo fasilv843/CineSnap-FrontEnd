@@ -39,7 +39,7 @@ import { environments } from 'src/environments/environment';
     UserTheatersComponent,
     UserProfileComponent
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  // schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     CommonModule,
     UserRoutingModule,
@@ -60,7 +60,8 @@ import { environments } from 'src/environments/environment';
           }
         ]
       } // as SocialAuthServiceConfig,
-    }
+    },
+
   ]
 })
 export class UserModule { }
