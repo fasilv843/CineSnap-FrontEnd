@@ -60,8 +60,7 @@ import { environments } from 'src/environments/environment';
           }
         ]
       } // as SocialAuthServiceConfig,
-    },
-
+    }
   ]
 })
 export class UserModule { }
