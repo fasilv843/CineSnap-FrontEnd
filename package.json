@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@abacritt/angularx-social-login": "^2.1.0",
     "@angular/animations": "^16.2.0",
     "@angular/cdk": "^16.2.12",
     "@angular/common": "^16.2.0",
@@ -25,7 +26,7 @@
     "@ngrx/store": "^16.3.0",
     "@ngrx/store-devtools": "^16.3.0",
     "rxjs": "~7.8.0",
-    "sweetalert2": "^11.9.0",
+    "sweetalert2": "^11.6.13",
     "tailwind": "^4.0.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

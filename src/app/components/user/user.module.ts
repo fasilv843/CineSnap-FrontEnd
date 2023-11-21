@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/semi */
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { UserRoutingModule } from './user-routing.module';
@@ -13,6 +13,21 @@ import { UserTheatersComponent } from './user-theaters/user-theaters.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { StoreModule } from '@ngrx/store';
 import { userReducer } from 'src/app/states/user/user.reducer';
+import { SocialLoginModule, GoogleLoginProvider } from '@abacritt/angularx-social-login';
+
+import { environments } from 'src/environments/environment';
+// const socialAuthServiceConfig: SocialAuthServiceConfig = {
+//   autoLogin: false,
+//   providers: [
+//     {
+//       id: GoogleLoginProvider.PROVIDER_ID,
+//       provider: new GoogleLoginProvider(environments.google_client_id)
+//     }
+//   ],
+//   onError: (err: any) => {
+//     console.error(err);
+//   }
+// };
 
 @NgModule({
   declarations: [
@@ -24,12 +39,28 @@ import { userReducer } from 'src/app/states/user/user.reducer';
     UserTheatersComponent,
     UserProfileComponent
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     CommonModule,
     UserRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    StoreModule.forFeature('user', userReducer)
+    StoreModule.forFeature('user', userReducer),
+    SocialLoginModule
+  ],
+  providers: [
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(environments.google_client_id)
+          }
+        ]
+      } // as SocialAuthServiceConfig,
+    }
   ]
 })
 export class UserModule { }

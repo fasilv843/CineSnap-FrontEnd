@@ -6,6 +6,9 @@ import { FormBuilder, type FormGroup, Validators, type AbstractControl, type Val
 import { Router } from '@angular/router';
 import { OTPRegex, emailRegex, nameRegex, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants';
 import Swal from 'sweetalert2';
+import { SocialAuthService, type SocialUser, GoogleLoginProvider } from '@abacritt/angularx-social-login';
+import { saveUserOnStore } from 'src/app/states/user/user.actions';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-user-register',
@@ -16,11 +19,14 @@ export class UserRegisterComponent implements OnInit {
   form!: FormGroup;
   isSubmitted = false
   showOtpField = false
+  loggedIn: boolean = false;
 
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
     @Inject(Router) private readonly router: Router,
-    @Inject(FormBuilder) private readonly fromBuilder: FormBuilder
+    @Inject(FormBuilder) private readonly fromBuilder: FormBuilder,
+    @Inject(SocialAuthService) private readonly authService: SocialAuthService,
+    @Inject(Store) private readonly store: Store
   ) {}
 
   ngOnInit(): void {
@@ -33,7 +39,33 @@ export class UserRegisterComponent implements OnInit {
     }, {
       validators: this.passwordMatchValidator
     })
+
+    this.authService.authState.subscribe((user) => {
+      const userData = {
+        name: user.name,
+        email: user.email,
+        profilePic: user.photoUrl
+      }
+
+      console.log(user, 'user from auth service');
+      this.http.post('user/auth/google', userData).subscribe({
+        next: (res: any) => {
+          localStorage.setItem('userToken', res.token)
+          this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+          void this.router.navigate(['/'])
+        },
+        error: (err) => {
+          console.error(err);
+          void Swal.fire('Error', err.error.message, 'error')
+        }
+      })
+    });
   }
+
+  // registerWithGoogle(): void {
+  //   console.log('registering with google');
+  //   void this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
+  // }
 
   passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const password = control.get('password');
@@ -77,7 +109,9 @@ export class UserRegisterComponent implements OnInit {
       console.log(user.otp);
       const otp = user.otp
       this.http.post('user/validateOtp', { otp }).subscribe({
-        next: () => {
+        next: (res: any) => {
+          localStorage.setItem('userToken', res.token)
+          this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
           void this.router.navigate(['/'])
         },
         error: (err) => {
