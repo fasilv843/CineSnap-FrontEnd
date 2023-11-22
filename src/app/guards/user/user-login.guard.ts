@@ -11,11 +11,23 @@ export class UserLoginGuard implements CanActivate {
 
     const token = localStorage.getItem('userToken')
 
-    if (token != null) {
+    if (token !== null) {
       console.log('user already logged in')
-      return false
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      console.log(payload, 'payload')
+      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+      if (payload?.exp) {
+        const expireDate = payload.exp * 1000
+        console.log(expireDate, Date.now())
+        if (expireDate > Date.now()) {
+          return false
+        }
+        console.log('token expired')
+      } else {
+        console.warn('token not have expiration date')
+        return false
+      }
     }
-
     return true
   }
 }
