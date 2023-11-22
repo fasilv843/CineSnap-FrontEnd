@@ -28,4 +28,13 @@ export class TheaterService {
   getActiveTheaters (): Observable<ITheater[]> {
     return this.http.get<ITheater[]>('admin/theaters?blocked=false')
   }
+
+  getNearestTheaters (lon: number, lat: number): Observable<ITheater[]> {
+    return this.http.get<ITheater[]>('user/theaters', {
+      params: {
+        longitude: lon.toString(),
+        latitude: lat.toString()
+      }
+    })
+  }
 }
