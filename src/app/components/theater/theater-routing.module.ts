@@ -9,6 +9,7 @@ import { ThrScreensComponent } from './thr-screens/thr-screens.component';
 import { ThrMessagesComponent } from './thr-messages/thr-messages.component';
 import { ThrProfileComponent } from './thr-profile/thr-profile.component';
 import { ThrMoviesComponent } from './thr-movies/thr-movies.component';
+import { LoginGuard } from 'src/app/guards/login.guard';
 
 const routes: Routes = [
   {
@@ -19,12 +20,15 @@ const routes: Routes = [
   {
     path: 'login',
     title: 'CineSnap | Theater Login',
-    component: ThrLoginComponent
+    component: ThrLoginComponent,
+    canActivate: [LoginGuard]
   },
   {
     path: 'register',
     title: 'CineSnap | Theater Register',
-    component: ThrRegisterComponent
+    component: ThrRegisterComponent,
+    canActivate: [LoginGuard]
+
   },
   {
     path: 'shows',

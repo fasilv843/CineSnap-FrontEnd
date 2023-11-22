@@ -7,8 +7,8 @@ import { UserRegisterComponent } from './user-register/user-register.component';
 import { UserMoviesComponent } from './user-movies/user-movies.component';
 import { UserTheatersComponent } from './user-theaters/user-theaters.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
-import { UserLoginGuard } from 'src/app/guards/user/user-login.guard';
-import { UserAuthGuard } from 'src/app/guards/user/user-auth.guard';
+import { LoginGuard } from 'src/app/guards/login.guard';
+import { AuthGuard } from 'src/app/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -20,13 +20,13 @@ const routes: Routes = [
     path: 'login',
     title: 'CineSnap | Login',
     component: UserLoginComponent,
-    canActivate: [UserLoginGuard]
+    canActivate: [LoginGuard]
   },
   {
     path: 'register',
     title: 'CineSnap | Register',
     component: UserRegisterComponent,
-    canActivate: [UserLoginGuard]
+    canActivate: [LoginGuard]
   },
   {
     path: 'movies',
@@ -42,7 +42,7 @@ const routes: Routes = [
     path: 'profile',
     title: 'CineSnap | Profile',
     component: UserProfileComponent,
-    canActivate: [UserAuthGuard]
+    canActivate: [AuthGuard]
   },
   {
     path: '',

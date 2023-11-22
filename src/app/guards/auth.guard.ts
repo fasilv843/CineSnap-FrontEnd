@@ -1,21 +1,29 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Injectable } from '@angular/core'
-import { type CanActivate, Router } from '@angular/router'
+import { type CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router'
 import Swal from 'sweetalert2'
+import { isTokenExpired } from '../helpers/jwt-token'
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserAuthGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
   constructor (private readonly router: Router) {}
 
-  canActivate (): boolean {
-    console.log('user auth guard working')
+  canActivate (route: ActivatedRouteSnapshot): boolean {
+    console.log('auth guard working')
 
-    const token = localStorage.getItem('userToken')
+    const role = route.parent?.routeConfig?.path
+    console.log(role, 'role')
 
-    if (token === null) {
-      console.log('user not logged in')
+    const token = localStorage.getItem(`${role}Token`)
+
+    if (token === null || isTokenExpired(token)) {
+      if (role !== 'user') {
+        void this.router.navigate([`/${role}/login`])
+        return false
+      }
+
       void Swal.fire({
         title: 'You are not logged in',
         text: 'Do you want to redirect to login page',
@@ -30,7 +38,6 @@ export class UserAuthGuard implements CanActivate {
       })
       return false
     }
-
     return true
   }
 }

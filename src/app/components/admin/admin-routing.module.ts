@@ -9,36 +9,44 @@ import { AdminMessagesComponent } from './admin-messages/admin-messages.componen
 import { AdminTheatersComponent } from './admin-theaters/admin-theaters.component';
 import { AdminCsMoviesComponent } from './admin-cs-movies/admin-cs-movies.component';
 import { AdminMoviesExploreComponent } from './admin-movies-explore/admin-movies-explore.component';
+import { LoginGuard } from 'src/app/guards/login.guard';
+import { AuthGuard } from 'src/app/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'home',
     title: 'CineSnap | Dashboard',
-    component: AdminHomeComponent
+    component: AdminHomeComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'login',
     title: 'CineSnap | Admin Login',
-    component: AdminLoginComponent
+    component: AdminLoginComponent,
+    canActivate: [LoginGuard]
   },
   {
     path: 'theaters',
     title: 'CineSnap | Theaters',
-    component: AdminTheatersComponent
+    component: AdminTheatersComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'users',
     title: 'CineSnap | Users',
-    component: AdminUsersComponent
+    component: AdminUsersComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'messages',
     title: 'CineSnap | Messages',
-    component: AdminMessagesComponent
+    component: AdminMessagesComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'movies',
     title: 'CineSnap | Movies',
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'cinesnap',
