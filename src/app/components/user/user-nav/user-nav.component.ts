@@ -36,11 +36,6 @@ export class UserNavComponent implements OnInit {
     } else {
       console.log('No support for geolocation')
     }
-
-    this.coords$.subscribe((coords) => {
-      if (coords !== null) console.log(coords)
-      else console.log('coords not available now')
-    })
   }
 
   toggleSideBar (): void {
