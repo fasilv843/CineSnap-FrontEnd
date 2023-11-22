@@ -1,24 +1,21 @@
-/* eslint-disable @typescript-eslint/semi */
-import { Router, type CanActivateFn } from '@angular/router';
+/* eslint-disable @typescript-eslint/consistent-type-imports */
+import { Injectable } from '@angular/core'
+import { type CanActivate } from '@angular/router'
 
-const router = new Router()
+@Injectable({
+  providedIn: 'root'
+})
+export class UserLoginGuard implements CanActivate {
+  canActivate (): boolean {
+    console.log('user login guard working')
 
-export const userLoginGuard: CanActivateFn = (route, state) => {
-  const token = localStorage.getItem('userToken')
-  if (token !== '') {
-    void router.navigate(['/user/home'])
-    return false
+    const token = localStorage.getItem('userToken')
+
+    if (token != null) {
+      console.log('user already logged in')
+      return false
+    }
+
+    return true
   }
-  return true
-};
-
-export const userLogoutGuard: CanActivateFn = (route, state) => {
-  console.log(route);
-  console.log(state);
-  const token = localStorage.getItem('userToken')
-  if (token == null) {
-    void router.navigate(['/'])
-    return false
-  }
-  return true
 }
