@@ -24,10 +24,20 @@ export class JwtInterceptor implements HttpInterceptor {
       return next.handle(request)
     }
 
-    const user = request.url.split('/')[0];
+    const urlArr = request.url.split('/');
+    const user = urlArr[0]
+    console.log(urlArr, 'urlArr');
     console.log('user:', user);
 
-    const jwt = localStorage.getItem(user + 'Token');
+    let jwt: string | null = ''
+    if (urlArr[1] === 'validateOtp' || urlArr[1] === 'resendOtp') {
+      console.log(user + 'AuthToken');
+      jwt = localStorage.getItem(user + 'AuthToken')
+    } else {
+      console.log(user + 'Token');
+      jwt = localStorage.getItem(user + 'Token');
+    }
+
     console.log('jwt:', jwt);
 
     let authorizedRequest: HttpRequest<unknown>;

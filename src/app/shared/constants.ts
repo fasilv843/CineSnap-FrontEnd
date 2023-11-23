@@ -5,3 +5,5 @@ export const ZipRegex = '^[1-9][0-9]{5}$'
 export const userNameMinLength = 3
 export const userNameMaxLength = 20
 export const nameRegex = '^[a-zA-Z ]{3,20}$'
+
+export const OTP_TIMER = 30

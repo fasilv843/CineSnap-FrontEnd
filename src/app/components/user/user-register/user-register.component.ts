@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit } from '@angular/core'
 import { FormBuilder, type FormGroup, Validators, type AbstractControl, type ValidationErrors, type ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
-import { OTPRegex, emailRegex, nameRegex, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants';
+import { OTPRegex, OTP_TIMER, emailRegex, nameRegex, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants';
 import Swal from 'sweetalert2';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { saveUserOnStore } from 'src/app/states/user/user.actions';
@@ -21,7 +21,7 @@ export class UserRegisterComponent implements OnInit {
   isSubmitted = false
   showOtpField = false
   loggedIn: boolean = false;
-  countdown: number = 5
+  countdown: number = OTP_TIMER
   remainingTime = 0
   formattedTime: string = '03:00'
 
@@ -90,6 +90,9 @@ export class UserRegisterComponent implements OnInit {
     this.http.get('user/resendOtp').subscribe({
       next: () => {
         console.log('otp successfully resent');
+      },
+      error: (err) => {
+        void Swal.fire('Error', err.error.message, 'error')
       }
     })
   }
@@ -137,10 +140,10 @@ export class UserRegisterComponent implements OnInit {
       console.log(user);
       console.log(user.otp);
       const otp = user.otp
-      const authToken = localStorage.getItem('userAuthToken')
-      this.http.post('user/validateOtp', { otp, authToken }).subscribe({
+      this.http.post('user/validateOtp', { otp }).subscribe({
         next: (res: any) => {
           localStorage.setItem('userToken', res.token)
+          localStorage.removeItem('userAuthToken')
           this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
           void this.router.navigate(['/'])
         },
