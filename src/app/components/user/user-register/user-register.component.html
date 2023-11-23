@@ -52,6 +52,15 @@
                     <div *ngIf="f['otp'].errors['required']" style="color: red;">OTP required</div>
                     <div *ngIf="f['otp'].errors['pattern']" style="color: red;">OTP has exactly 4 digits</div>
                   </div>
+                  <div class="text-center font-semibold">
+                    <ng-container *ngIf="formattedTime !== '00:00'; else otpExpired">
+                      <p>OTP will expire in {{ formattedTime }} minutes</p>
+                    </ng-container>
+                    <ng-template #otpExpired>
+                      <p>OTP Expired <span (click)="resendOTP()" class="text-blue-600 cursor-pointer">Resend</span></p>
+                    </ng-template>
+                  </div>
+                  
                 </div>
                   
 

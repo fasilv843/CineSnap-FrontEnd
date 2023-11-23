@@ -6,9 +6,10 @@ import { FormBuilder, type FormGroup, Validators, type AbstractControl, type Val
 import { Router } from '@angular/router';
 import { OTPRegex, emailRegex, nameRegex, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants';
 import Swal from 'sweetalert2';
-import { SocialAuthService, type SocialUser, GoogleLoginProvider } from '@abacritt/angularx-social-login';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { saveUserOnStore } from 'src/app/states/user/user.actions';
 import { Store } from '@ngrx/store';
+import { formatTime } from 'src/app/helpers/timer';
 
 @Component({
   selector: 'app-user-register',
@@ -20,6 +21,9 @@ export class UserRegisterComponent implements OnInit {
   isSubmitted = false
   showOtpField = false
   loggedIn: boolean = false;
+  countdown: number = 5
+  remainingTime = 0
+  formattedTime: string = '03:00'
 
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
@@ -67,6 +71,29 @@ export class UserRegisterComponent implements OnInit {
   //   void this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
   // }
 
+  startTimer(): void {
+    this.remainingTime = this.countdown;
+
+    const timer = setInterval(() => {
+      this.remainingTime--;
+
+      if (this.remainingTime <= 0) {
+        clearInterval(timer);
+        // Handle expiration logic here
+        console.log('OTP expired');
+      }
+      this.formattedTime = formatTime(this.remainingTime)
+    }, 1000); // Update every second
+  }
+
+  resendOTP(): void {
+    this.http.get('user/resendOtp').subscribe({
+      next: () => {
+        console.log('otp successfully resent');
+      }
+    })
+  }
+
   passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const password = control.get('password');
     const repeatPassword = control.get('repeatPassword');
@@ -90,13 +117,15 @@ export class UserRegisterComponent implements OnInit {
     if (!this.form.invalid && !this.showOtpField) {
       const user = this.form.getRawValue()
       this.http.post('user/register', user).subscribe({
-        next: () => {
+        next: (res: any) => {
+          localStorage.setItem('userAuthToken', res.token)
           this.showOtpField = true
           this.form.get('name')?.disable()
           this.form.get('email')?.disable()
           this.form.get('password')?.disable()
           this.form.get('repeatPassword')?.disable()
           this.form.get('otp')?.enable();
+          this.startTimer()
         },
         error: (err) => {
           void Swal.fire('Error', err.error.message, 'error')
@@ -108,7 +137,8 @@ export class UserRegisterComponent implements OnInit {
       console.log(user);
       console.log(user.otp);
       const otp = user.otp
-      this.http.post('user/validateOtp', { otp }).subscribe({
+      const authToken = localStorage.getItem('userAuthToken')
+      this.http.post('user/validateOtp', { otp, authToken }).subscribe({
         next: (res: any) => {
           localStorage.setItem('userToken', res.token)
           this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
