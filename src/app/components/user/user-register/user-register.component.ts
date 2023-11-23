@@ -2,14 +2,24 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit } from '@angular/core'
-import { FormBuilder, type FormGroup, Validators, type AbstractControl, type ValidationErrors, type ValidatorFn } from '@angular/forms';
+import { FormBuilder, type FormGroup, Validators, type AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { OTPRegex, OTP_TIMER, emailRegex, nameRegex, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants';
+import {
+  MAX_OTP_LIMIT,
+  OTPRegex,
+  OTP_TIMER,
+  emailRegex,
+  nameRegex,
+  passwordMinLength,
+  userNameMaxLength,
+  userNameMinLength
+} from 'src/app/shared/constants';
 import Swal from 'sweetalert2';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { saveUserOnStore } from 'src/app/states/user/user.actions';
 import { Store } from '@ngrx/store';
 import { formatTime } from 'src/app/helpers/timer';
+import { passwordMatchValidator } from 'src/app/helpers/validations';
 
 @Component({
   selector: 'app-user-register',
@@ -21,9 +31,9 @@ export class UserRegisterComponent implements OnInit {
   isSubmitted = false
   showOtpField = false
   loggedIn: boolean = false;
-  countdown: number = OTP_TIMER
   remainingTime = 0
   formattedTime: string = '03:00'
+  otpResendCount: number = 0
 
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
@@ -41,7 +51,7 @@ export class UserRegisterComponent implements OnInit {
       repeatPassword: ['', Validators.required],
       otp: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(OTPRegex)]]
     }, {
-      validators: this.passwordMatchValidator
+      validators: passwordMatchValidator
     })
 
     this.authService.authState.subscribe((user) => {
@@ -72,7 +82,7 @@ export class UserRegisterComponent implements OnInit {
   // }
 
   startTimer(): void {
-    this.remainingTime = this.countdown;
+    this.remainingTime = OTP_TIMER;
 
     const timer = setInterval(() => {
       this.remainingTime--;
@@ -87,28 +97,22 @@ export class UserRegisterComponent implements OnInit {
   }
 
   resendOTP(): void {
-    this.http.get('user/resendOtp').subscribe({
-      next: () => {
-        console.log('otp successfully resent');
-        this.startTimer()
-      },
-      error: (err) => {
-        void Swal.fire('Error', err.error.message, 'error')
-      }
-    })
-  }
-
-  passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    const password = control.get('password');
-    const repeatPassword = control.get('repeatPassword');
-
-    if ((password != null) && (repeatPassword != null) && password.value !== repeatPassword.value) {
-      repeatPassword.setErrors({ passwordMismatch: true });
-      return { passwordMismatch: true };
+    if (this.otpResendCount < MAX_OTP_LIMIT) {
+      this.http.get('user/resendOtp').subscribe({
+        next: () => {
+          console.log('otp successfully resent');
+          void Swal.fire('OTP sent', 'Check your mail for OTP', 'success');
+          this.startTimer();
+          this.otpResendCount++;
+        },
+        error: (err) => {
+          void Swal.fire('Error', err.error.message, 'error');
+        }
+      });
+    } else {
+      void Swal.fire('Oops!', 'Maximum resend attempts reached', 'warning');
     }
-    repeatPassword?.setErrors(null);
-    return null
-  };
+  }
 
   /// { [key: string]: AbstractControl }
   get f(): Record<string, AbstractControl> {
