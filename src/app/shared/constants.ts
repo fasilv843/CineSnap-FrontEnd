@@ -6,4 +6,4 @@ export const userNameMinLength = 3
 export const userNameMaxLength = 20
 export const nameRegex = '^[a-zA-Z ]{3,20}$'
 
-export const OTP_TIMER = 30
+export const OTP_TIMER = 60 * 3 // 3 min in seconds

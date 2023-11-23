@@ -90,6 +90,7 @@ export class UserRegisterComponent implements OnInit {
     this.http.get('user/resendOtp').subscribe({
       next: () => {
         console.log('otp successfully resent');
+        this.startTimer()
       },
       error: (err) => {
         void Swal.fire('Error', err.error.message, 'error')
