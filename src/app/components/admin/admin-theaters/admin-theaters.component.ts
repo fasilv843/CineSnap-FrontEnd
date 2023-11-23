@@ -28,7 +28,7 @@ export class AdminTheatersComponent {
     })
   }
 
-  onBlock (theaterId: string, action: string): void {
+  onBlock (theaterId: string, action: 'Block' | 'Unblock'): void {
     void Swal.fire({
       title: 'Are you sure?',
       text: `Do you want to ${action} this theater!`,
@@ -40,7 +40,12 @@ export class AdminTheatersComponent {
       if (result.isConfirmed) {
         this.theaterService.blockTheater(theaterId).subscribe({
           next: () => {
-            window.location.reload()
+            const thrIndex = this.theaters.findIndex(thr => thr._id === theaterId)
+            this.theaters = [
+              ...this.theaters.slice(0, thrIndex),
+              { ...this.theaters[thrIndex], isBlocked: !(this.theaters[thrIndex].isBlocked ?? false) },
+              ...this.theaters.slice(thrIndex + 1)
+            ]
           },
           error: (err) => {
             void Swal.fire('Error', err.error.message, 'error')
