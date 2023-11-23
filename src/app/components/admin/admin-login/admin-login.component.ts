@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit } from '@angular/core';
-import { type AbstractControl, FormBuilder, type FormGroup, Validators } from '@angular/forms';
+import { type AbstractControl, FormBuilder, type FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { emailRegex, passwordMinLength } from 'src/app/shared/constants';
+import { validateByTrimming } from 'src/app/helpers/validations';
+import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
 
 @Component({
   selector: 'app-admin-login',
@@ -23,9 +24,9 @@ export class AdminLoginComponent implements OnInit {
 
   ngOnInit (): void {
     this.form = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
-      password: ['', [Validators.required, Validators.minLength(passwordMinLength)]]
-    });
+      email: ['', [validateByTrimming(emailValidators)]],
+      password: ['', [validateByTrimming(passwordValidators)]]
+    })
   }
 
   get f (): Record<string, AbstractControl> {

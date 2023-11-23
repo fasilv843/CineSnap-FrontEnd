@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
-import { FormBuilder, Validators, type FormGroup, type AbstractControl, type ValidatorFn, type ValidationErrors } from '@angular/forms';
+import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { OTPRegex, ZipRegex, emailRegex, passwordMinLength, userNameMinLength } from 'src/app/shared/constants';
+import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
+import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators';
 import { environments } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
@@ -33,32 +34,20 @@ export class ThrRegisterComponent {
 
   ngOnInit (): void {
     this.form = this.fromBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(userNameMinLength)]],
-      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
-      password: ['', [Validators.required, Validators.minLength(passwordMinLength)]],
-      repeatPassword: ['', Validators.required],
-      country: ['', Validators.required],
-      state: ['', Validators.required],
-      district: ['', Validators.required],
-      city: ['', Validators.required],
-      zip: ['', [Validators.required, Validators.pattern(ZipRegex)]],
+      name: ['', [validateByTrimming(nameValidators)]],
+      email: ['', [validateByTrimming(emailValidators)]],
+      password: ['', [validateByTrimming(passwordValidators)]],
+      repeatPassword: ['', [validateByTrimming(requiredValidator)]],
+      country: ['', [validateByTrimming(requiredValidator)]],
+      state: ['', [validateByTrimming(requiredValidator)]],
+      district: ['', [validateByTrimming(requiredValidator)]],
+      city: ['', [validateByTrimming(requiredValidator)]],
+      zip: ['', [validateByTrimming(zipValidators)]],
       landmark: [''],
-      liscenceId: ['LI-ID3983KHS098SL', Validators.required],
-      otp: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(OTPRegex)]]
-    }, { validators: this.passwordMatchValidator })
+      liscenceId: ['LI-ID3983KHS098SL', [validateByTrimming(requiredValidator)]],
+      otp: [{ value: '', disabled: true }, [validateByTrimming(otpValidators)]]
+    }, { validators: passwordMatchValidator })
   }
-
-  passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    const password = control.get('password');
-    const repeatPassword = control.get('repeatPassword');
-
-    if ((password != null) && (repeatPassword != null) && password.value !== repeatPassword.value) {
-      repeatPassword.setErrors({ passwordMismatch: true });
-      return { passwordMismatch: true };
-    }
-    repeatPassword?.setErrors(null);
-    return null
-  };
 
   get f (): Record<string, AbstractControl> {
     return this.form.controls

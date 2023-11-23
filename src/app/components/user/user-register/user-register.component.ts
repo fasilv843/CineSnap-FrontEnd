@@ -2,24 +2,19 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit } from '@angular/core'
-import { FormBuilder, type FormGroup, Validators, type AbstractControl } from '@angular/forms';
+import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   MAX_OTP_LIMIT,
-  OTPRegex,
-  OTP_TIMER,
-  emailRegex,
-  nameRegex,
-  passwordMinLength,
-  userNameMaxLength,
-  userNameMinLength
+  OTP_TIMER
 } from 'src/app/shared/constants';
 import Swal from 'sweetalert2';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { saveUserOnStore } from 'src/app/states/user/user.actions';
 import { Store } from '@ngrx/store';
 import { formatTime } from 'src/app/helpers/timer';
-import { passwordMatchValidator } from 'src/app/helpers/validations';
+import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
+import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator } from 'src/app/shared/valiators';
 
 @Component({
   selector: 'app-user-register',
@@ -39,18 +34,18 @@ export class UserRegisterComponent implements OnInit {
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
     @Inject(Router) private readonly router: Router,
-    @Inject(FormBuilder) private readonly fromBuilder: FormBuilder,
+    @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
     @Inject(SocialAuthService) private readonly authService: SocialAuthService,
     @Inject(Store) private readonly store: Store
   ) {}
 
   ngOnInit(): void {
-    this.form = this.fromBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(userNameMinLength), Validators.maxLength(userNameMaxLength), Validators.pattern(nameRegex)]],
-      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
-      password: ['', [Validators.required, Validators.minLength(passwordMinLength)]],
-      repeatPassword: ['', Validators.required],
-      otp: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(OTPRegex)]]
+    this.form = this.formBuilder.group({
+      name: ['', [validateByTrimming(nameValidators)]],
+      email: ['', [validateByTrimming(emailValidators)]],
+      password: ['', [validateByTrimming(passwordValidators)]],
+      repeatPassword: ['', [validateByTrimming(requiredValidator)]],
+      otp: [{ value: '', disabled: true }, [validateByTrimming(otpValidators)]]
     }, {
       validators: passwordMatchValidator
     })

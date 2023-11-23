@@ -33,6 +33,7 @@
                     <div *ngIf="isSubmitted && f['password'].errors">
                       <div *ngIf="f['password'].errors['required']" style="color: red;">Password is required</div>
                       <div *ngIf="f['password'].errors['minlength']" style="color: red;">Password must contain {{ f['password'].errors['minlength'].requiredLength }} characters</div>
+                      <div *ngIf="f['password'].errors['pattern']" style="color: red;">Password must contain uppercase, lowercase and a number</div>
                     </div>
                 </div>
                   

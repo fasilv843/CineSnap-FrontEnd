@@ -1,4 +1,7 @@
-import { type AbstractControl, type ValidationErrors, type ValidatorFn } from '@angular/forms'
+import { FormBuilder, type AbstractControl, type ValidationErrors, type ValidatorFn } from '@angular/forms'
+
+// Create a shared FormBuilder instance
+const formBuilder = new FormBuilder()
 
 export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const password = control.get('password')
@@ -10,4 +13,16 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): V
   }
   repeatPassword?.setErrors(null)
   return null
+}
+
+export function validateByTrimming (validators: ValidatorFn[]): ValidatorFn {
+  return (control: AbstractControl) => {
+    const trimmedValue = control.value.trim()
+
+    // Create a new control with the trimmed value
+    const trimmedControl = formBuilder.control(trimmedValue)
+
+    // Apply the provided validators to the trimmed value
+    return validators.reduce<ValidationErrors | null>((error: ValidationErrors | null, validator) => error ?? validator(trimmedControl), null)
+  }
 }

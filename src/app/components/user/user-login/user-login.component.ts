@@ -2,12 +2,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { type FormGroup, FormBuilder, Validators, type AbstractControl } from '@angular/forms'
+import { type FormGroup, FormBuilder, type AbstractControl } from '@angular/forms'
 import Swal from 'sweetalert2';
-import { emailRegex, passwordMinLength } from 'src/app/shared/constants';
 import { Store } from '@ngrx/store';
 import { saveUserOnStore } from 'src/app/states/user/user.actions';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
+import { validateByTrimming } from 'src/app/helpers/validations';
+import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
 
 @Component({
   selector: 'app-user-login',
@@ -21,15 +22,15 @@ export class UserLoginComponent implements OnInit {
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
     @Inject(Router) private readonly router: Router,
-    @Inject(FormBuilder) private readonly fromBuilder: FormBuilder,
+    @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
     @Inject(SocialAuthService) private readonly authService: SocialAuthService,
     @Inject(Store) private readonly store: Store
   ) {}
 
   ngOnInit (): void {
-    this.form = this.fromBuilder.group({
-      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
-      password: ['', [Validators.required, Validators.minLength(passwordMinLength)]]
+    this.form = this.formBuilder.group({
+      email: ['', [validateByTrimming(emailValidators)]],
+      password: ['', [validateByTrimming(passwordValidators)]]
     })
 
     this.authService.authState.subscribe((user) => {

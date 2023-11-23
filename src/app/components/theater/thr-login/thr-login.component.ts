@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
-import { FormBuilder, Validators, type FormGroup, type AbstractControl } from '@angular/forms';
+import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { emailRegex, passwordMinLength } from 'src/app/shared/constants';
+import { validateByTrimming } from 'src/app/helpers/validations';
+
+import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -18,13 +20,13 @@ export class ThrLoginComponent {
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
     @Inject(Router) private readonly router: Router,
-    @Inject(FormBuilder) private readonly fromBuilder: FormBuilder
+    @Inject(FormBuilder) private readonly formBuilder: FormBuilder
   ) {}
 
   ngOnInit (): void {
-    this.form = this.fromBuilder.group({
-      email: ['', [Validators.required, Validators.pattern(emailRegex)]],
-      password: ['', [Validators.required, Validators.minLength(passwordMinLength)]]
+    this.form = this.formBuilder.group({
+      email: ['', [validateByTrimming(emailValidators)]],
+      password: ['', [validateByTrimming(passwordValidators)]]
     })
   }
 
