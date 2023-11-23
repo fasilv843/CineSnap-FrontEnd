@@ -57,7 +57,7 @@
                       <p>OTP will expire in {{ formattedTime }} minutes</p>
                     </ng-container>
                     <ng-template #otpExpired>
-                      <p>OTP Expired <span (click)="resendOTP()" class="text-blue-600 cursor-pointer">Resend</span></p>
+                      <p>OTP Expired <span *ngIf="showOTPResend" (click)="resendOTP()" class="text-blue-600 cursor-pointer">Resend</span></p>
                     </ng-template>
                   </div>
                   
@@ -65,7 +65,7 @@
                   
 
                 <div class="d-flex justify-content-center my-2 ">
-                  <button type="submit"
+                  <button type="submit" [disabled]="formattedTime === '00:00'"
                     class="btn btn-warning btn-block btn-lg gradient-custom-4 text-body">{{ showOtpField ? 'Verify' : 'Register' }}</button>
                 </div>
 

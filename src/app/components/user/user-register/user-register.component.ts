@@ -34,6 +34,7 @@ export class UserRegisterComponent implements OnInit {
   remainingTime = 0
   formattedTime: string = '03:00'
   otpResendCount: number = 0
+  showOTPResend: boolean = true
 
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
@@ -134,6 +135,9 @@ export class UserRegisterComponent implements OnInit {
           this.form.get('repeatPassword')?.disable()
           this.form.get('otp')?.enable();
           this.startTimer()
+          setTimeout(() => {
+            this.showOTPResend = false
+          }, 1000 * 60 * 10)
         },
         error: (err) => {
           void Swal.fire('Error', err.error.message, 'error')
