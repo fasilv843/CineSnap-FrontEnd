@@ -21,13 +21,28 @@ export class AdminCsMoviesComponent {
     this.findCineSnapMovies()
   }
 
-  deleteMovie (id: string): void {
-    this.movieService.deleteMovie(id).subscribe({
-      next: () => {
-        void Swal.fire('Success', 'CineSnap Database Updated', 'success')
-        window.location.reload()
-      },
-      error: (err) => void Swal.fire('Error', err.error.message, 'error')
+  deleteMovie (movieId: string, action: 'Add' | 'Delete'): void {
+    void Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to ${action} this movie!`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: `Yes, ${action}`,
+      cancelButtonText: 'No, cancel!'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.movieService.deleteMovie(movieId).subscribe({
+          next: () => {
+            const movieIndex = this.movies.findIndex(movie => movie._id === movieId)
+            this.movies = [
+              ...this.movies.slice(0, movieIndex),
+              { ...this.movies[movieIndex], isDeleted: !(this.movies[movieIndex].isDeleted ?? false) },
+              ...this.movies.slice(movieIndex + 1)
+            ]
+          },
+          error: (err) => void Swal.fire('Error', err.error.message, 'error')
+        })
+      }
     })
   }
 
