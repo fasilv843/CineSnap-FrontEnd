@@ -27,7 +27,7 @@ export class AdminUsersComponent implements OnInit {
     })
   }
 
-  onBlock (userId: string, action: string): void {
+  onBlock (userId: string, action: 'Block' | 'Unblock'): void {
     void Swal.fire({
       title: 'Are you sure?',
       text: `Do you want to ${action} this user!`,
@@ -39,7 +39,14 @@ export class AdminUsersComponent implements OnInit {
       if (result.isConfirmed) {
         this.userService.blockUser(userId).subscribe({
           next: () => {
-            window.location.reload()
+            const userIdx = this.users.findIndex(user => user._id === userId)
+            if (userIdx !== -1) {
+              this.users = [
+                ...this.users.slice(0, userIdx),
+                { ...this.users[userIdx], isBlocked: !this.users[userIdx].isBlocked },
+                ...this.users.slice(userIdx + 1)
+              ]
+            }
           },
           error: (err) => {
             void Swal.fire('Error', err.error.message, 'error')
