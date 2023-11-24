@@ -3,7 +3,7 @@
 import { Component, Inject, OnDestroy, type OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
-import { type ITheater } from 'src/app/models/theater';
+import { ITheaterRes } from 'src/app/models/theater';
 import { TheaterService } from 'src/app/services/theater.service';
 import { saveCoords } from 'src/app/states/coords/coords.actions';
 import { selectCoords } from 'src/app/states/coords/coords.selector';
@@ -15,8 +15,9 @@ import { selectCoords } from 'src/app/states/coords/coords.selector';
 })
 export class UserTheatersComponent implements OnInit, OnDestroy {
   coords$ = this.store.pipe(select(selectCoords))
-  theaters: ITheater[] = []
+  theaters: ITheaterRes[] = []
   unsubscribe$ = new Subject<void>()
+  // array: number[] = [1, 2, 3, 4, 5, 6]
 
   constructor (
     @Inject(Store) private readonly store: Store,

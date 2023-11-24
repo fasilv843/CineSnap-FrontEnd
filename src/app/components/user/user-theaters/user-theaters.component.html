@@ -1,37 +1,25 @@
 <app-user-nav></app-user-nav>
-<p>user-theaters works!</p>
-<div class="container mx-auto py-10">
-    <h2 class="text-3xl font-bold">Cinema Halls Near You</h2>
 
-    <div class="grid grid-cols-2 gap-5">
-      <div class="flex flex-col gap-5">
+<div class="container mx-auto pt-4 pb-10">
+  <h2 class="text-3xl font-bold my-3">Cinema Halls Near You</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-5">
+      <!-- Theaters -->
+      <div *ngFor="let thr of theaters" class="flex gap-5 border p-4 rounded-md">
         <div class="flex items-center gap-3">
-          <img src="https://placehold.it/150x150" alt="Sample Theater 1">
-          <div>
-            <h3>Sample Theater 1</h3>
-            <p>Near Something</p>
-          </div>
+            <img src="{{ thr.profilePic ?? 'https://placehold.it/150x150' }}" alt="{{ thr.name }} image" class="w-32 h-32 rounded-md">
         </div>
-        <div class="flex justify-between gap-3">
-          <a href="#" class="btn btn-primary">Go to Map</a>
-          <a href="#" class="btn btn-secondary">View Movies</a>
+        <div class="flex flex-col justify-between gap-3">
+            <div>
+                <h3 class="font-bold text-xl">{{ thr.name }}</h3>
+                <p class="text-gray-500 text-sm">{{ thr.address.landmark }} {{ thr.address.city }}</p>
+            </div>
+            <div class="flex justify-between">
+                <a target="_blank" href="http://maps.google.co.uk/maps?q={{ thr.coords.coordinates[1] }},{{ thr.coords.coordinates[0] }}" class="btn btn-primary">Direction</a>
+                <a href="#" class="btn btn-secondary">View</a>
+            </div>
         </div>
-      </div>
-
-      <div class="flex flex-col gap-5">
-        <div class="flex items-center gap-3">
-          <img src="https://placehold.it/150x150" alt="Sample Theater 2">
-          <div>
-            <h3>Sample Theater 2</h3>
-            <p>Near Something</p>
-          </div>
-        </div>
-        <div class="flex justify-between gap-3">
-          <a href="#" class="btn btn-primary">Go to Map</a>
-          <a href="#" class="btn btn-secondary">View Movies</a>
-        </div>
-      </div>
-
-    
     </div>
-  </div>    
+    
+  </div>
+</div>
