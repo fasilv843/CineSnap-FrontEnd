@@ -1,9 +1,9 @@
 import { createReducer, on } from '@ngrx/store'
-import { type IUser } from 'src/app/models/users'
+import { type IUserRes } from 'src/app/models/users'
 import { saveUserOnStore } from './user.actions'
 
 export interface userState {
-  userDetails: IUser | null
+  userDetails: IUserRes | null
 }
 
 export const initialUserState: userState = {

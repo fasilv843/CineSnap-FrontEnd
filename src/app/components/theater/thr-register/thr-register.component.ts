@@ -4,6 +4,7 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
+import { type IApiTheaterRes } from 'src/app/models/theater';
 import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators';
 import { environments } from 'src/environments/environment';
 import Swal from 'sweetalert2';
@@ -123,8 +124,9 @@ export class ThrRegisterComponent {
       console.log(theater);
       console.log(theater.otp);
       const otp = theater.otp
-      this.http.post('theater/validateOtp', { otp }).subscribe({
-        next: () => {
+      this.http.post<IApiTheaterRes>('theater/validateOtp', { otp }).subscribe({
+        next: (res: IApiTheaterRes) => {
+          localStorage.setItem('theaterToken', res.token)
           void this.router.navigate(['/theater/home'])
         },
         error: (err: Error) => {

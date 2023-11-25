@@ -3,7 +3,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IUser } from '../models/users';
+import { IApiUserRes, IApiUsersRes } from '../models/users';
 
 @Injectable({
   providedIn: 'root'
@@ -13,19 +13,19 @@ export class UserService {
     private readonly http: HttpClient
   ) { }
 
-  getAllUsers (): Observable<IUser[]> {
-    return this.http.get<IUser[]>('admin/users')
+  getAllUsers (): Observable<IApiUsersRes> {
+    return this.http.get<IApiUsersRes>('admin/users')
   }
 
-  blockUser (userId: string): Observable<IUser> {
-    return this.http.patch<IUser>(`admin/users/block/${userId}`, {})
+  blockUser (userId: string): Observable<IApiUserRes> {
+    return this.http.patch<IApiUserRes>(`admin/users/block/${userId}`, {})
   }
 
-  getBlockedUsers (): Observable<IUser[]> {
-    return this.http.get<IUser[]>('admin/users?blocked=true')
+  getBlockedUsers (): Observable<IApiUsersRes> {
+    return this.http.get<IApiUsersRes>('admin/users?blocked=true')
   }
 
-  getActiveUsers (): Observable<IUser[]> {
-    return this.http.get<IUser[]>('admin/users?blocked=false')
+  getActiveUsers (): Observable<IApiUsersRes> {
+    return this.http.get<IApiUsersRes>('admin/users?blocked=false')
   }
 }

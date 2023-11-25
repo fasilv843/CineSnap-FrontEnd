@@ -17,7 +17,6 @@ export class UserTheatersComponent implements OnInit, OnDestroy {
   coords$ = this.store.pipe(select(selectCoords))
   theaters: ITheaterRes[] = []
   unsubscribe$ = new Subject<void>()
-  // array: number[] = [1, 2, 3, 4, 5, 6]
 
   constructor (
     @Inject(Store) private readonly store: Store,

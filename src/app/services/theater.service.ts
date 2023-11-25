@@ -3,7 +3,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ITheater } from '../models/theater';
+import { IApiTheaterRes, IApiTheatersRes } from '../models/theater';
 
 @Injectable({
   providedIn: 'root'
@@ -13,24 +13,24 @@ export class TheaterService {
     private readonly http: HttpClient
   ) { }
 
-  getAllTheaters (): Observable<any> {
-    return this.http.get('admin/theaters')
+  getAllTheaters (): Observable<IApiTheatersRes> {
+    return this.http.get<IApiTheatersRes>('admin/theaters')
   }
 
-  blockTheater (theaterId: string): Observable<ITheater> {
-    return this.http.patch<ITheater>(`admin/theaters/block/${theaterId}`, {})
+  blockTheater (theaterId: string): Observable<IApiTheaterRes> {
+    return this.http.patch<IApiTheaterRes>(`admin/theaters/block/${theaterId}`, {})
   }
 
-  getBlockedTheaters (): Observable<ITheater[]> {
-    return this.http.get<ITheater[]>('admin/theaters?blocked=true')
+  getBlockedTheaters (): Observable<IApiTheatersRes> {
+    return this.http.get<IApiTheatersRes>('admin/theaters?blocked=true')
   }
 
-  getActiveTheaters (): Observable<ITheater[]> {
-    return this.http.get<ITheater[]>('admin/theaters?blocked=false')
+  getActiveTheaters (): Observable<IApiTheatersRes> {
+    return this.http.get<IApiTheatersRes>('admin/theaters?blocked=false')
   }
 
-  getNearestTheaters (lon: number, lat: number): Observable<ITheater[]> {
-    return this.http.get<ITheater[]>('user/theaters', {
+  getNearestTheaters (lon: number, lat: number): Observable<IApiTheatersRes> {
+    return this.http.get<IApiTheatersRes>('user/theaters', {
       params: {
         longitude: lon.toString(),
         latitude: lat.toString()

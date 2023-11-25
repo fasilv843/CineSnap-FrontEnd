@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
 import { Component } from '@angular/core';
-import { ITheater } from 'src/app/models/theater';
+import { IApiTheatersRes, ITheaterRes } from 'src/app/models/theater';
 import { TheaterService } from 'src/app/services/theater.service';
 import Swal from 'sweetalert2';
 
@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./admin-theaters.component.css']
 })
 export class AdminTheatersComponent {
-  theaters: ITheater[] = []
+  theaters: ITheaterRes[] = []
 
   constructor (
     private readonly theaterService: TheaterService
@@ -19,8 +19,8 @@ export class AdminTheatersComponent {
 
   ngOnInit (): void {
     this.theaterService.getAllTheaters().subscribe({
-      next: (res: ITheater[]) => {
-        this.theaters = res
+      next: (res: IApiTheatersRes) => {
+        this.theaters = res.data
       },
       error: (err) => {
         void Swal.fire('Error', err.message, 'error')
@@ -43,7 +43,7 @@ export class AdminTheatersComponent {
             const thrIndex = this.theaters.findIndex(thr => thr._id === theaterId)
             this.theaters = [
               ...this.theaters.slice(0, thrIndex),
-              { ...this.theaters[thrIndex], isBlocked: !(this.theaters[thrIndex].isBlocked ?? false) },
+              { ...this.theaters[thrIndex], isBlocked: !this.theaters[thrIndex].isBlocked },
               ...this.theaters.slice(thrIndex + 1)
             ]
           },

@@ -15,6 +15,7 @@ import { Store } from '@ngrx/store';
 import { formatTime } from 'src/app/helpers/timer';
 import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
 import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator } from 'src/app/shared/valiators';
+import { type IApiUserRes, type IUserSocialAuth } from 'src/app/models/users'
 
 @Component({
   selector: 'app-user-register',
@@ -51,15 +52,15 @@ export class UserRegisterComponent implements OnInit {
     })
 
     this.authService.authState.subscribe((user) => {
-      const userData = {
+      const userData: IUserSocialAuth = {
         name: user.name,
         email: user.email,
         profilePic: user.photoUrl
       }
 
       console.log(user, 'user from auth service');
-      this.http.post('user/auth/google', userData).subscribe({
-        next: (res: any) => {
+      this.http.post<IApiUserRes>('user/auth/google', userData).subscribe({
+        next: (res: IApiUserRes) => {
           localStorage.setItem('userToken', res.token)
           this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
           void this.router.navigate(['/'])
