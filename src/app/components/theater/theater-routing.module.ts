@@ -10,6 +10,8 @@ import { ThrMessagesComponent } from './thr-messages/thr-messages.component';
 import { ThrProfileComponent } from './thr-profile/thr-profile.component';
 import { ThrMoviesComponent } from './thr-movies/thr-movies.component';
 import { LoginGuard } from 'src/app/guards/login.guard';
+import { AddScreenComponent } from './add-screen/add-screen.component';
+import { EditScreenComponent } from './edit-screen/edit-screen.component';
 
 const routes: Routes = [
   {
@@ -38,7 +40,21 @@ const routes: Routes = [
   {
     path: 'screens',
     title: 'CineSnap | Theater Screens',
-    component: ThrScreensComponent
+    // component: ThrScreensComponent,
+    children: [
+      {
+        path: '',
+        component: ThrScreensComponent
+      },
+      {
+        path: 'add',
+        component: AddScreenComponent
+      },
+      {
+        path: 'edit/:screenId',
+        component: EditScreenComponent
+      }
+    ]
   },
   {
     path: 'messages',

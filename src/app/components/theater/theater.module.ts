@@ -13,6 +13,8 @@ import { ThrScreensComponent } from './thr-screens/thr-screens.component';
 import { ThrMessagesComponent } from './thr-messages/thr-messages.component';
 import { ThrMoviesComponent } from './thr-movies/thr-movies.component';
 import { ThrProfileComponent } from './thr-profile/thr-profile.component';
+import { AddScreenComponent } from './add-screen/add-screen.component';
+import { EditScreenComponent } from './edit-screen/edit-screen.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { ThrProfileComponent } from './thr-profile/thr-profile.component';
     ThrScreensComponent,
     ThrMessagesComponent,
     ThrMoviesComponent,
-    ThrProfileComponent
+    ThrProfileComponent,
+    AddScreenComponent,
+    EditScreenComponent
   ],
   imports: [
     CommonModule,
