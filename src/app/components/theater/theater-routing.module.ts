@@ -12,12 +12,14 @@ import { ThrMoviesComponent } from './thr-movies/thr-movies.component';
 import { LoginGuard } from 'src/app/guards/login.guard';
 import { AddScreenComponent } from './add-screen/add-screen.component';
 import { EditScreenComponent } from './edit-screen/edit-screen.component';
+import { AuthGuard } from 'src/app/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'home',
     title: 'CineSnap | Dashboard',
-    component: ThrHomeComponent
+    component: ThrHomeComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'login',
@@ -35,12 +37,13 @@ const routes: Routes = [
   {
     path: 'shows',
     title: 'CineSnap | Theater Shows',
-    component: ThrShowsComponent
+    component: ThrShowsComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'screens',
     title: 'CineSnap | Theater Screens',
-    // component: ThrScreensComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -59,17 +62,20 @@ const routes: Routes = [
   {
     path: 'messages',
     title: 'CineSnap | Theater Messages',
-    component: ThrMessagesComponent
+    component: ThrMessagesComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'movies',
     title: 'CineSnap | Theater Movies',
-    component: ThrMoviesComponent
+    component: ThrMoviesComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'profile',
     title: 'CineSnap | Theater Profile',
-    component: ThrProfileComponent
+    component: ThrProfileComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: '',
