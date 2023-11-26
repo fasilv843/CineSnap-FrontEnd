@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit } from '@angular/core';
 import { type AbstractControl, FormBuilder, type FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
 import { validateByTrimming } from 'src/app/helpers/validations';
 import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
 
@@ -44,10 +43,6 @@ export class AdminLoginComponent implements OnInit {
           console.log('navigating to home', res.token)
           localStorage.setItem('adminToken', res.token)
           void this.router.navigate(['/admin/home'])
-        },
-        error: (err) => {
-          console.log(err);
-          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     }

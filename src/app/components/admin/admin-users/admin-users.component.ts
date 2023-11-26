@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, type OnInit } from '@angular/core'
-import { type IUser } from 'src/app/models/users'
+import { IApiUsersRes, type IUserRes } from 'src/app/models/users'
 import { UserService } from 'src/app/services/user.service'
 import Swal from 'sweetalert2'
 
@@ -10,7 +10,7 @@ import Swal from 'sweetalert2'
   styleUrls: ['./admin-users.component.css']
 })
 export class AdminUsersComponent implements OnInit {
-  users: IUser[] = []
+  users: IUserRes[] = []
 
   constructor (
     private readonly userService: UserService
@@ -18,11 +18,8 @@ export class AdminUsersComponent implements OnInit {
 
   ngOnInit (): void {
     this.userService.getAllUsers().subscribe({
-      next: (res: IUser[]) => {
-        this.users = res
-      },
-      error: (err) => {
-        void Swal.fire('Error', err.message, 'error')
+      next: (res: any) => {
+        this.users = res.data
       }
     })
   }
@@ -43,13 +40,11 @@ export class AdminUsersComponent implements OnInit {
             if (userIdx !== -1) {
               this.users = [
                 ...this.users.slice(0, userIdx),
+                // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
                 { ...this.users[userIdx], isBlocked: !this.users[userIdx].isBlocked },
                 ...this.users.slice(userIdx + 1)
               ]
             }
-          },
-          error: (err) => {
-            void Swal.fire('Error', err.error.message, 'error')
           }
         })
       }

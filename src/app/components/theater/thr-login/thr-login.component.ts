@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { validateByTrimming } from 'src/app/helpers/validations';
 
 import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-thr-login',
@@ -45,9 +44,6 @@ export class ThrLoginComponent {
           console.log('navigating to home', res.token);
           localStorage.setItem('theaterToken', res.token)
           void this.router.navigate(['/theater/home'])
-        },
-        error: (err) => {
-          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     }

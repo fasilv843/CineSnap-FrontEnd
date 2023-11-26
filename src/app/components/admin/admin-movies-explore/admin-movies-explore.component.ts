@@ -34,8 +34,7 @@ export class AdminMoviesExploreComponent implements OnInit {
 
   addMovie (movie: Movie): void {
     this.movieService.saveMovie(movie).subscribe({
-      next: async () => await Swal.fire('Success', 'Movie Successfully Added', 'success'),
-      error: async (err: { error: { message: string | undefined } }) => await Swal.fire('Error', err.error.message, 'error')
+      next: async () => await Swal.fire('Success', 'Movie Successfully Added', 'success')
     })
   }
 
@@ -44,9 +43,6 @@ export class AdminMoviesExploreComponent implements OnInit {
       next: (res) => {
         this.movies = [...this.movies, ...res]
         this.page++
-      },
-      error: (err) => {
-        void Swal.fire('Error', err.error.message, 'error')
       }
     })
   }

@@ -39,8 +39,7 @@ export class AdminCsMoviesComponent {
               { ...this.movies[movieIndex], isDeleted: !(this.movies[movieIndex].isDeleted ?? false) },
               ...this.movies.slice(movieIndex + 1)
             ]
-          },
-          error: (err) => void Swal.fire('Error', err.error.message, 'error')
+          }
         })
       }
     })
@@ -51,9 +50,6 @@ export class AdminCsMoviesComponent {
       next: (res) => {
         console.log(res, 'res from findAllMovies')
         this.movies = res.movies
-      },
-      error: (err) => {
-        void Swal.fire('Error', err.error.message, 'error')
       }
     })
   }
@@ -68,9 +64,6 @@ export class AdminCsMoviesComponent {
         } else {
           this.movies = res.movies
         }
-      },
-      error: () => {
-        void Swal.fire('Sorry :<', 'Didn\'t find searched movie', 'info')
       }
     })
   }

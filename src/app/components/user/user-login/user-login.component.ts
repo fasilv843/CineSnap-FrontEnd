@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { type FormGroup, FormBuilder, type AbstractControl } from '@angular/forms'
-import Swal from 'sweetalert2';
 import { Store } from '@ngrx/store';
 import { saveUserOnStore } from 'src/app/states/user/user.actions';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
@@ -46,10 +45,6 @@ export class UserLoginComponent implements OnInit {
           localStorage.setItem('userToken', res.token)
           this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
           void this.router.navigate(['/'])
-        },
-        error: (err) => {
-          console.error(err);
-          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     });
@@ -71,10 +66,6 @@ export class UserLoginComponent implements OnInit {
           localStorage.setItem('userToken', res.token)
           this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
           void this.router.navigate(['/'])
-        },
-        error: (err) => {
-          console.log(err);
-          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     }

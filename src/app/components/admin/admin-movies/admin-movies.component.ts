@@ -44,8 +44,7 @@ export class AdminMoviesComponent implements OnInit {
 
   addMovie (movie: Movie): void {
     this.movieService.saveMovie(movie).subscribe({
-      next: async () => await Swal.fire('Success', 'Movie Successfully Added', 'success'),
-      error: async (err: { error: { message: string | undefined } }) => await Swal.fire('Error', err.error.message, 'error')
+      next: async () => await Swal.fire('Success', 'Movie Successfully Added', 'success')
     });
   }
 
@@ -54,9 +53,6 @@ export class AdminMoviesComponent implements OnInit {
     this.tmdbService.searchMovieByName(title).subscribe({
       next: (res) => {
         this.searchResultMovies = res
-      },
-      error: () => {
-        void Swal.fire('Sorry :<', 'Didn\'t find searched movie', 'info')
       }
     })
   }

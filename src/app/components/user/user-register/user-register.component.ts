@@ -15,6 +15,7 @@ import { Store } from '@ngrx/store';
 import { formatTime } from 'src/app/helpers/timer';
 import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
 import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator } from 'src/app/shared/valiators';
+import { type IApiUserRes, type IUserRes } from 'src/app/models/users';
 
 @Component({
   selector: 'app-user-register',
@@ -63,10 +64,6 @@ export class UserRegisterComponent implements OnInit {
           localStorage.setItem('userToken', res.token)
           this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
           void this.router.navigate(['/'])
-        },
-        error: (err) => {
-          console.error(err);
-          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     });
@@ -100,9 +97,6 @@ export class UserRegisterComponent implements OnInit {
           void Swal.fire('OTP sent', 'Check your mail for OTP', 'success');
           this.startTimer();
           this.otpResendCount++;
-        },
-        error: (err) => {
-          void Swal.fire('Error', err.error.message, 'error');
         }
       });
     } else {
@@ -133,9 +127,6 @@ export class UserRegisterComponent implements OnInit {
           setTimeout(() => {
             this.showOTPResend = false
           }, 1000 * 60 * 10)
-        },
-        error: (err) => {
-          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     } else if (!this.form.invalid && this.showOtpField) {
@@ -144,15 +135,12 @@ export class UserRegisterComponent implements OnInit {
       console.log(user);
       console.log(user.otp);
       const otp = user.otp
-      this.http.post('user/validateOtp', { otp }).subscribe({
-        next: (res: any) => {
+      this.http.post<IApiUserRes>('user/validateOtp', { otp }).subscribe({
+        next: (res: IApiUserRes) => {
           localStorage.setItem('userToken', res.token)
           localStorage.removeItem('userAuthToken')
-          this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+          this.store.dispatch(saveUserOnStore({ userDetails: res.data as IUserRes }))
           void this.router.navigate(['/'])
-        },
-        error: (err) => {
-          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     } else {

@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
 import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators';
 import { environments } from 'src/environments/environment';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-thr-register',
@@ -113,9 +112,6 @@ export class ThrRegisterComponent {
           this.form.get('repeatPassword')?.disable()
           this.form.get('landmark')?.disable()
           this.form.get('otp')?.enable()
-        },
-        error: (err) => {
-          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     } else if (!this.form.invalid && this.showOtpField) {
@@ -126,9 +122,6 @@ export class ThrRegisterComponent {
       this.http.post('theater/validateOtp', { otp }).subscribe({
         next: () => {
           void this.router.navigate(['/theater/home'])
-        },
-        error: (err: Error) => {
-          void Swal.fire('Error', err.message, 'error')
         }
       })
     } else {

@@ -3,7 +3,6 @@
 import { Component, type OnInit } from '@angular/core';
 import { type IMovie } from 'src/app/models/movie';
 import { MovieService } from 'src/app/services/movie.service';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-movies',
@@ -26,9 +25,6 @@ export class UserMoviesComponent implements OnInit {
       next: (res) => {
         console.log(res, 'res from findAllMovies');
         this.movies = res.movies
-      },
-      error: (err) => {
-        void Swal.fire('Error', err.error.message, 'error')
       }
     })
   }
