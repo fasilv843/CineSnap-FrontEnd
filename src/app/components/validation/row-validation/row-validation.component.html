@@ -1,0 +1,4 @@
+<div *ngIf="isSubmitted && rowControl && rowControl.errors">
+    <div *ngIf="rowControl.errors['required']" style="color: red;">Rows are required</div>
+    <div *ngIf="rowControl.errors['pattern']" style="color: red;">Row must be a single uppercase char</div>
+</div>

@@ -5,6 +5,9 @@ import { EmailValidationComponent } from 'src/app/components/validation/email-va
 import { PasswordValidationComponent } from 'src/app/components/validation/password-validation/password-validation.component'
 import { RepeatPassValidationComponent } from 'src/app/components/validation/repeat-pass-validation/repeat-pass-validation.component'
 import { OtpValidationComponent } from 'src/app/components/validation/otp-validation/otp-validation.component'
+import { ColValidationComponent } from 'src/app/components/validation/col-validation/col-validation.component'
+import { DefPriceValidationComponent } from 'src/app/components/validation/def-price-validation/def-price-validation.component'
+import { RowValidationComponent } from 'src/app/components/validation/row-validation/row-validation.component'
 
 @NgModule({
   declarations: [
@@ -12,7 +15,10 @@ import { OtpValidationComponent } from 'src/app/components/validation/otp-valida
     EmailValidationComponent,
     PasswordValidationComponent,
     RepeatPassValidationComponent,
-    OtpValidationComponent
+    OtpValidationComponent,
+    RowValidationComponent,
+    ColValidationComponent,
+    DefPriceValidationComponent
   ],
   imports: [
     CommonModule
@@ -22,7 +28,10 @@ import { OtpValidationComponent } from 'src/app/components/validation/otp-valida
     EmailValidationComponent,
     PasswordValidationComponent,
     RepeatPassValidationComponent,
-    OtpValidationComponent
+    OtpValidationComponent,
+    RowValidationComponent,
+    ColValidationComponent,
+    DefPriceValidationComponent
   ]
 })
 export class ValidationModule { }

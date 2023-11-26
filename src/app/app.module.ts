@@ -13,7 +13,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { CloudinaryModule } from '@cloudinary/ng';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { ErrorHandlerInterceptor } from './interceptors/error-handler.interceptor'
+import { ErrorHandlerInterceptor } from './interceptors/error-handler.interceptor';
 
 @NgModule({
   declarations: [

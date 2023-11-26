@@ -1,0 +1,6 @@
+<div *ngIf="isSubmitted && defPriceControl && defPriceControl.errors">
+    <div *ngIf="defPriceControl.errors['required']" style="color: red;">Default price is required</div>
+    <div *ngIf="defPriceControl.errors['pattern']" style="color: red;">Default price must be a number</div>
+    <div *ngIf="defPriceControl.errors['min']" style="color: red;">Default price must be at least {{ defPriceControl.errors['min'].min }}</div>
+    <div *ngIf="defPriceControl.errors['max']" style="color: red;">Default price must be at most {{ defPriceControl.errors['max'].max }}</div>
+</div>
