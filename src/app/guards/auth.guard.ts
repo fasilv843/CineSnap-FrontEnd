@@ -11,11 +11,7 @@ export class AuthGuard implements CanActivate {
   constructor (private readonly router: Router) {}
 
   canActivate (route: ActivatedRouteSnapshot): boolean {
-    console.log('auth guard working')
-
     const role = route.parent?.routeConfig?.path
-    console.log(role, 'role')
-
     const token = localStorage.getItem(`${role}Token`)
 
     if (token === null || isTokenExpired(token)) {

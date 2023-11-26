@@ -10,7 +10,6 @@ import { environments } from 'src/environments/environment'
 
 @Injectable()
 export class TransformUrlInterceptor implements HttpInterceptor {
-  // constructor () {}
   intercept (request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if (request.headers.has('Bypass-Interceptor')) {
       const bypassedRequest = request.clone({

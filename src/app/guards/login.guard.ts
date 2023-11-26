@@ -11,8 +11,6 @@ export class LoginGuard implements CanActivate {
 
   canActivate (route: ActivatedRouteSnapshot): boolean {
     const role = route.parent?.routeConfig?.path
-    console.log(role, 'role in login gurad')
-
     const token = localStorage.getItem(`${role}Token`)
 
     if (token === null || isTokenExpired(token)) {
