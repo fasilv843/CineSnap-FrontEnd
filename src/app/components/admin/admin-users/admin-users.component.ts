@@ -18,8 +18,8 @@ export class AdminUsersComponent implements OnInit {
 
   ngOnInit (): void {
     this.userService.getAllUsers().subscribe({
-      next: (res: IApiUsersRes) => {
-        this.users = res.data
+      next: (res: IUser[]) => {
+        this.users = res
       },
       error: (err) => {
         void Swal.fire('Error', err.message, 'error')
@@ -43,13 +43,11 @@ export class AdminUsersComponent implements OnInit {
             if (userIdx !== -1) {
               this.users = [
                 ...this.users.slice(0, userIdx),
+                // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
                 { ...this.users[userIdx], isBlocked: !this.users[userIdx].isBlocked },
                 ...this.users.slice(userIdx + 1)
               ]
             }
-          },
-          error: (err) => {
-            void Swal.fire('Error', err.error.message, 'error')
           }
         })
       }

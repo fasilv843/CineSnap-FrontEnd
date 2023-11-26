@@ -9,7 +9,6 @@ import { type IApiTheaterRes } from 'src/app/models/theater';
 
 import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
 import { saveTheaterOnStore } from 'src/app/states/theater/theater.action';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-thr-login',
@@ -50,9 +49,6 @@ export class ThrLoginComponent {
           this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
           localStorage.setItem('theaterToken', res.token)
           void this.router.navigate(['/theater/home'])
-        },
-        error: (err) => {
-          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     }

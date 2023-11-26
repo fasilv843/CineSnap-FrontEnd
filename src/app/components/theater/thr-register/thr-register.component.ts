@@ -9,7 +9,6 @@ import { type IApiTheaterRes } from 'src/app/models/theater';
 import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators';
 import { saveTheaterOnStore } from 'src/app/states/theater/theater.action';
 import { environments } from 'src/environments/environment';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-thr-register',
@@ -117,9 +116,6 @@ export class ThrRegisterComponent {
           this.form.get('repeatPassword')?.disable()
           this.form.get('landmark')?.disable()
           this.form.get('otp')?.enable()
-        },
-        error: (err) => {
-          void Swal.fire('Error', err.error.message, 'error')
         }
       })
     } else if (!this.form.invalid && this.showOtpField) {
@@ -132,9 +128,6 @@ export class ThrRegisterComponent {
           this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
           localStorage.setItem('theaterToken', res.token)
           void this.router.navigate(['/theater/home'])
-        },
-        error: (err: Error) => {
-          void Swal.fire('Error', err.message, 'error')
         }
       })
     } else {

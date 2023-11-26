@@ -13,6 +13,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { CloudinaryModule } from '@cloudinary/ng';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { ErrorHandlerInterceptor } from './interceptors/error-handler.interceptor'
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: TransformUrlInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: TransformUrlInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorHandlerInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

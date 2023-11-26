@@ -19,11 +19,8 @@ export class AdminTheatersComponent {
 
   ngOnInit (): void {
     this.theaterService.getAllTheaters().subscribe({
-      next: (res: IApiTheatersRes) => {
+      next: (res: any) => {
         this.theaters = res.data
-      },
-      error: (err) => {
-        void Swal.fire('Error', err.message, 'error')
       }
     })
   }
@@ -43,12 +40,10 @@ export class AdminTheatersComponent {
             const thrIndex = this.theaters.findIndex(thr => thr._id === theaterId)
             this.theaters = [
               ...this.theaters.slice(0, thrIndex),
-              { ...this.theaters[thrIndex], isBlocked: !this.theaters[thrIndex].isBlocked },
+              // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+              { ...this.theaters[thrIndex], isBlocked: !(this.theaters[thrIndex].isBlocked ?? false) },
               ...this.theaters.slice(thrIndex + 1)
             ]
-          },
-          error: (err) => {
-            void Swal.fire('Error', err.error.message, 'error')
           }
         })
       }
