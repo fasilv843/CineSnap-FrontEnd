@@ -3,9 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
 import { type IApiTheaterRes } from 'src/app/models/theater';
 import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators';
+import { saveTheaterOnStore } from 'src/app/states/theater/theater.action';
 import { environments } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
@@ -30,7 +32,8 @@ export class ThrRegisterComponent {
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
     @Inject(Router) private readonly router: Router,
-    @Inject(FormBuilder) private readonly fromBuilder: FormBuilder
+    @Inject(FormBuilder) private readonly fromBuilder: FormBuilder,
+    @Inject(Store) private readonly store: Store
   ) {}
 
   ngOnInit (): void {
@@ -126,6 +129,7 @@ export class ThrRegisterComponent {
       const otp = theater.otp
       this.http.post<IApiTheaterRes>('theater/validateOtp', { otp }).subscribe({
         next: (res: IApiTheaterRes) => {
+          this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
           localStorage.setItem('theaterToken', res.token)
           void this.router.navigate(['/theater/home'])
         },

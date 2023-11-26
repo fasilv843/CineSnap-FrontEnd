@@ -25,17 +25,30 @@
                 <a class="hover:text-amber-500" routerLink="/theater/movies">Movies</a>
             </li>
           </ul>
+
           <!-- Header Icons -->
-          <div class="hidden md:flex items-center space-x-5">
-            <a class="flex items-center hover:text-amber-500" routerLink="/theater/profile">
+        <div class="hidden sm:flex items-center space-x-5">
+
+          <div *ngIf="theaterDetails$ | async as theater" class="flex items-center" routerLink="/theater/profile">
+            <div class="rounded-full h-8 w-8 border-2 border-amber-300 hover:border-amber-500 bg-black text-amber-300 hover:text-amber-500 text-center align-middle">
+              <span class="flex items-center justify-center h-full">
+                {{ theater.name | slice:0:1 | uppercase }}
+              </span>
+            </div>
+          </div>
+          
+          <!-- <ng-template #notLoggedIn >
+            <a  class="flex items-center hover:text-amber-500" routerLink="/theater/profile">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </a>
-          </div>
+          </ng-template> -->
         </div>
+
+
         <!-- Responsive navbar -->
         <div class="flex items-end md:hidden">
           <a class="hover:text-amber-500 mx-2 self-center" routerLink="/theater/profile">
@@ -51,6 +64,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </a>
+        </div>
         </div>
       </nav>
     </section>

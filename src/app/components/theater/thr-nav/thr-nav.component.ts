@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/semi */
 import { Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import { selectTheaterDetails } from 'src/app/states/theater/theater.selector';
 
 @Component({
   selector: 'app-thr-nav',
@@ -9,9 +11,11 @@ import { Router } from '@angular/router';
 })
 export class ThrNavComponent {
   showSidebar = false
+  theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
 
   constructor (
-    @Inject(Router) private readonly router: Router
+    @Inject(Router) private readonly router: Router,
+    @Inject(Store) private readonly store: Store
   ) {}
 
   toggleSideBar (): void {
