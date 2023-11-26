@@ -14,6 +14,7 @@ import { AdminMoviesComponent } from './admin-movies/admin-movies.component';
 import { AdminCsMoviesComponent } from './admin-cs-movies/admin-cs-movies.component';
 import { AdminMoviesSearchComponent } from './admin-movies-search/admin-movies-search.component';
 import { AdminMoviesExploreComponent } from './admin-movies-explore/admin-movies-explore.component';
+import { ValidationModule } from 'src/app/modules/validation/validation.module';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { AdminMoviesExploreComponent } from './admin-movies-explore/admin-movies
     CommonModule,
     AdminRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ValidationModule
   ]
 })
 export class AdminModule { }

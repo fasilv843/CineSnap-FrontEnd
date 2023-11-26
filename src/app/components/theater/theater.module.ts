@@ -13,6 +13,7 @@ import { ThrScreensComponent } from './thr-screens/thr-screens.component';
 import { ThrMessagesComponent } from './thr-messages/thr-messages.component';
 import { ThrMoviesComponent } from './thr-movies/thr-movies.component';
 import { ThrProfileComponent } from './thr-profile/thr-profile.component';
+import { ValidationModule } from 'src/app/modules/validation/validation.module';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ThrProfileComponent } from './thr-profile/thr-profile.component';
     CommonModule,
     TheaterRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ValidationModule
   ]
 })
 export class TheaterModule { }

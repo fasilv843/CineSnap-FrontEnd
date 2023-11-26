@@ -4,13 +4,15 @@ import { NameValidationComponent } from 'src/app/components/validation/name-vali
 import { EmailValidationComponent } from 'src/app/components/validation/email-validation/email-validation.component'
 import { PasswordValidationComponent } from 'src/app/components/validation/password-validation/password-validation.component'
 import { RepeatPassValidationComponent } from 'src/app/components/validation/repeat-pass-validation/repeat-pass-validation.component'
+import { OtpValidationComponent } from 'src/app/components/validation/otp-validation/otp-validation.component'
 
 @NgModule({
   declarations: [
     NameValidationComponent,
     EmailValidationComponent,
     PasswordValidationComponent,
-    RepeatPassValidationComponent
+    RepeatPassValidationComponent,
+    OtpValidationComponent
   ],
   imports: [
     CommonModule
@@ -19,7 +21,8 @@ import { RepeatPassValidationComponent } from 'src/app/components/validation/rep
     NameValidationComponent,
     EmailValidationComponent,
     PasswordValidationComponent,
-    RepeatPassValidationComponent
+    RepeatPassValidationComponent,
+    OtpValidationComponent
   ]
 })
 export class ValidationModule { }

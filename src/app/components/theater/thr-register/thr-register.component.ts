@@ -38,7 +38,7 @@ export class ThrRegisterComponent {
       name: ['', [validateByTrimming(nameValidators)]],
       email: ['', [validateByTrimming(emailValidators)]],
       password: ['', [validateByTrimming(passwordValidators)]],
-      repeatPassword: ['', [validateByTrimming(requiredValidator)]],
+      repeatPassword: [''],
       country: ['', [validateByTrimming(requiredValidator)]],
       state: ['', [validateByTrimming(requiredValidator)]],
       district: ['', [validateByTrimming(requiredValidator)]],

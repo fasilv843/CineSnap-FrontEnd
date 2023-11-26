@@ -14,7 +14,7 @@ import { saveUserOnStore } from 'src/app/states/user/user.actions';
 import { Store } from '@ngrx/store';
 import { formatTime } from 'src/app/helpers/timer';
 import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
-import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator } from 'src/app/shared/valiators';
+import { emailValidators, nameValidators, otpValidators, passwordValidators } from 'src/app/shared/valiators';
 import { type IApiUserRes, type IUserSocialAuth } from 'src/app/models/users'
 
 @Component({
@@ -26,12 +26,11 @@ export class UserRegisterComponent implements OnInit {
   form!: FormGroup;
   isSubmitted = false
   showOtpField = false
-  loggedIn: boolean = false;
   remainingTime = 0
   formattedTime: string = '03:00'
   otpResendCount: number = 0
   showOTPResend: boolean = true
-  // l = this.form.hasError('passwordMismatch')
+
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
     @Inject(Router) private readonly router: Router,
@@ -45,7 +44,7 @@ export class UserRegisterComponent implements OnInit {
       name: ['', [validateByTrimming(nameValidators)]],
       email: ['', [validateByTrimming(emailValidators)]],
       password: ['', [validateByTrimming(passwordValidators)]],
-      repeatPassword: ['', [validateByTrimming(requiredValidator)]],
+      repeatPassword: [''],
       otp: [{ value: '', disabled: true }, [validateByTrimming(otpValidators)]]
     }, {
       validators: passwordMatchValidator
