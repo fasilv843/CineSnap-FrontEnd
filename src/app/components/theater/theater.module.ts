@@ -16,6 +16,8 @@ import { ThrProfileComponent } from './thr-profile/thr-profile.component';
 import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { StoreModule } from '@ngrx/store';
 import { theaterReducer } from 'src/app/states/theater/theater.reducer';
+import { AddScreenComponent } from './add-screen/add-screen.component';
+import { EditScreenComponent } from './edit-screen/edit-screen.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { theaterReducer } from 'src/app/states/theater/theater.reducer';
     ThrScreensComponent,
     ThrMessagesComponent,
     ThrMoviesComponent,
-    ThrProfileComponent
+    ThrProfileComponent,
+    AddScreenComponent,
+    EditScreenComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,44 @@
+<app-thr-nav></app-thr-nav>
+
+<div class="py-10 w-full md:w-screen">
+    <div class="max-w-2xl mx-auto shadow-xl rounded-lg text-gray-900 border-2 border-gray-300 bg-white">
+      <div class="p-4 md:p-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Add New Screen</h2>
+  
+        <form (submit)="saveScreen()">
+          <ng-container class="flex flex-col">
+            <div class="mb-3">
+              <label for="screenName" class="font-semibold text-gray-700 my-1">Screen Name:</label>
+              <input id="screenName" name="screenName" class="border-b border-gray-500 focus:outline-none mt-1 w-full" />
+            </div>
+  
+            <div class="mb-3 flex flex-col sm:flex-row">
+              <div class="mb-2 sm:mr-2">
+                <label for="rows" class="font-semibold text-gray-700">Rows:</label>
+                <input id="rows" name="rows" type="text" class="border-b border-gray-500 focus:outline-none mt-1 w-full" />
+              </div>
+              <div class="mb-2 sm:ml-2">
+                <label for="columns" class="font-semibold text-gray-700">Columns:</label>
+                <input id="columns" name="columns" type="text" class="border-b border-gray-500 focus:outline-none mt-1 w-full" />
+              </div>
+            </div>
+  
+            <div class="mb-3">
+              <label for="defaultPrice" class="font-semibold text-gray-700 my-1">Default Price:</label>
+              <input id="defaultPrice" name="defaultPrice" class="border-b border-gray-500 focus:outline-none mt-1 w-full" />
+            </div>
+          </ng-container>
+  
+          <hr class="border-t mx-0 mt-2">
+  
+          <div class="flex justify-around items-center p-4 space-x-4">
+            <button routerLink="/theater/screens" class="w-full md:w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">Cancel</button>
+            <button type="submit" class="w-full md:w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">Add</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  
+  
