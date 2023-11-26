@@ -12,39 +12,22 @@
 
                 <div class="form-outline mb-3 ">
                   <input type="text"  formControlName="name" id="form3Example1cg" class="form-control form-control-lg" placeholder="Enter Name" />
-                  <div *ngIf="isSubmitted && f['name'].errors">
-                    <div *ngIf="f['name'].errors['required']" style="color: red;">Name is required</div>
-                    <div *ngIf="f['name'].errors['minlength']" style="color: red;">Name must contain {{ f['name'].errors['minlength'].requiredLength }} characters</div>
-                    <div *ngIf="f['name'].errors['maxlength']" style="color: red;">Name max contain {{ f['name'].errors['maxlength'].requiredLength }} characters</div>
-                    <div *ngIf="f['name'].errors['pattern'] && !f['name'].errors['minlength'] && !f['name'].errors['maxlength']" style="color: red;">Name only contains alphabets</div>
-                  </div>
+                  <app-name-validation  [nameControl]="form.get('name')" [isSubmitted]="isSubmitted"></app-name-validation>
                 </div>
 
                 <div class="form-outline mb-3 ">
                   <input type="email"  formControlName="email" id="form3Example3cg" class="form-control form-control-lg" placeholder="Enter Email" />
-                  <div *ngIf="isSubmitted && f['email'].errors">
-                    <div *ngIf="f['email'].errors['required']" style="color: red;">Email is required</div>
-                    <div *ngIf="f['email'].errors['pattern']" style="color: red;">Invalid email format</div>
-                  </div>
+                  <app-email-validation [emailControl]="form.get('email')" [isSubmitted]="isSubmitted"></app-email-validation>
                 </div>
 
                 <div *ngIf="!showOtpField" class="form-outline mb-3 ">
                     <input type="password" formControlName="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Enter Password" />
-                    <div *ngIf="isSubmitted && f['password'].errors">
-                      <div *ngIf="f['password'].errors['required']" style="color: red;">Password is required</div>
-                      <div *ngIf="f['password'].errors['minlength']" style="color: red;">Password must contain {{ f['password'].errors['minlength'].requiredLength }} characters</div>
-                      <div *ngIf="f['password'].errors['pattern']" style="color: red;">Password must contain uppercase, lowercase and a number</div>
-                    </div>
+                    <app-password-validation [passwordControl]="form.get('password')" [isSubmitted]="isSubmitted"></app-password-validation>
                 </div>
                   
                 <div *ngIf="!showOtpField" class="form-outline mb-3 ">
                     <input type="password" formControlName="repeatPassword" id="form3Example4cdg" class="form-control form-control-lg" placeholder="Repeat Password" />
-                    <div *ngIf="form.hasError('passwordMismatch') && (form.get('repeatPassword')?.dirty || form.get('repeatPassword')?.touched)" style="color: red;">
-                      Passwords do not match.
-                    </div>
-                    <div *ngIf="isSubmitted && f['repeatPassword'].errors">
-                      <div *ngIf="f['repeatPassword'].errors['required']" style="color: red;">Password is required</div>
-                    </div>
+                    <app-repeat-pass-validation [repeatPassControl]="form.get('repeatPassword')" [isSubmitted]="isSubmitted"></app-repeat-pass-validation>
                 </div>
 
                 <div *ngIf="showOtpField">

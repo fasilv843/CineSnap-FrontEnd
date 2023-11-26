@@ -7,9 +7,18 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): V
   const password = control.get('password')
   const repeatPassword = control.get('repeatPassword')
 
-  if ((password != null) && (repeatPassword != null) && password.value !== repeatPassword.value) {
-    repeatPassword.setErrors({ passwordMismatch: true })
-    return { passwordMismatch: true }
+  console.log(repeatPassword, 'repeat password from password match validator')
+
+  if ((password != null) && (repeatPassword != null)) {
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    if (repeatPassword.value === '') {
+      repeatPassword.setErrors({ required: true })
+      return { required: true }
+    }
+    if (password.value !== repeatPassword.value) {
+      repeatPassword.setErrors({ passwordMismatch: true })
+      return { passwordMismatch: true }
+    }
   }
   repeatPassword?.setErrors(null)
   return null

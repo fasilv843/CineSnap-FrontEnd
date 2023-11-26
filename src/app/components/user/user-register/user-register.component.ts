@@ -31,7 +31,7 @@ export class UserRegisterComponent implements OnInit {
   formattedTime: string = '03:00'
   otpResendCount: number = 0
   showOTPResend: boolean = true
-
+  // l = this.form.hasError('passwordMismatch')
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient,
     @Inject(Router) private readonly router: Router,
@@ -118,7 +118,7 @@ export class UserRegisterComponent implements OnInit {
 
   onSubmit (): void {
     this.isSubmitted = true
-    console.log(this.form.invalid)
+    console.log(this.form.invalid, this.form.get('repeatPassword'), this.form.get('name'))
     if (!this.form.invalid && !this.showOtpField) {
       const user = this.form.getRawValue()
       this.http.post('user/register', user).subscribe({

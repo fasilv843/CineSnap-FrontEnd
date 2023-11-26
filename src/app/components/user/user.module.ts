@@ -17,6 +17,7 @@ import { SocialLoginModule, GoogleLoginProvider } from '@abacritt/angularx-socia
 
 import { environments } from 'src/environments/environment';
 import { coordsReducer } from 'src/app/states/coords/coords.reducer';
+import { ValidationModule } from 'src/app/modules/validation/validation.module';
 // const socialAuthServiceConfig: SocialAuthServiceConfig = {
 //   autoLogin: false,
 //   providers: [
@@ -48,7 +49,8 @@ import { coordsReducer } from 'src/app/states/coords/coords.reducer';
     ReactiveFormsModule,
     StoreModule.forFeature('user', userReducer),
     StoreModule.forFeature('coords', coordsReducer),
-    SocialLoginModule
+    SocialLoginModule,
+    ValidationModule
   ],
   providers: [
     {

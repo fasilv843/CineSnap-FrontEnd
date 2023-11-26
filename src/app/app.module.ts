@@ -9,12 +9,10 @@ import { TransformUrlInterceptor } from './interceptors/transform-url.intercepto
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-// import { MaterialModule } from './module/material/material.module';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
 import { CloudinaryModule } from '@cloudinary/ng';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-// import { UserModule } from './components/user/user.module'
 
 @NgModule({
   declarations: [
@@ -28,9 +26,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     ReactiveFormsModule,
     FormsModule,
     BrowserAnimationsModule,
-    // MaterialModule,
     CloudinaryModule,
-    // UserModule,
     StoreModule.forRoot({}, {}),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],

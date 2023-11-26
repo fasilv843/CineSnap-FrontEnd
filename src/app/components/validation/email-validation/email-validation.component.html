@@ -1,0 +1,5 @@
+
+<div *ngIf="isSubmitted && emailControl && emailControl.errors">
+    <div *ngIf="emailControl.errors['required']" style="color: red;">Email is required</div>
+    <div *ngIf="emailControl.errors['pattern']" style="color: red;">Invalid email format</div>
+</div>
