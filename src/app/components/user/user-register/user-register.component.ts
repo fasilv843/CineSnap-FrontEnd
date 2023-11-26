@@ -61,7 +61,7 @@ export class UserRegisterComponent implements OnInit {
       this.http.post<IApiUserRes>('user/auth/google', userData).subscribe({
         next: (res: IApiUserRes) => {
           localStorage.setItem('userToken', res.token)
-          this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+          this.store.dispatch(saveUserOnStore({ userDetails: res.data as IUserRes }))
           void this.router.navigate(['/'])
         }
       })

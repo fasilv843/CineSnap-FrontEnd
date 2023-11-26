@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
 import { Component } from '@angular/core';
-import { IApiTheatersRes, ITheaterRes } from 'src/app/models/theater';
+import { ITheaterRes } from 'src/app/models/theater';
 import { TheaterService } from 'src/app/services/theater.service';
 import Swal from 'sweetalert2';
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, type OnInit } from '@angular/core'
-import { IApiUsersRes, type IUserRes } from 'src/app/models/users'
+import { type IUserRes } from 'src/app/models/users'
 import { UserService } from 'src/app/services/user.service'
 import Swal from 'sweetalert2'
 
@@ -18,8 +18,8 @@ export class AdminUsersComponent implements OnInit {
 
   ngOnInit (): void {
     this.userService.getAllUsers().subscribe({
-      next: (res: IUser[]) => {
-        this.users = res
+      next: (res: any) => {
+        this.users = res.data
       },
       error: (err) => {
         void Swal.fire('Error', err.message, 'error')
