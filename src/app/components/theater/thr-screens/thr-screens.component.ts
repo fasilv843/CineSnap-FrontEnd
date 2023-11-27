@@ -50,6 +50,7 @@ export class ThrScreensComponent implements OnInit {
         this.screenService.deleteScreen(screenId).subscribe({
           next: (res) => {
             void Swal.fire('Deleted', 'Screen Successfully Deleted', 'success')
+            this.screens = this.screens.filter(s => s._id !== screenId)
           }
         })
       }
