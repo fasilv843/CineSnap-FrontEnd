@@ -1,8 +1,10 @@
 import { Component, Inject, type OnInit } from '@angular/core'
+import { Router } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { type IApiScreensRes, type IScreen } from 'src/app/models/screens'
 import { ScreenService } from 'src/app/services/screen.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-thr-screens',
@@ -16,7 +18,8 @@ export class ThrScreensComponent implements OnInit {
 
   constructor (
     @Inject(ScreenService) private readonly screenService: ScreenService,
-    @Inject(Store) private readonly store: Store
+    @Inject(Store) private readonly store: Store,
+    @Inject(Router) private readonly router: Router
   ) {}
 
   ngOnInit (): void {
@@ -34,11 +37,26 @@ export class ThrScreensComponent implements OnInit {
     })
   }
 
-  deleteScreen (): void {
-    console.log('delete screen')
+  deleteScreen (screenId: string): void {
+    void Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to Delete this screen!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Delete',
+      cancelButtonText: 'No, cancel!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.screenService.deleteScreen(screenId).subscribe({
+          next: (res) => {
+            void Swal.fire('Deleted', 'Screen Successfully Deleted', 'success')
+          }
+        })
+      }
+    })
   }
 
-  editScreen (): void {
-    console.log(' edit screen')
+  editScreen (screenId: string): void {
+    void this.router.navigate(['/theater/screens/edit', screenId])
   }
 }

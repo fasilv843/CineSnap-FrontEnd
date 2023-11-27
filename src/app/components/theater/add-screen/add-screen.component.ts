@@ -5,7 +5,7 @@ import { Store, select } from '@ngrx/store'
 import { validateByTrimming } from 'src/app/helpers/validations'
 import { type IScreenRequirements } from 'src/app/models/screens'
 import { ScreenService } from 'src/app/services/screen.service'
-import { colValidators, defaultPriceValidators, nameValidators, rowValidators } from 'src/app/shared/valiators'
+import { colValidators, defaultPriceValidators, rowValidators, screenNameValidators } from 'src/app/shared/valiators'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 
 @Component({
@@ -28,7 +28,7 @@ export class AddScreenComponent implements OnInit {
 
   ngOnInit (): void {
     this.form = this.formBuilder.group({
-      name: ['', [validateByTrimming(nameValidators)]],
+      name: ['', [validateByTrimming(screenNameValidators)]],
       rows: ['', [validateByTrimming(rowValidators)]],
       cols: ['', [validateByTrimming(colValidators)]],
       defaultPrice: ['', [validateByTrimming(defaultPriceValidators)]]

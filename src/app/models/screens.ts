@@ -3,6 +3,8 @@ export interface IScreen {
   theaterId: string
   name: string
   defaultPrice: number
+  row: string
+  col: number
   seatsCount: number
   seats: Map<string, number[]>
 }

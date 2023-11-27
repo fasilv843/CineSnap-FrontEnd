@@ -8,6 +8,7 @@ import { OtpValidationComponent } from 'src/app/components/validation/otp-valida
 import { ColValidationComponent } from 'src/app/components/validation/col-validation/col-validation.component'
 import { DefPriceValidationComponent } from 'src/app/components/validation/def-price-validation/def-price-validation.component'
 import { RowValidationComponent } from 'src/app/components/validation/row-validation/row-validation.component'
+import { ScreenNameValidationComponent } from 'src/app/components/validation/screen-name-validation/screen-name-validation.component'
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { RowValidationComponent } from 'src/app/components/validation/row-valida
     OtpValidationComponent,
     RowValidationComponent,
     ColValidationComponent,
-    DefPriceValidationComponent
+    DefPriceValidationComponent,
+    ScreenNameValidationComponent
   ],
   imports: [
     CommonModule
@@ -31,7 +33,8 @@ import { RowValidationComponent } from 'src/app/components/validation/row-valida
     OtpValidationComponent,
     RowValidationComponent,
     ColValidationComponent,
-    DefPriceValidationComponent
+    DefPriceValidationComponent,
+    ScreenNameValidationComponent
   ]
 })
 export class ValidationModule { }

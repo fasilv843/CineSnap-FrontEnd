@@ -1,0 +1,6 @@
+<div *ngIf="isSubmitted && nameControl &&  nameControl.errors">
+    <div *ngIf="nameControl.errors['required']" style="color: red;">Screen Name is required</div>
+    <div *ngIf="nameControl.errors['minlength']" style="color: red;">Name must contain {{ nameControl.errors['minlength'].requiredLength }} characters</div>
+    <div *ngIf="nameControl.errors['maxlength']" style="color: red;">Name max contain {{ nameControl.errors['maxlength'].requiredLength }} characters</div>
+    <div *ngIf="nameControl.errors['pattern'] && !nameControl.errors['minlength'] && !nameControl.errors['maxlength']" style="color: red;">Name only contains alphabets and numbers</div>
+</div>

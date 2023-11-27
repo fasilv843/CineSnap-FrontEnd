@@ -1,5 +1,5 @@
 import { Validators } from '@angular/forms'
-import { userNameMinLength, userNameMaxLength, nameRegex, emailRegex, OTPRegex, passwordMinLength, passwordRegex, ZipRegex, MAX_COLS, charRegex, numRegex, MAX_TICKET_PRICE, MIN_COLS, MIN_TICKET_PRICE } from './constants'
+import { userNameMinLength, userNameMaxLength, nameRegex, emailRegex, OTPRegex, passwordMinLength, passwordRegex, ZipRegex, MAX_COLS, charRegex, numRegex, MAX_TICKET_PRICE, MIN_COLS, MIN_TICKET_PRICE, screenNameMinLength, screenNameMaxLength, screenNameRegex } from './constants'
 
 export const nameValidators = [
   Validators.required,
@@ -27,6 +27,13 @@ export const otpValidators = [
 export const zipValidators = [
   Validators.required,
   Validators.pattern(ZipRegex)
+]
+
+export const screenNameValidators = [
+  Validators.required,
+  Validators.minLength(screenNameMinLength),
+  Validators.maxLength(screenNameMaxLength),
+  Validators.pattern(screenNameRegex)
 ]
 
 export const rowValidators = [
