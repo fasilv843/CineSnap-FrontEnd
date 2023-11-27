@@ -8,6 +8,7 @@ export interface IMovie {
     backdrop_path?: string
     overview: string
     language: string
+    duration: IDuration
     tmdbId: number
     release_date: Date
     genre_ids: number[]
@@ -46,4 +47,9 @@ interface MovieReview {
 export interface CSMovieRes {
     message: string
     movies: IMovie[]
+}
+
+export interface IDuration {
+    hours: number,
+    minutes: number
 }
