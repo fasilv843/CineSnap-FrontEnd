@@ -1,25 +1,21 @@
-<div
-  class="lg:px-24 lg:py-24 md:py-20 md:px-44 px-4 py-24 items-center flex justify-center flex-col-reverse lg:flex-row md:gap-28 gap-16"
->
-  <div class="xl:pt-24 w-full xl:w-1/2 relative pb-12 lg:pb-0">
-    <div class="relative">
-      <div class="absolute">
-        <div class="">
-          <h3 class="my-2 text-gray-800 font-bold text-2xl">
-            404 Page Not Exist in CineSnap
-          </h3>
-          <p class="my-2 text-gray-800">
-            Sorry about that! Please visit our hompage to get where you need to
-            go.
-          </p>
-          <button
-            routerLink="/"
-            class="sm:w-full lg:w-auto my-2 border rounded md py-4 px-8 text-center bg-indigo-600 text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-opacity-50"
-          >
-            Home
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- not-found.component.html -->
+
+<!-- Background Theme with Design -->
+<div class="bg-gradient-to-br from-amber-500 via-gray-700 to-gray-800 text-white h-screen flex flex-col items-center justify-center
+  p-6 rounded-md shadow-lg">
+
+  <!-- Error Message Heading with Design -->
+  <h1 class="text-4xl font-bold mb-4">Oops! Page Not Found</h1>
+
+<!-- Message -->
+<p class="text-lg mb-8 text-center text-gray-300 leading-7 font-medium">
+  Looks like you've taken a detour into the unknown. This page seems to be as elusive as a hidden movie gem.
+</p>
+
+  <!-- Button with Design -->
+  <button class="bg-amber-600 text-white px-6 py-3 rounded-md hover:bg-amber-700
+    focus:outline-none focus:ring focus:border-amber-300 transition-all duration-300"
+    (click)="goBack()">Go Back</button>
+
 </div>
+
