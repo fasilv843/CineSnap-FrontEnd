@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserMoviesComponent } from './user-movies/user-movies.component';
 import { UserTheatersComponent } from './user-theaters/user-theaters.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
 import { StoreModule } from '@ngrx/store';
 import { userReducer } from 'src/app/states/user/user.reducer';
 import { SocialLoginModule, GoogleLoginProvider } from '@abacritt/angularx-social-login';
@@ -18,7 +19,12 @@ import { SocialLoginModule, GoogleLoginProvider } from '@abacritt/angularx-socia
 import { environments } from 'src/environments/environment';
 import { coordsReducer } from 'src/app/states/coords/coords.reducer';
 import { ValidationModule } from 'src/app/modules/validation/validation.module';
-import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
+
+import { ImageModule } from 'src/app/modules/image/image.module';
+
+// import { AngularFireModule } from '@angular/fire/compat';
+// import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+// import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 // const socialAuthServiceConfig: SocialAuthServiceConfig = {
 //   autoLogin: false,
 //   providers: [
@@ -43,7 +49,6 @@ import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.
     UserProfileComponent,
     EditUserProfileComponent
   ],
-  // schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     CommonModule,
     UserRoutingModule,
@@ -52,7 +57,11 @@ import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.
     StoreModule.forFeature('user', userReducer),
     StoreModule.forFeature('coords', coordsReducer),
     SocialLoginModule,
-    ValidationModule
+    ValidationModule,
+    ImageModule
+    // AngularFireModule.initializeApp(environments.firebaseConfig),
+    // AngularFirestoreModule,
+    // AngularFireStorageModule,
   ],
   providers: [
     {

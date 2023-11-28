@@ -10,7 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
-import { CloudinaryModule } from '@cloudinary/ng';
+// import { CloudinaryModule } from '@cloudinary/ng';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { ErrorHandlerInterceptor } from './interceptors/error-handler.interceptor';
@@ -27,7 +27,7 @@ import { ErrorHandlerInterceptor } from './interceptors/error-handler.intercepto
     ReactiveFormsModule,
     FormsModule,
     BrowserAnimationsModule,
-    CloudinaryModule,
+    // CloudinaryModule,
     StoreModule.forRoot({}, {}),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
   ],

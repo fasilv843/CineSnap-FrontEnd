@@ -12,6 +12,7 @@ import { UserService } from 'src/app/services/user.service'
 import { nameValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators'
 // import { saveUserOnStore } from 'src/app/states/user/user.actions'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
+// import { MatToolbarModule } from '@angular/material/toolbar'
 
 @Component({
   selector: 'app-edit-user-profile',
@@ -94,8 +95,8 @@ export class EditUserProfileComponent implements OnInit {
     // }
   }
 
-  uploadNewDP (): void {
-
+  imageReady (event: any): void {
+    console.log(event, 'image ready event in edit user profile')
   }
 
   deleteProfilePic (): void {

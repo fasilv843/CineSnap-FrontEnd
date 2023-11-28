@@ -5,21 +5,7 @@
       </div>
       <div class="mx-auto w-40 h-40 relative -mt-20 border-4 border-white rounded-full overflow-hidden">
         <div class="relative">
-          <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=200" alt="Default Profile Picture">
-          <!-- Edit icon in editMode -->
-          <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-black cursor-pointer flex">
-            <div>
-              <svg (click)="uploadNewDP()" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0zM12 14v5m0 0V14m0 5h4a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h4"/>
-              </svg>
-            </div>
-            <!-- Delete icon -->
-            <a *ngIf="user?.profilePic !== ''">
-              <svg (click)="deleteProfilePic()" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            </a>
-          </div>
+          <app-profile-dp [hieght]="155" [width]="155" (imageReady)="imageReady($event)"></app-profile-dp>
         </div>
       </div>
   
