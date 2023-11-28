@@ -9,6 +9,13 @@ import { ColValidationComponent } from 'src/app/components/validation/col-valida
 import { DefPriceValidationComponent } from 'src/app/components/validation/def-price-validation/def-price-validation.component'
 import { RowValidationComponent } from 'src/app/components/validation/row-validation/row-validation.component'
 import { ScreenNameValidationComponent } from 'src/app/components/validation/screen-name-validation/screen-name-validation.component'
+import { CityValidationComponent } from 'src/app/components/validation/city-validation/city-validation.component'
+import { CountryValidationComponent } from 'src/app/components/validation/country-validation/country-validation.component'
+import { DistrictValidationComponent } from 'src/app/components/validation/district-validation/district-validation.component'
+import { DobValidationComponent } from 'src/app/components/validation/dob-validation/dob-validation.component'
+import { MobileValidationComponent } from 'src/app/components/validation/mobile-validation/mobile-validation.component'
+import { StateValidationComponent } from 'src/app/components/validation/state-validation/state-validation.component'
+import { ZipValidationComponent } from 'src/app/components/validation/zip-validation/zip-validation.component'
 
 @NgModule({
   declarations: [
@@ -20,7 +27,14 @@ import { ScreenNameValidationComponent } from 'src/app/components/validation/scr
     RowValidationComponent,
     ColValidationComponent,
     DefPriceValidationComponent,
-    ScreenNameValidationComponent
+    ScreenNameValidationComponent,
+    MobileValidationComponent,
+    DobValidationComponent,
+    CityValidationComponent,
+    DistrictValidationComponent,
+    StateValidationComponent,
+    CountryValidationComponent,
+    ZipValidationComponent
   ],
   imports: [
     CommonModule
@@ -34,7 +48,14 @@ import { ScreenNameValidationComponent } from 'src/app/components/validation/scr
     RowValidationComponent,
     ColValidationComponent,
     DefPriceValidationComponent,
-    ScreenNameValidationComponent
+    ScreenNameValidationComponent,
+    MobileValidationComponent,
+    DobValidationComponent,
+    CityValidationComponent,
+    DistrictValidationComponent,
+    StateValidationComponent,
+    CountryValidationComponent,
+    ZipValidationComponent
   ]
 })
 export class ValidationModule { }

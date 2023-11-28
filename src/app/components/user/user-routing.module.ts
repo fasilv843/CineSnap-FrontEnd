@@ -9,6 +9,7 @@ import { UserTheatersComponent } from './user-theaters/user-theaters.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { LoginGuard } from 'src/app/guards/login.guard';
 import { AuthGuard } from 'src/app/guards/auth.guard';
+import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
 
 const routes: Routes = [
   {
@@ -41,8 +42,17 @@ const routes: Routes = [
   {
     path: 'profile',
     title: 'CineSnap | Profile',
-    component: UserProfileComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: '',
+        component: UserProfileComponent
+      },
+      {
+        path: 'edit/:userId',
+        component: EditUserProfileComponent
+      }
+    ]
   },
   {
     path: '',

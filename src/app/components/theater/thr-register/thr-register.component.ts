@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/semi */
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { getLocation } from 'src/app/helpers/location';
 import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
 import { type IApiTheaterRes } from 'src/app/models/theater';
+import { GeoLocationService } from 'src/app/services/geo-location.service';
 import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators';
 import { saveTheaterOnStore } from 'src/app/states/theater/theater.action';
-import { environments } from 'src/environments/environment';
+// import { environments } from 'src/environments/environment';
 
 @Component({
   selector: 'app-thr-register',
@@ -32,7 +34,8 @@ export class ThrRegisterComponent {
     @Inject(HttpClient) private readonly http: HttpClient,
     @Inject(Router) private readonly router: Router,
     @Inject(FormBuilder) private readonly fromBuilder: FormBuilder,
-    @Inject(Store) private readonly store: Store
+    @Inject(Store) private readonly store: Store,
+    @Inject(GeoLocationService) private readonly locationService: GeoLocationService
   ) {}
 
   ngOnInit (): void {
@@ -56,42 +59,21 @@ export class ThrRegisterComponent {
     return this.form.controls
   }
 
-  getLocation (): void {
-    console.log('location radio clicked');
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (navigator.geolocation) {
-      // navigator.geolocation.getCurrentPosition()
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position, 'position');
-        this.latitude = position.coords.latitude;
-        this.longitude = position.coords.longitude;
-        console.log(this.longitude, this.latitude);
-        this.callGeoLocationAPI(this.latitude, this.longitude);
-      });
-    } else {
-      console.log('No support for geolocation')
+  async autoFillAddress (): Promise<void> {
+    const coords = await getLocation()
+    if (coords !== null) {
+      console.log(coords, 'coords from getLocation');
+      this.locationService.getAddress(coords.lat, coords.lon).subscribe({
+        next: (res) => {
+          console.log(res, 'res from getAddress');
+          this.country = res.country
+          this.state = res.state
+          this.district = res.district
+          this.city = res.city
+          this.zip = String(res.zip)
+        }
+      })
     }
-  }
-
-  callGeoLocationAPI (lat: number, lon: number): void {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Bypass-Interceptor': 'true' })
-    }
-    console.log(lat, lon, 'lat, lon');
-
-    const { geoapifyApi, geoapifyKey } = environments
-    this.http.get(`${geoapifyApi}?lat=${lat}&lon=${lon}&apiKey=${geoapifyKey}`, httpOptions).subscribe({
-      next: (res: any) => {
-        console.log(res)
-        this.country = res.features[0].properties.country
-        this.state = res.features[0].properties.state
-        this.district = res.features[0].properties.state_district
-        this.city = res.features[0].properties.city
-        this.zip = res.features[0].properties.postcode
-      },
-      error: (e) => { console.error(e); },
-      complete: () => { console.info('complete') }
-    })
   }
 
   onSubmit (): void {

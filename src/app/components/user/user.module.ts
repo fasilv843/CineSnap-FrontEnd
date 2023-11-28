@@ -18,6 +18,7 @@ import { SocialLoginModule, GoogleLoginProvider } from '@abacritt/angularx-socia
 import { environments } from 'src/environments/environment';
 import { coordsReducer } from 'src/app/states/coords/coords.reducer';
 import { ValidationModule } from 'src/app/modules/validation/validation.module';
+import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
 // const socialAuthServiceConfig: SocialAuthServiceConfig = {
 //   autoLogin: false,
 //   providers: [
@@ -39,7 +40,8 @@ import { ValidationModule } from 'src/app/modules/validation/validation.module';
     UserNavComponent,
     UserMoviesComponent,
     UserTheatersComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    EditUserProfileComponent
   ],
   // schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [

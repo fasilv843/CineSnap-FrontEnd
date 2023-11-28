@@ -28,4 +28,12 @@ export class UserService {
   getActiveUsers (): Observable<IApiUsersRes> {
     return this.http.get<IApiUsersRes>('admin/users?blocked=false')
   }
+
+  getUserDetails (userId: string): Observable<IApiUserRes> {
+    return this.http.get<IApiUserRes>(`user/get/${userId}`)
+  }
+
+  // updateUserDetails (userData): Observable<IApiUserRes> {  // new IUserUpdate interface for userData
+  //   return this.http.put<IApiUserRes>('user/update', userData)  // Backend for this route
+  // }
 }

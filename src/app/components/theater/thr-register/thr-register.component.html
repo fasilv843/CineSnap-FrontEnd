@@ -20,7 +20,7 @@
                   <app-email-validation [emailControl]="form.get('email')" [isSubmitted]="isSubmitted"></app-email-validation>
                 </div>
 
-                <div *ngIf="!showOtpField" class="form-outline mb-3" (click)="getLocation()">
+                <div *ngIf="!showOtpField" class="form-outline mb-3" (click)="autoFillAddress()">
                     <input type="radio" class="mx-2 "> <label for=""> Get Location</label>
                 </div>
 
