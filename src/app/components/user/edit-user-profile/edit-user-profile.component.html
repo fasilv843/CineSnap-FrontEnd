@@ -1,86 +1,121 @@
 <app-user-nav></app-user-nav>
 <div class="bg-gradient-to-br from-amber-500 via-gray-700 to-gray-800 py-10 w-screen">
-    <div class="max-w-2xl mx-auto shadow-xl rounded-lg text-gray-900 border-2 border-gray-300 bg-white">
-      <div class="rounded-t-lg h-32 bg-gradient-to-br from-gray-800 via-gray-700 to-amber-500 overflow-hidden">
+  <div class="max-w-2xl mx-auto shadow-xl rounded-lg text-gray-900 border-2 border-gray-300 bg-white">
+    <div class="rounded-t-lg h-32 bg-gradient-to-br from-gray-800 via-gray-700 to-amber-500 overflow-hidden">
+    </div>
+    <div class="mx-auto w-40 h-40 relative -mt-20 border-4 border-white rounded-full overflow-hidden">
+      <div class="relative">
+        <app-profile-dp [hieght]="155" [width]="155" (imageReady)="imageReady($event)"></app-profile-dp>
       </div>
-      <div class="mx-auto w-40 h-40 relative -mt-20 border-4 border-white rounded-full overflow-hidden">
-        <div class="relative">
-          <app-profile-dp [hieght]="155" [width]="155" (imageReady)="imageReady($event)"></app-profile-dp>
-        </div>
-      </div>
-  
-      <div class="py-4 px-24 my-3">
-        <ng-container class="flex flex-col">
-          <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-  
-            <div class="flex items-center mb-3">
-                <label class="font-semibold text-gray-700 my-1">Name:</label>
-                <input class="border-b border-gray-500 focus:outline-none ml-2 flex-1" formControlName="name">
-                <app-name-validation [nameControl]="profileForm.get('name')" [isSubmitted]="isSubmitted"></app-name-validation>
+    </div>
+
+    <div class="py-4 px-24 my-3">
+      <ng-container class="flex flex-col">
+        <form [formGroup]="profileForm" (submit)="onSubmit()">
+
+          <div class="flex items-center mb-3">
+            <label class="font-semibold text-gray-700 my-1">Name:</label>
+            <div class="flex flex-col flex-1">
+              <input class="border-b border-gray-500 focus:outline-none ml-2 flex-1" formControlName="name">
+              <app-name-validation [nameControl]="profileForm.get('name')"
+                [isSubmitted]="isSubmitted"></app-name-validation>
             </div>
-                          
-  
-            <div class="flex items-center mb-3">
-              <label class="font-semibold text-gray-700 my-1">Mobile:</label>
+          </div>
+
+
+          <div class="flex items-center mb-3">
+            <label class="font-semibold text-gray-700 my-1">Mobile:</label>
+            <div class="flex flex-col flex-1">
               <input class="border-b border-gray-500 focus:outline-none ml-2 flex-1" formControlName="mobile">
-              <app-mobile-validation [mobileControl]="profileForm.get('mobile')" [isSubmitted]="isSubmitted"></app-mobile-validation>
+              <app-mobile-validation [mobileControl]="profileForm.get('mobile')"
+                [isSubmitted]="isSubmitted"></app-mobile-validation>
             </div>
-  
-            <div class="flex items-center mb-3">
-              <label class="font-semibold text-gray-700 my-1">Date of Birth:</label>
+          </div>
+
+          <div class="flex items-center mb-3">
+            <label class="font-semibold text-gray-700 my-1">Date of Birth:</label>
+            <div class="flex flex-col flex-1">
               <input type="date" class="border-b border-gray-500 focus:outline-none ml-2 flex-1" formControlName="dob">
               <app-dob-validation [dobControl]="profileForm.get('dob')" [isSubmitted]="isSubmitted"></app-dob-validation>
             </div>
-  
+          </div>
+
+          <!-- <div *ngIf="!addressUpdateMode" class="flex items-center mb-3">
+            <input (click)="updateAddress()" type="radio" class="mr-2">
+            <label for="updateAddress" class="text-gray-700">Update Address</label>
+          </div> -->
+
+          <div *ngIf="addressUpdateMode">
             <!-- Auto Detect button above City and District -->
             <div class="flex items-center mb-3">
               <input (click)="autoFillAddress()" type="radio" id="autoDetect" name="locationType" class="mr-2">
               <label for="autoDetect" class="text-gray-700">Auto Detect</label>
             </div>
-  
+
             <!-- City and District on the same line -->
             <div class="flex mb-3 flex-col sm:flex-row">
               <div class="flex items-center mb-2 flex-1 sm:mb-0">
                 <label class="font-semibold text-gray-700">City:</label>
-                <input type="text" [(ngModel)]="city" class="border-b border-gray-500 focus:outline-none ml-2 flex-1" formControlName="city">
-                <app-city-validation [cityControl]="profileForm.get('city')" [isSubmitted]="isSubmitted"></app-city-validation>
+                <div class="flex flex-col flex-1">
+                  <input type="text" [(ngModel)]="city" class="border-b border-gray-500 focus:outline-none ml-2 flex-1"
+                    formControlName="city">
+                  <app-city-validation [cityControl]="profileForm.get('city')" 
+                    [isSubmitted]="isSubmitted" [addressUpdateMode]="true"></app-city-validation>
+                </div>
               </div>
               <div class="flex items-center mb-2 flex-1 sm:mb-0">
                 <label class="font-semibold text-gray-700">District:</label>
-                <input type="text" [(ngModel)]="district" class="border-b border-gray-500 focus:outline-none ml-2 flex-1" formControlName="district">
-                <app-district-validation [districtControl]="profileForm.get('district')" [isSubmitted]="isSubmitted"></app-district-validation>
+                <div class="flex flex-col flex-1">
+                  <input type="text" [(ngModel)]="district"
+                    class="border-b border-gray-500 focus:outline-none ml-2 flex-1" formControlName="district">
+                  <app-district-validation [districtControl]="profileForm.get('district')"
+                    [isSubmitted]="isSubmitted"></app-district-validation>
+                </div>
               </div>
             </div>
-  
+
             <!-- State and Country on the same line -->
             <div class="flex mb-3 flex-col sm:flex-row">
               <div class="flex items-center mb-2 flex-1">
                 <label class="font-semibold text-gray-700">State:</label>
-                <input type="text" [(ngModel)]="state" class="border-b border-gray-500 focus:outline-none ml-2 flex-1" formControlName="state">
-                <app-state-validation [stateControl]="profileForm.get('state')" [isSubmitted]="isSubmitted"></app-state-validation>
+                <div class="flex flex-col flex-1">
+                  <input type="text" [(ngModel)]="state" class="border-b border-gray-500 focus:outline-none ml-2 flex-1"
+                    formControlName="state">
+                  <app-state-validation [stateControl]="profileForm.get('state')"
+                    [isSubmitted]="isSubmitted"></app-state-validation>
+                </div>
               </div>
               <div class="flex items-center mb-2 flex-1">
                 <label class="font-semibold text-gray-700">Country:</label>
-                <input type="text" [(ngModel)]="country" class="border-b border-gray-500 focus:outline-none ml-2 flex-1" formControlName="country">
-                <app-country-validation [countryControl]="profileForm.get('country')" [isSubmitted]="isSubmitted"></app-country-validation>
+                <div class="flex flex-col flex-1">
+                  <input type="text" [(ngModel)]="country" class="border-b border-gray-500 focus:outline-none ml-2 flex-1"
+                    formControlName="country">
+                  <app-country-validation [countryControl]="profileForm.get('country')"
+                    [isSubmitted]="isSubmitted"></app-country-validation>
+                </div>
               </div>
             </div>
-  
+
             <!-- Zip on a separate line -->
             <div class="flex items-center mb-3">
               <label class="font-semibold text-gray-700">Zip:</label>
-              <input type="text" [(ngModel)]="zip" class="border-b border-gray-500 focus:outline-none ml-2 flex-1" formControlName="zip">
-              <app-zip-validation [zipControl]="profileForm.get('zip')" [isSubmitted]="isSubmitted"></app-zip-validation>
+              <div class="flex flex-col flex-1">
+                <input type="text" [(ngModel)]="zip" class="border-b border-gray-500 focus:outline-none ml-2 flex-1"
+                  formControlName="zip">
+                <app-zip-validation [zipControl]="profileForm.get('zip')"
+                  [isSubmitted]="isSubmitted"></app-zip-validation>
+              </div>
             </div>
-  
-          </form>
-        </ng-container>
-      </div>
-      <hr class="border-t mx-8 mt-2">
-      <div class="flex justify-around items-center p-4 space-x-4">
-        <button routerLink="/user/profile" class="w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">Cancel</button>
-        <button type="submit" class="w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2" (click)="onSubmit()">Save</button>
-      </div>
+          </div>
+          <hr class="border-t mx-8 mt-2">
+          <div class="flex justify-around items-center p-4 space-x-4">
+            <button routerLink="/user/profile"
+              class="w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">Cancel</button>
+            <button type="submit"
+              class="w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">Save</button>
+          </div>
+        </form>
+      </ng-container>
     </div>
   </div>
-  
+</div>

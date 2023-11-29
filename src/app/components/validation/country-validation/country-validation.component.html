@@ -1,1 +1,3 @@
-<p>country-validation works!</p>
+<div *ngIf="isSubmitted && countryControl && countryControl.errors">
+    <div *ngIf="countryControl.errors['required']" style="color: red;">Country is required</div>
+</div>

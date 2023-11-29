@@ -1,1 +1,5 @@
-<p>dob-validation works!</p>
+
+<div *ngIf="isSubmitted && dobControl && dobControl.errors">
+    <div *ngIf="dobControl.errors['minAge']" style="color: red;">Member should be at least age 10</div>
+    <div *ngIf="dobControl.errors['minDate']" style="color: red;">Choose a date after 1960</div>
+</div>

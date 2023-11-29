@@ -43,3 +43,5 @@ export interface IApiUsersRes {
   data: IUserRes[] | []
   token: string
 }
+
+export interface IUserUpdate extends Omit<IUserRes, '_id' | 'email' | 'password' | 'isBlocked' | 'wallet' | 'walletHistory'> { }

@@ -1,1 +1,3 @@
-<p>district-validation works!</p>
+<div *ngIf="isSubmitted && districtControl && districtControl.errors">
+    <div *ngIf="districtControl.errors['required']" style="color: red;">District is required</div>
+</div>

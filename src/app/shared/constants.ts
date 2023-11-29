@@ -18,3 +18,7 @@ export const passwordRegex = `^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{${passwordMinLen
 export const charRegex = /^[A-Z]$/
 export const numRegex = '^\\d+$'
 export const screenNameRegex = `^[a-zA-Z0-9 ]{${screenNameMinLength},${screenNameMaxLength}}$`
+export const mobileRegex = '^[1-9][0-9]{9}$'
+
+export const MinAge = 10
+export const MinDate = new Date(1960, 0, 1)

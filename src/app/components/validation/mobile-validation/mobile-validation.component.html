@@ -1,1 +1,4 @@
-<p>mobile-validation works!</p>
+
+<div *ngIf="isSubmitted && mobileControl && mobileControl.errors">
+    <div *ngIf="mobileControl.errors['pattern']" style="color: red;">Mobiel should be 10 numbers</div>
+</div>

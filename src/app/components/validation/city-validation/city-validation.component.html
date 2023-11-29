@@ -1,1 +1,3 @@
-<p>city-validation works!</p>
+<div *ngIf="isSubmitted && addressUpdateMode && cityControl && cityControl.errors">
+    <div *ngIf="cityControl.errors['required']" style="color: red;">City is required</div>
+</div>

@@ -3,7 +3,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IApiUserRes, IApiUsersRes } from '../models/users';
+import { IApiUserRes, IApiUsersRes, IUserUpdate } from '../models/users';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class UserService {
     return this.http.get<IApiUserRes>(`user/get/${userId}`)
   }
 
-  // updateUserDetails (userData): Observable<IApiUserRes> {  // new IUserUpdate interface for userData
-  //   return this.http.put<IApiUserRes>('user/update', userData)  // Backend for this route
-  // }
+  updateUserDetails (userId: string, userData: IUserUpdate): Observable<IApiUserRes> {
+    return this.http.put<IApiUserRes>(`user/update/${userId}`, userData)
+  }
 }
