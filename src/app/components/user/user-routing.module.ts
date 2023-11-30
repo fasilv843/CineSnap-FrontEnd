@@ -10,6 +10,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { LoginGuard } from 'src/app/guards/login.guard';
 import { AuthGuard } from 'src/app/guards/auth.guard';
 import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
+import { UserBookingsComponent } from './user-bookings/user-bookings.component';
 
 const routes: Routes = [
   {
@@ -53,6 +54,11 @@ const routes: Routes = [
         component: EditUserProfileComponent
       }
     ]
+  },
+  {
+    path: 'bookings/:userId',
+    component: UserBookingsComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: '',

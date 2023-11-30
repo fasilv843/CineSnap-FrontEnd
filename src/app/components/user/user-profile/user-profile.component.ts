@@ -3,8 +3,7 @@ import { Component, Inject, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { type IUserRes } from 'src/app/models/users';
-// import { type Observable } from 'rxjs';
-// import { type IUser } from 'src/app/models/users';
+import { deleteUserFromStore } from 'src/app/states/user/user.actions';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
 
 @Component({
@@ -57,11 +56,13 @@ export class UserProfileComponent implements OnInit {
     void this.router.navigate(['/user/profile/edit', this.user._id])
   }
 
-  openEditProfile (): void {
-    this.editMode = !this.editMode
+  openBookings (): void {
+    void this.router.navigate(['/user/bookings', this.user._id])
   }
 
-  closeEditProfile (): void {
-    this.editMode = !this.editMode
+  logout (): void {
+    localStorage.removeItem('userToken')
+    this.store.dispatch(deleteUserFromStore())
+    void this.router.navigate(['/user/home'])
   }
 }

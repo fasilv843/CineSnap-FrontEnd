@@ -21,6 +21,7 @@ import { coordsReducer } from 'src/app/states/coords/coords.reducer';
 import { ValidationModule } from 'src/app/modules/validation/validation.module';
 
 import { ImageModule } from 'src/app/modules/image/image.module';
+import { UserBookingsComponent } from './user-bookings/user-bookings.component';
 
 // import { AngularFireModule } from '@angular/fire/compat';
 // import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
@@ -47,7 +48,8 @@ import { ImageModule } from 'src/app/modules/image/image.module';
     UserMoviesComponent,
     UserTheatersComponent,
     UserProfileComponent,
-    EditUserProfileComponent
+    EditUserProfileComponent,
+    UserBookingsComponent
   ],
   imports: [
     CommonModule,
