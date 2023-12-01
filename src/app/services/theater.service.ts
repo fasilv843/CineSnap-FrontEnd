@@ -3,7 +3,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IApiTheaterRes, IApiTheatersRes } from '../models/theater';
+import { IApiTheaterRes, IApiTheatersRes, ITheaterUpdate } from '../models/theater';
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +36,9 @@ export class TheaterService {
         latitude: lat.toString()
       }
     })
+  }
+
+  updatetheaterDetails (theaterId: string, theater: ITheaterUpdate): Observable<IApiTheaterRes> {
+    return this.http.put<IApiTheaterRes>(`theater/update/${theaterId}`, theater)
   }
 }

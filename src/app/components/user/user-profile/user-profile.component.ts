@@ -40,7 +40,7 @@ export class UserProfileComponent implements OnInit {
       this.email = user?.email ?? '';
       this.dob = user?.dob ?? new Date('1990-01-01');
       this.mobile = user?.mobile ?? 0
-      this.profilePic = user?.profilePic ?? ''
+      this.profilePic = user?.profilePic ?? 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=200'
       this.city = user?.address?.city ?? ''
       this.state = user?.address?.state ?? ''
       this.district = user?.address?.district ?? ''

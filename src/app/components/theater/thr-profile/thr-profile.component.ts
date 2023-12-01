@@ -1,5 +1,9 @@
 import { Component, Inject } from '@angular/core'
-import { Store } from '@ngrx/store'
+import { Router } from '@angular/router'
+import { Store, select } from '@ngrx/store'
+import { type ITheaterRes } from 'src/app/models/theater'
+import { deleteTheaterFromStore } from 'src/app/states/theater/theater.action'
+import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 
 @Component({
   selector: 'app-thr-profile',
@@ -7,41 +11,30 @@ import { Store } from '@ngrx/store'
   styleUrls: ['./thr-profile.component.css']
 })
 export class ThrProfileComponent {
-  // userDetails$ = this.store.pipe(select(selectUserDetails))
-  name: string = ''
-  email: string = ''
-  dob!: Date
-  mobile!: number
-  profilePic!: string
-  city!: string
-  state!: string
-  district!: string
-  country!: string
-  zip!: number
-  wallet!: number
-  editMode: boolean = false
+  theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
+  theater!: ITheaterRes
 
   constructor (
-    @Inject(Store) private readonly store: Store
+    @Inject(Store) private readonly store: Store,
+    @Inject(Router) private readonly router: Router
   ) {}
 
   ngOnInit (): void {
-    // this.userDetails$.subscribe((user) => {
-    //   this.name = user?.name ?? '';
-    //   this.email = user?.email ?? '';
-    //   this.dob = user?.dob ?? new Date('1990-01-01');
-    //   this.mobile = user?.mobile ?? 0
-    //   this.profilePic = user?.profilePic ?? ''
-    //   this.city = user?.address?.city ?? ''
-    //   this.state = user?.address?.state ?? ''
-    //   this.district = user?.address?.district ?? ''
-    //   this.country = user?.address?.country ?? ''
-    //   this.zip = user?.address?.zip ?? 0
-    //   this.wallet = user?.wallet ?? 0
-    // })
+    this.theaterDetails$.subscribe((theater) => {
+      if (theater !== null) {
+        this.theater = theater
+      }
+    })
   }
 
-  toggleEditMode (): void {
-    this.editMode = !this.editMode
+  redirectToEditPage (): void {
+    void this.router.navigate(['/theater/profile/edit', this.theater._id])
+  }
+
+  logout (): void {
+    console.log('loggin out from theater')
+    localStorage.removeItem('theaterToken')
+    this.store.dispatch(deleteTheaterFromStore())
+    void this.router.navigate(['/theater/home'])
   }
 }

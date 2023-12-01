@@ -18,6 +18,8 @@ import { StoreModule } from '@ngrx/store';
 import { theaterReducer } from 'src/app/states/theater/theater.reducer';
 import { AddScreenComponent } from './add-screen/add-screen.component';
 import { EditScreenComponent } from './edit-screen/edit-screen.component';
+import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater-profile.component';
+import { ImageModule } from 'src/app/modules/image/image.module';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { EditScreenComponent } from './edit-screen/edit-screen.component';
     ThrMoviesComponent,
     ThrProfileComponent,
     AddScreenComponent,
-    EditScreenComponent
+    EditScreenComponent,
+    EditTheaterProfileComponent
   ],
   imports: [
     CommonModule,
@@ -39,7 +42,8 @@ import { EditScreenComponent } from './edit-screen/edit-screen.component';
     FormsModule,
     ReactiveFormsModule,
     ValidationModule,
-    StoreModule.forFeature('theater', theaterReducer)
+    StoreModule.forFeature('theater', theaterReducer),
+    ImageModule
   ]
 })
 export class TheaterModule { }

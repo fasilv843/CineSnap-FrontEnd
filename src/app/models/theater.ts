@@ -24,10 +24,12 @@ export interface ITheaterRes {
   profilePic?: string
   liscenceId: string
   wallet: number
-  walletHistory?: IWalletHistory[]
+  walletHistory: IWalletHistory[] | []
   coords: ICoords
   address: ITheaterAddress
 }
+
+export interface ITheaterUpdate extends Omit<ITheaterRes, '_id' | 'email' | 'isBlocked' | 'wallet' | 'walletHistory' | 'liscenceId'> {}
 
 export interface ITheaterAuth {
   name: string

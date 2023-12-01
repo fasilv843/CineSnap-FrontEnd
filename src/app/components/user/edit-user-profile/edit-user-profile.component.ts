@@ -148,7 +148,7 @@ export class EditUserProfileComponent implements OnInit {
     }
   }
 
-  updateAddress (): void {
-    this.addressUpdateMode = !this.addressUpdateMode
-  }
+  // updateAddress (): void {
+  //   this.addressUpdateMode = !this.addressUpdateMode
+  // }
 }

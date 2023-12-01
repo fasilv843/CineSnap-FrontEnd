@@ -65,24 +65,3 @@ export const dobValidators = [
 ]
 
 export const requiredValidator = [Validators.required]
-
-// export const validateDOB: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-//   const dob = control.get('dob')
-//   if (dob == null) return null
-
-//   const selectedDate = dob.value
-//   console.log(selectedDate, 'selectedDate from validateDOB')
-
-//   const today = new Date()
-//   const minAgeDate = new Date(today.getFullYear() - MinAge, today.getMonth(), today.getDate())
-
-//   if (selectedDate > minAgeDate) {
-//     dob.setErrors({ minAge: true })
-//     return { minAge: true }
-//   } else if (selectedDate < MinDate) {
-//     dob.setErrors({ minDate: true })
-//     return { minDate: true }
-//   }
-
-//   return null
-// }

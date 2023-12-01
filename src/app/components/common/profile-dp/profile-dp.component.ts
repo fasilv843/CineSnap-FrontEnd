@@ -58,6 +58,6 @@ export class ProfileDpComponent {
   }
 
   deleteProfilePic (): void {
-
+    this.croppedImage.set(undefined)
   }
 }
