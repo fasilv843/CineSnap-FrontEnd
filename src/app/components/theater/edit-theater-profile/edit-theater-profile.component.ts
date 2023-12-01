@@ -79,15 +79,14 @@ export class EditTheaterProfileComponent {
     this.isSubmitted = true
     if (this.profileForm.valid) {
       const theaterData = this.profileForm.getRawValue()
-      if (theaterData.city !== this.theater?.address.city) {
-        this.locationService.getCoords(theaterData.city, theaterData.country, theaterData.zip).subscribe({
-          next: (res) => {
-            console.log('city changed, new coords', res)
-            this.longitude = res.coordinates[0]
-            this.latitude = res.coordinates[1]
-          }
-        })
-      }
+      this.locationService.getCoords(theaterData.city, theaterData.country, theaterData.zip).subscribe({
+        next: (res) => {
+          console.log('city changed, new coords', res)
+          this.longitude = res.coordinates[0]
+          this.latitude = res.coordinates[1]
+        }
+      })
+
       const coords: ICoords = { type: 'Point', coordinates: [this.longitude, this.latitude] }
       const address: ITheaterAddress = {
         city: theaterData.city,
