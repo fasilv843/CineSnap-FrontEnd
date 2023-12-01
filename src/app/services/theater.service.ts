@@ -41,4 +41,8 @@ export class TheaterService {
   updatetheaterDetails (theaterId: string, theater: ITheaterUpdate): Observable<IApiTheaterRes> {
     return this.http.put<IApiTheaterRes>(`theater/update/${theaterId}`, theater)
   }
+
+  getTheaterData (theaterId: string): Observable<IApiTheaterRes> {
+    return this.http.get<IApiTheaterRes>(`user/theater/${theaterId}`)
+  }
 }

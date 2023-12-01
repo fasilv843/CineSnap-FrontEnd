@@ -11,6 +11,7 @@ import { LoginGuard } from 'src/app/guards/login.guard';
 import { AuthGuard } from 'src/app/guards/auth.guard';
 import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
 import { UserBookingsComponent } from './user-bookings/user-bookings.component';
+import { TheaterPageComponent } from './theater-page/theater-page.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,11 @@ const routes: Routes = [
     path: 'theaters',
     title: 'CineSnap | Theaters',
     component: UserTheatersComponent
+  },
+  {
+    path: 'theater/:theaterId',
+    title: 'CineSnap | Theater',
+    component: TheaterPageComponent
   },
   {
     path: 'profile',
