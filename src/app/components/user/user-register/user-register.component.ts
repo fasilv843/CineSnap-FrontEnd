@@ -6,6 +6,7 @@ import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/form
 import { Router } from '@angular/router';
 import {
   MAX_OTP_LIMIT,
+  OTP_RESEND_MAX_TIME,
   OTP_TIMER
 } from 'src/app/shared/constants';
 import Swal from 'sweetalert2';
@@ -125,7 +126,7 @@ export class UserRegisterComponent implements OnInit {
           this.startTimer()
           setTimeout(() => {
             this.showOTPResend = false
-          }, 1000 * 60 * 10)
+          }, OTP_RESEND_MAX_TIME)
         }
       })
     } else if (!this.form.invalid && this.showOtpField) {

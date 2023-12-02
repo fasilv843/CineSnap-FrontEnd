@@ -86,10 +86,7 @@
 
                 <div *ngIf="showOtpField">
                     <input type="text" formControlName="otp" id="otp" class="form-control form-control-lg" placeholder="Enter OTP" />
-                    <div *ngIf="isSubmitted && form.controls['otp'].errors">
-                      <div *ngIf="form.controls['otp'].errors['required']" style="color: red;">OTP required</div>
-                      <div *ngIf="form.controls['otp'].errors['pattern']" style="color: red;">OTP has exactly 4 digits</div>
-                    </div>
+                    <app-otp-validation [otpControl]="form.get('otp')" [showOTPResend]="showOTPResend" [timerStr]="formattedTime" (OTPResend)="resendOTP()"></app-otp-validation>  
                 </div>
                   
 

@@ -5,12 +5,14 @@ import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/form
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { getLocation } from 'src/app/helpers/location';
+import { formatTime } from 'src/app/helpers/timer';
 import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
 import { type IApiTheaterRes } from 'src/app/models/theater';
 import { GeoLocationService } from 'src/app/services/geo-location.service';
+import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER } from 'src/app/shared/constants';
 import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators';
 import { saveTheaterOnStore } from 'src/app/states/theater/theater.action';
-// import { environments } from 'src/environments/environment';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-thr-register',
@@ -20,6 +22,10 @@ import { saveTheaterOnStore } from 'src/app/states/theater/theater.action';
 export class ThrRegisterComponent {
   isSubmitted = false
   showOtpField = false
+  remainingTime = 0
+  formattedTime: string = '03:00'
+  otpResendCount: number = 0
+  showOTPResend: boolean = true
   getLocationClicked = false
   form!: FormGroup
   country: string = ''
@@ -55,6 +61,36 @@ export class ThrRegisterComponent {
     }, { validators: passwordMatchValidator })
   }
 
+  startTimer (): void {
+    this.remainingTime = OTP_TIMER;
+
+    const timer = setInterval(() => {
+      this.remainingTime--;
+
+      if (this.remainingTime <= 0) {
+        clearInterval(timer);
+        // Handle expiration logic here
+        console.log('OTP expired');
+      }
+      this.formattedTime = formatTime(this.remainingTime)
+    }, 1000); // Update every second
+  }
+
+  resendOTP (): void {
+    if (this.otpResendCount < MAX_OTP_LIMIT) {
+      this.http.get('theater/resendOtp').subscribe({
+        next: () => {
+          console.log('otp successfully resent');
+          void Swal.fire('OTP sent', 'Check your mail for OTP', 'success');
+          this.startTimer();
+          this.otpResendCount++;
+        }
+      });
+    } else {
+      void Swal.fire('Oops!', 'Maximum resend attempts reached', 'warning');
+    }
+  }
+
   get f (): Record<string, AbstractControl> {
     return this.form.controls
   }
@@ -63,6 +99,8 @@ export class ThrRegisterComponent {
     const coords = await getLocation()
     if (coords !== null) {
       console.log(coords, 'coords from getLocation');
+      this.longitude = coords.lon
+      this.latitude = coords.lat
       this.locationService.getAddress(coords.lat, coords.lon).subscribe({
         next: (res) => {
           console.log(res, 'res from getAddress');
@@ -83,8 +121,10 @@ export class ThrRegisterComponent {
       const theater = this.form.getRawValue()
       theater.latitude = this.latitude
       theater.longitude = this.longitude
+      console.log(theater, 'theater data that passed to backend');
       this.http.post('theater/register', theater).subscribe({
-        next: () => {
+        next: (res: any) => {
+          localStorage.setItem('theaterAuthToken', res.token)
           this.showOtpField = true
           this.form.get('name')?.disable()
           this.form.get('email')?.disable()
@@ -98,17 +138,23 @@ export class ThrRegisterComponent {
           this.form.get('repeatPassword')?.disable()
           this.form.get('landmark')?.disable()
           this.form.get('otp')?.enable()
+          this.startTimer()
+          setTimeout(() => {
+            this.showOTPResend = false
+          }, OTP_RESEND_MAX_TIME)
         }
       })
     } else if (!this.form.invalid && this.showOtpField) {
       const theater = this.form.getRawValue()
       console.log(theater);
       console.log(theater.otp);
+      const authToken = localStorage.getItem('theaterAuthToken')
       const otp = theater.otp
-      this.http.post<IApiTheaterRes>('theater/validateOtp', { otp }).subscribe({
+      this.http.post<IApiTheaterRes>('theater/validateOtp', { otp, authToken }).subscribe({
         next: (res: IApiTheaterRes) => {
           this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
           localStorage.setItem('theaterToken', res.token)
+          localStorage.removeItem('theaterAuthToken')
           void this.router.navigate(['/theater/home'])
         }
       })
