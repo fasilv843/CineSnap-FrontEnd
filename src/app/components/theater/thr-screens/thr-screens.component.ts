@@ -37,6 +37,10 @@ export class ThrScreensComponent implements OnInit {
     })
   }
 
+  viewScreen (screenId: string): void {
+    void this.router.navigate(['/theater/screens', screenId])
+  }
+
   deleteScreen (screenId: string): void {
     void Swal.fire({
       title: 'Are you sure?',

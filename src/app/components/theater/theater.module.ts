@@ -20,6 +20,7 @@ import { AddScreenComponent } from './add-screen/add-screen.component';
 import { EditScreenComponent } from './edit-screen/edit-screen.component';
 import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater-profile.component';
 import { ImageModule } from 'src/app/modules/image/image.module';
+import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { ImageModule } from 'src/app/modules/image/image.module';
     ThrProfileComponent,
     AddScreenComponent,
     EditScreenComponent,
-    EditTheaterProfileComponent
+    EditTheaterProfileComponent,
+    ThrSeatingComponent
   ],
   imports: [
     CommonModule,

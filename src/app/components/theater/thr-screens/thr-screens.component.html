@@ -29,6 +29,7 @@
                 <p class="text-gray-800">Default Price: {{ screen.defaultPrice }}</p>
               </div>
               <div class="mt-6 flex justify-end">
+                <button (click)="viewScreen(screen._id)" class="bg-gray-500 text-white px-4 py-2 rounded-full mr-2 hover:bg-gray-600">View</button>
                 <button (click)="editScreen(screen._id)" class="bg-blue-500 text-white px-4 py-2 rounded-full mr-2 hover:bg-blue-600">Edit</button>
                 <button (click)="deleteScreen(screen._id)" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">Delete</button>
               </div>

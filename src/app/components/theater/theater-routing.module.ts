@@ -14,6 +14,7 @@ import { AddScreenComponent } from './add-screen/add-screen.component';
 import { EditScreenComponent } from './edit-screen/edit-screen.component';
 import { AuthGuard } from 'src/app/guards/auth.guard';
 import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater-profile.component';
+import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
 
 const routes: Routes = [
   {
@@ -57,6 +58,10 @@ const routes: Routes = [
       {
         path: 'edit/:screenId',
         component: EditScreenComponent
+      },
+      {
+        path: ':screenId',
+        component: ThrSeatingComponent
       }
     ]
   },
