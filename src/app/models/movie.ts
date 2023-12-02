@@ -15,20 +15,20 @@ export interface IMovie {
     isDeleted?: boolean
 }
 
-export interface ICSMovie {
+export interface ICSMovieRes {
     _id: string
     title: string
     original_title?: string
     poster_path: string
     backdrop_path?: string
-    overview: string
+    overview?: string
     language: string
     duration: IDuration
     tmdbId: number
     release_date: Date
     genre_ids: number[]
     review?: MovieReview[]
-    isDeleted?: boolean
+    isDeleted: boolean
 }
 
 export type Movie = Omit<IMovie, '_id'>
@@ -59,9 +59,16 @@ interface MovieReview {
     userId: string
 }
 
-export interface CSMovieRes {
+export interface IApiCSMovieRes {
+    status: number
     message: string
-    movies: IMovie[]
+    data: ICSMovieRes | null
+}
+
+export interface IApiCSMoviesRes {
+    status: number
+    message: string
+    data: ICSMovieRes[] | []
 }
 
 export interface IDuration {

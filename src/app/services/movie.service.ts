@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/semi */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Injectable } from '@angular/core';
-import { CSMovieRes, Movie } from '../models/movie';
+import { IApiCSMovieRes, IApiCSMoviesRes, Movie } from '../models/movie';
 import { HttpClient } from '@angular/common/http';
 import { type Observable } from 'rxjs';
 
@@ -13,16 +13,16 @@ export class MovieService {
     private readonly http: HttpClient
   ) { }
 
-  saveMovie (movie: Movie): Observable<any> {
-    return this.http.post('admin/movies/add', { movie })
+  saveMovie (movie: Movie): Observable<IApiCSMovieRes> {
+    return this.http.post<IApiCSMovieRes>('admin/movies/add', { movie })
   }
 
-  findAllMovies (): Observable<CSMovieRes> {
-    return this.http.get<CSMovieRes>('user/movies')
+  findAllMovies (): Observable<IApiCSMoviesRes> {
+    return this.http.get<IApiCSMoviesRes>('user/movies')
   }
 
-  findAllMoviesByAdmin (): Observable<CSMovieRes> {
-    return this.http.get<CSMovieRes>('admin/movies')
+  findAllMoviesByAdmin (): Observable<IApiCSMoviesRes> {
+    return this.http.get<IApiCSMoviesRes>('admin/movies')
   }
 
   // findMoviesByGenre (genreId: string) {
@@ -33,11 +33,15 @@ export class MovieService {
 
   // }
 
-  searchMovie (title: string): Observable<CSMovieRes> {
-    return this.http.get<CSMovieRes>(`user/movies?title=${title}`)
+  searchMovie (title: string): Observable<IApiCSMoviesRes> {
+    return this.http.get<IApiCSMoviesRes>(`user/movies?title=${title}`)
   }
 
-  deleteMovie (movieId: string): Observable<CSMovieRes> {
-    return this.http.patch<CSMovieRes>(`admin/movies/delete/${movieId}`, {})
+  deleteMovie (movieId: string): Observable<IApiCSMovieRes> {
+    return this.http.patch<IApiCSMovieRes>(`admin/movies/delete/${movieId}`, {})
+  }
+
+  getBannerMovies (): Observable<IApiCSMoviesRes> {
+    return this.http.get<IApiCSMoviesRes>('user/banner')
   }
 }

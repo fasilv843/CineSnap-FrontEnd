@@ -1,7 +1,7 @@
 /* eslint-disable no-void */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component } from '@angular/core'
-import { IMovie } from 'src/app/models/movie'
+import { ICSMovieRes } from 'src/app/models/movie'
 import { MovieService } from 'src/app/services/movie.service'
 import Swal from 'sweetalert2'
 
@@ -11,7 +11,7 @@ import Swal from 'sweetalert2'
   styleUrls: ['./admin-cs-movies.component.css']
 })
 export class AdminCsMoviesComponent {
-  movies: IMovie[] = []
+  movies: ICSMovieRes[] = []
 
   constructor (
     private readonly movieService: MovieService
@@ -49,7 +49,7 @@ export class AdminCsMoviesComponent {
     this.movieService.findAllMoviesByAdmin().subscribe({
       next: (res) => {
         console.log(res, 'res from findAllMovies')
-        this.movies = res.movies
+        this.movies = res.data
       }
     })
   }
@@ -59,10 +59,10 @@ export class AdminCsMoviesComponent {
     this.movieService.searchMovie(title).subscribe({
       next: (res) => {
         console.log(res, 'responce from search movie')
-        if (res.movies.length === 0) {
+        if (res.data.length === 0) {
           void Swal.fire('Sorry :<', 'We don\'t have the movie that you are looking for', 'info')
         } else {
-          this.movies = res.movies
+          this.movies = res.data
         }
       }
     })
