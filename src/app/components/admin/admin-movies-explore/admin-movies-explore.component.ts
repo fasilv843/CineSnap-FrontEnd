@@ -16,6 +16,7 @@ export class AdminMoviesExploreComponent implements OnInit {
   routeParam: string = ''
   movies: Movie[] = []
   page: number = 1
+  tmdbIds: number[] = []
 
   constructor (
     private readonly route: ActivatedRoute,
@@ -26,6 +27,16 @@ export class AdminMoviesExploreComponent implements OnInit {
   ngOnInit (): void {
     this.routeParam = this.route.snapshot.paramMap.get('lang') ?? 'ml'
     this.exploreLanguage(this.routeParam)
+
+    this.movieService.fetchCineSnapMovies().subscribe({
+      next: (res) => {
+        this.tmdbIds = res.data
+      }
+    })
+  }
+
+  isMovieAlreadyExist (tmdbId: number): boolean {
+    return this.tmdbIds.includes(tmdbId)
   }
 
   loadMore (): void {

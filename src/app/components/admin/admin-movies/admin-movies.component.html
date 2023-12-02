@@ -17,7 +17,8 @@
       class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
       <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
         class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">ADD
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">
+        {{ isMovieAlreadyExist(movie.tmdbId) ? 'Update' : 'Add' }}
       </div>
     </div>
   </div>
@@ -40,7 +41,8 @@
       class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
       <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
         class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">ADD
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">
+        {{ isMovieAlreadyExist(movie.tmdbId) ? 'Update' : 'Add' }}
       </div>
     </div>
   </div>
@@ -62,7 +64,8 @@
     <div *ngFor="let movie of tamilMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
       <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
         class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">ADD
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">
+        {{ isMovieAlreadyExist(movie.tmdbId) ? 'Update' : 'Add' }}
       </div>
     </div>
   </div>
@@ -83,7 +86,8 @@
     <div *ngFor="let movie of hindiMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
       <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
         class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">ADD
+      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">
+        {{ isMovieAlreadyExist(movie.tmdbId) ? 'Update' : 'Add' }}
       </div>
     </div>
   </div>

@@ -44,4 +44,8 @@ export class MovieService {
   getBannerMovies (): Observable<IApiCSMoviesRes> {
     return this.http.get<IApiCSMoviesRes>('user/banner')
   }
+
+  fetchCineSnapMovies (): Observable<{ status: number, message: string, data: number[] }> {
+    return this.http.get<{ status: number, message: string, data: number[] }>('admin/csmovies/get')
+  }
 }

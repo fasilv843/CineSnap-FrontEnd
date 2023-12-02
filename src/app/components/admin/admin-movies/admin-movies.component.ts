@@ -23,6 +23,7 @@ export class AdminMoviesComponent implements OnInit {
     private readonly router: Router
   ) {}
 
+  tmdbIds: number[] = []
   searchResultMovies: Movie[] = []
   malayalamMovies: Movie[] = []
   tamilMovies: Movie[] = []
@@ -40,6 +41,16 @@ export class AdminMoviesComponent implements OnInit {
     // this.getKannadaMovies()
     // this.getEnglishMovies()
     // this.getBenaliMovies()
+
+    this.movieService.fetchCineSnapMovies().subscribe({
+      next: (res) => {
+        this.tmdbIds = res.data
+      }
+    })
+  }
+
+  isMovieAlreadyExist (tmdbId: number): boolean {
+    return this.tmdbIds.includes(tmdbId);
   }
 
   addMovie (movie: Movie): void {
