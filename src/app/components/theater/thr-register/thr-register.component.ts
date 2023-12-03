@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { getLocation } from 'src/app/helpers/location';
 import { formatTime } from 'src/app/helpers/timer';
 import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
-import { type IApiTheaterRes } from 'src/app/models/theater';
+import { type IApiTheaterAuthRes } from 'src/app/models/theater';
 import { GeoLocationService } from 'src/app/services/geo-location.service';
 import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER } from 'src/app/shared/constants';
 import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators';
@@ -150,10 +150,11 @@ export class ThrRegisterComponent {
       console.log(theater.otp);
       const authToken = localStorage.getItem('theaterAuthToken')
       const otp = theater.otp
-      this.http.post<IApiTheaterRes>('theater/validateOtp', { otp, authToken }).subscribe({
-        next: (res: IApiTheaterRes) => {
-          this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
-          localStorage.setItem('theaterToken', res.token)
+      this.http.post<IApiTheaterAuthRes>('theater/validateOtp', { otp, authToken }).subscribe({
+        next: (res: IApiTheaterAuthRes) => {
+          if (res.data !== null) this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
+          localStorage.setItem('theaterAccessToken', res.accessToken)
+          localStorage.setItem('theaterRefreshToken', res.refreshToken)
           localStorage.removeItem('theaterAuthToken')
           void this.router.navigate(['/theater/home'])
         }

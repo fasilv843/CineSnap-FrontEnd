@@ -33,7 +33,8 @@ export class ThrProfileComponent {
 
   logout (): void {
     console.log('loggin out from theater')
-    localStorage.removeItem('theaterToken')
+    localStorage.removeItem('theaterAccessToken')
+    localStorage.removeItem('theaterRefreshToken')
     this.store.dispatch(deleteTheaterFromStore())
     void this.router.navigate(['/theater/home'])
   }

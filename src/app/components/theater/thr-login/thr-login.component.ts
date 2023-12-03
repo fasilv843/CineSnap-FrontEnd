@@ -5,7 +5,7 @@ import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/form
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { validateByTrimming } from 'src/app/helpers/validations';
-import { type IApiTheaterRes } from 'src/app/models/theater';
+import { type IApiTheaterAuthRes } from 'src/app/models/theater';
 
 import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
 import { saveTheaterOnStore } from 'src/app/states/theater/theater.action';
@@ -43,11 +43,12 @@ export class ThrLoginComponent {
     if (!this.form.invalid) {
       const theater = this.form.getRawValue()
       console.log('sending http request');
-      this.http.post<IApiTheaterRes>('theater/login', theater).subscribe({
-        next: (res: IApiTheaterRes) => {
-          console.log('navigating to home', res.token);
-          this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
-          localStorage.setItem('theaterToken', res.token)
+      this.http.post<IApiTheaterAuthRes>('theater/login', theater).subscribe({
+        next: (res: IApiTheaterAuthRes) => {
+          // console.log('navigating to home', res.token);
+          if (res.data !== null) this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
+          localStorage.setItem('theaterAccessToken', res.accessToken)
+          localStorage.setItem('theaterRefreshToken', res.refreshToken)
           void this.router.navigate(['/theater/home'])
         }
       })

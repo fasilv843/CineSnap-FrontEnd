@@ -4,6 +4,7 @@ import { Component, Inject, type OnInit } from '@angular/core';
 import { type AbstractControl, FormBuilder, type FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { validateByTrimming } from 'src/app/helpers/validations';
+import { type IApiAdminAuthRes } from 'src/app/models/admin';
 import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
 
 @Component({
@@ -38,10 +39,10 @@ export class AdminLoginComponent implements OnInit {
     if (!this.form.invalid) {
       const admin = this.form.getRawValue()
       console.log('sending http request')
-      this.http.post('admin/login', admin).subscribe({
-        next: (res: any) => {
-          console.log('navigating to home', res.token)
-          localStorage.setItem('adminToken', res.token)
+      this.http.post<IApiAdminAuthRes>('admin/login', admin).subscribe({
+        next: (res: IApiAdminAuthRes) => {
+          localStorage.setItem('adminAccessToken', res.accessToken)
+          localStorage.setItem('adminRefreshToken', res.refreshToken)
           void this.router.navigate(['/admin/home'])
         }
       })
