@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate {
 
   canActivate (route: ActivatedRouteSnapshot): boolean {
     const role = route.parent?.routeConfig?.path
-    const token = localStorage.getItem(`${role}Token`)
+    const token = localStorage.getItem(`${role}RefreshToken`)
 
     if (token === null || isTokenExpired(token)) {
       if (role !== 'user') {

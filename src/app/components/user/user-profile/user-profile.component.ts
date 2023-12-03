@@ -61,7 +61,8 @@ export class UserProfileComponent implements OnInit {
   }
 
   logout (): void {
-    localStorage.removeItem('userToken')
+    localStorage.removeItem('userAccessToken')
+    localStorage.removeItem('userRefreshToken')
     this.store.dispatch(deleteUserFromStore())
     void this.router.navigate(['/user/home'])
   }

@@ -8,6 +8,7 @@ import { saveUserOnStore } from 'src/app/states/user/user.actions';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { validateByTrimming } from 'src/app/helpers/validations';
 import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
+import { IApiUserAuthRes } from 'src/app/models/users';
 
 @Component({
   selector: 'app-user-login',
@@ -60,12 +61,15 @@ export class UserLoginComponent implements OnInit {
     if (!this.form.invalid) {
       const user = this.form.getRawValue()
       console.log('sending http request');
-      this.http.post('user/login', user).subscribe({
-        next: (res: any) => {
+      this.http.post<IApiUserAuthRes>('user/login', user).subscribe({
+        next: (res: IApiUserAuthRes) => {
           console.log('navigating to home', res);
-          localStorage.setItem('userToken', res.token)
-          this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
-          void this.router.navigate(['/'])
+          if (res.data !== null) {
+            localStorage.setItem('userAccessToken', res.accessToken)
+            localStorage.setItem('userRefreshToken', res.refreshToken)
+            this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+            void this.router.navigate(['/'])
+          }
         }
       })
     }

@@ -5,6 +5,7 @@ export function isTokenExpired (token: string): boolean {
   if (payload?.exp) {
     const expireTime = payload.exp * 1000
     if (expireTime > Date.now()) return false
+    console.warn('token is expired')
     return true
   }
 

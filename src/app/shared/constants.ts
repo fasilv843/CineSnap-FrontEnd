@@ -1,4 +1,4 @@
-export const OTP_TIMER = 5 // 3 min in seconds
+export const OTP_TIMER = 60 * 3 // 3 min in seconds
 export const OTP_RESEND_MAX_TIME = 1000 * 60 * 10 // 10 min in milliseconds
 export const MAX_OTP_LIMIT = 3
 export const MIN_COLS = 5
@@ -23,3 +23,4 @@ export const mobileRegex = '^[1-9][0-9]{9}$'
 
 export const MinAge = 10
 export const MinDate = new Date(1960, 0, 1)
+export const nonAuthRotues = ['login', 'register']

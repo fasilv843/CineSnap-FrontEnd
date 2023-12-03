@@ -16,7 +16,7 @@ import { Store } from '@ngrx/store';
 import { formatTime } from 'src/app/helpers/timer';
 import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
 import { emailValidators, nameValidators, otpValidators, passwordValidators } from 'src/app/shared/valiators';
-import { type IApiUserRes, type IUserSocialAuth, type IUserRes } from 'src/app/models/users'
+import { type IUserSocialAuth, type IUserRes, type IApiUserAuthRes } from 'src/app/models/users'
 
 @Component({
   selector: 'app-user-register',
@@ -59,9 +59,10 @@ export class UserRegisterComponent implements OnInit {
       }
 
       console.log(user, 'user from auth service');
-      this.http.post<IApiUserRes>('user/auth/google', userData).subscribe({
-        next: (res: IApiUserRes) => {
-          localStorage.setItem('userToken', res.token)
+      this.http.post<IApiUserAuthRes>('user/auth/google', userData).subscribe({
+        next: (res: IApiUserAuthRes) => {
+          localStorage.setItem('userAccessToken', res.accessToken)
+          localStorage.setItem('userRefreshToken', res.refreshToken)
           this.store.dispatch(saveUserOnStore({ userDetails: res.data as IUserRes }))
           void this.router.navigate(['/'])
         }
@@ -135,9 +136,10 @@ export class UserRegisterComponent implements OnInit {
       console.log(user);
       console.log(user.otp);
       const otp = user.otp
-      this.http.post<IApiUserRes>('user/validateOtp', { otp }).subscribe({
-        next: (res: IApiUserRes) => {
-          localStorage.setItem('userToken', res.token)
+      this.http.post<IApiUserAuthRes>('user/validateOtp', { otp }).subscribe({
+        next: (res: IApiUserAuthRes) => {
+          localStorage.setItem('userAccessToken', res.accessToken)
+          localStorage.setItem('userRefreshToken', res.refreshToken)
           localStorage.removeItem('userAuthToken')
           this.store.dispatch(saveUserOnStore({ userDetails: res.data as IUserRes }))
           void this.router.navigate(['/'])
