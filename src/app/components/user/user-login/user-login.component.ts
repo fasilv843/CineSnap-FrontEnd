@@ -8,7 +8,7 @@ import { saveUserOnStore } from 'src/app/states/user/user.actions';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { validateByTrimming } from 'src/app/helpers/validations';
 import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
-import { IApiUserAuthRes } from 'src/app/models/users';
+import { type IApiUserAuthRes } from 'src/app/models/users';
 
 @Component({
   selector: 'app-user-login',
@@ -41,10 +41,11 @@ export class UserLoginComponent implements OnInit {
       }
 
       console.log(user, 'user from auth service');
-      this.http.post('user/auth/google', userData).subscribe({
-        next: (res: any) => {
-          localStorage.setItem('userToken', res.token)
-          this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+      this.http.post<IApiUserAuthRes>('user/auth/google', userData).subscribe({
+        next: (res: IApiUserAuthRes) => {
+          localStorage.setItem('userAccessToken', res.accessToken)
+          localStorage.setItem('userRefreshToken', res.refreshToken)
+          if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
           void this.router.navigate(['/'])
         }
       })

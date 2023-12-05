@@ -18,7 +18,7 @@ export class AdminUsersComponent implements OnInit {
 
   ngOnInit (): void {
     this.userService.getAllUsers().subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.users = res.data
       },
       error: (err) => {

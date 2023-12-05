@@ -19,7 +19,7 @@ export class AdminTheatersComponent {
 
   ngOnInit (): void {
     this.theaterService.getAllTheaters().subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.theaters = res.data
       }
     })

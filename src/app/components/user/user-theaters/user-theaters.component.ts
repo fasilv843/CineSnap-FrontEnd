@@ -40,7 +40,7 @@ export class UserTheatersComponent implements OnInit, OnDestroy {
         const lon = coords.coordinates[0]
         const lat = coords.coordinates[1]
         this.theaterService.getNearestTheaters(lon, lat).subscribe({
-          next: (res: any) => {
+          next: (res) => {
             console.log(res, 'nearest theater response');
             this.theaters = res.data
           }
