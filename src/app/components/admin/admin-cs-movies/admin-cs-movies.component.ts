@@ -24,7 +24,7 @@ export class AdminCsMoviesComponent {
   }
 
   filterMovies (event: IFilterEvent): void {
-    console.log(event, 'event data');
+    console.log(event, 'event data')
 
     this.filteredMovies = this.movies.filter(movie => {
       return (
