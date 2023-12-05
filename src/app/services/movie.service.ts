@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { IApiCSMovieRes, IApiCSMoviesRes, Movie } from '../models/movie';
 import { HttpClient } from '@angular/common/http';
 import { type Observable } from 'rxjs';
+import { IApiFilters } from '../models/filter';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,7 @@ export class MovieService {
   }
 
   deleteMovie (movieId: string): Observable<IApiCSMovieRes> {
+    console.log(movieId);
     return this.http.patch<IApiCSMovieRes>(`admin/movies/delete/${movieId}`, {})
   }
 
@@ -47,5 +49,10 @@ export class MovieService {
 
   fetchCineSnapMovies (): Observable<{ status: number, message: string, data: number[] }> {
     return this.http.get<{ status: number, message: string, data: number[] }>('admin/csmovies/get')
+  }
+
+  fetchFilterDatas (): Observable<IApiFilters> {
+    console.log('fetching data for filtering');
+    return this.http.get<IApiFilters>('user/filters')
   }
 }

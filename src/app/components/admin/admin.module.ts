@@ -15,6 +15,7 @@ import { AdminCsMoviesComponent } from './admin-cs-movies/admin-cs-movies.compon
 import { AdminMoviesSearchComponent } from './admin-movies-search/admin-movies-search.component';
 import { AdminMoviesExploreComponent } from './admin-movies-explore/admin-movies-explore.component';
 import { ValidationModule } from 'src/app/modules/validation/validation.module';
+import { FilterComponent } from '../common/filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ValidationModule } from 'src/app/modules/validation/validation.module';
     AdminMoviesComponent,
     AdminCsMoviesComponent,
     AdminMoviesSearchComponent,
-    AdminMoviesExploreComponent
+    AdminMoviesExploreComponent,
+    FilterComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,14 @@
+/* Styles for the filter sidebar */
+/* .filter-sidebar { */
+    /* width: 200px; Adjust the width as needed */
+    /* background-color: #333; Example background color */
+    /* color: white; Example text color */
+  /* } */
+  
+  /* Styles for the movies container */
+  .movies-container {
+    flex-grow: 1;
+    /* margin-left: 20%; Set the same value as the filter sidebar width */
+    padding: 1rem; /* Adjust as needed */
+  }
+  

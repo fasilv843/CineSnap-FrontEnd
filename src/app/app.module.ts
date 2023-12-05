@@ -14,11 +14,13 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { ErrorHandlerInterceptor } from './interceptors/error-handler.interceptor';
+// import { FilterComponent } from './components/common/filter/filter.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    // FilterComponent
   ],
   imports: [
     BrowserModule,

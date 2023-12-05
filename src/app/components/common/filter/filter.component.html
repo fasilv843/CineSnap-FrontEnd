@@ -1,0 +1,55 @@
+
+
+    <!-- filter sidebar -->
+    <div class="w-60 py-4 px-2 text-amber-300 bg-black text-left capitalize font-medium shadow-lg h-screen overflow-y-auto">
+  
+        <div class="mb-3">
+            <span class="text-amber-500">Availability</span>
+        </div>
+
+        <a (click)="applyFilter('Deleted', 'Availability')">
+            <label class="cursor-pointer flex items-center mb-2">
+            <input type="checkbox"  />
+            <span class="mx-2">Deleted Movies</span>
+            </label>
+        </a>
+
+        <a (click)="applyFilter('Available', 'Availability')">
+            <label class="cursor-pointer flex items-center mb-2">
+            <input type="checkbox" />
+            <span class="mx-2">Available Movies</span>
+            </label>
+        </a>
+    
+      <!-- Filter heading for Genres -->
+      <div class="mb-3">
+        <span class="text-amber-500">Genres</span>
+      </div>
+  
+    <!-- Subheading for each genre with checkboxes -->
+    <div *ngFor="let genre of genres">
+        <a (click)="applyFilter(genre, 'Genres')">
+            <label class="cursor-pointer flex items-center mb-2">
+            <input type="checkbox" />
+            <span class="mx-2">{{ getGenre(genre) }}</span>
+            </label>
+        </a>
+    </div>
+  
+  
+      <!-- Filter heading for Languages -->
+      <div class="mb-3">
+        <span class="text-amber-500">Languages</span>
+      </div>
+
+      <div *ngFor="let language of languages">
+        <a (click)="applyFilter(language, 'Languages')">
+            <label class="cursor-pointer flex items-center mb-2">
+            <input type="checkbox"  />
+            <span class="mx-2">{{ getLanguage(language) }}</span>
+            </label>
+        </a>
+      </div>
+    </div>
+
+  
