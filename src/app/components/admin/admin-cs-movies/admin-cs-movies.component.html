@@ -5,7 +5,7 @@
 
 <div class="flex mt-40">
   <!-- Filter Sidebar -->
-    <app-filter class="h-screen" (filterApplied)="filterMovies($event)"></app-filter>
+    <app-filter class="h-screen" (filterApplied)="filterMovies($event)" [isAdmin]="true"></app-filter>
 
   <!-- Movies Content -->
   <div class="movies-container overflow-y-scroll h-screen flex-1">

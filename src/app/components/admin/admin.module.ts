@@ -28,15 +28,15 @@ import { FilterComponent } from '../common/filter/filter.component';
     AdminMoviesComponent,
     AdminCsMoviesComponent,
     AdminMoviesSearchComponent,
-    AdminMoviesExploreComponent,
-    FilterComponent
+    AdminMoviesExploreComponent
   ],
   imports: [
     CommonModule,
     AdminRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    ValidationModule
+    ValidationModule,
+    FilterComponent
   ]
 })
 export class AdminModule { }

@@ -3,6 +3,7 @@
     <!-- filter sidebar -->
     <div class="w-60 py-4 px-2 text-amber-300 bg-black text-left capitalize font-medium shadow-lg h-screen overflow-y-auto">
   
+      <div *ngIf="isAdmin">
         <div class="mb-3">
             <span class="text-amber-500">Availability</span>
         </div>
@@ -20,6 +21,7 @@
             <span class="mx-2">Available Movies</span>
             </label>
         </a>
+      </div>
     
       <!-- Filter heading for Genres -->
       <div class="mb-3">

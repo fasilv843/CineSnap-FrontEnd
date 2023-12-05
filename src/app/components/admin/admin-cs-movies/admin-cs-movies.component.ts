@@ -45,26 +45,6 @@ export class AdminCsMoviesComponent {
     })
   }
 
-  // filterMovies (event: IFilterEvent): void {
-  //   console.log(event, 'filter applied event from admin cs movies')
-  //   this.filteredMovies = this.movies.filter(movie => {
-  //     return event.filterGenres.some(genreId => movie.genre_ids.includes(genreId))
-  //   }).filter(movie => event.filterLanguages.includes(movie.language as langType))
-  //     .filter(movie => {
-  //       switch (event.availability) {
-  //         case 'All':
-  //           return true
-  //         case 'Available':
-  //           return !movie.isDeleted
-  //         case 'Deleted':
-  //           return movie.isDeleted
-  //         default:
-  //           console.log('new value for availability')
-  //           return true
-  //       }
-  //     })
-  // }
-
   deleteMovie (movieId: string, action: 'Add' | 'Delete'): void {
     void Swal.fire({
       title: 'Are you sure?',

@@ -21,6 +21,7 @@ import { EditScreenComponent } from './edit-screen/edit-screen.component';
 import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater-profile.component';
 import { ImageModule } from 'src/app/modules/image/image.module';
 import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
+import { FilterComponent } from '../common/filter/filter.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
     ReactiveFormsModule,
     ValidationModule,
     StoreModule.forFeature('theater', theaterReducer),
-    ImageModule
+    ImageModule,
+    FilterComponent
   ]
 })
 export class TheaterModule { }

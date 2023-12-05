@@ -1,15 +1,19 @@
-import { Component, EventEmitter, Inject, Output, type OnInit } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { Component, EventEmitter, Inject, Output, type OnInit, Input } from '@angular/core'
 import { type IFilterEvent, type langType, type genreType, type valueType } from 'src/app/models/filter'
 import { MovieService } from 'src/app/services/movie.service'
 import { GENRE_NAMES } from 'src/app/shared/genreIds'
 import { LanguageAbbreviation } from 'src/app/shared/langAbbreviation'
 
 @Component({
+  standalone: true,
+  imports: [CommonModule],
   selector: 'app-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.css']
 })
 export class FilterComponent implements OnInit {
+  @Input() isAdmin: boolean = false
   @Output() filterApplied = new EventEmitter<IFilterEvent>()
   languages: langType[] = []
   genres: genreType[] = []
@@ -42,7 +46,7 @@ export class FilterComponent implements OnInit {
       this.filterLanguages.includes(value)
         ? this.filterLanguages = this.filterLanguages.filter(lang => lang !== value)
         : this.filterLanguages.push(value)
-    } else if (type === 'Availability' && (value === 'Deleted' || value === 'Available')) {
+    } else if (this.isAdmin && type === 'Availability' && (value === 'Deleted' || value === 'Available')) {
       this.avail.includes(value)
         ? this.avail = this.avail.filter(v => v !== value)
         : this.avail.push(value)

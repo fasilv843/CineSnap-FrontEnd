@@ -1,9 +1,9 @@
 <app-user-nav></app-user-nav>
 
-<!-- <div class="flex"> -->
+<div class="flex">
   <!-- Filter Sidebar -->
-
-<div class="container mx-auto p-4">
+  <app-filter class="h-screen" (filterApplied)="filterMovies($event)" [isAdmin]="false"></app-filter>
+<div class="container mx-auto p-4 overflow-y-scroll h-screen flex-1">
     <div class="text-lg font-bold mb-3">
       <h3>Movies</h3>
     </div>
@@ -23,4 +23,4 @@
       </ng-container>
     </div>
   </div>
-<!-- </div> -->
+</div>

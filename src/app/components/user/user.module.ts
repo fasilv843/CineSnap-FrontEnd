@@ -23,6 +23,7 @@ import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { ImageModule } from 'src/app/modules/image/image.module';
 import { UserBookingsComponent } from './user-bookings/user-bookings.component';
 import { TheaterPageComponent } from './theater-page/theater-page.component';
+import { FilterComponent } from '../common/filter/filter.component';
 
 // import { AngularFireModule } from '@angular/fire/compat';
 // import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
@@ -62,7 +63,8 @@ import { TheaterPageComponent } from './theater-page/theater-page.component';
     StoreModule.forFeature('coords', coordsReducer),
     SocialLoginModule,
     ValidationModule,
-    ImageModule
+    ImageModule,
+    FilterComponent
     // AngularFireModule.initializeApp(environments.firebaseConfig),
     // AngularFirestoreModule,
     // AngularFireStorageModule,

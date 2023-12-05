@@ -44,11 +44,6 @@ export class UserMoviesComponent implements OnInit {
         (
           event.filterLanguages.includes(movie.language as langType) ||
           event.filterLanguages.length === 0
-        ) &&
-        (
-          event.availability === 'All' ||
-          (event.availability === 'Available' && !movie.isDeleted) ||
-          (event.availability === 'Deleted' && movie.isDeleted)
         )
       )
     })
