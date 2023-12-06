@@ -5,25 +5,16 @@
 	<h2 class="mb-4 text-2xl font-semibold text-black">Theaters</h2>
 	<div class="overflow-x-auto">
 		<table class="w-full p-6 text-xs text-left whitespace-nowrap">
-			<!-- <colgroup>
-				<col class="w-5">
-				<col>
-				<col>
-				<col>
-				<col>
-				<col>
-				<col class="w-5">
-			</colgroup> -->
 			<thead>
 				<tr class="dark:bg-gray-700">
 					<th class="p-3">No</th>
 					<th class="p-3">Name</th>
+					<!-- <th class="p-3">Screen Count</th> -->
 					<th class="p-3">Contact</th>
 					<th class="p-3">Wallet</th>
-					<th class="p-3">DOB</th>
+					<th class="p-3">Liscence Id</th>
 					<th class="p-3">Address</th>
 					<th class="p-3">Block
-						<!-- <span class="sr-only"></span> -->
 					</th>
 				</tr>
 			</thead>
@@ -33,6 +24,9 @@
 					<td class="px-3 py-2">
 						<p>{{ theater.name }}</p>
 					</td>
+					<!-- <td class="px-3 py-2">
+						<p>{{ theater.screenCount }}</p>
+					</td> -->
 					<td class="px-3 py-2">
 						<span>{{ theater.email }}</span>
 						<p class="dark:text-gray-400">{{ theater.mobile }}</p>

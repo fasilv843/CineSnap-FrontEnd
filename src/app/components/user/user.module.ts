@@ -24,6 +24,7 @@ import { ImageModule } from 'src/app/modules/image/image.module';
 import { UserBookingsComponent } from './user-bookings/user-bookings.component';
 import { TheaterPageComponent } from './theater-page/theater-page.component';
 import { FilterComponent } from '../common/filter/filter.component';
+import { DateComponent } from '../common/date/date.component';
 
 // import { AngularFireModule } from '@angular/fire/compat';
 // import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
@@ -64,7 +65,8 @@ import { FilterComponent } from '../common/filter/filter.component';
     SocialLoginModule,
     ValidationModule,
     ImageModule,
-    FilterComponent
+    FilterComponent,
+    DateComponent
     // AngularFireModule.initializeApp(environments.firebaseConfig),
     // AngularFirestoreModule,
     // AngularFireStorageModule,

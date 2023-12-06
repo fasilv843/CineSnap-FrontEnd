@@ -1,0 +1,11 @@
+.vertical-text {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    white-space: nowrap;
+}
+/* 
+@media (min-width: 640px) {
+    .sm-hidden {
+        display: none;
+    }
+} */

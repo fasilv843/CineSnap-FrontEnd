@@ -19,8 +19,9 @@ export class AdminNavComponent {
   }
 
   onLogout (): void {
-    localStorage.removeItem('adminToken')
-    void this.router.navigate(['/user/home'])
+    localStorage.removeItem('adminAccessToken')
+    localStorage.removeItem('adminRefreshToken')
+    void this.router.navigate(['/admin/login'])
     this.toggleSideBar()
   }
 }

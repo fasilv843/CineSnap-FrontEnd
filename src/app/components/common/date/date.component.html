@@ -1,0 +1,69 @@
+
+<div class="flex flex-col bg-gray-200 rounded shadow-md px-4 py-2">
+    <div class="flex flex-col md:flex-row justify-between">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex gap-2 ">
+          <ng-container class="inline-block sm:hidden">
+            <div class="month-separator flex">
+              <div class="w-5 h-14 bg-gray-500 vertical-text rounded-sm flex items-center justify-center mr-1">
+                {{ dates[0] | date: 'MMM' | uppercase }}
+              </div>
+              <div class="flex flex-col items-center justify-center w-14 h-14 mr-1 border-2 border-gray-500 rounded-md">
+                <a (click)="onSelectDate(dates[0])">
+                    <span class="text-sm font-semibold text-gray-700">{{ dates[0] | date: 'EEE' }}</span>
+                    <p class="text-lg font-bold text-gray-900">{{ dates[0] | date: 'd' }}</p>
+                </a>
+              </div>
+            </div>
+          </ng-container>
+          <div *ngFor="let date of dates; let i = index" class="hidden sm:inline-block">
+              <ng-container *ngIf="(date | date: 'MM') !== (dates[i - 1] | date: 'MM') || i === 0">
+                <div class="month-separator flex">
+                  <div class="w-5 h-14 bg-gray-500 vertical-text rounded-sm flex items-center justify-center mr-1">
+                    {{ date | date: 'MMM' | uppercase }}
+                  </div>
+                  <div class="flex flex-col items-center justify-center w-14 h-14 mr-1 border-2 border-gray-500 rounded-md">
+                    <a (click)="onSelectDate(date)">
+                        <span class="text-sm font-semibold text-gray-700">{{ date | date: 'EEE' }}</span>
+                        <p class="text-lg font-bold text-gray-900">{{ date | date: 'd' }}</p>
+                    </a>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="!((date | date: 'MM') !== (dates[i - 1] | date: 'MM') || i === 0)">
+                <div class="flex flex-col items-center justify-center w-14 h-14 mr-1 border-2 border-gray-500 rounded-md">
+                    <a (click)="onSelectDate(date)">
+                        <span class="text-sm font-semibold text-gray-700">{{ date | date: 'EEE' }}</span>
+                        <p class="text-lg font-bold text-gray-900">{{ date | date: 'd' }}</p>
+                    </a>
+                </div>
+              </ng-container>
+          </div>
+        </div>
+        <div class="flex flex-row space-x-2 my-2">
+            <div class="flex flex-col items-center justify-center mx-2">
+                <input #dateInput type="date" hidden>
+              <button (click)="dateInput.showPicker()" class="w-12 h-12 border-2 border-gray-500 rounded-md">C</button>
+              <p class="text-sm font-semibold text-gray-700">Pick Date</p>
+            </div>
+            <ng-content></ng-content>
+          </div>
+      </div>
+      
+      <div class="flex md:flex-col items-end md:items-start justify-around md:justify-start space-y-2">
+        <div class="flex items-center justify-end mx-1 space-x-2">
+          <div class="h-3 w-3 bg-green-500"></div>
+          <p class="text-green-500">Available</p>
+        </div>
+        <div class="flex items-center justify-end mx-1 space-x-2">
+          <div class="h-3 w-3 bg-orange-500"></div>
+          <p class="text-orange-500">Fast Filling</p>
+        </div>
+        <div class="flex items-center justify-end mx-1 space-x-2">
+          <div class="h-3 w-3 bg-red-500"></div>
+          <p class="text-red-500">Almost Full</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  

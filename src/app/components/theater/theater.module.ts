@@ -22,6 +22,7 @@ import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater
 import { ImageModule } from 'src/app/modules/image/image.module';
 import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
 import { FilterComponent } from '../common/filter/filter.component';
+import { DateComponent } from '../common/date/date.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { FilterComponent } from '../common/filter/filter.component';
     ValidationModule,
     StoreModule.forFeature('theater', theaterReducer),
     ImageModule,
-    FilterComponent
+    FilterComponent,
+    DateComponent
   ]
 })
 export class TheaterModule { }

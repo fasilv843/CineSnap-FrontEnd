@@ -40,9 +40,11 @@
       <!-- Go to Map Button -->
       <a href="map" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600">Go to Map</a>
     </div>
+
+    <app-date (dateSelected)="onSelectDate($event)"></app-date>
   
     <!-- Screens Section (you can add cards here) -->
-    <div *ngIf="screens.length !== 0; else noScreens">
+    <!-- <div *ngIf="screens.length !== 0; else noScreens">
         <div *ngFor="let screen of screens" class="max-w-md mx-auto bg-white rounded-xl overflow-hidden shadow-md border border-gray-300 md:max-w-2xl mt-8">
             <div class="md:flex">
               <div class="p-8 w-full">
@@ -60,8 +62,6 @@
                   <p class="text-gray-800">Default Price: {{ screen.defaultPrice }}</p>
                 </div>
                 <div class="mt-6 flex justify-end">
-                  <!-- <button (click)="editScreen(screen._id)" class="bg-blue-500 text-white px-4 py-2 rounded-full mr-2 hover:bg-blue-600">Edit</button>
-                  <button (click)="deleteScreen(screen._id)" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">Delete</button> -->
                 </div>
               </div>
             </div>
@@ -72,10 +72,9 @@
     <div class="flex items-center justify-center mt-20 w-full">
       <div class="text-center">
         <p class="text-lg font-semibold text-gray-600">No Screens</p>
-        <!-- <p class="text-gray-500"></p> -->
       </div>
     </div>
-  </ng-template>
+  </ng-template> -->
   
   </div>
 

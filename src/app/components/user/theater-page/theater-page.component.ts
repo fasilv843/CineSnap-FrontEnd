@@ -39,4 +39,8 @@ export class TheaterPageComponent implements OnInit {
       }
     })
   }
+
+  onSelectDate (date: Date): void {
+    console.log(date, 'date selected from onSelectDate')
+  }
 }
