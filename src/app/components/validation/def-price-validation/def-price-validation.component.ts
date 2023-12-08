@@ -7,6 +7,6 @@ import { type AbstractControl } from '@angular/forms'
   styleUrls: ['./def-price-validation.component.css']
 })
 export class DefPriceValidationComponent {
-  @Input() defPriceControl: AbstractControl | null = null
+  @Input() priceControl: AbstractControl | null = null
   @Input() isSubmitted: boolean = false
 }

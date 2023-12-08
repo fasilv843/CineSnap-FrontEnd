@@ -29,7 +29,7 @@
             <div class="mb-3">
               <label for="defaultPrice" class="font-semibold text-gray-700 my-1">Default Price:</label>
               <input id="defaultPrice" formControlName="defaultPrice" type="text" class="border-b border-gray-500 focus:outline-none mt-1 w-full" placeholder="Default Price"/>
-              <app-def-price-validation [defPriceControl]="form.get('defaultPrice')" [isSubmitted]="isSubmitted"></app-def-price-validation>
+              <app-def-price-validation [priceControl]="form.get('defaultPrice')" [isSubmitted]="isSubmitted"></app-def-price-validation>
             </div>
           </ng-container>
   

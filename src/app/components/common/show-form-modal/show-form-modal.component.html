@@ -1,0 +1,57 @@
+<!-- <p>show-form-modal works!</p> -->
+
+    <div class="max-w-2xl mx-auto shadow-xl rounded-lg text-gray-900 border-2 border-gray-300 bg-white">
+      <div class="p-4 md:p-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ modalTitle }}</h2>
+  
+        <form [formGroup]="showForm" (ngSubmit)="onSubmit()">
+          <ng-container class="flex flex-col">
+            <div class="mb-3">
+              <label for="screenName" class="block mb-2 text-sm font-semibold text-gray-700">Movie:</label>
+              <select id="movie" formControlName="movieId" class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm" placeholder="Select a movie" (change)="onMovieSelect()">
+                <option value="" disabled selected>Select a movie</option>
+                <option *ngFor="let movie of movies" [value]="movie._id">{{ movie.title }} {{ movie.release_date | date: 'yyyy' }}</option>
+              </select>
+              <app-movie-select-validation [movieIdControl]="showForm.get('movieId')" [isSubmitted]="isSubmitted"></app-movie-select-validation>
+            </div>
+          
+            <div class="mb-3">
+              <label for="screen" class="block mb-2 text-sm font-semibold text-gray-700">Screen:</label>
+              <select id="screen" formControlName="screenId" class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm" placeholder="Select a screen">
+                <option value="" disabled selected>Select a screen</option>
+                <option *ngFor="let screen of screens" [value]="screen._id">{{ screen.name }}</option>
+              </select>
+              <app-screen-select-validation [screenControl]="showForm.get('screenId')" [isSubmitted]="isSubmitted"></app-screen-select-validation>
+            </div>
+          
+            <div class="mb-3 flex flex-col sm:flex-row">
+              <div class="flex-grow mb-2 sm:mr-2">
+                <label for="startTime" class="block mb-2 text-sm font-semibold text-gray-700">Starting Time:</label>
+                <input id="startTime" formControlName="startTime" type="time" class="block w-full bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Select start time" (change)="onStartTimeChange($event)" />
+                <app-start-time-validation [startTimeControl]="showForm.get('startTime')" [isSubmitted]="isSubmitted"></app-start-time-validation>
+              </div>
+              <div class="flex-grow mb-2 sm:ml-2">
+                <span class="block mb-2 text-sm font-bold text-gray-700">Ending Time:</span>
+                <span class="bg-gray-100 rounded-md p-2.5 text-gray-700 sm:text-sm">{{ endingTime }}</span>
+              </div>
+            </div>
+            
+            
+          
+            <div class="mb-3">
+              <label for="ticketPrice" class="block mb-2 text-sm font-semibold text-gray-700">Ticket Price:</label>
+              <input id="ticketPrice" formControlName="ticketPrice" type="text" class="block w-full bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" />
+              <app-def-price-validation [priceControl]="showForm.get('ticketPrice')" [isSubmitted]="isSubmitted"></app-def-price-validation>
+            </div>
+          </ng-container>
+          
+  
+          <hr class="border-t mx-0 mt-2">
+  
+          <div class="flex justify-around items-center p-4 space-x-4">
+            <button (click)="onCancel()" class="w-full md:w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">Cancel</button>
+            <button type="submit" class="w-full md:w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">{{ submitBtn }}</button>
+          </div>
+        </form>
+      </div>
+    </div>

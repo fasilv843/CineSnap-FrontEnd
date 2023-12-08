@@ -16,6 +16,9 @@ import { DobValidationComponent } from 'src/app/components/validation/dob-valida
 import { MobileValidationComponent } from 'src/app/components/validation/mobile-validation/mobile-validation.component'
 import { StateValidationComponent } from 'src/app/components/validation/state-validation/state-validation.component'
 import { ZipValidationComponent } from 'src/app/components/validation/zip-validation/zip-validation.component'
+import { MovieSelectValidationComponent } from 'src/app/components/validation/movie-select-validation/movie-select-validation.component'
+import { ScreenSelectValidationComponent } from 'src/app/components/validation/screen-select-validation/screen-select-validation.component'
+import { StartTimeValidationComponent } from 'src/app/components/validation/start-time-validation/start-time-validation.component'
 
 @NgModule({
   declarations: [
@@ -34,7 +37,10 @@ import { ZipValidationComponent } from 'src/app/components/validation/zip-valida
     DistrictValidationComponent,
     StateValidationComponent,
     CountryValidationComponent,
-    ZipValidationComponent
+    ZipValidationComponent,
+    MovieSelectValidationComponent,
+    ScreenSelectValidationComponent,
+    StartTimeValidationComponent
   ],
   imports: [
     CommonModule
@@ -55,7 +61,10 @@ import { ZipValidationComponent } from 'src/app/components/validation/zip-valida
     DistrictValidationComponent,
     StateValidationComponent,
     CountryValidationComponent,
-    ZipValidationComponent
+    ZipValidationComponent,
+    MovieSelectValidationComponent,
+    ScreenSelectValidationComponent,
+    StartTimeValidationComponent
   ]
 })
 export class ValidationModule { }

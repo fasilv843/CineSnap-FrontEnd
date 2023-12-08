@@ -9,7 +9,18 @@
     >
       Add Screen
     </button>
-  </div>
+</div>
+
+  <!-- <div 
+    *ngIf="screens.length !== 0"
+    class="flex justify-end pr-10 pt-5">
+    <button
+    (click)="openAddScreenModal()"
+      class="block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2"
+    >
+      Add Screen
+    </button>
+  </div> -->
 
   <div *ngIf="screens.length !== 0; else noScreens">
       <div *ngFor="let screen of screens" class="max-w-md mx-auto bg-white rounded-xl overflow-hidden shadow-md border border-gray-300 md:max-w-2xl mt-8">

@@ -1,10 +1,13 @@
 import { Component, Inject, type OnInit } from '@angular/core'
 import { Router } from '@angular/router'
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { Store, select } from '@ngrx/store'
 import { type IApiScreensRes, type IScreen } from 'src/app/models/screens'
 import { ScreenService } from 'src/app/services/screen.service'
+// import { screenFields } from 'src/app/shared/validationFields/screenFields'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import Swal from 'sweetalert2'
+// import { DynamicFormModalComponent } from '../../common/dynamic-form-modal/dynamic-form-modal.component'
 
 @Component({
   selector: 'app-thr-screens',
@@ -19,7 +22,8 @@ export class ThrScreensComponent implements OnInit {
   constructor (
     @Inject(ScreenService) private readonly screenService: ScreenService,
     @Inject(Store) private readonly store: Store,
-    @Inject(Router) private readonly router: Router
+    @Inject(Router) private readonly router: Router,
+    @Inject(NgbModal) private readonly modalService: NgbModal
   ) {}
 
   ngOnInit (): void {
@@ -36,6 +40,25 @@ export class ThrScreensComponent implements OnInit {
       }
     })
   }
+
+  // openAddScreenModal (): void {
+  //   const modalRef = this.modalService.open(DynamicFormModalComponent, { backdrop: 'static', centered: true })
+  //   // Access the component instance and set input values
+  //   modalRef.componentInstance.modalTitle = 'Add New Screen'
+  //   modalRef.componentInstance.submitBtn = 'Add'
+  //   modalRef.componentInstance.fields = screenFields
+  //   // modalRef.componentInstance.fields = yourFieldsArray
+
+  //   void modalRef.result.then(
+  //     (result) => {
+  //       console.log('submitted form data', result)
+  //     },
+  //     (reason) => {
+  //       // Handle dismissal or any other reason
+  //       console.log('Modal dismissed with reason:', reason)
+  //     }
+  //   )
+  // }
 
   viewScreen (screenId: string): void {
     void this.router.navigate(['/theater/screens', screenId])

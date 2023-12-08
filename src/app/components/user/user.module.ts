@@ -67,9 +67,6 @@ import { DateComponent } from '../common/date/date.component';
     ImageModule,
     FilterComponent,
     DateComponent
-    // AngularFireModule.initializeApp(environments.firebaseConfig),
-    // AngularFirestoreModule,
-    // AngularFireStorageModule,
   ],
   providers: [
     {
