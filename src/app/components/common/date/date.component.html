@@ -8,10 +8,11 @@
               <div class="w-5 h-14 bg-gray-500 vertical-text rounded-sm flex items-center justify-center mr-1">
                 {{ dates[0] | date: 'MMM' | uppercase }}
               </div>
-              <div class="flex flex-col items-center justify-center w-14 h-14 mr-1 border-2 border-gray-500 rounded-md">
+              <div  [class]="isCurrDate(dates[0]) ? 'border-gray-900 bg-amber-500' : 'border-gray-500'"
+               class="flex flex-col items-center justify-center w-14 h-14 mr-1 border-2 rounded-md">
                 <a (click)="onSelectDate(dates[0])">
                     <span class="text-sm font-semibold text-gray-700">{{ dates[0] | date: 'EEE' }}</span>
-                    <p class="text-lg font-bold text-gray-900">{{ dates[0] | date: 'd' }}</p>
+                    <p class="text-lg font-bold text-gray-900">{{ dates[0] | date: 'dd' }}</p>
                 </a>
               </div>
             </div>
@@ -22,19 +23,21 @@
                   <div class="w-5 h-14 bg-gray-500 vertical-text rounded-sm flex items-center justify-center mr-1">
                     {{ date | date: 'MMM' | uppercase }}
                   </div>
-                  <div class="flex flex-col items-center justify-center w-14 h-14 mr-1 border-2 border-gray-500 rounded-md">
+                  <div [class]="isCurrDate(date) ? 'border-gray-900 bg-amber-500' : 'border-gray-500'"
+                  class="flex flex-col items-center justify-center w-14 h-14 mr-1 border-2 rounded-md">
                     <a (click)="onSelectDate(date)">
                         <span class="text-sm font-semibold text-gray-700">{{ date | date: 'EEE' }}</span>
-                        <p class="text-lg font-bold text-gray-900">{{ date | date: 'd' }}</p>
+                        <p class="text-lg font-bold text-gray-900">{{ date | date: 'dd' }}</p>
                     </a>
                   </div>
                 </div>
               </ng-container>
               <ng-container *ngIf="!((date | date: 'MM') !== (dates[i - 1] | date: 'MM') || i === 0)">
-                <div class="flex flex-col items-center justify-center w-14 h-14 mr-1 border-2 border-gray-500 rounded-md">
+                <div  [class]="isCurrDate(date) ? 'border-gray-900 bg-amber-500' : 'border-gray-500'"
+                  class="flex flex-col items-center justify-center w-14 h-14 mr-1 border-2 rounded-md">
                     <a (click)="onSelectDate(date)">
                         <span class="text-sm font-semibold text-gray-700">{{ date | date: 'EEE' }}</span>
-                        <p class="text-lg font-bold text-gray-900">{{ date | date: 'd' }}</p>
+                        <p class="text-lg font-bold text-gray-900">{{ date | date: 'dd' }}</p>
                     </a>
                 </div>
               </ng-container>
@@ -42,7 +45,7 @@
         </div>
         <div class="flex flex-row space-x-2 my-2">
             <div class="flex flex-col items-center justify-center mx-2">
-                <input #dateInput type="date" hidden>
+                <input #dateInput type="date" (change)="onDateChange($event)" hidden>
               <button (click)="dateInput.showPicker()" class="w-12 h-12 border-2 border-gray-500 rounded-md">C</button>
               <p class="text-sm font-semibold text-gray-700">Pick Date</p>
             </div>

@@ -5,3 +5,16 @@ export function dateToString (date: Date): string {
 
   return `${year}-${month}-${day}`
 }
+
+export function getDatesArray (): Date[] {
+  const datesArray = []
+  const today = new Date()
+
+  for (let i = 0; i < 5; i++) {
+    const nextDate = new Date(today)
+    nextDate.setDate(today.getDate() + i)
+    datesArray.push(nextDate)
+  }
+
+  return datesArray
+}

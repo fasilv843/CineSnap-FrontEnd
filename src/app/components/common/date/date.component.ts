@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { Component, type OnInit, EventEmitter, Output, Input } from '@angular/core'
+import { getDatesArray } from 'src/app/helpers/date'
 
 @Component({
   standalone: true,
@@ -10,15 +11,19 @@ import { Component, type OnInit, EventEmitter, Output, Input } from '@angular/co
 })
 export class DateComponent implements OnInit {
   @Output() dateSelected = new EventEmitter<Date>()
-  dates: Date[] = this.getDatesArray()
+  dates: Date[] = getDatesArray()
   @Input() currDate: Date = new Date()
 
   ngOnInit (): void {
     console.log(this.dates, 'dates from shows')
   }
 
-  event (event: any): void {
-    console.log(event)
+  onDateChange (event: Event): void {
+    const selectedDate: Date | null = (event.target as HTMLInputElement).valueAsDate
+    console.log(selectedDate, 'date picked event')
+    if (selectedDate !== null) {
+      this.dateSelected.emit(selectedDate)
+    }
   }
 
   onSelectDate (date: Date): void {
@@ -26,16 +31,8 @@ export class DateComponent implements OnInit {
     this.dateSelected.emit(date)
   }
 
-  getDatesArray (): Date[] {
-    const datesArray = []
-    const today = new Date('2023-11-28')
-
-    for (let i = 0; i < 5; i++) {
-      const nextDate = new Date(today)
-      nextDate.setDate(today.getDate() + i)
-      datesArray.push(nextDate)
-    }
-
-    return datesArray
+  isCurrDate (date: Date): boolean {
+    // Compare the date with currDate and return true if they match
+    return date.toDateString() === this.currDate.toDateString()
   }
 }
