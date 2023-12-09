@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common'
-import { Component, type OnInit, EventEmitter, Output } from '@angular/core'
+import { Component, type OnInit, EventEmitter, Output, Input } from '@angular/core'
 
 @Component({
   standalone: true,
@@ -11,6 +11,7 @@ import { Component, type OnInit, EventEmitter, Output } from '@angular/core'
 export class DateComponent implements OnInit {
   @Output() dateSelected = new EventEmitter<Date>()
   dates: Date[] = this.getDatesArray()
+  @Input() currDate: Date = new Date()
 
   ngOnInit (): void {
     console.log(this.dates, 'dates from shows')

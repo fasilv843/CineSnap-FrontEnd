@@ -1,7 +1,7 @@
 <app-thr-nav></app-thr-nav>
 
 
-<app-date (dateSelected)="onSelectDate($event)">
+<app-date (dateSelected)="onSelectDate($event)" [currDate]="currDate">
   <div class="flex flex-col items-center justify-center mx-2">
     <button (click)="addNewShow()" class="w-12 h-12 border-2 border-gray-500 rounded-md">+</button>
     <p class="text-sm font-semibold text-gray-700">Add Show</p>
@@ -9,3 +9,51 @@
 </app-date>
 
 
+
+<div *ngFor="let screen of screens" class="container mx-auto p-6">
+  <div class="bg-white p-6 rounded-lg shadow-lg">
+    <h3 class="text-2xl font-semibold text-gray-900 mb-4">{{ screen.screenName }}</h3>
+
+    <div  *ngFor="let show of screen.shows" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Movie Section -->
+      <div class="flex items-center mb-4">
+        <img class="w-24 h-24 object-cover rounded" src="https://image.tmdb.org/t/p/original/{{ show.movieId.poster_path }}" alt="{{ show.movieId.title }} poster">
+        <div class="ml-4">
+          <h5 class="text-xl font-semibold">{{ show.movieId.title }}</h5>
+          <small class="text-gray-600">{{ show.movieId.language }}</small>
+          <p class="text-gray-700">{{ show.movieId.genre_ids }}</p>
+          <p class="text-gray-700">{{ show.movieId.duration.hours }}:{{ show.movieId.duration.minutes }} hours</p>
+        </div>
+      </div>
+
+      <!-- Show Timings Section -->
+      <!-- Repeat this block for each time slot -->
+      <div *ngFor="let show of show.shows" class="mb-4">
+        <div class="rounded-md px-4 py-3 bg-gray-100 text-gray-700">
+          <div class="flex justify-between mb-2">
+            <span class="font-semibold">Time</span>
+            <p class="text-right">{{ show.startTime | date: 'h:mm a' }} - {{ show.endTime | date: 'h:mm a' }}</p>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span class="font-semibold">Seats Count</span>
+            <p class="text-right">{{ show.totalSeatCount }}</p>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span class="font-semibold">Filled</span>
+            <p class="text-right">{{ show.totalSeatCount - show.availableSeatCount }}</p>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span class="font-semibold">Remaining</span>
+            <p class="text-right">{{ show.availableSeatCount }}</p>
+          </div>
+          <div class="flex justify-between">
+            <span class="font-semibold">Price</span>
+            <p class="text-right">&#8377; {{ show.ticketPrice }}</p>
+          </div>
+        </div>
+      </div>
+      <!-- Repeat block ends here -->
+
+    </div>
+  </div>
+</div>

@@ -1,3 +1,5 @@
+import { type ICSMovieRes } from './movie'
+
 export interface IShowSeat {
   col: number
   isBooked: boolean
@@ -17,16 +19,25 @@ export interface IShow {
 
 export interface IShowRequirements extends Omit<IShow, '_id' | 'totalSeatCount' | 'availableSeatCount' | 'seats'> {}
 
-export interface IShowRes extends IShow {}
+export interface IShowRes {
+  movieId: ICSMovieRes
+  shows: Array<Omit<IShow, 'seats'>>
+}
 
 export interface IApiShowsRes {
   status: number
   message: string
-  data: IShowRes[]
+  data: IShowsOnAScreen[] | null
 }
 
 export interface IApiShowRes {
   status: number
   message: string
-  data: IShowRes | null
+  data: IShow | null
+}
+
+export interface IShowsOnAScreen {
+  screenId: string
+  screenName: string
+  shows: IShowRes[]
 }

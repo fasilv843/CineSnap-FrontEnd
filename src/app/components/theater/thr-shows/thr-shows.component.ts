@@ -4,6 +4,7 @@ import { Store, select } from '@ngrx/store'
 import { ShowService } from 'src/app/services/show.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import { ShowFormModalComponent } from '../../common/show-form-modal/show-form-modal.component'
+import { type IShowsOnAScreen } from 'src/app/models/show'
 
 @Component({
   selector: 'app-thr-shows',
@@ -13,7 +14,9 @@ import { ShowFormModalComponent } from '../../common/show-form-modal/show-form-m
 export class ThrShowsComponent implements OnInit {
   theaterData$ = this.store.pipe(select(selectTheaterDetails))
   theaterId = ''
-  // screens:
+  screens: IShowsOnAScreen[] = []
+  currDate: Date = new Date()
+
   constructor (
     @Inject(ShowService) private readonly showService: ShowService,
     @Inject(Store) private readonly store: Store,
@@ -57,11 +60,13 @@ export class ThrShowsComponent implements OnInit {
   }
 
   onSelectDate (date: Date): void {
+    this.currDate = date
     console.log(date.toISOString().split('T')[0], 'date selected from onSelectDate')
     const formattedDate = date.toISOString().split('T')[0]
     this.showService.findShowsOnDate(this.theaterId, formattedDate).subscribe({
       next: (res) => {
         console.log(res.data, 'res.data from show service')
+        if (res.data !== null) this.screens = res.data
       }
     })
   }
