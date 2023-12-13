@@ -25,6 +25,7 @@ import { UserBookingsComponent } from './user-bookings/user-bookings.component';
 import { TheaterPageComponent } from './theater-page/theater-page.component';
 import { FilterComponent } from '../common/filter/filter.component';
 import { DateComponent } from '../common/date/date.component';
+import { UserMessageComponent } from './user-message/user-message.component';
 
 // import { AngularFireModule } from '@angular/fire/compat';
 // import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
@@ -53,7 +54,8 @@ import { DateComponent } from '../common/date/date.component';
     UserProfileComponent,
     EditUserProfileComponent,
     UserBookingsComponent,
-    TheaterPageComponent
+    TheaterPageComponent,
+    UserMessageComponent
   ],
   imports: [
     CommonModule,

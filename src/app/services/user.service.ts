@@ -36,4 +36,8 @@ export class UserService {
   updateUserDetails (userId: string, userData: IUserUpdate): Observable<IApiUserRes> {
     return this.http.put<IApiUserRes>(`user/update/${userId}`, userData)
   }
+
+  getUsersChattedWith (theaterId: string): Observable<IApiUsersRes> {
+    return this.http.get<IApiUsersRes>(`theater/chat/users/${theaterId}`)
+  }
 }

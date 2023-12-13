@@ -1,7 +1,8 @@
-<app-thr-nav></app-thr-nav>
+<app-user-nav></app-user-nav>
 
 
 <div class="flex h-screen p-1">
+    <!-- User List (3-width) with padding -->
     <div class="w-3/12 bg-gray-200 p-3 overflow-y-auto">
         <!-- Search Bar -->
         <!-- <div class="mb-4">
@@ -9,21 +10,36 @@
                 class="w-full px-2 py-1 border rounded focus:outline-none focus:border-blue-500">
         </div> -->
 
-        <div *ngFor="let user of users">
-            <a (click)="onSelectUser(user)">
+        <!-- User List with Unread Message Badge -->
+        <div *ngFor="let theater of theaters">
+            <a (click)="onSelectTheater(theater)">
                 <div class="flex items-center space-x-4 mb-4 relative">
                     <!-- <span class="absolute top-1/2 right-2 transform -translate-y-1/2 h-4 min-w-4 bg-amber-500 rounded-full flex items-center justify-center text-white text-xs p-2">99+</span> -->
                     <img src="user1.jpg" alt="User 1" class="w-8 h-8 rounded-full">
                     <div class="flex flex-col">
-                        <span class="font-bold text-gray-800">{{ user.name }}</span>
+                        <span class="font-bold text-gray-800">{{ theater.name }}</span>
                         <!-- <span class="text-gray-600">Online</span> -->
                     </div>
                 </div>
             </a>
         </div>
+
+        <!-- <div class="flex items-center space-x-4 mb-4 relative">
+            <span
+                class="absolute top-1/2 right-2 transform -translate-y-1/2 h-4 min-w-4 bg-amber-500 rounded-full flex items-center justify-center text-white text-xs p-2">99+</span>
+            <img src="user1.jpg" alt="User 1" class="w-8 h-8 rounded-full">
+            <div class="flex flex-col">
+                <span class="font-bold text-gray-800">User 1</span>
+                <span class="text-gray-600">Online</span>
+            </div>
+        </div> -->
     </div>
 
-    <div *ngIf="!currUser" class="flex items-center justify-center w-full h-full">
+    <!-- <div>
+
+    </div> -->
+
+    <div *ngIf="!currTheater" class="flex items-center justify-center w-full h-full">
         <div class="text-center">
           <h2 class="text-2xl font-bold mb-4">Select anyone to start chatting</h2>
           <p class="text-gray-500">Choose a user or theater to begin your conversation.</p>
@@ -31,19 +47,25 @@
     </div>
 
     <!-- Chat Section (9-width) with padding -->
-    <div *ngIf="currUser" class="flex items-center justify-center w-full h-full">
+    <div *ngIf="currTheater" class="flex items-center justify-center w-full h-full">
         <div  class="flex-1 justify-between flex flex-col h-screen bg-white">
+        <!-- Existing chat component code here -->
 
         <div class="flex-1 sm:p-6 justify-between flex flex-col h-screen">
             <div class="flex sm:items-center justify-between py-1 border-b-2 border-gray-200">
                 <div class="relative flex items-center space-x-4">
-
+                    <!-- <div class="relative"> -->
+                    <!-- <span class="absolute text-green-500 right-0 bottom-0">
+                        <svg width="20" height="20">
+                           <circle cx="8" cy="8" r="8" fill="currentColor"></circle>
+                        </svg>
+                     </span> -->
                     <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
                         alt="" class="w-8 sm:w-16 h-8 sm:h-16 rounded-full">
                     <!-- </div> -->
                     <div class="flex flex-col leading-tight">
                         <div class="text-xl mt-1 flex items-center">
-                            <span class="text-gray-700 mr-3">{{ currUser.name }}</span>
+                            <span class="text-gray-700 mr-3">{{ currTheater.name }}</span>
                         </div>
                         <!-- <span class="text-xs text-gray-600">Online</span> -->
                     </div>
@@ -52,11 +74,11 @@
             </div>
 
 
-            <div id="messages" #messagesContainer
+            <div id="messages"
                 class="flex flex-col justify-start space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
 
                 <div *ngFor="let chat of chats" class="chat-message">
-                    <ng-container *ngIf="chat.sender === 'User'; else theaterMessage">
+                    <ng-container *ngIf="chat.sender === 'Theater'; else userMessage">
                       <div class="flex items-end">
                         <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
                           <div>
@@ -70,7 +92,7 @@
                           alt="Theater profile" class="w-6 h-6 rounded-full order-1">
                       </div>
                     </ng-container>
-                    <ng-template #theaterMessage>
+                    <ng-template #userMessage>
                       <div class="flex items-end justify-end">
                         <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
                           <div>
@@ -85,20 +107,8 @@
                       </div>
                     </ng-template>
                   </div>
-
-                  <!-- <ng-container *ngIf="feedback">
-                    <div class="flex items-end">
-                      <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
-                        <div>
-                          <span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">
-                             {{ feedback }}
-                          </span>
-                        </div>
-                      </div>
-                      <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
-                        alt="Theater profile" class="w-6 h-6 rounded-full order-1">
-                    </div>
-                  </ng-container> -->
+                  
+                  
 
             </div>
             <div class="border-t-2 border-gray-200 px-4 py-2 sm:mb-0">

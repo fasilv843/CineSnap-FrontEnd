@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IApiTheaterRes, IApiTheatersRes, ITheaterUpdate } from '../models/theater';
+import { IApiChatRes } from '../models/chat';
 
 @Injectable({
   providedIn: 'root'
@@ -44,5 +45,13 @@ export class TheaterService {
 
   getTheaterData (theaterId: string): Observable<IApiTheaterRes> {
     return this.http.get<IApiTheaterRes>(`user/theater/${theaterId}`)
+  }
+
+  getTheatersChattedWith (userId: string): Observable<IApiTheatersRes> {
+    return this.http.get<IApiTheatersRes>(`user/chat/theaters/${userId}`)
+  }
+
+  getChatHistory (theaterId: string, userId: string): Observable<IApiChatRes> {
+    return this.http.get<IApiChatRes>(`theater/chat/history?theaterId=${theaterId}&userId=${userId}`)
   }
 }

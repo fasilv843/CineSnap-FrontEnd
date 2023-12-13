@@ -12,6 +12,7 @@ import { AuthGuard } from 'src/app/guards/auth.guard';
 import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
 import { UserBookingsComponent } from './user-bookings/user-bookings.component';
 import { TheaterPageComponent } from './theater-page/theater-page.component';
+import { UserMessageComponent } from './user-message/user-message.component';
 
 const routes: Routes = [
   {
@@ -64,6 +65,16 @@ const routes: Routes = [
   {
     path: 'bookings/:userId',
     component: UserBookingsComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'messages',
+    component: UserMessageComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'messages/:id',
+    component: UserMessageComponent,
     canActivate: [AuthGuard]
   },
   {
