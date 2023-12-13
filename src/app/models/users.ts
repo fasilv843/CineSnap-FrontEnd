@@ -1,4 +1,4 @@
-import { type IWalletHistory, type ICoords, type IUserAddress } from './common'
+import { type IWalletHistory, type ICoords, type IUserAddress, type IApiRes } from './common'
 
 export interface IUserSocialAuth {
   name: string
@@ -28,14 +28,6 @@ export interface IUserRes {
   walletHistory: IWalletHistory[] | []
 }
 
-// api response for single user as data
-export interface IApiUserRes {
-  status: number
-  message: string
-  data: IUserRes | null
-  token: string
-}
-
 export interface IApiUserAuthRes {
   status: number
   message: string
@@ -49,13 +41,7 @@ export interface IApiTokenRes {
   message: string
   accessToken: string
 }
-
-// api response for multiple users as data
-export interface IApiUsersRes {
-  status: number
-  message: string
-  data: IUserRes[] | []
-  token: string
-}
+export interface IApiUserRes extends IApiRes<IUserRes> {}
+export interface IApiUsersRes extends IApiRes<IUserRes[]> {}
 
 export interface IUserUpdate extends Omit<IUserRes, '_id' | 'email' | 'password' | 'isBlocked' | 'wallet' | 'walletHistory'> { }

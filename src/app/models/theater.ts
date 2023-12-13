@@ -1,4 +1,4 @@
-import { type ICoords, type ITheaterAddress, type IWalletHistory } from './common'
+import { type IApiRes, type ICoords, type ITheaterAddress, type IWalletHistory } from './common'
 
 // export interface ITheater {
 //   _id: string
@@ -39,12 +39,8 @@ export interface ITheaterAuth {
   address: ITheaterAddress
 }
 
-export interface IApiTheaterRes {
-  status: number
-  message: string
-  data: ITheaterRes
-  token: string
-}
+export interface IApiTheaterRes extends IApiRes<ITheaterRes> {}
+export interface IApiTheatersRes extends IApiRes<ITheaterRes[]> {}
 
 export interface IApiTheaterAuthRes {
   status: number
@@ -52,11 +48,4 @@ export interface IApiTheaterAuthRes {
   data: ITheaterRes | null
   accessToken: string
   refreshToken: string
-}
-
-export interface IApiTheatersRes {
-  status: number
-  message: string
-  data: ITheaterRes[]
-  token: string
 }

@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/member-delimiter-style */
+
+import { type IApiRes } from './common'
+
 /* eslint-disable @typescript-eslint/indent */
 export interface IMovie {
     _id: string
@@ -58,18 +61,8 @@ interface MovieReview {
     review: string
     userId: string
 }
-
-export interface IApiCSMovieRes {
-    status: number
-    message: string
-    data: ICSMovieRes | null
-}
-
-export interface IApiCSMoviesRes {
-    status: number
-    message: string
-    data: ICSMovieRes[] | []
-}
+export interface IApiCSMovieRes extends IApiRes<ICSMovieRes> {}
+export interface IApiCSMoviesRes extends IApiRes<ICSMovieRes[]> {}
 
 export interface IDuration {
     hours: number,

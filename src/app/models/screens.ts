@@ -1,3 +1,5 @@
+import { type IApiRes } from './common'
+
 export interface IScreen {
   _id: string
   theaterId: string
@@ -15,14 +17,17 @@ export interface IScreenRequirements
   col: number
 }
 
-export interface IApiScreenRes {
-  status: number
-  message: string
-  data: IScreen | null
-}
+export interface IApiScreenRes extends IApiRes<IScreen> {}
+export interface IApiScreensRes extends IApiRes<IScreen[]> {}
 
-export interface IApiScreensRes {
-  status: number
-  message: string
-  data: IScreen [] | []
-}
+// export interface IApiScreenRes {
+//   status: number
+//   message: string
+//   data: IScreen | null
+// }
+
+// export interface IApiScreensRes {
+//   status: number
+//   message: string
+//   data: IScreen [] | []
+// }
