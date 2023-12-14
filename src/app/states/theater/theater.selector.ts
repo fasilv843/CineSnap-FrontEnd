@@ -1,8 +1,8 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store'
-import { type theaterState } from './theater.reducer'
+import { type TheaterState } from './theater.reducer'
 
-export const selectTheaterState = createFeatureSelector<theaterState>('theater')
+export const selectTheaterState = createFeatureSelector<TheaterState>('theater')
 export const selectTheaterDetails = createSelector(
   selectTheaterState,
-  (state: theaterState) => state.theaterDetails
+  (state: TheaterState) => state.theaterDetails
 )

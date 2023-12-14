@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -12,13 +13,14 @@ import { UserMoviesComponent } from './user-movies/user-movies.component';
 import { UserTheatersComponent } from './user-theaters/user-theaters.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
-import { StoreModule } from '@ngrx/store';
+import { ActionReducer, StoreModule } from '@ngrx/store';
 import { userReducer } from 'src/app/states/user/user.reducer';
 import { SocialLoginModule, GoogleLoginProvider } from '@abacritt/angularx-social-login';
 
 import { environments } from 'src/environments/environment';
 import { coordsReducer } from 'src/app/states/coords/coords.reducer';
 import { ValidationModule } from 'src/app/modules/validation/validation.module';
+import { localStorageSync as ngrxLocalStorageSync } from 'ngrx-store-localstorage';
 
 import { ImageModule } from 'src/app/modules/image/image.module';
 import { UserBookingsComponent } from './user-bookings/user-bookings.component';
@@ -44,6 +46,10 @@ import { BookingComponent } from './booking/booking.component';
 //     console.error(err);
 //   }
 // };
+
+export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionReducer<any> {
+  return ngrxLocalStorageSync({ keys: ['user'], rehydrate: true })(reducer);
+}
 
 @NgModule({
   declarations: [

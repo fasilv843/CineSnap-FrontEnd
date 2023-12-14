@@ -11,10 +11,15 @@ import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
 // import { CloudinaryModule } from '@cloudinary/ng';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, type MetaReducer } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { ErrorHandlerInterceptor } from './interceptors/error-handler.interceptor';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
+import { hydrationMetaReducer } from './states/hydration.reducer'
+import { reducers } from './states/app.state'
+
+export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
 
 @NgModule({
   declarations: [
@@ -29,7 +34,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     FormsModule,
     BrowserAnimationsModule,
     // CloudinaryModule,
-    StoreModule.forRoot({}, {}),
+    StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     NgbModule
   ],

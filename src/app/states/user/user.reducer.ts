@@ -2,11 +2,11 @@ import { createReducer, on } from '@ngrx/store'
 import { type IUserRes } from 'src/app/models/users'
 import { deleteUserFromStore, saveUserOnStore } from './user.actions'
 
-export interface userState {
+export interface UserState {
   userDetails: IUserRes | null
 }
 
-export const initialUserState: userState = {
+export const initialUserState: UserState = {
   userDetails: null
 }
 
