@@ -1,0 +1,50 @@
+/* seat-selection.component.css */
+.seat {
+  cursor: pointer;
+  border: 1px solid #ccc;
+  margin: 2px;
+}
+
+.booked {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.selected {
+  background-color: #ffcc00; /* Yellow or any color of your choice */
+}
+
+.seat {
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .seat:hover {
+    background-color: #ddd;
+  }
+  
+  .screen {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .with-margin {
+    margin-bottom: 15px; /* Adjust the margin as needed */
+  }
+  
+  .row {
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+    

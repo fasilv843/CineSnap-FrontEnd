@@ -14,7 +14,7 @@ export interface IShow {
   ticketPrice: number
   totalSeatCount: number
   availableSeatCount: number
-  seats: Map<string, IShowSeat[]>
+  seats: Record<string, IShowSeat[]>
 }
 
 export interface IShowRequirements extends Omit<IShow, '_id' | 'totalSeatCount' | 'availableSeatCount' | 'seats'> {}

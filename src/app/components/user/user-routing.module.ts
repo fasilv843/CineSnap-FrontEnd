@@ -13,6 +13,8 @@ import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.
 import { UserBookingsComponent } from './user-bookings/user-bookings.component';
 import { TheaterPageComponent } from './theater-page/theater-page.component';
 import { UserMessageComponent } from './user-message/user-message.component';
+import { ShowSeatsComponent } from './show-seats/show-seats.component';
+import { BookingComponent } from './booking/booking.component';
 
 const routes: Routes = [
   {
@@ -43,9 +45,32 @@ const routes: Routes = [
     component: UserTheatersComponent
   },
   {
-    path: 'theater/:theaterId',
+    path: 'theater',
     title: 'CineSnap | Theater',
-    component: TheaterPageComponent
+    children: [
+      {
+        path: ':theaterId',
+        component: TheaterPageComponent
+      }
+      // {
+      //   path: 'shows/:theaterId/:showId',
+      //   component: ShowSeatsComponent
+      // }
+    ]
+  },
+  {
+    path: 'show',
+    title: 'CineSnap | Show',
+    children: [
+      {
+        path: ':theaterId/:showId',
+        component: ShowSeatsComponent
+      },
+      {
+        path: 'book',
+        component: BookingComponent
+      }
+    ]
   },
   {
     path: 'profile',

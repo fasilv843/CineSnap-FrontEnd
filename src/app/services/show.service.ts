@@ -18,4 +18,8 @@ export class ShowService {
   addShow (show: IShowRequirements): Observable<IApiShowRes> {
     return this.http.post<IApiShowRes>('theater/show/add', show)
   }
+
+  getShowDetails (showId: string): Observable<IApiShowRes> {
+    return this.http.get<IApiShowRes>(`user/theater/show/get/${showId}`)
+  }
 }

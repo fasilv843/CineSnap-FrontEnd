@@ -1,0 +1,47 @@
+<app-user-nav></app-user-nav>
+
+<!-- seat-selection.component.html -->
+<div class="flex flex-col items-center mt-8 overflow-x-auto">
+    <div class="mb-24">
+      <ng-container *ngFor="let row of rows">
+        <div class="flex flex-nowrap">
+          <!-- Left side of the row -->
+          <ng-container *ngFor="let column of getColumnFirstHalf(row)">
+            <div
+              class="seat p-3 text-center text-sm with-margin"
+              [class.booked]="column.isBooked"
+              [class.selected]="isSeatSelected(row, column.col)"
+              (click)="selectSeat(row, column.col)"
+            >
+              {{ row + column.col }}
+            </div>
+          </ng-container>
+  
+          <!-- Gap in the center -->
+          <div class="w-5"></div>
+  
+          <!-- Right side of the row -->
+          <ng-container *ngFor="let column of getColumnSecondHalf(row)">
+            <div
+              class="seat p-3 text-center text-sm with-margin"
+              [class.booked]="column.isBooked"
+              [class.selected]="isSeatSelected(row, column.col)"
+              (click)="selectSeat(row, column.col)"
+            >
+              {{ row + column.col }}
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+  
+    <!-- Button for booking ticket with price inside -->
+    <button *ngIf="selectedSeats.length" class="bg-yellow-500 text-white fixed bottom-14 right-2 px-4 py-2 rounded" (click)="bookTicket()">
+      <p>{{ selectedSeats.length === 1 ? 'Book Ticket' : 'Book Tickets' }}</p>
+      <small class="font-semibold">&#8377; {{ selectedSeats.length * show.ticketPrice }}</small>
+    </button>
+  
+    <div class="screen fixed w-full bottom-0">Screen here</div>
+  </div>
+  
+  

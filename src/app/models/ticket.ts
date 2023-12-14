@@ -17,7 +17,7 @@ export interface ITicket {
   // status: string
 }
 
-export interface ITicketReqs extends Omit<ITicket, '_id' | 'isCancelled' | 'endTime' | 'totalPrice'> {}
+export interface ITicketReqs extends Omit<ITicket, '_id' | 'isCancelled'> {}
 export interface ITicketRes extends ITicket {}
 export interface IApiTicketRes extends IApiRes<ITicketRes> {}
 export interface IApiTicketsRes extends IApiRes<ITicketRes[]> {}

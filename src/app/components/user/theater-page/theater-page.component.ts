@@ -1,8 +1,8 @@
 import { Component, Inject, type OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { type IApiScreensRes, type IScreen } from 'src/app/models/screens'
+import { type IShow, type IShowsOnAScreen } from 'src/app/models/show'
 import { type IApiTheaterRes, type ITheaterRes } from 'src/app/models/theater'
-import { ScreenService } from 'src/app/services/screen.service'
+import { ShowService } from 'src/app/services/show.service'
 import { TheaterService } from 'src/app/services/theater.service'
 
 @Component({
@@ -13,11 +13,12 @@ import { TheaterService } from 'src/app/services/theater.service'
 export class TheaterPageComponent implements OnInit {
   theaterId = ''
   theater!: ITheaterRes
-  screens: IScreen[] = []
+  screens: IShowsOnAScreen[] = []
+  currDate: Date = new Date()
 
   constructor (
     @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
-    @Inject(ScreenService) private readonly screenService: ScreenService,
+    @Inject(ShowService) private readonly showService: ShowService,
     @Inject(TheaterService) private readonly theaterService: TheaterService
   ) {}
 
@@ -32,15 +33,26 @@ export class TheaterPageComponent implements OnInit {
       }
     })
 
-    this.screenService.findScreens(this.theaterId).subscribe({
-      next: (res: IApiScreensRes) => {
-        console.log(res.data)
-        this.screens = res.data
+    this.onSelectDate(new Date())
+  }
+
+  onSelectDate (date: Date): void {
+    this.currDate = date
+    console.log(date.toISOString().split('T')[0], 'date selected from onSelectDate')
+    const formattedDate = date.toISOString().split('T')[0]
+    this.showService.findShowsOnDate(this.theaterId, formattedDate).subscribe({
+      next: (res) => {
+        console.log(res.data, 'res.data from show service')
+        if (res.data !== null) this.screens = res.data
       }
     })
   }
 
-  onSelectDate (date: Date): void {
-    console.log(date, 'date selected from onSelectDate')
+  getTextColor (show: Omit<IShow, 'seats'>): string {
+    const percentatge = show.availableSeatCount / show.totalSeatCount
+
+    if (percentatge >= 0.5) return 'text-green-500'
+    else if (percentatge >= 0.7) return 'text-yellow-500'
+    else return 'text-red-500'
   }
 }
