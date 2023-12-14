@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { type IApiTicketRes, type ITicketReqs } from '../models/ticket'
+import { IApiSeatsRes, type IApiTicketRes, type ITicketReqs } from '../models/ticket'
 import { type Observable } from 'rxjs'
 
 @Injectable({
@@ -12,7 +12,12 @@ export class TicketService {
     private readonly http: HttpClient
   ) { }
 
-  bookTicket (ticketData: ITicketReqs): Observable<IApiTicketRes> {
-    return this.http.post<IApiTicketRes>('user/book/ticket', { ticketData })
+  bookTicket (ticketReqs: ITicketReqs): Observable<IApiTicketRes> {
+    console.log(ticketReqs, 'ticket data that passed to backend')
+    return this.http.post<IApiTicketRes>('user/book/ticket', { ticketReqs })
+  }
+
+  getHoldedSeats (showId: string): Observable<IApiSeatsRes> {
+    return this.http.get<IApiSeatsRes>(`user/show/seats/holded/${showId}`)
   }
 }

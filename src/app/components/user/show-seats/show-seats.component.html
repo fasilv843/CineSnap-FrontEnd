@@ -11,6 +11,7 @@
               class="seat p-3 text-center text-sm with-margin"
               [class.booked]="column.isBooked"
               [class.selected]="isSeatSelected(row, column.col)"
+              [class.holded]="isHolded(row, column.col)"
               (click)="selectSeat(row, column.col)"
             >
               {{ row + column.col }}
@@ -26,6 +27,7 @@
               class="seat p-3 text-center text-sm with-margin"
               [class.booked]="column.isBooked"
               [class.selected]="isSeatSelected(row, column.col)"
+              [class.holded]="isHolded(row, column.col)"
               (click)="selectSeat(row, column.col)"
             >
               {{ row + column.col }}

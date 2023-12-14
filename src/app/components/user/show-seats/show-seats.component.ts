@@ -1,11 +1,16 @@
 import { Component, Inject, type OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Store, select } from '@ngrx/store'
+import { type ICSMovieRes } from 'src/app/models/movie'
 import { type IShow, type IShowSeat } from 'src/app/models/show'
-import { type ITicketReqs } from 'src/app/models/ticket'
+import { type ISelectedSeat, type ITicketReqs } from 'src/app/models/ticket'
 import { ShowService } from 'src/app/services/show.service'
 import { TicketService } from 'src/app/services/ticket.service'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
+
+interface IShowWithMovie extends Omit<IShow, 'movieId'> {
+  movieId: ICSMovieRes
+}
 
 @Component({
   selector: 'app-show-seats',
@@ -17,10 +22,10 @@ export class ShowSeatsComponent implements OnInit {
   userId = ''
   theaterId = ''
   rows: string[] = []
-  // cols: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
   showId: string = ''
-  show!: IShow
-  selectedSeats: Array<{ row: string, col: number }> = []
+  show!: IShowWithMovie
+  selectedSeats: ISelectedSeat[] = []
+  holdedSeats: ISelectedSeat[] = []
 
   constructor (
     @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
@@ -40,7 +45,7 @@ export class ShowSeatsComponent implements OnInit {
       next: (res) => {
         console.log(res.data, 'show data from getShowDetails')
         if (res.data !== null) {
-          this.show = res.data
+          this.show = res.data as unknown as IShowWithMovie
           console.log(res.data.seats, 'log seats')
           console.log(typeof res.data.seats, 'type of seats')
           console.dir(res.data.seats, 'dir seats')
@@ -48,14 +53,31 @@ export class ShowSeatsComponent implements OnInit {
         }
       }
     })
-  }
 
-  getSeatMap (seats: Array<{ row: string, col: number }>): Map<string, number[]> {
-    const seatsMap = new Map<string, number[]>()
-    for (const seat of seats) {
-      seatsMap.set(seat.row, (seatsMap.get(seat.row) ?? []).concat(seat.col))
-    }
-    return seatsMap
+    this.ticketService.getHoldedSeats(this.showId).subscribe({
+      next: (res) => {
+        console.log(res, 'res from holded seats')
+        if (res.data !== null) {
+          res.data.forEach(seats => {
+            Object.entries(seats).forEach(([key, seatsData]) => {
+              console.log(key, 'seat key data from seats')
+              console.log(seatsData, typeof seatsData, 'seats data from res')
+
+              Object.entries(seatsData).forEach(([row, cols]: [string, any]) => {
+                console.log(row, cols, 'row and cols')
+
+                cols.forEach((col: number) => {
+                  const holdedSeat: ISelectedSeat = { row, col }
+                  this.holdedSeats.push(holdedSeat)
+                })
+              })
+            })
+          })
+
+          console.log(this.holdedSeats, 'holded seats after response')
+        }
+      }
+    })
   }
 
   bookTicket (): void {
@@ -63,12 +85,10 @@ export class ShowSeatsComponent implements OnInit {
       if (user != null) this.userId = user._id
     })
 
-    const seats = this.getSeatMap(this.selectedSeats)
-
     const ticketReqs: ITicketReqs = {
       showId: this.showId,
       screenId: this.show.screenId,
-      movieId: this.show.movieId,
+      movieId: this.show.movieId._id,
       theaterId: this.theaterId,
       userId: this.userId,
       singlePrice: this.show.ticketPrice,
@@ -76,13 +96,13 @@ export class ShowSeatsComponent implements OnInit {
       seatCount: this.selectedSeats.length,
       startTime: this.show.startTime,
       endTime: this.show.endTime,
-      seats
+      seats: this.selectedSeats
     }
     this.ticketService.bookTicket(ticketReqs).subscribe({
       next: (res) => {
         void this.router.navigate(['/user/show/book'])
       }
-    }) // Save on a temporary storage and redirect to next page
+    })
   }
 
   getColumnFirstHalf (row: string): IShowSeat[] {
@@ -100,12 +120,21 @@ export class ShowSeatsComponent implements OnInit {
     return false
   }
 
+  isHolded (row: string, col: number): boolean {
+    for (const seat of this.holdedSeats) {
+      if (seat.row === row && seat.col === col) return true
+    }
+    return false
+  }
+
   selectSeat (row: string, col: number): void {
-    if (this.isSeatSelected(row, col)) {
-      this.selectedSeats = this.selectedSeats.filter(seat => !(seat.row === row && seat.col === col))
-    } else {
-      if (this.selectedSeats.length < 10) {
-        this.selectedSeats.push({ row, col })
+    if (!this.isHolded(row, col)) {
+      if (this.isSeatSelected(row, col)) {
+        this.selectedSeats = this.selectedSeats.filter(seat => !(seat.row === row && seat.col === col))
+      } else {
+        if (this.selectedSeats.length < 10) {
+          this.selectedSeats.push({ row, col })
+        }
       }
     }
   }

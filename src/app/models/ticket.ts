@@ -1,5 +1,10 @@
 import { type IApiRes } from './common'
 
+export interface ISelectedSeat {
+  row: string
+  col: number
+}
+
 export interface ITicket {
   _id: string
   showId: string
@@ -17,7 +22,12 @@ export interface ITicket {
   // status: string
 }
 
-export interface ITicketReqs extends Omit<ITicket, '_id' | 'isCancelled'> {}
+export interface ITicketReqs extends Omit<ITicket, '_id' | 'isCancelled' | 'seats'> {
+  seats: ISelectedSeat[]
+}
 export interface ITicketRes extends ITicket {}
 export interface IApiTicketRes extends IApiRes<ITicketRes> {}
 export interface IApiTicketsRes extends IApiRes<ITicketRes[]> {}
+
+export type Seats = Array<Map<string, number[]>>
+export interface IApiSeatsRes extends IApiRes<Seats | null> {}
