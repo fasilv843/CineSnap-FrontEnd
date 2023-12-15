@@ -38,17 +38,17 @@
             <h5 class="text-xl font-semibold mb-4">Payment Details</h5>
             <div class="flex justify-between mb-2">
                 <p>{{ tempTicket.seatCount }} Tickets</p>
-                <span>{{ tempTicket.totalPrice }}</span>
+                <span>&#8377; {{ tempTicket.totalPrice }}</span>
             </div>
             <div class="flex justify-between mb-2">
                 <p>Tax & Fee</p>
-                <span>20.5</span>
+                <span>&#8377; {{ tempTicket.seatCount * CineSnapCharge }}</span>
             </div>
             <div class="flex justify-between font-bold mb-4">
                 <p>Total</p>
-                <span>350.5</span>
+                <span>&#8377; {{ tempTicket.seatCount * CineSnapCharge + tempTicket.totalPrice }}</span>
             </div>
         </div>
-        <button class="w-full bg-amber-400 hover:bg-amber-600 text-white rounded-md px-5 py-2">Proceed To Pay 350.5</button>
+        <button class="w-full bg-amber-400 hover:bg-amber-600 text-white rounded-md px-5 py-2">Proceed To Pay &#8377; {{ tempTicket.seatCount * CineSnapCharge + tempTicket.totalPrice }}</button>
     </div>
 </div>

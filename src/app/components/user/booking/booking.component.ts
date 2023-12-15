@@ -23,6 +23,8 @@ export class BookingComponent implements OnInit {
   remainingTime = 0
   theater!: ITheaterRes
   seats: string[] = []
+  CineSnapCharge = 10
+
   getLanguage = getLanguage
 
   constructor (
