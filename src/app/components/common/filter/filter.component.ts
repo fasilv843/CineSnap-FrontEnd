@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common'
 import { Component, EventEmitter, Inject, Output, type OnInit, Input } from '@angular/core'
+import { getGenre, getLanguage, isGenreType, isLangType } from 'src/app/helpers/movie'
 import { type IFilterEvent, type langType, type genreType, type valueType } from 'src/app/models/filter'
 import { MovieService } from 'src/app/services/movie.service'
-import { GENRE_NAMES } from 'src/app/shared/genreIds'
-import { LanguageAbbreviation } from 'src/app/shared/langAbbreviation'
 
 @Component({
   standalone: true,
@@ -59,20 +58,8 @@ export class FilterComponent implements OnInit {
     })
   }
 
-  getGenre (genre: keyof typeof GENRE_NAMES): string {
-    return GENRE_NAMES[genre]
-  }
-
-  getLanguage (lang: keyof typeof LanguageAbbreviation): string {
-    return LanguageAbbreviation[lang]
-  }
-
-  private isGenreType (value: valueType): value is genreType {
-    return Object.keys(GENRE_NAMES).includes(value.toString())
-  }
-
-  private isLangType (value: valueType): value is langType {
-    if (typeof value === 'number') return false
-    return Object.keys(LanguageAbbreviation).includes(value)
-  }
+  getGenre = getGenre
+  getLanguage = getLanguage
+  isGenreType = isGenreType
+  isLangType = isLangType
 }

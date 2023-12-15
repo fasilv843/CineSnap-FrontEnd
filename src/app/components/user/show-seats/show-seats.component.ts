@@ -98,9 +98,15 @@ export class ShowSeatsComponent implements OnInit {
       endTime: this.show.endTime,
       seats: this.selectedSeats
     }
+    console.log('booking ticket', ticketReqs)
     this.ticketService.bookTicket(ticketReqs).subscribe({
       next: (res) => {
-        void this.router.navigate(['/user/show/book'])
+        if (res.data != null) {
+          console.log(res.data, 'res from bookTicket')
+          void this.router.navigate(['/user/show/book', res.data._id])
+        } else {
+          console.warn('res.data from bookTicket is null')
+        }
       }
     })
   }

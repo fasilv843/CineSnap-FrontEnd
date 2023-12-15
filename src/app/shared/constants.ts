@@ -1,5 +1,6 @@
 export const OTP_TIMER = 60 * 3 // 3 min in seconds
 export const OTP_RESEND_MAX_TIME = 1000 * 60 * 10 // 10 min in milliseconds
+export const TICKET_EXPIRE_TIME = 60 * 10 // 10 min seconds
 export const MAX_OTP_LIMIT = 3
 export const MIN_COLS = 5
 export const MAX_COLS = 30

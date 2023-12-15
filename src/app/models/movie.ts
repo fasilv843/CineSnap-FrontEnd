@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/member-delimiter-style */
 
 import { type IApiRes } from './common'
+import { type genreType, type langType } from './filter'
 
 /* eslint-disable @typescript-eslint/indent */
 export interface IMovie {
@@ -25,11 +26,11 @@ export interface ICSMovieRes {
     poster_path: string
     backdrop_path?: string
     overview?: string
-    language: string
+    language: langType
     duration: IDuration
     tmdbId: number
     release_date: Date
-    genre_ids: number[]
+    genre_ids: genreType[]
     review?: MovieReview[]
     isDeleted: boolean
 }
@@ -45,7 +46,7 @@ export interface ITMDBMovie {
     original_language: string
     id: number
     release_date: Date
-    genre_ids: number[]
+    genre_ids: genreType[]
     adult: boolean
 }
 

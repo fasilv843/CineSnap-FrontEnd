@@ -1,50 +1,54 @@
 <app-user-nav></app-user-nav>
 
-<div class="flex flex-col bg-gray-100">
-    <div class="flex items-center justify-between px-4 py-2 bg-white">
-      <h1 class="text-xl font-bold">BookMyMovie</h1>
-      <div class="flex items-center space-x-4">
-        <button class="px-3 py-2 rounded bg-gray-800 text-white">My Profile</button>
-        <button class="px-3 py-2 rounded bg-gray-800 text-white">My Tickets</button>
-      </div>
-    </div>
-  
-    <div class="flex items-center justify-between px-4 py-2 bg-gray-200">
-      <div class="flex w-full">
-        <input type="text" placeholder="Search for movies..." class="w-full px-4 py-2 rounded border-gray-300 focus:border-blue-500" />
-      </div>
-      <div class="flex space-x-2">
-        <select class="px-4 py-2 rounded border-gray-300 focus:border-blue-500">
-          <option value="all">All Categories</option>
-          <option value="action">Action</option>
-          <option value="comedy">Comedy</option>
-          <option value="drama">Drama</option>
-        </select>
-        <button class="px-3 py-2 rounded bg-blue-500 text-white">Search</button>
-      </div>
-    </div>
-  
-    <div class="grid grid-cols-3 gap-4 px-4 py-4">
-      <div class="rounded overflow-hidden shadow-md">
-        <img src="https://placeimg.com/640/480/movie" alt="Movie poster" class="w-full h-full">
-        <div class="px-4 py-2 flex justify-between items-center">
-          <div>
-            <h3 class="text-lg font-bold">The Godfather</h3>
-            <p class="text-gray-500">Action, Crime</p>
-          </div>
-          <button class="px-3 py-2 rounded bg-blue-500 text-white">Book Tickets</button>
+<div class="w-full text-center text-lg text-red-500 py-2">
+    <p class="font-bold">Session will expire in {{ formattedTime }}</p>
+</div>
+
+<div class="flex flex-col md:flex-row w-full justify-around h-fit border p-4 my-4 bg-white shadow-lg rounded-lg overflow-hidden">
+    <div class="flex flex-col md:flex-row border-1 p-4">
+        <div class="mb-4 md:mr-4">
+            <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="{{ movie.title }} Poster" class=" h-80 object-cover rounded-lg shadow-md">
         </div>
-      </div>
-      </div>
-  
-    <div class="flex justify-center px-4 py-4">
-      <button class="px-3 py-2 rounded border-gray-300 focus:border-blue-500">Previous</button>
-      <span class="px-3 py-2 text-gray-500">Page 1 of 5</span>
-      <button class="px-3 py-2 rounded border-gray-300 focus:border-blue-500">Next</button>
+        <div class="flex flex-col">
+            <div class="mb-4">
+                <h6 class="text-xl font-semibold mb-2">{{ movie.title }}</h6>
+                <span class="text-gray-600">{{ getLanguage(movie.language) }}</span>
+            </div>
+            <div class="mb-4">
+                <h6 class="text-xl font-semibold mb-2">{{ theater.name }}</h6>
+                <span class="text-gray-600">{{ theater.address.city }}, {{ theater.address.district }}, {{ theater.address.state }}, {{ theater.address.country }}, {{ theater.address.zip }}</span>
+            </div>
+            <div class="flex items-center mb-4">
+                <div class="flex flex-col mr-4">
+                    <h6 class="text-lg font-semibold mb-1">{{ tempTicket.startTime  | date: 'EEE, dd MMM yyyy, hh:mm a' }}</h6>
+                    <span class="text-gray-600">{{ tempTicket.screenId.name }}</span>
+                    <div class="flex flex-wrap gap-1 mt-1">
+                        <span *ngFor="let seat of seats" class="bg-green-500 text-white p-1 rounded w-1/6">{{ seat }}</span>
+                    </div>                      
+                </div>
+                <div class="bg-gray-200 p-2 rounded-md">
+                    <p class="text-gray-900 text-lg text-center font-semibold">{{ tempTicket.seatCount }}</p>
+                    <p class="text-gray-700 text-center">Tickets</p>
+                </div>
+            </div>
+        </div>
     </div>
-  
-    <div class="text-center text-gray-500 px-4 py-2 bg-gray-100">
-      Copyright © 2023 BookMyMovie
+    <div class="flex-col bg-gray-200 p-4 rounded-lg border-1">
+        <div>
+            <h5 class="text-xl font-semibold mb-4">Payment Details</h5>
+            <div class="flex justify-between mb-2">
+                <p>{{ tempTicket.seatCount }} Tickets</p>
+                <span>{{ tempTicket.totalPrice }}</span>
+            </div>
+            <div class="flex justify-between mb-2">
+                <p>Tax & Fee</p>
+                <span>20.5</span>
+            </div>
+            <div class="flex justify-between font-bold mb-4">
+                <p>Total</p>
+                <span>350.5</span>
+            </div>
+        </div>
+        <button class="w-full bg-amber-400 hover:bg-amber-600 text-white rounded-md px-5 py-2">Proceed To Pay 350.5</button>
     </div>
-  </div>
-  
+</div>

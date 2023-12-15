@@ -67,7 +67,7 @@
           <!-- Show Timings Section -->
           <!-- Repeat this block for each time slot -->
           <div *ngFor="let show of show.shows" class="mb-4">
-            <a [routerLink]="['/user/show', theaterId, show._id]" class="cursor-pointer">
+            <a [routerLink]="['/user/show/seats', theaterId, show._id]" class="cursor-pointer">
               <div class="rounded-md px-4 py-3 bg-gray-100 text-gray-700">
                 <div class="flex justify-between mb-2">
                   <span class="font-semibold">Time</span>
