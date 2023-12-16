@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { IApiSeatsRes, type IApiTicketRes, type ITicketReqs, IApiTempTicketRes } from '../models/ticket'
+import { IApiSeatsRes, type ITicketReqs, IApiTempTicketRes } from '../models/ticket'
 import { type Observable } from 'rxjs'
 
 @Injectable({
@@ -23,5 +23,9 @@ export class TicketService {
 
   getTempTicketData (ticketId: string): Observable<IApiTempTicketRes> {
     return this.http.get<IApiTempTicketRes>(`user/tempticket/get/${ticketId}`)
+  }
+
+  makePayment (stripeToken: any): Observable<any> {
+    return this.http.post('user/show/book/payment', { token: stripeToken })
   }
 }

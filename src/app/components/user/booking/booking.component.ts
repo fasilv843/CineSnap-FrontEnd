@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router';
+// import { StripeService } from 'ngx-stripe';
 import { getLanguage } from 'src/app/helpers/movie';
 import { formatTime } from 'src/app/helpers/timer';
 import { ICSMovieRes } from 'src/app/models/movie';
@@ -9,6 +10,7 @@ import { ITheaterRes } from 'src/app/models/theater';
 import { ITempTicketRes } from 'src/app/models/ticket';
 import { TicketService } from 'src/app/services/ticket.service';
 import { TICKET_EXPIRE_TIME } from 'src/app/shared/constants';
+import { environments } from 'src/environments/environment';
 
 @Component({
   selector: 'app-booking',
@@ -26,10 +28,13 @@ export class BookingComponent implements OnInit {
   CineSnapCharge = 10
 
   getLanguage = getLanguage
+  paymentHandler: any = null;
+  elements: any;
 
   constructor (
     private readonly ticketService: TicketService,
     private readonly route: ActivatedRoute
+    // private readonly stripeService: StripeService
   ) { }
 
   ngOnInit (): void {
@@ -58,6 +63,38 @@ export class BookingComponent implements OnInit {
     })
 
     this.startTimer()
+    this.invokeStripe()
+  }
+
+  stripePayment (stripeToken: any): void {
+    console.log('strip payment called')
+    this.ticketService.makePayment(stripeToken).subscribe({
+      next: (res) => {
+        console.log(res, 'res from stripe payment')
+      }
+    })
+  }
+
+  payForTicket (): void {
+    const paymentHandler = (window as any).StripeCheckout.configure({
+      key: environments.stripePublishableKey,
+      locale: 'auto',
+      token: (stripeToken: any) => {
+        console.log(stripeToken);
+        alert('Stripe token generated!');
+        // making api request
+        // this.ticketService.makePayment(stripeToken).subscribe({
+        //   next: (res) => {
+        //     console.log(res, 'res from stripe payment')
+        //   }
+        // })
+      }
+    });
+    paymentHandler.open({
+      name: 'CineSnap',
+      description: 'Book Movie Ticket',
+      amount: this.tempTicket.seatCount * this.CineSnapCharge + this.tempTicket.totalPrice * 100
+    });
   }
 
   startTimer (): void {
@@ -71,5 +108,25 @@ export class BookingComponent implements OnInit {
       }
       this.formattedTime = formatTime(this.remainingTime)
     }, 1000); // Update every second
+  }
+
+  invokeStripe (): void {
+    if (window.document.getElementById('stripe-script') == null) {
+      const script = window.document.createElement('script');
+      script.id = 'stripe-script';
+      script.type = 'text/javascript';
+      script.src = 'https://checkout.stripe.com/checkout.js';
+      script.onload = () => {
+        this.paymentHandler = (window as any).StripeCheckout.configure({
+          key: environments.stripePublishableKey,
+          locale: 'auto',
+          token: function (stripeToken: any) {
+            console.log(stripeToken);
+            alert('Payment has been successfull!');
+          }
+        });
+      };
+      window.document.body.appendChild(script);
+    }
   }
 }

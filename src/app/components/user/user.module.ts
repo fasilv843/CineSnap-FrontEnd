@@ -30,6 +30,7 @@ import { DateComponent } from '../common/date/date.component';
 import { UserMessageComponent } from './user-message/user-message.component';
 import { ShowSeatsComponent } from './show-seats/show-seats.component';
 import { BookingComponent } from './booking/booking.component';
+import { BookingSuccessComponent } from './booking-success/booking-success.component';
 
 // import { AngularFireModule } from '@angular/fire/compat';
 // import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
@@ -65,7 +66,8 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     TheaterPageComponent,
     UserMessageComponent,
     ShowSeatsComponent,
-    BookingComponent
+    BookingComponent,
+    BookingSuccessComponent
   ],
   imports: [
     CommonModule,

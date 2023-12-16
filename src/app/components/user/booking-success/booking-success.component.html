@@ -1,10 +1,11 @@
 <app-user-nav></app-user-nav>
 
-<div class="w-full text-center text-lg text-red-500 py-2">
-    <p class="font-bold">Session will expire in {{ formattedTime }}</p>
+<div class="w-full text-center text-lg text-green-500 py-4">
+    <p class="font-bold">Payment Success</p>
+    <p>Let The Movie Adventure Begin !!! </p>
 </div>
 
-<div class="flex flex-col md:flex-row w-full justify-around h-fit border p-4 my-4 bg-white shadow-lg rounded-lg overflow-hidden">
+<!-- <div class="flex flex-col md:flex-row w-full justify-around h-fit border p-4 my-4 bg-white shadow-lg rounded-lg overflow-hidden">
     <div class="flex flex-col md:flex-row border-1 p-4">
         <div class="mb-4 md:mr-4">
             <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="{{ movie.title }} Poster" class=" h-80 object-cover rounded-lg shadow-md">
@@ -32,23 +33,4 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="flex-col bg-gray-200 p-4 rounded-lg border-1">
-        <div>
-            <h5 class="text-xl font-semibold mb-4">Payment Details</h5>
-            <div class="flex justify-between mb-2">
-                <p>{{ tempTicket.seatCount }} Tickets</p>
-                <span>&#8377; {{ tempTicket.totalPrice }}</span>
-            </div>
-            <div class="flex justify-between mb-2">
-                <p>Tax & Fee</p>
-                <span>&#8377; {{ tempTicket.seatCount * CineSnapCharge }}</span>
-            </div>
-            <div class="flex justify-between font-bold mb-4">
-                <p>Total</p>
-                <span>&#8377; {{ tempTicket.seatCount * CineSnapCharge + tempTicket.totalPrice }}</span>
-            </div>
-        </div>
-        <button (click)="payForTicket()" class="w-full bg-amber-400 hover:bg-amber-600 text-white rounded-md px-5 py-2">Proceed To Pay &#8377; {{ tempTicket.seatCount * CineSnapCharge + tempTicket.totalPrice }}</button>
-    </div>
-</div>
+    </div> -->

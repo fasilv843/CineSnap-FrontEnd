@@ -16,8 +16,11 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { ErrorHandlerInterceptor } from './interceptors/error-handler.interceptor';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
+// import { NgxStripeModule } from 'ngx-stripe';
+
 import { hydrationMetaReducer } from './states/hydration.reducer'
 import { reducers } from './states/app.state'
+// import { environments } from 'src/environments/environment'
 
 export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
 
@@ -37,6 +40,7 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     NgbModule
+    // NgxStripeModule.forRoot(environments.stripePublishableKey)
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
