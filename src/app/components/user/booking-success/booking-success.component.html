@@ -5,32 +5,38 @@
     <p>Let The Movie Adventure Begin !!! </p>
 </div>
 
-<!-- <div class="flex flex-col md:flex-row w-full justify-around h-fit border p-4 my-4 bg-white shadow-lg rounded-lg overflow-hidden">
+<div *ngIf="ticket" class="flex flex-col md:flex-row w-full justify-around h-fit border p-4 my-4 bg-white shadow-lg rounded-lg overflow-hidden">
     <div class="flex flex-col md:flex-row border-1 p-4">
         <div class="mb-4 md:mr-4">
-            <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="{{ movie.title }} Poster" class=" h-80 object-cover rounded-lg shadow-md">
+            <img src="https://image.tmdb.org/t/p/original/{{ ticket.movieId.poster_path }}" alt="{{ ticket.movieId.title }} Poster" class=" h-80 object-cover rounded-lg shadow-md">
         </div>
         <div class="flex flex-col">
             <div class="mb-4">
-                <h6 class="text-xl font-semibold mb-2">{{ movie.title }}</h6>
-                <span class="text-gray-600">{{ getLanguage(movie.language) }}</span>
+                <h6 class="text-xl font-semibold mb-2">{{ ticket.movieId.title }}</h6>
+                <span class="text-gray-600">{{ getLanguage(ticket.movieId.language) }}</span>
             </div>
             <div class="mb-4">
-                <h6 class="text-xl font-semibold mb-2">{{ theater.name }}</h6>
-                <span class="text-gray-600">{{ theater.address.city }}, {{ theater.address.district }}, {{ theater.address.state }}, {{ theater.address.country }}, {{ theater.address.zip }}</span>
+                <h6 class="text-xl font-semibold mb-2">{{ ticket.theaterId.name }}</h6>
+                <span class="text-gray-600">
+                    {{ ticket.theaterId.address.city }}, 
+                    {{ ticket.theaterId.address.district }}, 
+                    {{ ticket.theaterId.address.state }}, 
+                    {{ ticket.theaterId.address.country }}, 
+                    {{ ticket.theaterId.address.zip }}
+                </span>
             </div>
             <div class="flex items-center mb-4">
                 <div class="flex flex-col mr-4">
-                    <h6 class="text-lg font-semibold mb-1">{{ tempTicket.startTime  | date: 'EEE, dd MMM yyyy, hh:mm a' }}</h6>
-                    <span class="text-gray-600">{{ tempTicket.screenId.name }}</span>
+                    <h6 class="text-lg font-semibold mb-1">{{ ticket.startTime  | date: 'EEE, dd MMM yyyy, hh:mm a' }}</h6>
+                    <span class="text-gray-600">{{ ticket.screenId.name }}</span>
                     <div class="flex flex-wrap gap-1 mt-1">
                         <span *ngFor="let seat of seats" class="bg-green-500 text-white p-1 rounded w-1/6">{{ seat }}</span>
                     </div>                      
                 </div>
                 <div class="bg-gray-200 p-2 rounded-md">
-                    <p class="text-gray-900 text-lg text-center font-semibold">{{ tempTicket.seatCount }}</p>
+                    <p class="text-gray-900 text-lg text-center font-semibold">{{ ticket.seatCount }}</p>
                     <p class="text-gray-700 text-center">Tickets</p>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>

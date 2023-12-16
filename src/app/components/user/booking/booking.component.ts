@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/semi */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, OnInit } from '@angular/core'
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 // import { StripeService } from 'ngx-stripe';
 import { getLanguage } from 'src/app/helpers/movie';
 import { formatTime } from 'src/app/helpers/timer';
@@ -33,7 +33,8 @@ export class BookingComponent implements OnInit {
 
   constructor (
     private readonly ticketService: TicketService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
     // private readonly stripeService: StripeService
   ) { }
 
@@ -81,19 +82,29 @@ export class BookingComponent implements OnInit {
       locale: 'auto',
       token: (stripeToken: any) => {
         console.log(stripeToken);
-        alert('Stripe token generated!');
+        // alert('Stripe token generated!');
         // making api request
         // this.ticketService.makePayment(stripeToken).subscribe({
         //   next: (res) => {
         //     console.log(res, 'res from stripe payment')
         //   }
         // })
+
+        this.ticketService.confirmTicket(this.ticketId).subscribe({
+          next: (res) => {
+            if (res.data !== null) {
+              // console.warn(res.data, 'confirmed ticket data')
+              // console.log('recieved data from confirm ticket 11')
+              void this.router.navigate(['/user/show/book/success', res.data._id])
+            }
+          }
+        })
       }
     });
     paymentHandler.open({
       name: 'CineSnap',
       description: 'Book Movie Ticket',
-      amount: this.tempTicket.seatCount * this.CineSnapCharge + this.tempTicket.totalPrice * 100
+      amount: Number(this.tempTicket.seatCount * this.CineSnapCharge + this.tempTicket.totalPrice * 100)
     });
   }
 

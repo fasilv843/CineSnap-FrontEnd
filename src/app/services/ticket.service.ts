@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { IApiSeatsRes, type ITicketReqs, IApiTempTicketRes } from '../models/ticket'
+import { IApiSeatsRes, type ITicketReqs, IApiTempTicketRes, IApiTicketRes, IApiTicketsRes } from '../models/ticket'
 import { type Observable } from 'rxjs'
 
 @Injectable({
@@ -17,6 +17,18 @@ export class TicketService {
     return this.http.post<IApiTempTicketRes>('user/book/ticket', { ticketReqs })
   }
 
+  getTicketData (ticketId: string): Observable<IApiTicketRes> {
+    return this.http.get<IApiTicketRes>(`user/show/ticket/get/${ticketId}`)
+  }
+
+  getTicketsOfUser (userId: string): Observable<IApiTicketsRes> {
+    return this.http.get<IApiTicketsRes>(`user/tickets/${userId}`)
+  }
+
+  getAllTickets (): Observable<IApiTicketsRes> {
+    return this.http.get<IApiTicketsRes>('admin/tickets/all')
+  }
+
   getHoldedSeats (showId: string): Observable<IApiSeatsRes> {
     return this.http.get<IApiSeatsRes>(`user/show/seats/holded/${showId}`)
   }
@@ -27,5 +39,9 @@ export class TicketService {
 
   makePayment (stripeToken: any): Observable<any> {
     return this.http.post('user/show/book/payment', { token: stripeToken })
+  }
+
+  confirmTicket (ticketId: string): Observable<IApiTicketRes> {
+    return this.http.post<IApiTicketRes>('user/show/book/confirm/ticket', { ticketId })
   }
 }

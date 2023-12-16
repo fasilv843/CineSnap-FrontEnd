@@ -43,7 +43,12 @@ export interface IApiTempTicketsRes extends IApiRes<ITempTicketRes[]> {}
 export interface ITicketReqs extends Omit<ITicket, '_id' | 'isCancelled' | 'seats'> {
   seats: ISelectedSeat[]
 }
-export interface ITicketRes extends ITicket {}
+export interface ITicketRes extends Omit<ITicket, 'showId' | 'screenId' | 'movieId' | 'theaterId'> {
+  showId: IShowRes
+  screenId: IScreen
+  movieId: ICSMovieRes
+  theaterId: ITheaterRes
+}
 export interface IApiTicketRes extends IApiRes<ITicketRes | null> {}
 export interface IApiTicketsRes extends IApiRes<ITicketRes[]> {}
 

@@ -15,6 +15,7 @@ import { TheaterPageComponent } from './theater-page/theater-page.component';
 import { UserMessageComponent } from './user-message/user-message.component';
 import { ShowSeatsComponent } from './show-seats/show-seats.component';
 import { BookingComponent } from './booking/booking.component';
+import { BookingSuccessComponent } from './booking-success/booking-success.component';
 
 const routes: Routes = [
   {
@@ -72,6 +73,10 @@ const routes: Routes = [
           {
             path: ':ticketId',
             component: BookingComponent
+          },
+          {
+            path: 'success/:ticketId',
+            component: BookingSuccessComponent
           }
         ]
       }

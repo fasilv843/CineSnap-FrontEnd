@@ -112,6 +112,7 @@ export class ShowSeatsComponent implements OnInit {
   }
 
   getColumnFirstHalf (row: string): IShowSeat[] {
+    console.log(this.show.seats[row], 'seats array of show, col, isBooked')
     return this.show.seats[row].slice(0, this.show.seats[row].length / 2)
   }
 
