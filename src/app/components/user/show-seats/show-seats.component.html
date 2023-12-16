@@ -9,10 +9,12 @@
           <ng-container *ngFor="let column of getColumnFirstHalf(row)">
             <div
               class="seat p-3 text-center text-sm with-margin"
-              [class.booked]="column.isBooked"
+              appSeatStatus
+              [row]="row"
+              [col]="column"
+              [holdedSeats]="holdedSeats"
               [class.selected]="isSeatSelected(row, column.col)"
-              [class.holded]="isHolded(row, column.col)"
-              (click)="selectSeat(row, column.col)"
+              (click)="selectSeat(row, column)"
             >
               {{ row + column.col }}
             </div>
@@ -25,10 +27,12 @@
           <ng-container *ngFor="let column of getColumnSecondHalf(row)">
             <div
               class="seat p-3 text-center text-sm with-margin"
-              [class.booked]="column.isBooked"
+              appSeatStatus
+              [row]="row"
+              [col]="column"
+              [holdedSeats]="holdedSeats"
               [class.selected]="isSeatSelected(row, column.col)"
-              [class.holded]="isHolded(row, column.col)"
-              (click)="selectSeat(row, column.col)"
+              (click)="selectSeat(row, column)"
             >
               {{ row + column.col }}
             </div>

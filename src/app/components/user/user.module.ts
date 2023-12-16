@@ -31,6 +31,7 @@ import { UserMessageComponent } from './user-message/user-message.component';
 import { ShowSeatsComponent } from './show-seats/show-seats.component';
 import { BookingComponent } from './booking/booking.component';
 import { BookingSuccessComponent } from './booking-success/booking-success.component';
+import { SeatStatusDirective } from 'src/app/directives/seat-status.directive';
 
 // import { AngularFireModule } from '@angular/fire/compat';
 // import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
@@ -67,7 +68,8 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     UserMessageComponent,
     ShowSeatsComponent,
     BookingComponent,
-    BookingSuccessComponent
+    BookingSuccessComponent,
+    SeatStatusDirective
   ],
   imports: [
     CommonModule,

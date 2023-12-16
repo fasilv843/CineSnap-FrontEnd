@@ -134,8 +134,9 @@ export class ShowSeatsComponent implements OnInit {
     return false
   }
 
-  selectSeat (row: string, col: number): void {
-    if (!this.isHolded(row, col)) {
+  selectSeat (row: string, column: IShowSeat): void {
+    if (!column.isBooked && !this.isHolded(row, column.col)) {
+      const col = column.col
       if (this.isSeatSelected(row, col)) {
         this.selectedSeats = this.selectedSeats.filter(seat => !(seat.row === row && seat.col === col))
       } else {

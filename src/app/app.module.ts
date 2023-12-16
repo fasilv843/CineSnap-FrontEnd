@@ -19,7 +19,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // import { NgxStripeModule } from 'ngx-stripe';
 
 import { hydrationMetaReducer } from './states/hydration.reducer'
-import { reducers } from './states/app.state'
+import { reducers } from './states/app.state';
+import { SeatStatusDirective } from './directives/seat-status.directive'
 // import { environments } from 'src/environments/environment'
 
 export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
