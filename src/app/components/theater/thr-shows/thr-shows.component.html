@@ -20,8 +20,10 @@
         <img class="w-24 h-24 object-cover rounded" src="https://image.tmdb.org/t/p/original/{{ show.movieId.poster_path }}" alt="{{ show.movieId.title }} poster">
         <div class="ml-4">
           <h5 class="text-xl font-semibold">{{ show.movieId.title }}</h5>
-          <small class="text-gray-600">{{ show.movieId.language }}</small>
-          <p class="text-gray-700">{{ show.movieId.genre_ids }}</p>
+          <small class="text-gray-600">{{ getLanguage(show.movieId.language) }}</small>
+          <div class="flex gap-1">
+            <small class="text-gray-700" *ngFor="let genreId of show.movieId.genre_ids">{{ getGenre(genreId) }}</small>
+          </div>
           <p class="text-gray-700">{{ show.movieId.duration.hours }}:{{ show.movieId.duration.minutes }} hours</p>
         </div>
       </div>

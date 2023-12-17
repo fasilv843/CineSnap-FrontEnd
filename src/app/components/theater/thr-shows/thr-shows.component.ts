@@ -5,6 +5,7 @@ import { ShowService } from 'src/app/services/show.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import { ShowFormModalComponent } from '../../common/show-form-modal/show-form-modal.component'
 import { type IShowsOnAScreen } from 'src/app/models/show'
+import { getGenre, getLanguage } from 'src/app/helpers/movie'
 
 @Component({
   selector: 'app-thr-shows',
@@ -16,6 +17,8 @@ export class ThrShowsComponent implements OnInit {
   theaterId = ''
   screens: IShowsOnAScreen[] = []
   currDate: Date = new Date()
+  getGenre = getGenre
+  getLanguage = getLanguage
 
   constructor (
     @Inject(ShowService) private readonly showService: ShowService,

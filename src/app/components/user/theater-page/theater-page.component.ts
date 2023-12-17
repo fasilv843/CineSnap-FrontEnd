@@ -1,5 +1,6 @@
 import { Component, Inject, type OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
+import { getGenre, getLanguage } from 'src/app/helpers/movie'
 import { type IShow, type IShowsOnAScreen } from 'src/app/models/show'
 import { type IApiTheaterRes, type ITheaterRes } from 'src/app/models/theater'
 import { ShowService } from 'src/app/services/show.service'
@@ -15,6 +16,8 @@ export class TheaterPageComponent implements OnInit {
   theater!: ITheaterRes
   screens: IShowsOnAScreen[] = []
   currDate: Date = new Date()
+  getGenre = getGenre
+  getLanguage = getLanguage
 
   constructor (
     @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
@@ -54,5 +57,10 @@ export class TheaterPageComponent implements OnInit {
     if (percentatge >= 0.5) return 'text-green-500'
     else if (percentatge >= 0.7) return 'text-yellow-500'
     else return 'text-red-500'
+  }
+
+  // Assuming you have a property screens in your component
+  hasShows (): boolean {
+    return this.screens.some(screen => screen.shows.length > 0)
   }
 }
