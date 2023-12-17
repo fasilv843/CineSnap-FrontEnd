@@ -44,4 +44,8 @@ export class TicketService {
   confirmTicket (ticketId: string): Observable<IApiTicketRes> {
     return this.http.post<IApiTicketRes>('user/show/book/confirm/ticket', { ticketId })
   }
+
+  cancelTicket (ticketId: string): Observable<IApiTicketRes> {
+    return this.http.patch<IApiTicketRes>(`user/ticket/cancel/${ticketId}`, {})
+  }
 }

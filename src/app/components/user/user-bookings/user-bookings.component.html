@@ -34,12 +34,12 @@
                     <p class="text-gray-900 text-lg text-center font-semibold">{{ ticket.seatCount }}</p>
                     <p class="text-gray-700 text-center">Tickets</p>
                 </div>
-                <div>
-                    <p class="text-blue-900 text-lg font-semibold">{{ 'Booked' }}</p>
+                <div *ngIf="ticket.isCancelled">
+                    <p class="text-red-600 text-lg font-medium">Cancelled</p>
                 </div>
             </div>
         </div>
-        <div class="flex justify-end">
+        <div *ngIf="!ticket.isCancelled && ticket.startTime < fourHoursBefore" class="flex justify-end">
             <button class="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded-md cursor-pointer focus:outline-none" (click)="cancelTicket(ticket._id)">Cancel</button>
         </div>
     </div>

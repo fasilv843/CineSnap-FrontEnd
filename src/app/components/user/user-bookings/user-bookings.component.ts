@@ -15,6 +15,7 @@ export class UserBookingsComponent implements OnInit {
   userId = ''
   tickets: ITicketRes[] = []
   seats: string[] = []
+  fourHoursBefore = new Date(new Date().getTime() - 4 * 60 * 60 * 1000)
 
   getLanguage = getLanguage
 
@@ -37,7 +38,16 @@ export class UserBookingsComponent implements OnInit {
   }
 
   cancelTicket (ticketId: string): void {
-
+    this.ticketService.cancelTicket(ticketId).subscribe({
+      next: () => {
+        const ticketIdx = this.tickets.findIndex(tkt => ticketId === tkt._id)
+        this.tickets = [
+          ...this.tickets.slice(0, ticketIdx),
+          { ...this.tickets[ticketIdx], isCancelled: true },
+          ...this.tickets.slice(ticketIdx + 1)
+        ]
+      }
+    })
   }
 
   seatMapToStringArr (seatsObj: Map<string, number[]>): string[] {
