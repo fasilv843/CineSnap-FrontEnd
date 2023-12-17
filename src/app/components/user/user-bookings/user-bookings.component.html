@@ -1,2 +1,47 @@
 <app-user-nav></app-user-nav>
-<p>user-bookings works!</p>
+
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 m-4">
+    <div *ngFor="let ticket of tickets" class="bg-white p-4 rounded-lg shadow-md">
+        <div class="flex items-center mb-4">
+            <img class="w-28 h-28 object-cover rounded mr-4" src="https://image.tmdb.org/t/p/original/{{ ticket.movieId.poster_path }}" alt="{{ ticket.movieId.title }} poster">
+            <div class="flex flex-col flex-grow">
+                <div class="mb-4">
+                    <h6 class="text-xl font-semibold">{{ ticket.movieId.title }}</h6>
+                    <small class="text-gray-600">{{ getLanguage(ticket.movieId.language) }}</small>
+                </div>
+                <div class="mb-4">
+                    <h6 class="text-md font-medium">{{ ticket.theaterId.name }}</h6>
+                </div>
+            </div>
+            <div>
+                <img src="path/to/qr-code-placeholder.png" alt="QR Code" class="w-12 h-12 object-cover rounded">
+            </div>
+        </div>
+        <div class="flex items-center mb-4">
+            <div class="flex flex-col flex-grow mr-4">
+                <h6 class="text-md font-semibold mb-1">{{ ticket.startTime | date: 'EEE, dd MMM yyyy, hh:mm a' }}</h6>
+                <span class="text-gray-600">{{ ticket.screenId.name }}</span>
+                <div class="flex flex-wrap gap-1 mt-1">
+                    <span *ngFor="let seat of seatMapToStringArr(ticket.seats).slice(0, 5)" class="bg-green-500 text-white p-1 rounded">{{ seat }}</span>
+                </div>
+                <div *ngIf="seatMapToStringArr(ticket.seats).length > 5" class="flex flex-wrap gap-1 mt-1">
+                    <span *ngFor="let seat of seatMapToStringArr(ticket.seats).slice(5)" class="bg-green-500 text-white p-1 rounded">{{ seat }}</span>
+                </div>
+            </div>
+            <div class="flex flex-col items-center">
+                <div class="bg-gray-200 p-2 rounded-md mb-2">
+                    <p class="text-gray-900 text-lg text-center font-semibold">{{ ticket.seatCount }}</p>
+                    <p class="text-gray-700 text-center">Tickets</p>
+                </div>
+                <div>
+                    <p class="text-blue-900 text-lg font-semibold">{{ 'Booked' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-end">
+            <button class="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded-md cursor-pointer focus:outline-none" (click)="cancelTicket(ticket._id)">Cancel</button>
+        </div>
+    </div>
+</div>
+
