@@ -45,11 +45,18 @@ export class ThrLoginComponent {
       console.log('sending http request');
       this.http.post<IApiTheaterAuthRes>('theater/login', theater).subscribe({
         next: (res: IApiTheaterAuthRes) => {
-          // console.log('navigating to home', res.token);
-          if (res.data !== null) this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
-          localStorage.setItem('theaterAccessToken', res.accessToken)
-          localStorage.setItem('theaterRefreshToken', res.refreshToken)
-          void this.router.navigate(['/theater/home'])
+          if (res.data !== null) {
+            if (res.data.approvalStatus === 'Approved') {
+              this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
+              localStorage.setItem('theaterAccessToken', res.accessToken)
+              localStorage.setItem('theaterRefreshToken', res.refreshToken)
+              void this.router.navigate(['/theater/home'])
+            } else if (res.data.approvalStatus === 'Pending') {
+              void this.router.navigate(['/theater/approval/pending'])
+            } else if (res.data.approvalStatus === 'Rejected') {
+              void this.router.navigate(['/theater/approval/rejected'])
+            }
+          }
         }
       })
     }

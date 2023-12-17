@@ -14,8 +14,7 @@
 					<th class="p-3">Wallet</th>
 					<th class="p-3">Liscence Id</th>
 					<th class="p-3">Address</th>
-					<th class="p-3">Block
-					</th>
+					<th class="p-3">Block / Approval</th>
 				</tr>
 			</thead>
 			<tbody class="border-b dark:bg-gray-900 dark:border-gray-700">
@@ -47,12 +46,29 @@
                         </div>
 					</td>
 					<td class="px-3 py-2">
-						<button type="button" title="Open details" class="px-2 rounded-full dark:text-black  focus:dark:bg-gray-700" 
+						<button *ngIf="theater.approvalStatus === 'Approved'; else notApproved" type="button" title="Open details" class="px-2 rounded-full dark:text-black  focus:dark:bg-gray-700" 
                         [ngClass]="theater.isBlocked ? 'bg-green-400 focus:dark:bg-green-600' : 'bg-red-500 focus:dark:bg-red-600'"
                         (click)="onBlock(theater._id, theater.isBlocked ?  'Unblock' : 'Block')"
                         >
 							{{ theater.isBlocked ?  'Unblock' : 'Block' }}
 						</button>
+						<ng-template #notApproved>
+							<div  *ngIf="theater.approvalStatus === 'Pending'">
+								<button type="button" class="px-2 rounded-full dark:text-black bg-green-400 focus:dark:bg-green-600 mx-1" 
+								(click)="onApprove(theater._id)"
+								>
+									Approve
+								</button>
+								<button type="button" class="px-2 rounded-full dark:text-black bg-red-500 focus:dark:bg-red-600 mx-1" 
+								(click)="onReject(theater._id)"
+								>
+									Reject
+								</button>
+							</div>
+							<div *ngIf="theater.approvalStatus === 'Rejected'" class="text-red-500">
+								<p>Rejected</p>
+							</div>
+						</ng-template>
 					</td>
 				</tr>
 			</tbody>

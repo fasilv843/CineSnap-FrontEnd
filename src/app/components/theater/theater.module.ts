@@ -23,6 +23,8 @@ import { ImageModule } from 'src/app/modules/image/image.module';
 import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
 import { FilterComponent } from '../common/filter/filter.component';
 import { DateComponent } from '../common/date/date.component';
+import { ApprovalPendingComponent } from './approval-pending/approval-pending.component';
+import { ApprovalRejectedComponent } from './approval-rejected/approval-rejected.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { DateComponent } from '../common/date/date.component';
     AddScreenComponent,
     EditScreenComponent,
     EditTheaterProfileComponent,
-    ThrSeatingComponent
+    ThrSeatingComponent,
+    ApprovalPendingComponent,
+    ApprovalRejectedComponent
   ],
   imports: [
     CommonModule,

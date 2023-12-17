@@ -27,9 +27,10 @@ export interface ITheaterRes {
   walletHistory: IWalletHistory[] | []
   coords: ICoords
   address: ITheaterAddress
+  approvalStatus: 'Approved' | 'Pending' | 'Rejected'
 }
 
-export interface ITheaterUpdate extends Omit<ITheaterRes, '_id' | 'email' | 'isBlocked' | 'wallet' | 'walletHistory' | 'liscenceId'> {}
+export interface ITheaterUpdate extends Omit<ITheaterRes, '_id' | 'email' | 'isBlocked' | 'wallet' | 'walletHistory' | 'liscenceId' | 'approvalStatus'> {}
 
 export interface ITheaterAuth {
   name: string

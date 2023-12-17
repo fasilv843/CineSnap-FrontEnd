@@ -11,7 +11,6 @@ import { type IApiTheaterAuthRes } from 'src/app/models/theater';
 import { GeoLocationService } from 'src/app/services/geo-location.service';
 import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER } from 'src/app/shared/constants';
 import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators';
-import { saveTheaterOnStore } from 'src/app/states/theater/theater.action';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -151,12 +150,8 @@ export class ThrRegisterComponent {
       const authToken = localStorage.getItem('theaterAuthToken')
       const otp = theater.otp
       this.http.post<IApiTheaterAuthRes>('theater/validateOtp', { otp, authToken }).subscribe({
-        next: (res: IApiTheaterAuthRes) => {
-          if (res.data !== null) this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
-          localStorage.setItem('theaterAccessToken', res.accessToken)
-          localStorage.setItem('theaterRefreshToken', res.refreshToken)
-          localStorage.removeItem('theaterAuthToken')
-          void this.router.navigate(['/theater/home'])
+        next: () => {
+          void this.router.navigate(['/theater/approval/pending'])
         }
       })
     } else {

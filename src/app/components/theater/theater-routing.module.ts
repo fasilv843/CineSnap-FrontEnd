@@ -15,6 +15,8 @@ import { EditScreenComponent } from './edit-screen/edit-screen.component';
 import { AuthGuard } from 'src/app/guards/auth.guard';
 import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater-profile.component';
 import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
+import { ApprovalPendingComponent } from './approval-pending/approval-pending.component';
+import { ApprovalRejectedComponent } from './approval-rejected/approval-rejected.component';
 
 const routes: Routes = [
   {
@@ -34,7 +36,20 @@ const routes: Routes = [
     title: 'CineSnap | Theater Register',
     component: ThrRegisterComponent,
     canActivate: [LoginGuard]
-
+  },
+  {
+    path: 'approval',
+    title: 'CineSnap | Theater Approval',
+    children: [
+      {
+        path: 'pending',
+        component: ApprovalPendingComponent
+      },
+      {
+        path: 'rejected',
+        component: ApprovalRejectedComponent
+      }
+    ]
   },
   {
     path: 'shows',
