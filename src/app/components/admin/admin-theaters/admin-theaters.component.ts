@@ -40,7 +40,6 @@ export class AdminTheatersComponent {
             const thrIndex = this.theaters.findIndex(thr => thr._id === theaterId)
             this.theaters = [
               ...this.theaters.slice(0, thrIndex),
-              // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
               { ...this.theaters[thrIndex], isBlocked: !(this.theaters[thrIndex].isBlocked ?? false) },
               ...this.theaters.slice(thrIndex + 1)
             ]
@@ -65,10 +64,10 @@ export class AdminTheatersComponent {
             const thrIndex = this.theaters.findIndex(thr => thr._id === theaterId)
             this.theaters = [
               ...this.theaters.slice(0, thrIndex),
-              // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
               { ...this.theaters[thrIndex], approvalStatus: 'Approved' },
               ...this.theaters.slice(thrIndex + 1)
             ]
+            console.log(this.theaters[thrIndex], 'approved theater')
           }
         })
       }
@@ -90,7 +89,6 @@ export class AdminTheatersComponent {
             const thrIndex = this.theaters.findIndex(thr => thr._id === theaterId)
             this.theaters = [
               ...this.theaters.slice(0, thrIndex),
-              // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
               { ...this.theaters[thrIndex], approvalStatus: 'Rejected' },
               ...this.theaters.slice(thrIndex + 1)
             ]
