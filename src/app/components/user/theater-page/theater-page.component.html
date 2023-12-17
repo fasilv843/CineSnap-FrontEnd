@@ -46,56 +46,60 @@
 
     <app-date (dateSelected)="onSelectDate($event)" [currDate]="currDate"></app-date>
 
-  <div *ngIf="hasShows(); else noShows">
-    <ng-container *ngFor="let screen of screens">
-      <div *ngIf="screen.shows.length" class="container mx-auto p-6">
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-          <h3 class="text-2xl font-semibold text-gray-900 mb-4">{{ screen.screenName }}</h3>
-      
-          <div  *ngFor="let show of screen.shows" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Movie Section -->
-            <div class="flex items-center mb-4">
-              <img class="w-24 h-24 object-cover rounded" src="https://image.tmdb.org/t/p/original/{{ show.movieId.poster_path }}" alt="{{ show.movieId.title }} poster">
-              <div class="ml-4">
-                <h5 class="text-xl font-semibold">{{ show.movieId.title }}</h5>
-                <small class="text-gray-600">{{ getLanguage(show.movieId.language) }}</small>
-                <div class="flex gap-1">
-                  <small class="text-gray-700" *ngFor="let genreId of show.movieId.genre_ids">{{ getGenre(genreId) }}</small>
+    <div *ngIf="!isShowLoading">
+      <div *ngIf="hasShows(); else noShows">
+        <ng-container *ngFor="let screen of screens">
+          <div *ngIf="screen.shows.length" class="container mx-auto p-6">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+              <h3 class="text-2xl font-semibold text-gray-900 mb-4">{{ screen.screenName }}</h3>
+          
+              <div  *ngFor="let show of screen.shows" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Movie Section -->
+                <div class="flex items-center mb-4">
+                  <img class="w-24 h-24 object-cover rounded" src="https://image.tmdb.org/t/p/original/{{ show.movieId.poster_path }}" alt="{{ show.movieId.title }} poster">
+                  <div class="ml-4">
+                    <h5 class="text-xl font-semibold">{{ show.movieId.title }}</h5>
+                    <small class="text-gray-600">{{ getLanguage(show.movieId.language) }}</small>
+                    <div class="flex gap-1">
+                      <small class="text-gray-700" *ngFor="let genreId of show.movieId.genre_ids">{{ getGenre(genreId) }}</small>
+                    </div>
+                    <p class="text-gray-700">{{ show.movieId.duration.hours }}:{{ show.movieId.duration.minutes }} hours</p>
+                  </div>
                 </div>
-                <p class="text-gray-700">{{ show.movieId.duration.hours }}:{{ show.movieId.duration.minutes }} hours</p>
+          
+                <!-- Show Timings Section -->
+                <div *ngFor="let show of show.shows" class="mb-4">
+                  <a [routerLink]="['/user/show/seats', theaterId, show._id]" class="cursor-pointer">
+                    <div class="rounded-md px-4 py-3 bg-gray-100 text-gray-700">
+                      <div class="flex justify-between mb-2">
+                        <span class="font-semibold">Time</span>
+                        <p class="text-right font-semibold" [ngClass]="getTextColor(show)">{{ show.startTime | date: 'h:mm a' }} - {{ show.endTime | date: 'h:mm a' }}</p>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="font-semibold">Price</span>
+                        <p class="text-right">&#8377; {{ show.ticketPrice }}</p>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <!-- Timing Section End -->
+          
               </div>
             </div>
-      
-            <!-- Show Timings Section -->
-            <div *ngFor="let show of show.shows" class="mb-4">
-              <a [routerLink]="['/user/show/seats', theaterId, show._id]" class="cursor-pointer">
-                <div class="rounded-md px-4 py-3 bg-gray-100 text-gray-700">
-                  <div class="flex justify-between mb-2">
-                    <span class="font-semibold">Time</span>
-                    <p class="text-right font-semibold" [ngClass]="getTextColor(show)">{{ show.startTime | date: 'h:mm a' }} - {{ show.endTime | date: 'h:mm a' }}</p>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="font-semibold">Price</span>
-                    <p class="text-right">&#8377; {{ show.ticketPrice }}</p>
-                  </div>
-                </div>
-              </a>
-            </div>
-            <!-- Timing Section End -->
-      
           </div>
-        </div>
+        </ng-container>
       </div>
-    </ng-container>
-  </div>
-
-  <ng-template #noShows>
-    <div class="container mx-auto p-6">
-      <h3 class="text-2xl font-semibold text-gray-900 mb-4">
-        No shows for this day.
-      </h3>
+    
+      <ng-template #noShows>
+        <div class="container mx-auto p-6">
+          <h3 class="text-2xl font-semibold text-gray-900 mb-4">
+            No shows for this day.
+          </h3>
+        </div>
+      </ng-template>
     </div>
-  </ng-template>
+
+   <app-spinner *ngIf="isShowLoading"></app-spinner>
 
   </div>
 

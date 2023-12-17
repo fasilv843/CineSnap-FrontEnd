@@ -18,6 +18,7 @@ export class TheaterPageComponent implements OnInit {
   currDate: Date = new Date()
   getGenre = getGenre
   getLanguage = getLanguage
+  isShowLoading = true
 
   constructor (
     @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
@@ -40,11 +41,13 @@ export class TheaterPageComponent implements OnInit {
   }
 
   onSelectDate (date: Date): void {
+    this.isShowLoading = true
     this.currDate = date
     console.log(date.toISOString().split('T')[0], 'date selected from onSelectDate')
     const formattedDate = date.toISOString().split('T')[0]
     this.showService.findShowsOnDate(this.theaterId, formattedDate).subscribe({
       next: (res) => {
+        this.isShowLoading = false
         console.log(res.data, 'res.data from show service')
         if (res.data !== null) this.screens = res.data
       }
