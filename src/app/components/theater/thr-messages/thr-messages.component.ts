@@ -6,6 +6,7 @@ import { type IUserRes } from 'src/app/models/users'
 import { TheaterService } from 'src/app/services/theater.service'
 import { UserService } from 'src/app/services/user.service'
 import { WebSocketService } from 'src/app/services/web-socket.service'
+import { imagesFolderPath } from 'src/app/shared/constants'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 
 @Component({
@@ -23,6 +24,7 @@ export class ThrMessagesComponent implements OnInit, OnDestroy {
   theaterName = ''
   users: IUserRes[] = []
   currUser!: IUserRes
+  imageFolderPath = imagesFolderPath
 
   constructor (
     @Inject(WebSocketService) private readonly socketService: WebSocketService,

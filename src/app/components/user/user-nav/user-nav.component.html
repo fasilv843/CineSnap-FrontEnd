@@ -32,12 +32,15 @@
         <div class="hidden sm:flex items-center space-x-5">
 
           <div *ngIf="userDetails$ | async as user; else notLoggedIn" class="flex items-center" routerLink="/user/profile">
-            <div class="rounded-full h-8 w-8 border-2 border-amber-300 hover:border-amber-500 bg-black text-amber-300 hover:text-amber-500 text-center align-middle">
+            <div *ngIf="user.profilePic">
+              <img [src]="imageFolderPath + user.profilePic" [alt]="user.name + ' Profile Picture'" class="rounded-full h-8 w-8 border-2 border-amber-300 hover:border-amber-500">
+            </div>
+            <div *ngIf="!user.profilePic" class="rounded-full h-8 w-8 border-2 border-amber-300 hover:border-amber-500 bg-black text-amber-300 hover:text-amber-500 text-center align-middle">
               <span class="flex items-center justify-center h-full">
                 {{ user.name | slice:0:1 | uppercase }}
               </span>
             </div>
-          </div>
+          </div>          
           
           <ng-template #notLoggedIn >
             <a  class="flex items-center hover:text-amber-500" routerLink="/user/profile">

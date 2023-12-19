@@ -5,6 +5,7 @@ import { type IShow, type IShowsOnAScreen } from 'src/app/models/show'
 import { type IApiTheaterRes, type ITheaterRes } from 'src/app/models/theater'
 import { ShowService } from 'src/app/services/show.service'
 import { TheaterService } from 'src/app/services/theater.service'
+import { imagesFolderPath } from 'src/app/shared/constants'
 
 @Component({
   selector: 'app-theater-page',
@@ -19,6 +20,7 @@ export class TheaterPageComponent implements OnInit {
   getGenre = getGenre
   getLanguage = getLanguage
   isShowLoading = true
+  imagesFolderPath = imagesFolderPath
 
   constructor (
     @Inject(ActivatedRoute) private readonly route: ActivatedRoute,

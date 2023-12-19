@@ -8,7 +8,7 @@
       <div *ngFor="let thr of theaters" >
         <div  class="flex gap-5 border p-4 rounded-md">
             <div class="flex items-center gap-3">
-                <img src="{{ thr.profilePic ?? 'https://placehold.it/150x150' }}" alt="{{ thr.name }} image" class="w-32 h-32 rounded-md">
+                <img src="{{ thr.profilePic ? folderPath + thr.profilePic : 'https://placehold.it/150x150' }}" alt="{{ thr.name }} image" class="w-32 h-32 rounded-md">
             </div>
             <div class="flex flex-col justify-between gap-3">
                 <div>

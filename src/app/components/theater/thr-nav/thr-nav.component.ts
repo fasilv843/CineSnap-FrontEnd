@@ -2,6 +2,7 @@
 import { Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
+import { imagesFolderPath } from 'src/app/shared/constants';
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector';
 
 @Component({
@@ -12,6 +13,7 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector';
 export class ThrNavComponent {
   showSidebar = false
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
+  imageFolderPath = imagesFolderPath
 
   constructor (
     @Inject(Router) private readonly router: Router,

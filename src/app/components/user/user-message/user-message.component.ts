@@ -5,6 +5,7 @@ import { type IChatReqs, type IChatMessage, type IApiChatRes } from 'src/app/mod
 import { type ITheaterRes } from 'src/app/models/theater'
 import { TheaterService } from 'src/app/services/theater.service'
 import { WebSocketService } from 'src/app/services/web-socket.service'
+import { imagesFolderPath } from 'src/app/shared/constants'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 
 @Component({
@@ -22,6 +23,7 @@ export class UserMessageComponent implements OnInit, OnDestroy {
   userName = 'User'
   theaters: ITheaterRes[] = []
   currTheater!: ITheaterRes
+  imageFolderPath = imagesFolderPath
 
   constructor (
     @Inject(WebSocketService) private readonly socketService: WebSocketService,

@@ -5,6 +5,7 @@ import { select, Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
 import { ITheaterRes } from 'src/app/models/theater';
 import { TheaterService } from 'src/app/services/theater.service';
+import { imagesFolderPath } from 'src/app/shared/constants';
 import { saveCoords } from 'src/app/states/coords/coords.actions';
 import { selectCoords } from 'src/app/states/coords/coords.selector';
 
@@ -16,6 +17,7 @@ import { selectCoords } from 'src/app/states/coords/coords.selector';
 export class UserTheatersComponent implements OnInit, OnDestroy {
   coords$ = this.store.pipe(select(selectCoords))
   theaters: ITheaterRes[] = []
+  folderPath = imagesFolderPath
   unsubscribe$ = new Subject<void>()
 
   constructor (

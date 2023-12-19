@@ -2,6 +2,7 @@
 import { Component, Inject, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
+import { imagesFolderPath } from 'src/app/shared/constants';
 import { saveCoords } from 'src/app/states/coords/coords.actions';
 import { selectCoords } from 'src/app/states/coords/coords.selector';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
@@ -18,6 +19,7 @@ export class UserNavComponent implements OnInit {
   coords$ = this.store.pipe(select(selectCoords))
   latitude: number | undefined;
   longitude: number | undefined;
+  imageFolderPath = imagesFolderPath
 
   constructor (
     @Inject(Router) private readonly router: Router,

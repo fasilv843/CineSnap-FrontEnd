@@ -15,7 +15,12 @@
             <a (click)="onSelectTheater(theater)">
                 <div class="flex items-center space-x-4 mb-4 relative">
                     <!-- <span class="absolute top-1/2 right-2 transform -translate-y-1/2 h-4 min-w-4 bg-amber-500 rounded-full flex items-center justify-center text-white text-xs p-2">99+</span> -->
-                    <img src="user1.jpg" alt="User 1" class="w-8 h-8 rounded-full">
+                    <img *ngIf="theater.profilePic" [src]="imageFolderPath + theater.profilePic" [alt]="theater.name + 'Profile'" class="w-8 h-8 rounded-full">
+                    <div *ngIf="!theater.profilePic" class="rounded-full h-8 w-8 border-2 border-amber-300 hover:border-amber-500 bg-black text-amber-300 hover:text-amber-500 text-center align-middle">
+                        <span class="flex items-center justify-center h-full">
+                          {{ theater.name | slice:0:1 | uppercase }}
+                        </span>
+                    </div>
                     <div class="flex flex-col">
                         <span class="font-bold text-gray-800">{{ theater.name }}</span>
                         <!-- <span class="text-gray-600">Online</span> -->
@@ -60,8 +65,12 @@
                            <circle cx="8" cy="8" r="8" fill="currentColor"></circle>
                         </svg>
                      </span> -->
-                    <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
-                        alt="" class="w-8 sm:w-16 h-8 sm:h-16 rounded-full">
+                     <img *ngIf="currTheater.profilePic"  [src]="imageFolderPath + currTheater.profilePic" [alt]="currTheater.name + 'Profile'" class="w-8 sm:w-16 h-8 sm:h-16 rounded-full">
+                     <div *ngIf="!currTheater.profilePic" class="w-8 sm:w-16 h-8 sm:h-16 rounded-full border-2 border-amber-300 hover:border-amber-500 bg-black text-amber-300 hover:text-amber-500 text-center align-middle">
+                         <span class="flex items-center justify-center h-full text-2xl">
+                           {{ currTheater.name | slice:0:1 | uppercase }}
+                         </span>
+                     </div>
                     <!-- </div> -->
                     <div class="flex flex-col leading-tight">
                         <div class="text-xl mt-1 flex items-center">
