@@ -5,6 +5,7 @@ import { Store, select } from '@ngrx/store';
 import { type IUserRes } from 'src/app/models/users';
 import { deleteUserFromStore } from 'src/app/states/user/user.actions';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
+import { environments } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user-profile',
@@ -18,7 +19,7 @@ export class UserProfileComponent implements OnInit {
   email: string = ''
   dob!: Date
   mobile!: number
-  profilePic!: string
+  profilePic: string = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=200'
   city!: string
   state!: string
   district!: string
@@ -35,19 +36,25 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit (): void {
     this.userDetails$.subscribe((user) => {
-      this.user = user ?? this.user
-      this.name = user?.name ?? '';
-      this.email = user?.email ?? '';
-      this.dob = user?.dob ?? new Date('1990-01-01');
-      this.mobile = user?.mobile ?? 0
-      this.profilePic = user?.profilePic ?? 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=200'
-      this.city = user?.address?.city ?? ''
-      this.state = user?.address?.state ?? ''
-      this.district = user?.address?.district ?? ''
-      this.country = user?.address?.country ?? ''
-      this.zip = user?.address?.zip ?? 0
-      this.wallet = user?.wallet ?? 0
-      this.userId = user?._id ?? ''
+      console.log(user, 'user data from state, user profile')
+      if (user !== null) {
+        this.user = user
+        this.name = user.name
+        this.email = user.email
+        this.dob = user.dob
+        this.mobile = user.mobile ?? 0
+        if (user.profilePic !== undefined) this.profilePic = environments.backendUrl + `/images/${user.profilePic}`
+        console.log(this.profilePic)
+        if (user.address !== undefined) {
+          this.city = user.address.city
+          this.state = user.address.state
+          this.district = user.address.district
+          this.country = user.address.country
+          this.zip = user.address.zip
+        }
+        this.wallet = user.wallet
+        this.userId = user._id
+      }
     })
   }
 

@@ -14,6 +14,7 @@ import { mobileValidators, nameValidators, requiredValidator, zipValidators } fr
 import { saveUserOnStore } from 'src/app/states/user/user.actions'
 // import { saveUserOnStore } from 'src/app/states/user/user.actions'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
+import { environments } from 'src/environments/environment'
 // import { MatToolbarModule } from '@angular/material/toolbar'
 
 @Component({
@@ -35,6 +36,8 @@ export class EditUserProfileComponent implements OnInit {
   zip = ''
   longitude!: number
   latitude!: number
+  selectedFile!: File
+  dpUrl = ''
 
   constructor (
     @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
@@ -65,6 +68,8 @@ export class EditUserProfileComponent implements OnInit {
         this.profileForm.get('name')?.setValue(this.user.name)
         this.profileForm.get('mobile')?.setValue((this.user.mobile != null) ? String(this.user.mobile) : '')
         this.profileForm.get('dob')?.patchValue(dateToString(new Date(this.user.dob)))
+        if (this.user.profilePic !== undefined) this.dpUrl = environments.backendUrl + `/images/${this.user.profilePic}`
+        console.log(this.dpUrl, 'image url')
         if (this.user.address != null) {
           this.city = this.user.address.city
           this.district = this.user.address.district
@@ -73,6 +78,7 @@ export class EditUserProfileComponent implements OnInit {
           this.zip = String(this.user.address.zip)
         }
       }
+      console.log(this.dpUrl, 'dpUrl from edit profile')
     })
 
     // if (this.user === null) {
@@ -121,12 +127,35 @@ export class EditUserProfileComponent implements OnInit {
     }
   }
 
-  imageReady (event: any): void {
-    console.log(event, 'image ready event in edit user profile')
+  imageReady (blob: Blob): void {
+    console.log(blob, 'image ready event in edit user profile')
+
+    const formData = new FormData()
+    formData.append('image', blob, this.user?.name + '.jpg')
+
+    this.userService.updateUserProfile(this.userId, formData).subscribe({
+      next: (res) => {
+        console.log('image upload complete')
+        if (res.data != null) {
+          this.dpUrl = environments.backendUrl + `/images/${res.data.profilePic}`
+          this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+        }
+      },
+      error: () => {
+        this.dpUrl = ''
+      }
+    })
   }
 
   deleteProfilePic (): void {
-
+    console.warn('deleting dp')
+    this.userService.deleteUserProfile(this.userId).subscribe({
+      next: (res) => {
+        this.dpUrl = ''
+        console.warn('profile deleted successfully', res.data.profilePic, 'see, its undefined')
+        if (res.data != null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+      }
+    })
   }
 
   async autoFillAddress (): Promise<void> {

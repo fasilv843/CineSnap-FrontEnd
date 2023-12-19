@@ -37,6 +37,14 @@ export class UserService {
     return this.http.put<IApiUserRes>(`user/update/${userId}`, userData)
   }
 
+  updateUserProfile (userId: string, formData: FormData): Observable<IApiUserRes> {
+    return this.http.patch<IApiUserRes>(`user/update/profileimage/${userId}`, formData)
+  }
+
+  deleteUserProfile (userId: string): Observable<IApiUserRes> {
+    return this.http.patch<IApiUserRes>(`user/remove/profileimage/${userId}`, {})
+  }
+
   getUsersChattedWith (theaterId: string): Observable<IApiUsersRes> {
     return this.http.get<IApiUsersRes>(`theater/chat/users/${theaterId}`)
   }

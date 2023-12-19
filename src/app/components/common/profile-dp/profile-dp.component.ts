@@ -15,6 +15,8 @@ export class ProfileDpComponent {
     this.imageWidth.set(val)
   }
 
+  @Input() currDp: string = ''
+
   imageHeight = signal(0)
   // eslint-disable-next-line accessor-pairs
   @Input() set hieght (val: number) {
@@ -57,7 +59,11 @@ export class ProfileDpComponent {
     })
   }
 
+  @Output() deleteDp = new EventEmitter()
+
   deleteProfilePic (): void {
     this.croppedImage.set(undefined)
+    this.deleteDp.emit()
+    this.currDp = ''
   }
 }

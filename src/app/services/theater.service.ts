@@ -62,4 +62,12 @@ export class TheaterService {
   getChatHistory (theaterId: string, userId: string): Observable<IApiChatRes> {
     return this.http.get<IApiChatRes>(`theater/chat/history?theaterId=${theaterId}&userId=${userId}`)
   }
+
+  updateTheaterProfilePic (theaterId: string, formData: FormData): Observable<IApiTheaterRes> {
+    return this.http.patch<IApiTheaterRes>(`theater/update/profileimage/${theaterId}`, formData)
+  }
+
+  deleteTheaterProfilePic (theaterId: string): Observable<IApiTheaterRes> {
+    return this.http.patch<IApiTheaterRes>(`theater/remove/profileimage/${theaterId}`, {})
+  }
 }

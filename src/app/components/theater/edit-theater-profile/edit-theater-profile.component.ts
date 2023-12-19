@@ -11,6 +11,7 @@ import { TheaterService } from 'src/app/services/theater.service'
 import { nameValidators, mobileValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators'
 import { saveTheaterOnStore } from 'src/app/states/theater/theater.action'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import { environments } from 'src/environments/environment'
 
 @Component({
   selector: 'app-edit-theater-profile',
@@ -25,6 +26,7 @@ export class EditTheaterProfileComponent {
   isSubmitted = false
   longitude: number = 0
   latitude: number = 0
+  dpUrl: string = ''
 
   constructor (
     @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
@@ -55,6 +57,7 @@ export class EditTheaterProfileComponent {
     this.theaterDetails$.subscribe(theater => {
       if (theater !== null) {
         this.theater = theater
+        if (theater.profilePic !== undefined) this.dpUrl = environments.backendUrl + `/images/${theater.profilePic}`
         this.profileForm.get('name')?.setValue(this.theater.name)
         this.profileForm.get('mobile')?.setValue((this.theater.mobile != null) ? String(this.theater.mobile) : '')
         if (this.theater.address != null) {
@@ -71,8 +74,34 @@ export class EditTheaterProfileComponent {
     })
   }
 
-  imageReady (event: any): void {
-    console.log(event, 'event from imageReady in edit thr profile')
+  imageReady (blob: Blob): void {
+    console.log(blob, 'event from imageReady in edit thr profile')
+    const formData = new FormData()
+    formData.append('image', blob, this.theater?.name + '.jpg')
+
+    this.theaterService.updateTheaterProfilePic(this.theaterId, formData).subscribe({
+      next: (res) => {
+        console.log('image upload complete')
+        if (res.data != null) {
+          this.dpUrl = environments.backendUrl + `/images/${res.data.profilePic}`
+          this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
+        }
+      },
+      error: () => {
+        this.dpUrl = ''
+      }
+    })
+  }
+
+  deleteProfilePic (): void {
+    console.warn('deleting dp')
+    this.theaterService.deleteTheaterProfilePic(this.theaterId).subscribe({
+      next: (res) => {
+        this.dpUrl = ''
+        console.warn('profile deleted successfully', res.data.profilePic, 'see, its undefined')
+        if (res.data != null) this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
+      }
+    })
   }
 
   onSubmit (): void {

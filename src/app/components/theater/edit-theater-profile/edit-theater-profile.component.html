@@ -5,7 +5,7 @@
       <div class="rounded-t-lg h-32 bg-gradient-to-br from-gray-800 via-gray-700 to-amber-500 overflow-hidden"></div>
         <div class="mx-auto w-40 h-40 relative -mt-20 border-4 border-white rounded-full overflow-hidden">
             <div class="relative">
-                <app-profile-dp [hieght]="155" [width]="155" (imageReady)="imageReady($event)"></app-profile-dp>
+              <app-profile-dp [hieght]="155" [width]="155" [currDp]="dpUrl" (deleteDp)="deleteProfilePic()" (imageReady)="imageReady($event)"></app-profile-dp>
             </div>
         </div>
 

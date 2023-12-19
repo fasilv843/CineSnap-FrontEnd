@@ -1,7 +1,7 @@
 <div 
 [style.width]="imageWidth() + 'px'"
 >
-    <img [src]="imageSource()" [height]="imageHeight()" [width]="imageWidth()" alt="Default Profile Picture">
+    <img [src]=" currDp !== '' ? currDp : imageSource()" [height]="imageHeight()" [width]="imageWidth()" alt="Default Profile Picture">
 </div>
 <input #inputField  type="file" hidden (change)="fileSelected($event)" (click)="inputField.value = ''">
 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-black cursor-pointer flex">

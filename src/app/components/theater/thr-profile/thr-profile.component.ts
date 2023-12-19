@@ -4,6 +4,7 @@ import { Store, select } from '@ngrx/store'
 import { type ITheaterRes } from 'src/app/models/theater'
 import { deleteTheaterFromStore } from 'src/app/states/theater/theater.action'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import { environments } from 'src/environments/environment'
 
 @Component({
   selector: 'app-thr-profile',
@@ -13,6 +14,7 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 export class ThrProfileComponent {
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
   theater!: ITheaterRes
+  profilePic: string = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=200'
 
   constructor (
     @Inject(Store) private readonly store: Store,
@@ -23,6 +25,7 @@ export class ThrProfileComponent {
     this.theaterDetails$.subscribe((theater) => {
       if (theater !== null) {
         this.theater = theater
+        if (theater.profilePic !== undefined) this.profilePic = environments.backendUrl + `/images/${theater.profilePic}`
       }
     })
   }
