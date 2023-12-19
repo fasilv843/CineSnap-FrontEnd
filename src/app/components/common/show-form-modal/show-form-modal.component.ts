@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { CommonModule } from '@angular/common'
 import { Component, Inject, OnInit } from '@angular/core'
-import { Validators } from '@angular/forms'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap'
 import { Store, select } from '@ngrx/store'

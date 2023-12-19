@@ -35,7 +35,6 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
     ReactiveFormsModule,
     FormsModule,
     BrowserAnimationsModule,
-    // CloudinaryModule,
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     NgbModule
