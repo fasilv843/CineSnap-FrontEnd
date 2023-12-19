@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { CommonModule } from '@angular/common'
 import { Component, Inject, OnInit } from '@angular/core'
+import { Validators } from '@angular/forms'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap'
 import { Store, select } from '@ngrx/store'
@@ -11,7 +12,7 @@ import { IScreen } from 'src/app/models/screens'
 import { ValidationModule } from 'src/app/modules/validation/validation.module'
 import { MovieService } from 'src/app/services/movie.service'
 import { ScreenService } from 'src/app/services/screen.service'
-import { defaultPriceValidators } from 'src/app/shared/valiators'
+import { defaultPriceValidators, requiredValidator } from 'src/app/shared/valiators'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 
 @Component({
@@ -42,7 +43,7 @@ export class ShowFormModalComponent implements OnInit {
   isStartTimeSelected = false
   startTimeStr = '00:00'
   endingTime: string = '00:00'
-  date!: Date
+  currDate: Date = new Date()
 
   constructor (
     @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
@@ -56,9 +57,10 @@ export class ShowFormModalComponent implements OnInit {
 
   ngOnInit (): void {
     this.showForm = this.formBuilder.group({
-      movieId: ['', []],
-      screenId: ['', []],
-      startTime: ['', []],
+      movieId: ['', [validateByTrimming(requiredValidator)]],
+      screenId: ['', [validateByTrimming(requiredValidator)]],
+      startTime: ['', [validateByTrimming(requiredValidator)]],
+      date: [this.currDate.toISOString().substring(0, 10), [validateByTrimming(requiredValidator)]],
       ticketPrice: ['', [validateByTrimming(defaultPriceValidators)]]
     })
 
@@ -122,7 +124,8 @@ export class ShowFormModalComponent implements OnInit {
     this.isSubmitted = true
     if (this.showForm.valid) {
       const showFormData = this.showForm.value
-      showFormData.startTime = this.convertStrToDateObj(showFormData.startTime) // invalid date
+      console.log(showFormData, 'show form data from modal')
+      showFormData.startTime = this.convertTimeStrToDateObj(showFormData.startTime, new Date(showFormData.date))
       console.log(showFormData.startTime, 'start time from modal')
       this.activeModal.close(showFormData)
     } else {
@@ -130,7 +133,7 @@ export class ShowFormModalComponent implements OnInit {
     }
   }
 
-  convertStrToDateObj (timeStr: string, date: Date = new Date()): Date {
+  convertTimeStrToDateObj (timeStr: string, date: Date): Date {
     // Set the hours and minutes from the time string
     console.log(timeStr, 'tiemStr from convert funcion')
     date.setHours(parseInt(timeStr.split(':')[0]), parseInt(timeStr.split(':')[1]))

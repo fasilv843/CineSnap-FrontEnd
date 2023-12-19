@@ -44,6 +44,7 @@ export class ThrShowsComponent implements OnInit {
     // Access the component instance and set input values
     modalRef.componentInstance.modalTitle = 'Add Show'
     modalRef.componentInstance.submitBtn = 'Add'
+    modalRef.componentInstance.currDate = this.currDate
     // modalRef.componentInstance.fields = yourFieldsArray
 
     void modalRef.result.then(

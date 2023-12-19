@@ -20,7 +20,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { hydrationMetaReducer } from './states/hydration.reducer'
 import { reducers } from './states/app.state';
-// import { environments } from 'src/environments/environment'
 
 export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
 

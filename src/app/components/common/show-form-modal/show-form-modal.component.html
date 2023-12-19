@@ -23,7 +23,13 @@
               </select>
               <app-screen-select-validation [screenControl]="showForm.get('screenId')" [isSubmitted]="isSubmitted"></app-screen-select-validation>
             </div>
-          
+
+            <div class="mb-3">
+              <label for="date" class="block mb-2 text-sm font-semibold text-gray-700">Date:</label>
+              <input id="date" formControlName="date" type="date" class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm" placeholder="Select a date" />
+              <app-show-date-validation [showDateControl]="showForm.get('date')" [isSubmitted]="isSubmitted"></app-show-date-validation>
+            </div>
+            
             <div class="mb-3 flex flex-col sm:flex-row">
               <div class="flex-grow mb-2 sm:mr-2">
                 <label for="startTime" class="block mb-2 text-sm font-semibold text-gray-700">Starting Time:</label>

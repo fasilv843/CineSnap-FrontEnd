@@ -19,6 +19,7 @@ import { ZipValidationComponent } from 'src/app/components/validation/zip-valida
 import { MovieSelectValidationComponent } from 'src/app/components/validation/movie-select-validation/movie-select-validation.component'
 import { ScreenSelectValidationComponent } from 'src/app/components/validation/screen-select-validation/screen-select-validation.component'
 import { StartTimeValidationComponent } from 'src/app/components/validation/start-time-validation/start-time-validation.component'
+import { ShowDateValidationComponent } from 'src/app/components/validation/show-date-validation/show-date-validation.component'
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { StartTimeValidationComponent } from 'src/app/components/validation/star
     ZipValidationComponent,
     MovieSelectValidationComponent,
     ScreenSelectValidationComponent,
-    StartTimeValidationComponent
+    StartTimeValidationComponent,
+    ShowDateValidationComponent
   ],
   imports: [
     CommonModule
@@ -64,7 +66,8 @@ import { StartTimeValidationComponent } from 'src/app/components/validation/star
     ZipValidationComponent,
     MovieSelectValidationComponent,
     ScreenSelectValidationComponent,
-    StartTimeValidationComponent
+    StartTimeValidationComponent,
+    ShowDateValidationComponent
   ]
 })
 export class ValidationModule { }
