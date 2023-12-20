@@ -25,6 +25,7 @@ import { FilterComponent } from '../common/filter/filter.component';
 import { DateComponent } from '../common/date/date.component';
 import { ApprovalPendingComponent } from './approval-pending/approval-pending.component';
 import { ApprovalRejectedComponent } from './approval-rejected/approval-rejected.component';
+import { SearchComponent } from '../common/search/search.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { ApprovalRejectedComponent } from './approval-rejected/approval-rejected
     StoreModule.forFeature('theater', theaterReducer),
     ImageModule,
     FilterComponent,
-    DateComponent
+    DateComponent,
+    SearchComponent
   ]
 })
 export class TheaterModule { }

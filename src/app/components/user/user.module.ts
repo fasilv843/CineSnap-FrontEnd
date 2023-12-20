@@ -33,6 +33,7 @@ import { BookingComponent } from './booking/booking.component';
 import { BookingSuccessComponent } from './booking-success/booking-success.component';
 import { SeatStatusDirective } from 'src/app/directives/seat-status.directive';
 import { SpinnerComponent } from '../common/spinner/spinner.component';
+import { SearchComponent } from '../common/search/search.component';
 
 // import { AngularFireModule } from '@angular/fire/compat';
 // import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
@@ -84,7 +85,8 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     ImageModule,
     FilterComponent,
     DateComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    SearchComponent
   ],
   providers: [
     {

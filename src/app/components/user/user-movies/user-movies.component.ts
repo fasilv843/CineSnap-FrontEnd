@@ -4,6 +4,7 @@ import { Component, type OnInit } from '@angular/core';
 import { IFilterEvent, langType } from 'src/app/models/filter';
 import { ICSMovieRes } from 'src/app/models/movie';
 import { MovieService } from 'src/app/services/movie.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-movies',
@@ -46,6 +47,20 @@ export class UserMoviesComponent implements OnInit {
           event.filterLanguages.length === 0
         )
       )
+    })
+  }
+
+  searchCineSnapMovies (title: string): void {
+    console.log('title from cinesnap movies search', title)
+    this.movieService.searchMovie(title).subscribe({
+      next: (res) => {
+        console.log(res, 'responce from search movie')
+        if (res.data.length === 0) {
+          void Swal.fire('Sorry :<', 'We don\'t have the movie that you are looking for', 'info')
+        } else {
+          this.filteredMovies = res.data
+        }
+      }
     })
   }
 }

@@ -16,6 +16,7 @@ import { AdminMoviesSearchComponent } from './admin-movies-search/admin-movies-s
 import { AdminMoviesExploreComponent } from './admin-movies-explore/admin-movies-explore.component';
 import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { FilterComponent } from '../common/filter/filter.component';
+import { SearchComponent } from '../common/search/search.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { FilterComponent } from '../common/filter/filter.component';
     FormsModule,
     ReactiveFormsModule,
     ValidationModule,
-    FilterComponent
+    FilterComponent,
+    SearchComponent
   ]
 })
 export class AdminModule { }

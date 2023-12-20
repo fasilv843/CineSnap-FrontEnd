@@ -1,0 +1,18 @@
+<div class="mx-3 mt-4 flex justify-end pr-10">
+    <!-- <div>
+      <button routerLink="/admin/movies/tmdb" class="mx-2">TMDB</button>
+      <button routerLink="/admin/movies/cinesnap" class="mx-2">CineSnap</button>
+    </div> -->
+  
+    <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+      <div class="flex justify-between">
+        <div class="mb-3 col-lg-10">
+          <input type="text" class="form-control" formControlName="movieName" placeholder="Search Movies Here...">
+        </div>
+  
+        <div class="col-lg-2 mx-2">
+          <button class="btn bg-amber-500 text-black">Search</button>
+        </div>
+      </div>
+    </form>
+</div>

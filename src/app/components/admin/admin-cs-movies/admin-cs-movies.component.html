@@ -1,6 +1,6 @@
 
 <app-admin-nav class="fixed z-30 top-0"></app-admin-nav>
-<app-admin-movies-search class="fixed top-20 z-30 bg-white w-full" [searchRoute]="'cinesnap'" (search)="searchCineSnapMovies($event)"></app-admin-movies-search>
+<app-admin-movies-search class="fixed top-20 z-30 bg-white w-full" (search)="searchCineSnapMovies($event)"></app-admin-movies-search>
 
 
 <div class="flex mt-40">
@@ -9,6 +9,9 @@
 
   <!-- Movies Content -->
   <div class="movies-container overflow-y-scroll h-screen flex-1">
+    <!-- Use content projection to change page cinesnap and tmdb, and use standalone common search component  -->
+  <!-- <app-search (search)="searchCineSnapMovies($event)"></app-search> --> 
+
     <!-- Your existing content here -->
     <div class="text-lg font-bold mb-3">
       <h3>Movies</h3>

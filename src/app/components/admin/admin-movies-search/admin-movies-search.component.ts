@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./admin-movies-search.component.css']
 })
 export class AdminMoviesSearchComponent {
-  @Input() searchRoute: string = ''
+  // @Input() searchRoute: string = ''
   @Output() search = new EventEmitter<string>()
   searchForm!: FormGroup;
 
@@ -21,7 +21,7 @@ export class AdminMoviesSearchComponent {
   }
 
   constructor (
-    private readonly route: ActivatedRoute,
+    // private readonly route: ActivatedRoute,
     private readonly fb: FormBuilder
   ) {}
 
