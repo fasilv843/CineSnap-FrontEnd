@@ -21,7 +21,7 @@
       <ng-container *ngFor="let movie of filteredMovies">
         <!-- For larger screens, use the adjusted design -->
         <div class="relative group bg-amber-800 overflow-hidden">
-          <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
+          <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" loading="lazy"
             class="w-full h-72 object-cover" />
   
           <!-- Delete button -->

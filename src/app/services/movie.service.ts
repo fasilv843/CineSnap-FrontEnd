@@ -22,6 +22,10 @@ export class MovieService {
     return this.http.get<IApiCSMoviesRes>('user/movies')
   }
 
+  findAllCSMovies (page: number): Observable<IApiCSMoviesRes> {
+    return this.http.get<IApiCSMoviesRes>(`user/movies?page=${page}`) // Copy of findAllMovies but with page
+  }
+
   findAllMoviesByAdmin (): Observable<IApiCSMoviesRes> {
     return this.http.get<IApiCSMoviesRes>('admin/movies')
   }
