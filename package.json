@@ -34,6 +34,7 @@
     "ngrx-store-localstorage": "^16.0.0",
     "ngx-image-cropper": "^7.1.2",
     "ngx-stripe": "^16.3.2",
+    "razorpay": "^2.9.2",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.7.2",
     "sweetalert2": "^11.6.13",

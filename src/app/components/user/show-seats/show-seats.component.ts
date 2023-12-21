@@ -6,6 +6,7 @@ import { type IShow, type IShowSeat } from 'src/app/models/show'
 import { type ISelectedSeat, type ITicketReqs } from 'src/app/models/ticket'
 import { ShowService } from 'src/app/services/show.service'
 import { TicketService } from 'src/app/services/ticket.service'
+import { ChargePerTicket } from 'src/app/shared/constants'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 
 interface IShowWithMovie extends Omit<IShow, 'movieId'> {
@@ -92,7 +93,8 @@ export class ShowSeatsComponent implements OnInit {
       theaterId: this.theaterId,
       userId: this.userId,
       singlePrice: this.show.ticketPrice,
-      totalPrice: this.show.ticketPrice * this.selectedSeats.length,
+      feePerTicket: ChargePerTicket,
+      totalPrice: (this.show.ticketPrice + ChargePerTicket) * this.selectedSeats.length,
       seatCount: this.selectedSeats.length,
       startTime: this.show.startTime,
       endTime: this.show.endTime,
@@ -112,7 +114,6 @@ export class ShowSeatsComponent implements OnInit {
   }
 
   getColumnFirstHalf (row: string): IShowSeat[] {
-    console.log(this.show.seats[row], 'seats array of show, col, isBooked')
     return this.show.seats[row].slice(0, this.show.seats[row].length / 2)
   }
 

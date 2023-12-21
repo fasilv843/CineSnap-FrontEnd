@@ -43,3 +43,7 @@ export interface IApiRes<T extends AllResTypes> {
   message: string
   data: T
 }
+
+export interface IRazorpayRes {
+  razorpay_payment_id: string
+}
