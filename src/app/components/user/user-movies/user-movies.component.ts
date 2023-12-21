@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
 import { Component, ElementRef, HostListener, type OnInit } from '@angular/core';
-import { IFilterEvent, langType } from 'src/app/models/filter';
+import { IFilterEvent } from 'src/app/models/filter';
 import { ICSMovieRes } from 'src/app/models/movie';
 import { MovieService } from 'src/app/services/movie.service';
 import Swal from 'sweetalert2';
@@ -13,11 +13,15 @@ import Swal from 'sweetalert2';
 })
 export class UserMoviesComponent implements OnInit {
   movies: ICSMovieRes[] = []
-  filteredMovies: ICSMovieRes[] = []
   page: number = 1
   isCompleted = false
   isLoading = true
-  scrollDistance = 10;
+  scrollDistance = 5;
+  movieFilter: IFilterEvent = {
+    availability: 'Available',
+    filterGenres: [],
+    filterLanguages: []
+  }
 
   constructor (
     private readonly movieService: MovieService,
@@ -29,45 +33,37 @@ export class UserMoviesComponent implements OnInit {
     if (!this.isLoading && !this.isCompleted && this.isAtBottom()) {
       this.isLoading = true
       console.log('loading true, finding movies')
-      this.findCineSnapMovies(this.page);
+      this.findCineSnapMovies();
     }
   }
 
   ngOnInit (): void {
-    this.findCineSnapMovies(this.page)
+    this.findCineSnapMovies()
   }
 
-  findCineSnapMovies (page: number): void {
-    this.movieService.findAllCSMovies(page).subscribe({
+  findCineSnapMovies (): void {
+    this.movieService.findCineSnapFilteredMovies(this.movieFilter, this.page).subscribe({
       next: (res) => {
-        console.log(res, 'res from findAllMovies');
-        this.movies = this.movies.concat(res.data)
-        // this.filteredMovies = this.filteredMovies.concat(res.data)
+        console.log(res, 'res from findCineSnapFilteredMovies()');
+        if (this.page !== 1) this.movies = this.movies.concat(res.data)
+        else this.movies = res.data
+        this.isLoading = false
         this.page++
         if (res.data.length < 10) this.isCompleted = true
       },
-      complete: () => {
-        console.log('movie fetching complete, loading false')
+      error: () => {
         this.isLoading = false
       }
     })
   }
 
-  filterMovies (event: IFilterEvent): void {
-    console.log(event, 'event data');
-
-    this.filteredMovies = this.movies.filter(movie => {
-      return (
-        (
-          event.filterGenres.some(genreId => movie.genre_ids.includes(genreId)) ||
-          event.filterGenres.length === 0
-        ) &&
-        (
-          event.filterLanguages.includes(movie.language as langType) ||
-          event.filterLanguages.length === 0
-        )
-      )
-    })
+  filterMovies (filters: IFilterEvent): void {
+    console.log(filters, 'event data');
+    this.page = 1
+    filters.availability = 'Available'
+    this.movieFilter = filters
+    this.isLoading = true
+    this.findCineSnapMovies()
   }
 
   searchCineSnapMovies (title: string): void {
@@ -78,7 +74,7 @@ export class UserMoviesComponent implements OnInit {
         if (res.data.length === 0) {
           void Swal.fire('Sorry :<', 'We don\'t have the movie that you are looking for', 'info')
         } else {
-          this.filteredMovies = res.data
+          this.movies = res.data
         }
       }
     })

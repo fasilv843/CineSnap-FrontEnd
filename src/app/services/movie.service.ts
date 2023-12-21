@@ -4,7 +4,8 @@ import { Injectable } from '@angular/core';
 import { IApiCSMovieRes, IApiCSMoviesRes, Movie } from '../models/movie';
 import { HttpClient } from '@angular/common/http';
 import { type Observable } from 'rxjs';
-import { IApiFilters } from '../models/filter';
+import { IApiFilters, IFilterEvent } from '../models/filter';
+import { getGenreQuery, getLanguageQuery } from '../helpers/getQueryStr';
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +23,24 @@ export class MovieService {
     return this.http.get<IApiCSMoviesRes>('user/movies')
   }
 
-  findAllCSMovies (page: number): Observable<IApiCSMoviesRes> {
-    return this.http.get<IApiCSMoviesRes>(`user/movies?page=${page}`) // Copy of findAllMovies but with page
-  }
+  // findAllCSMovies (page: number): Observable<IApiCSMoviesRes> {
+  //   return this.http.get<IApiCSMoviesRes>(`user/movies?page=${page}`) // Copy of findAllMovies but with page
+  // }
 
   findAllMoviesByAdmin (): Observable<IApiCSMoviesRes> {
     return this.http.get<IApiCSMoviesRes>('admin/movies')
+  }
+
+  findCineSnapFilteredMovies (filters: IFilterEvent, page: number): Observable<IApiCSMoviesRes> {
+    let url = `user/movies?page=${page}`
+    const genreStr = getGenreQuery(filters.filterGenres)
+    const languageStr = getLanguageQuery(filters.filterLanguages)
+
+    if (genreStr !== '') url += '&' + genreStr
+    if (languageStr !== '') url += '&' + languageStr
+
+    console.warn(url, 'url that passing to backend for filtering');
+    return this.http.get<IApiCSMoviesRes>(url)
   }
 
   // findMoviesByGenre (genreId: string) {
