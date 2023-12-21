@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/quotes */
 /* eslint-disable @typescript-eslint/semi */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, HostListener, OnInit } from '@angular/core'
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { getLanguage } from 'src/app/helpers/movie';
@@ -14,17 +14,18 @@ import { ITempTicketRes } from 'src/app/models/ticket';
 import { IUserRes } from 'src/app/models/users';
 import { TicketService } from 'src/app/services/ticket.service';
 import { ChargePerTicket, TICKET_EXPIRE_TIME } from 'src/app/shared/constants';
-import { environments } from 'src/environments/environment';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
 import { IRazorpayRes } from 'src/app/models/common';
+import { RazorpayService } from 'src/app/services/razorpay.service';
+import { Subscription } from 'rxjs';
 
-declare var Razorpay: any;
+// declare var Razorpay: any;
 @Component({
   selector: 'app-booking',
   templateUrl: './booking.component.html',
   styleUrls: ['./booking.component.css']
 })
-export class BookingComponent implements OnInit {
+export class BookingComponent implements OnInit, OnDestroy {
   userDetails$ = this.store.pipe(select(selectUserDetails))
   user!: IUserRes
   movie!: ICSMovieRes
@@ -35,6 +36,7 @@ export class BookingComponent implements OnInit {
   theater!: ITheaterRes
   seats: string[] = []
   CineSnapCharge = ChargePerTicket
+  private readonly paymentResultSubscription: Subscription;
 
   getLanguage = getLanguage
 
@@ -42,9 +44,28 @@ export class BookingComponent implements OnInit {
     private readonly ticketService: TicketService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly store: Store
-    // private readonly razorpayService: RazorpayService
-  ) { }
+    private readonly store: Store,
+    private readonly razorpayService: RazorpayService
+  ) {
+    this.paymentResultSubscription = this.razorpayService
+      .getPaymentResultObservable()
+      .subscribe((response: IRazorpayRes | null) => {
+        if (response !== null) {
+        // Payment was successful, handle accordingly
+          console.log('Payment successful from component, confirming ticket');
+          this.ticketService.confirmTicket(this.ticketId).subscribe({
+            next: (res) => {
+              if (res.data !== null) {
+                void this.router.navigate(['/user/show/book/success', res.data._id])
+              }
+            }
+          })
+        } else {
+        // Payment failed, handle accordingly
+          console.log('Payment failed');
+        }
+      });
+  }
 
   ngOnInit (): void {
     this.route.params.subscribe(params => {
@@ -80,68 +101,18 @@ export class BookingComponent implements OnInit {
     this.startTimer()
   }
 
-  options = {
-    "key": environments.razorpayPublicKey,
-    "amount": 1000000000, // amount in paise (Rupees x 100)
-    "currency": 'INR',
-    "name": 'CineSnap',
-    "description": 'Payment for Booking Movie',
-    "image": '../../../assets/logo-1x1.png',
-    "order_id": '', // Replace with your order ID
-    "handler": function (response: IRazorpayRes) {
-      console.log(response, 'responce from razorpay handler')
-      console.warn('handling success functions')
-      // Handle the success callback
-      var event = new CustomEvent("payment.success",
-        { detail: response }
-      );
-      window.dispatchEvent(event)
-    },
-    "prefill": {
-      "name": '',
-      "email": '',
-      "contact": ''
-    },
-    "notes": {
-      "address": 'CineSnap Private Limited'
-    },
-    "theme": {
-      "color": '#f2bd00'
-    }
+  ngOnDestroy (): void {
+    // Unsubscribe to avoid memory leaks
+    this.paymentResultSubscription.unsubscribe();
   }
 
   payForTicket (amount: number): void {
     console.log('initiating razorpay payment');
 
-    this.options.prefill.name = this.user.name
-    this.options.prefill.email = this.user.email
-    this.options.prefill.contact = (this.user.mobile !== undefined) ? `${this.user.mobile}` : '';
-    this.options.amount = amount * 100
-
-    var rzp1 = new Razorpay(this.options);
-    rzp1.open();
-    rzp1.on('payment.failed', function (response: any) {
-      console.log(response.error.code);
-      console.log(response.error.description);
-      console.log(response.error.source);
-      console.log(response.error.step);
-      console.log(response.error.reason);
-      console.log(response.error.metadata.order_id);
-      console.log(response.error.metadata.payment_id);
-    });
-  }
-
-  @HostListener('window:payment.success', ['$event'])
-  onPaymentSuccess (response: IRazorpayRes): void {
-    console.log(response, 'event data from razorpay');
-    this.ticketService.confirmTicket(this.ticketId).subscribe({
-      next: (res) => {
-        if (res.data !== null) {
-        // console.warn(res.data, 'confirmed ticket data')
-        // console.log('recieved data from confirm ticket 11')
-          void this.router.navigate(['/user/show/book/success', res.data._id])
-        }
-      }
+    this.razorpayService.initiateRazorpayPayment(amount, {
+      name: this.user.name,
+      email: this.user.email,
+      mobile: (this.user.mobile !== undefined) ? `${this.user.mobile}` : ''
     })
   }
 
