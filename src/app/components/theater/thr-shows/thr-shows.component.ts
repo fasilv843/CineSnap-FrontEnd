@@ -6,6 +6,7 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import { ShowFormModalComponent } from '../../common/show-form-modal/show-form-modal.component'
 import { type IShowsOnAScreen } from 'src/app/models/show'
 import { getGenre, getLanguage } from 'src/app/helpers/movie'
+import { MovieService } from 'src/app/services/movie.service'
 
 @Component({
   selector: 'app-thr-shows',
@@ -22,6 +23,7 @@ export class ThrShowsComponent implements OnInit {
 
   constructor (
     @Inject(ShowService) private readonly showService: ShowService,
+    @Inject(MovieService) private readonly movieService: MovieService,
     @Inject(Store) private readonly store: Store,
     @Inject(NgbModal) private readonly modalService: NgbModal
   ) {}
@@ -52,7 +54,28 @@ export class ThrShowsComponent implements OnInit {
         console.log('submitted form data', result)
         this.showService.addShow(result).subscribe({
           next: (res) => {
-            console.log(res.data, 'res from addShow')
+            if (res.data !== null) {
+              const { seats, ...newShow } = res.data
+              console.log(res.data, 'res from addShow')
+              const { screenId, movieId } = res.data
+              const screenIdx = this.screens.findIndex(screen => screen.screenId === screenId)
+              const showIdx = this.screens[screenIdx].shows.findIndex(show => show.movieId._id === movieId)
+              if (showIdx !== -1) {
+                // if movie already exist on the day, just add new show details
+                this.screens[screenIdx].shows[showIdx].shows.push(newShow)
+              } else {
+                // if movie don't exist in the screen on the day, get movie data and push
+                this.movieService.findMovieById(movieId).subscribe({
+                  next: (res) => {
+                    const movie = res.data
+                    this.screens[screenIdx].shows.push({
+                      movieId: movie,
+                      shows: [newShow]
+                    })
+                  }
+                })
+              }
+            }
           }
         })
       },

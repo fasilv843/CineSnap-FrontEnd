@@ -19,6 +19,10 @@ export class MovieService {
     return this.http.post<IApiCSMovieRes>('admin/movies/add', { movie })
   }
 
+  findMovieById (movieId: string): Observable<IApiCSMovieRes> {
+    return this.http.get<IApiCSMovieRes>(`user/movies/get/${movieId}`)
+  }
+
   findAllMovies (): Observable<IApiCSMoviesRes> {
     return this.http.get<IApiCSMoviesRes>('user/movies')
   }
