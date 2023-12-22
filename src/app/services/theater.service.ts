@@ -70,4 +70,8 @@ export class TheaterService {
   deleteTheaterProfilePic (theaterId: string): Observable<IApiTheaterRes> {
     return this.http.patch<IApiTheaterRes>(`theater/remove/profileimage/${theaterId}`, {})
   }
+
+  updateTheaterWallet (theaterId: string, amount: number): Observable<IApiTheaterRes> {
+    return this.http.patch<IApiTheaterRes>(`theater/wallet/add/${theaterId}`, { amount })
+  }
 }

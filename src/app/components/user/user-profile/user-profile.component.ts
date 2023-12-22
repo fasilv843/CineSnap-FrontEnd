@@ -44,7 +44,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
               console.log(res.data.wallet, 'wallet from update wallet')
               this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
               this.user.wallet = res.data.wallet
-              // this.updateWalletAmount(res.data.wallet)
             }
           })
         } else {
@@ -76,7 +75,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   addToWallet (): void {
-    // create a stand alone modal to add money to wallet
     const modalRef = this.ngbModal.open(AddToWalletModalComponent, { backdrop: 'static', centered: true })
 
     void modalRef.result.then(
