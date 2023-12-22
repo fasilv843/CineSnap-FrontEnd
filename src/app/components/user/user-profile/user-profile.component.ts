@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/semi */
 import { Component, Inject, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store, select } from '@ngrx/store';
 import { type IUserRes } from 'src/app/models/users';
 import { deleteUserFromStore } from 'src/app/states/user/user.actions';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
 import { environments } from 'src/environments/environment';
+import { AddToWalletModalComponent } from '../../common/add-to-wallet-modal/add-to-wallet-modal.component';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -31,7 +34,9 @@ export class UserProfileComponent implements OnInit {
 
   constructor (
     @Inject(Store) private readonly store: Store,
-    @Inject(Router) private readonly router: Router
+    @Inject(Router) private readonly router: Router,
+    @Inject(NgbModal) private readonly ngbModal: NgbModal,
+    @Inject(UserService) private readonly userService: UserService,
   ) {}
 
   ngOnInit (): void {
@@ -56,6 +61,26 @@ export class UserProfileComponent implements OnInit {
         this.userId = user._id
       }
     })
+  }
+
+  addToWallet (): void {
+    // create a stand alone modal to add money to wallet
+    const modalRef = this.ngbModal.open(AddToWalletModalComponent, { backdrop: 'static', centered: true })
+
+    void modalRef.result.then(
+      (result: { amount: number }) => {
+        console.log('submitted form data', result)
+        this.userService.updateUserWallet(this.userId, result.amount).subscribe({
+          next: (res) => {
+            this.wallet = res.data.wallet
+          }
+        })
+      },
+      (reason) => {
+        // Handle dismissal or any other reason
+        console.log('Modal dismissed with reason:', reason)
+      }
+    )
   }
 
   redirectToEditPage (): void {

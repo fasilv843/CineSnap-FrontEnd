@@ -1,0 +1,30 @@
+<!-- Modal Header -->
+<div class="text-black p-6">
+    <h2 class="text-2xl font-semibold">Enter Amount</h2>
+  </div>
+  
+  <!-- Modal Body -->
+  <div class="p-6">
+    <!-- Input Field -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="mb-4">
+                <label for="amount" class="block text-gray-700 text-sm font-bold mb-2">Amount</label>
+                <input type="text" id="amount" formControlName="amount" name="amount" class="w-full px-3 py-2 border rounded focus:outline-none focus:shadow-outline" placeholder="Enter Amount">
+                <app-wallet-amount-validation [amountControl]="form.get('amount')" [isSubmitted]="isSubmitted"></app-wallet-amount-validation>
+            </div>
+            
+            <!-- Auto Fill Buttons -->
+            <div class="flex space-x-2 mb-4">
+                <button (click)="fillAmount(100)" class="bg-gray-300 px-4 py-1 rounded hover:bg-yellow-900 focus:outline-none focus:ring focus:border-blue-300 flex-grow">100</button>
+                <button (click)="fillAmount(500)" class="bg-gray-300 px-4 py-1 rounded hover:bg-yellow-900 focus:outline-none focus:ring focus:border-blue-300 flex-grow">500</button>
+                <button (click)="fillAmount(1000)" class="bg-gray-300 px-4 py-1 rounded hover:bg-yellow-900 focus:outline-none focus:ring focus:border-blue-300 flex-grow">1000</button>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex justify-end space-x-2">
+                <button (click)="onCancel()" class="bg-gray-500 text-gray-800 px-6 py-3 rounded-full hover:bg-gray-700 focus:outline-none focus:ring focus:border-blue-300">Cancel</button>
+                <button (click)="onClickAdd()" type="submit" class="px-6 py-3 rounded-full hover:bg-yellow-900 focus:outline-none focus:ring focus:border-blue-300">Add</button>
+            </div>
+    </form>
+</div>
+  

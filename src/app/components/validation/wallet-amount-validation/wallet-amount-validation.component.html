@@ -1,0 +1,6 @@
+<div *ngIf="isSubmitted && amountControl && amountControl.errors">
+    <div *ngIf="amountControl.errors['required']" style="color: red;">Amount is required</div>
+    <div *ngIf="amountControl.errors['pattern']" style="color: red;">Amount must be a number</div>
+    <div *ngIf="amountControl.errors['min']" style="color: red;">Amount must be at least {{ amountControl.errors['min'].min }}</div>
+    <div *ngIf="amountControl.errors['max']" style="color: red;">Amount must be at most {{ amountControl.errors['max'].max }}</div>
+</div>

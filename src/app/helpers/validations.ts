@@ -27,6 +27,7 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): V
 
 export function validateByTrimming (validators: ValidatorFn[]): ValidatorFn {
   return (control: AbstractControl) => {
+    console.log(control.value, 'control.value in trimming')
     const trimmedValue = control.value.trim()
 
     // Create a new control with the trimmed value

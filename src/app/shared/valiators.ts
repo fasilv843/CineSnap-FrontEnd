@@ -1,5 +1,5 @@
 import { Validators } from '@angular/forms'
-import { userNameMinLength, userNameMaxLength, nameRegex, emailRegex, OTPRegex, passwordMinLength, passwordRegex, ZipRegex, MAX_COLS, charRegex, numRegex, MAX_TICKET_PRICE, MIN_COLS, MIN_TICKET_PRICE, screenNameMinLength, screenNameMaxLength, screenNameRegex, mobileRegex } from './constants'
+import { userNameMinLength, userNameMaxLength, nameRegex, emailRegex, OTPRegex, passwordMinLength, passwordRegex, ZipRegex, MAX_COLS, charRegex, numRegex, MAX_TICKET_PRICE, MIN_COLS, MIN_TICKET_PRICE, screenNameMinLength, screenNameMaxLength, screenNameRegex, mobileRegex, MAX_WALLET_ADD, MIN_WALLET_ADD } from './constants'
 import { validateDOB } from '../helpers/validations'
 
 export const nameValidators = [
@@ -62,6 +62,13 @@ export const mobileValidators = [
 
 export const dobValidators = [
   validateDOB
+]
+
+export const walletAmountValidators = [
+  Validators.required,
+  Validators.pattern(numRegex),
+  Validators.min(MIN_WALLET_ADD),
+  Validators.max(MAX_WALLET_ADD)
 ]
 
 export const requiredValidator = [Validators.required]

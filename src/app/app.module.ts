@@ -20,6 +20,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { hydrationMetaReducer } from './states/hydration.reducer'
 import { reducers } from './states/app.state';
+import { AddToWalletModalComponent } from './components/common/add-to-wallet-modal/add-to-wallet-modal.component';
 
 export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
 

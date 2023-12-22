@@ -48,4 +48,8 @@ export class UserService {
   getUsersChattedWith (theaterId: string): Observable<IApiUsersRes> {
     return this.http.get<IApiUsersRes>(`theater/chat/users/${theaterId}`)
   }
+
+  updateUserWallet (userId: string, amount: number): Observable<IApiUserRes> {
+    return this.http.patch<IApiUserRes>(`user/wallet/add/${userId}`, { amount })
+  }
 }
