@@ -1,0 +1,29 @@
+
+<div class="flex">
+  <!-- Filter Sidebar -->
+  <app-filter class="h-screen" (filterApplied)="filterMovies($event)" [isAdmin]="false"></app-filter>
+<div class="container mx-auto overflow-y-scroll h-screen flex-1">
+  <app-search (search)="searchCineSnapMovies($event)"></app-search>
+
+    <div class="text-lg font-bold mb-3">
+      <h3>Movies</h3>
+    </div>
+  
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-20">
+      <ng-container *ngFor="let movie of movies">
+        <!-- For larger screens, use the adjusted design -->
+        <div class="bg-amber-800 overflow-hidden relative">
+          <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" loading="lazy"
+            class="w-full h-80 object-cover" />
+          <div class="bg-gray-900 text-white text-center p-2">
+            <p class="text-base font-medium line-clamp-1">{{ movie.title }}</p>
+            <p class="text-sm">{{ movie.release_date | date: 'yyyy' }}</p>
+          </div>
+        </div>
+  
+      </ng-container>
+
+    </div>
+    <app-spinner class="items-center my-6" *ngIf="isLoading"></app-spinner>
+  </div>
+</div>

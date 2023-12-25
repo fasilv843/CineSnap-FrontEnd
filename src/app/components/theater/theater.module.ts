@@ -26,6 +26,7 @@ import { DateComponent } from '../common/date/date.component';
 import { ApprovalPendingComponent } from './approval-pending/approval-pending.component';
 import { ApprovalRejectedComponent } from './approval-rejected/approval-rejected.component';
 import { SearchComponent } from '../common/search/search.component';
+import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { SearchComponent } from '../common/search/search.component';
     ImageModule,
     FilterComponent,
     DateComponent,
-    SearchComponent
+    SearchComponent,
+    CsMoviesComponent
   ]
 })
 export class TheaterModule { }
