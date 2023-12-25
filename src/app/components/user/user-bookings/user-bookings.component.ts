@@ -15,7 +15,8 @@ export class UserBookingsComponent implements OnInit {
   userId = ''
   tickets: ITicketRes[] = []
   seats: string[] = []
-  fourHoursBefore = new Date(new Date().getTime() - 4 * 60 * 60 * 1000)
+  now = new Date()
+  fourHoursBefore!: Date // new Date(this.now.getTime() - 4 * 60 * 60 * 1000)
 
   getLanguage = getLanguage
 
@@ -33,8 +34,19 @@ export class UserBookingsComponent implements OnInit {
       next: (res) => {
         console.log(res.data, 'user tickets data')
         this.tickets = res.data
+        console.log(new Date(this.tickets[0].startTime), this.fourHoursBefore, new Date(this.tickets[0].startTime) > this.fourHoursBefore)
       }
     })
+  }
+
+  getFourHourBeforeTime (date: Date): Date {
+    date = new Date(date)
+    date.setHours(date.getHours() - 4)
+    return date
+  }
+
+  getDate (date: Date): Date {
+    return new Date(date)
   }
 
   cancelTicket (ticketId: string): void {

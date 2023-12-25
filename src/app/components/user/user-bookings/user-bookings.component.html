@@ -37,9 +37,18 @@
                 <div *ngIf="ticket.isCancelled">
                     <p class="text-red-600 text-lg font-medium">Cancelled</p>
                 </div>
+                <div *ngIf="!ticket.isCancelled &&  (now > getFourHourBeforeTime(ticket.startTime)) && getDate(ticket.startTime) > now">
+                    <p class="text-red-600 text-lg font-medium">Cancelling is only allowed before 4hrs of show</p>
+                </div>
+                <div *ngIf="!ticket.isCancelled &&  getDate(ticket.startTime) < now && getDate(ticket.endTime) > now">
+                    <p class="text-green-600 text-lg font-medium">Show is running...</p>
+                </div>
+                <div *ngIf="!ticket.isCancelled && getDate(ticket.endTime) < now">
+                    <p class="text-green-600 text-lg font-medium">Thanks for Choosing CineSnap :)</p>
+                </div>
             </div>
         </div>
-        <div *ngIf="!ticket.isCancelled && ticket.startTime < fourHoursBefore" class="flex justify-end">
+        <div *ngIf="!ticket.isCancelled && (now < getFourHourBeforeTime(ticket.startTime))" class="flex justify-end">
             <button class="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded-md cursor-pointer focus:outline-none" (click)="cancelTicket(ticket._id)">Cancel</button>
         </div>
     </div>
