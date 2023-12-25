@@ -38,7 +38,13 @@ const routes: Routes = [
   {
     path: 'movies',
     title: 'CineSnap | Movies',
-    component: UserMoviesComponent
+    component: UserMoviesComponent,
+    children: [
+      {
+        path: ':filter',
+        component: UserMoviesComponent
+      }
+    ]
   },
   {
     path: 'theaters',
