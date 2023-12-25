@@ -18,6 +18,7 @@ export class ThrShowsComponent implements OnInit {
   theaterId = ''
   screens: IShowsOnAScreen[] = []
   currDate: Date = new Date()
+  isLoading = true
   getGenre = getGenre
   getLanguage = getLanguage
 
@@ -87,13 +88,18 @@ export class ThrShowsComponent implements OnInit {
   }
 
   onSelectDate (date: Date): void {
+    this.isLoading = true
     this.currDate = date
     console.log(date.toISOString().split('T')[0], 'date selected from onSelectDate')
     const formattedDate = date.toISOString().split('T')[0]
-    this.showService.findShowsOnDate(this.theaterId, formattedDate).subscribe({
+    this.showService.findShowsOnDateForTheater(this.theaterId, formattedDate).subscribe({
       next: (res) => {
+        this.isLoading = false
         console.log(res.data, 'res.data from show service')
         if (res.data !== null) this.screens = res.data
+      },
+      error: () => {
+        this.isLoading = false
       }
     })
   }

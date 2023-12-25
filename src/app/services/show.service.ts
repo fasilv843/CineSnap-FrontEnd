@@ -15,6 +15,10 @@ export class ShowService {
     return this.http.get<IApiShowsRes>(`user/shows/${theaterId}?date=${date}`)
   }
 
+  findShowsOnDateForTheater (theaterId: string, date: string): Observable<IApiShowsRes> {
+    return this.http.get<IApiShowsRes>(`theater/shows/${theaterId}?date=${date}`)
+  }
+
   addShow (show: IShowRequirements): Observable<IApiShowRes> {
     return this.http.post<IApiShowRes>('theater/show/add', show)
   }

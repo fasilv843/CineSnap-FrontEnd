@@ -1,5 +1,6 @@
 import { Component, Inject, type OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
+import { isToday } from 'src/app/helpers/date'
 import { getGenre, getLanguage } from 'src/app/helpers/movie'
 import { type IShow, type IShowsOnAScreen } from 'src/app/models/show'
 import { type IApiTheaterRes, type ITheaterRes } from 'src/app/models/theater'
@@ -17,6 +18,8 @@ export class TheaterPageComponent implements OnInit {
   theater!: ITheaterRes
   screens: IShowsOnAScreen[] = []
   currDate: Date = new Date()
+  prevDate: Date = this.currDate
+
   getGenre = getGenre
   getLanguage = getLanguage
   isShowLoading = true
@@ -50,8 +53,13 @@ export class TheaterPageComponent implements OnInit {
     this.showService.findShowsOnDate(this.theaterId, formattedDate).subscribe({
       next: (res) => {
         this.isShowLoading = false
+        this.prevDate = this.currDate
         console.log(res.data, 'res.data from show service')
         if (res.data !== null) this.screens = res.data
+      },
+      error: () => {
+        this.isShowLoading = false
+        this.currDate = this.prevDate
       }
     })
   }
