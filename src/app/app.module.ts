@@ -10,17 +10,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
-// import { CloudinaryModule } from '@cloudinary/ng';
 import { StoreModule, type MetaReducer } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { ErrorHandlerInterceptor } from './interceptors/error-handler.interceptor';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-// import { NgxStripeModule } from 'ngx-stripe';
-
 import { hydrationMetaReducer } from './states/hydration.reducer'
 import { reducers } from './states/app.state';
-import { AddToWalletModalComponent } from './components/common/add-to-wallet-modal/add-to-wallet-modal.component';
 
 export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
 
@@ -39,7 +35,6 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     NgbModule
-    // NgxStripeModule.forRoot(environments.stripePublishableKey)
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

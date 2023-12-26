@@ -3,7 +3,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IApiUserRes, IApiUsersRes, IUserUpdate } from '../models/users';
+import { IApiUserRes, IApiUsersRes, IUserUpdate, IUsersAndCount } from '../models/users';
+import { IApiRes } from '../models/common';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,8 @@ export class UserService {
     private readonly http: HttpClient
   ) { }
 
-  getAllUsers (): Observable<IApiUsersRes> {
-    return this.http.get<IApiUsersRes>('admin/users')
+  getAllUsers (page: number, limit: number, searchQuery: string): Observable<IApiRes<IUsersAndCount | null>> {
+    return this.http.get<IApiRes<IUsersAndCount | null>>(`admin/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`)
   }
 
   blockUser (userId: string): Observable<IApiUserRes> {

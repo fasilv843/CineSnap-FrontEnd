@@ -11,18 +11,26 @@ import Swal from 'sweetalert2'
 })
 export class AdminUsersComponent implements OnInit {
   users: IUserRes[] = []
+  currPage = 1
+  itemsPerPage = 10
+  searchQuery: string = ''
+  userCount = 0
 
   constructor (
     private readonly userService: UserService
   ) {}
 
   ngOnInit (): void {
-    this.userService.getAllUsers().subscribe({
+    this.getUsers()
+  }
+
+  getUsers (): void {
+    this.userService.getAllUsers(this.currPage, this.itemsPerPage, this.searchQuery).subscribe({
       next: (res) => {
-        this.users = res.data
-      },
-      error: (err) => {
-        void Swal.fire('Error', err.message, 'error')
+        if (res.data !== null) {
+          this.users = res.data.users
+          this.userCount = res.data.userCount
+        }
       }
     })
   }
@@ -43,7 +51,6 @@ export class AdminUsersComponent implements OnInit {
             if (userIdx !== -1) {
               this.users = [
                 ...this.users.slice(0, userIdx),
-                // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
                 { ...this.users[userIdx], isBlocked: !this.users[userIdx].isBlocked },
                 ...this.users.slice(userIdx + 1)
               ]
@@ -52,5 +59,21 @@ export class AdminUsersComponent implements OnInit {
         })
       }
     })
+  }
+
+  onSearchUsers (searchQuery: string): void {
+    this.searchQuery = searchQuery
+    this.getUsers()
+  }
+
+  onPageChange (page: number): void {
+    this.currPage = page
+    this.getUsers()
+  }
+
+  onItemsPerPageChange (itemsPerPage: number): void {
+    this.itemsPerPage = itemsPerPage
+    this.currPage = 1
+    this.getUsers()
   }
 }

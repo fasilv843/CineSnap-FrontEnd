@@ -1,6 +1,5 @@
 import { Component, Inject, type OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { isToday } from 'src/app/helpers/date'
 import { getGenre, getLanguage } from 'src/app/helpers/movie'
 import { type IShow, type IShowsOnAScreen } from 'src/app/models/show'
 import { type IApiTheaterRes, type ITheaterRes } from 'src/app/models/theater'

@@ -4,7 +4,7 @@ import { type IScreen } from './screens'
 import { type IShowRes, type IShowsOnAScreen, type IShow } from './show'
 import { type ITheaterRes } from './theater'
 import { type Seats, type ITicketRes, type ITempTicketRes } from './ticket'
-import { type IUserRes } from './users'
+import { type IUsersAndCount, type IUserRes } from './users'
 
 export type Location = [number, number]
 
@@ -33,7 +33,7 @@ export interface ICoords {
 
 export type AllResTypes = ITheaterRes | ITheaterRes[]
 | IUserRes | IUserRes[] | IShowRes | IShowsOnAScreen[]
-| IShow | IChatRes | ITicketRes | ITicketRes[] | ICSMovieRes
+| IShow | IChatRes | ITicketRes | ITicketRes[] | ICSMovieRes | IUsersAndCount
 | ICSMovieRes[] | IScreen | IScreen[] | Seats | ITempTicketRes | ITempTicketRes[] | null
 
 export type SuccessTypes = Exclude<AllResTypes, null>

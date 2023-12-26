@@ -45,3 +45,8 @@ export interface IApiUserRes extends IApiRes<IUserRes> {}
 export interface IApiUsersRes extends IApiRes<IUserRes[]> {}
 
 export interface IUserUpdate extends Omit<IUserRes, '_id' | 'email' | 'password' | 'isBlocked' | 'wallet' | 'walletHistory'> { }
+
+export interface IUsersAndCount {
+  users: IUserRes[]
+  userCount: number
+}
