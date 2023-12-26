@@ -18,6 +18,7 @@ import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { FilterComponent } from '../common/filter/filter.component';
 import { SearchComponent } from '../common/search/search.component';
 import { TableFilterComponent } from '../common/table-filter/table-filter.component';
+import { AdminTicketsComponent } from './admin-tickets/admin-tickets.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { TableFilterComponent } from '../common/table-filter/table-filter.compon
     AdminMoviesComponent,
     AdminCsMoviesComponent,
     AdminMoviesSearchComponent,
-    AdminMoviesExploreComponent
+    AdminMoviesExploreComponent,
+    AdminTicketsComponent
   ],
   imports: [
     CommonModule,

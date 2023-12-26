@@ -11,6 +11,7 @@ import { AdminCsMoviesComponent } from './admin-cs-movies/admin-cs-movies.compon
 import { AdminMoviesExploreComponent } from './admin-movies-explore/admin-movies-explore.component';
 import { LoginGuard } from 'src/app/guards/login.guard';
 import { AuthGuard } from 'src/app/guards/auth.guard';
+import { AdminTicketsComponent } from './admin-tickets/admin-tickets.component';
 
 const routes: Routes = [
   {
@@ -66,6 +67,12 @@ const routes: Routes = [
         pathMatch: 'full'
       }
     ]
+  },
+  {
+    path: 'tickets',
+    title: 'CineSnap | Tickets',
+    component: AdminTicketsComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: '',

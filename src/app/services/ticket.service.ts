@@ -30,8 +30,8 @@ export class TicketService {
     return this.http.get<IApiRes<ITicketsAndCount | null>>(`theater/tickets/${theaterId}?page=${page}&limit=${limit}`)
   }
 
-  getAllTickets (): Observable<IApiTicketsRes> {
-    return this.http.get<IApiTicketsRes>('admin/tickets/all')
+  getAllTickets (page: number, limit: number): Observable<IApiRes<ITicketsAndCount | null>> {
+    return this.http.get<IApiRes<ITicketsAndCount | null>>(`admin/tickets/all?page=${page}&limit=${limit}`)
   }
 
   getHoldedSeats (showId: string): Observable<IApiSeatsRes> {
