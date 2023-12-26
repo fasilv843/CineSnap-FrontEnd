@@ -22,6 +22,7 @@ export class TableFilterComponent implements OnInit {
   currentPage = 1
   itemsPerPage = 10
   @Input() totalItems: number = 0
+  @Input() searchField = true
   totalPages = 1
   dynamicPages: number[] = [1, 2, 3]
 
@@ -52,9 +53,11 @@ export class TableFilterComponent implements OnInit {
   }
 
   onSearch (): void {
-    const searchQuery = this.searchForm.get('searchQuery')?.value
-    console.log(searchQuery, 'searched query from onSearch()')
-    this.search.emit(searchQuery)
+    if (this.searchField) {
+      const searchQuery = this.searchForm.get('searchQuery')?.value
+      console.log(searchQuery, 'searched query from onSearch()')
+      this.search.emit(searchQuery)
+    }
   }
 
   getPagesArray (): number[] {

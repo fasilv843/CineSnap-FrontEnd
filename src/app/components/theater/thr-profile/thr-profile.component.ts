@@ -93,6 +93,10 @@ export class ThrProfileComponent {
     void this.router.navigate(['/theater/profile/edit', this.theater._id])
   }
 
+  redirectToTicketsPage (): void {
+    void this.router.navigate(['/theater/tickets', this.theaterId])
+  }
+
   logout (): void {
     console.log('loggin out from theater')
     localStorage.removeItem('theaterAccessToken')

@@ -28,6 +28,8 @@ import { ApprovalRejectedComponent } from './approval-rejected/approval-rejected
 import { SearchComponent } from '../common/search/search.component';
 import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
 import { SpinnerComponent } from '../common/spinner/spinner.component';
+import { ThrTicketsComponent } from './thr-tickets/thr-tickets.component';
+import { TableFilterComponent } from '../common/table-filter/table-filter.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,8 @@ import { SpinnerComponent } from '../common/spinner/spinner.component';
     EditTheaterProfileComponent,
     ThrSeatingComponent,
     ApprovalPendingComponent,
-    ApprovalRejectedComponent
+    ApprovalRejectedComponent,
+    ThrTicketsComponent
   ],
   imports: [
     CommonModule,
@@ -59,7 +62,8 @@ import { SpinnerComponent } from '../common/spinner/spinner.component';
     DateComponent,
     SearchComponent,
     CsMoviesComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    TableFilterComponent
   ]
 })
 export class TheaterModule { }

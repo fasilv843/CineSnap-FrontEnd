@@ -17,6 +17,7 @@ import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater
 import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
 import { ApprovalPendingComponent } from './approval-pending/approval-pending.component';
 import { ApprovalRejectedComponent } from './approval-rejected/approval-rejected.component';
+import { ThrTicketsComponent } from './thr-tickets/thr-tickets.component';
 
 const routes: Routes = [
   {
@@ -107,6 +108,11 @@ const routes: Routes = [
         component: EditTheaterProfileComponent
       }
     ]
+  },
+  {
+    path: 'tickets/:theaterId',
+    title: 'CineSnap | Tickets',
+    component: ThrTicketsComponent
   },
   {
     path: '',

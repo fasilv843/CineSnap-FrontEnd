@@ -3,6 +3,7 @@ import { type ICSMovieRes } from './movie'
 import { type IScreen } from './screens'
 import { type IShowRes } from './show'
 import { type ITheaterRes } from './theater'
+import { type IUserRes } from './users'
 
 export interface ISelectedSeat {
   row: string
@@ -44,14 +45,20 @@ export interface IApiTempTicketsRes extends IApiRes<ITempTicketRes[]> {}
 export interface ITicketReqs extends Omit<ITicket, '_id' | 'isCancelled' | 'seats'> {
   seats: ISelectedSeat[]
 }
-export interface ITicketRes extends Omit<ITicket, 'showId' | 'screenId' | 'movieId' | 'theaterId'> {
+export interface ITicketRes extends Omit<ITicket, 'showId' | 'screenId' | 'movieId' | 'theaterId' | 'userId'> {
   showId: IShowRes
   screenId: IScreen
   movieId: ICSMovieRes
   theaterId: ITheaterRes
+  userId: IUserRes
 }
 export interface IApiTicketRes extends IApiRes<ITicketRes | null> {}
 export interface IApiTicketsRes extends IApiRes<ITicketRes[]> {}
 
 export type Seats = Array<Map<string, number[]>>
 export interface IApiSeatsRes extends IApiRes<Seats | null> {}
+
+export interface ITicketsAndCount {
+  tickets: ITicketRes[]
+  ticketCount: number
+}
