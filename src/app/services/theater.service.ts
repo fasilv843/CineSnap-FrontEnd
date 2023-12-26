@@ -3,8 +3,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IApiTheaterRes, IApiTheatersRes, ITheaterUpdate } from '../models/theater';
+import { IApiTheaterRes, IApiTheatersRes, ITheaterUpdate, ITheatersAndCount } from '../models/theater';
 import { IApiChatRes } from '../models/chat';
+import { IApiRes } from '../models/common';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,8 @@ export class TheaterService {
     private readonly http: HttpClient
   ) { }
 
-  getAllTheaters (): Observable<IApiTheatersRes> {
-    return this.http.get<IApiTheatersRes>('admin/theaters')
+  getAllTheaters (page: number, limit: number, searchQuery: string): Observable<IApiRes<ITheatersAndCount | null>> {
+    return this.http.get<IApiRes<ITheatersAndCount | null>>(`admin/theaters?page=${page}&limit=${limit}&searchQuery=${searchQuery}`)
   }
 
   blockTheater (theaterId: string): Observable<IApiTheaterRes> {

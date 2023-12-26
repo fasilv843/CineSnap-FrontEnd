@@ -1,0 +1,19 @@
+/* Add these styles to your CSS/SCSS file */
+.pagination-btn {
+    padding: 8px 16px;
+    background-color: #4a5568;
+    color: #fff;
+    border: 1px solid #2d3748;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination-btn:hover {
+    background-color: #2d3748;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

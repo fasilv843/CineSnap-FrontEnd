@@ -23,7 +23,7 @@
 			<tbody class="border-b dark:bg-gray-900 dark:border-gray-700">
 	
 				<tr *ngFor="let user of users; index as i">
-					<td class="px-3 font-medium dark:text-gray-400">{{ i+1 }}</td>
+					<td class="px-3 font-medium dark:text-gray-400">{{ ((currPage -1) * itemsPerPage) + (i + 1) }}</td>
 					<td class="px-3 py-2">
 						<p>{{ user.name }}</p>
 					</td>

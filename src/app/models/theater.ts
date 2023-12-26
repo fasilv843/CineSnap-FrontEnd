@@ -50,3 +50,8 @@ export interface IApiTheaterAuthRes {
   accessToken: string
   refreshToken: string
 }
+
+export interface ITheatersAndCount {
+  theaters: ITheaterRes[]
+  theaterCount: number
+}

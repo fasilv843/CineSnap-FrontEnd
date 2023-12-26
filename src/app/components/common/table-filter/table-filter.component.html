@@ -13,6 +13,7 @@
             <label for="itemsPerPage" class="mr-4 text-white">Items per page:</label>
             <select id="itemsPerPage" class="border border-gray-400 rounded-md px-4 py-2 bg-gray-700 text-white" 
                 [(ngModel)]="itemsPerPage" (ngModelChange)="onItemsPerPageChange($event)">
+                <option value="1">1</option>
                 <option value="5">5</option>
                 <option value="10">10</option>
                 <option value="15">15</option>
@@ -22,11 +23,47 @@
 
     <ng-content></ng-content>
 
-    <div class="flex justify-center mt-4">
-        <button class="px-4 py-2 bg-gray-700 text-white rounded-md mr-2 cursor-pointer" (click)="onPageChange(currentPage - 1)"
-            [disabled]="currentPage === 1">Prev</button>
-        <span class="mx-4 text-gray-700">{{ currentPage }}</span>
-        <button class="px-4 py-2 bg-gray-700 text-white rounded-md ml-2 cursor-pointer" (click)="onPageChange(currentPage + 1)"
-            [disabled]="currentPage * itemsPerPage >= totalItems">Next</button>
+    <div *ngIf="getTotalPage() > 1" class="flex justify-center mt-8 gap-1">
+        <button
+            class="pagination-btn"
+            (click)="onPageChange(currentPage - 1)"
+            [disabled]="currentPage === 1"
+        >
+            Prev
+        </button>
+    
+        <ng-container *ngIf="getTotalPage() <= 7; else showDynamicPages">
+            <!-- Display individual page numbers if there are 7 or fewer pages -->
+            <ng-container *ngFor="let page of getPagesArray()">
+                <span
+                    class="pagination-btn"
+                    [class.active]="currentPage === page"
+                    (click)="onPageChange(page)"
+                >
+                    {{ page }}
+                </span>
+            </ng-container>
+        </ng-container>
+    
+        <ng-template #showDynamicPages>
+            <!-- Display dynamic page numbers with ellipsis if there are more than 7 pages -->
+            <span *ngIf="currentPage > 2" class="pagination-btn" (click)="onPageChange(1)">1</span>
+            <span *ngIf="currentPage > 3" class="pagination-btn">...</span>
+            <span *ngFor="let page of dynamicPages" class="pagination-btn" (click)="onPageChange(page)">
+                {{ page }}
+            </span>
+            <span *ngIf="currentPage < getTotalPage() -2" class="pagination-btn">...</span>
+            <span *ngIf="currentPage < getTotalPage() -1" class="pagination-btn" (click)="onPageChange(getTotalPage())">{{ getTotalPage() }}</span>
+        </ng-template>
+    
+        <button
+            class="pagination-btn"
+            (click)="onPageChange(currentPage + 1)"
+            [disabled]="currentPage * itemsPerPage >= totalItems"
+        >
+            Next
+        </button>
     </div>
+    
+    
 </div>

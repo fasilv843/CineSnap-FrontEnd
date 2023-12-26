@@ -12,17 +12,45 @@ import Swal from 'sweetalert2';
 })
 export class AdminTheatersComponent {
   theaters: ITheaterRes[] = []
+  currPage = 1
+  itemsPerPage = 10
+  searchQuery: string = ''
+  theaterCount = 0
 
   constructor (
     private readonly theaterService: TheaterService
   ) {}
 
   ngOnInit (): void {
-    this.theaterService.getAllTheaters().subscribe({
+    this.getTheaters()
+  }
+
+  getTheaters (): void {
+    this.theaterService.getAllTheaters(this.currPage, this.itemsPerPage, this.searchQuery).subscribe({
       next: (res) => {
-        this.theaters = res.data
+        if (res.data !== null) {
+          this.theaters = res.data.theaters
+          this.theaterCount = res.data.theaterCount
+        }
       }
     })
+  }
+
+  onSearchTheaters (searchQuery: string): void {
+    this.searchQuery = searchQuery
+    this.getTheaters()
+  }
+
+  onPageChange (page: number): void {
+    this.currPage = page
+    this.getTheaters()
+  }
+
+  onItemsPerPageChange (itemsPerPage: number): void {
+    console.log(itemsPerPage, 'itemsPer Page')
+    this.itemsPerPage = itemsPerPage
+    this.currPage = 1
+    this.getTheaters()
   }
 
   onBlock (theaterId: string, action: 'Block' | 'Unblock'): void {
