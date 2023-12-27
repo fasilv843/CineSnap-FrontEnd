@@ -55,7 +55,7 @@ export class UserBookingsComponent implements OnInit {
         const ticketIdx = this.tickets.findIndex(tkt => ticketId === tkt._id)
         this.tickets = [
           ...this.tickets.slice(0, ticketIdx),
-          { ...this.tickets[ticketIdx], isCancelled: true },
+          { ...this.tickets[ticketIdx], isCancelled: true, cancelledBy: 'User' },
           ...this.tickets.slice(ticketIdx + 1)
         ]
       }

@@ -25,7 +25,7 @@ export interface ITicket {
   startTime: Date
   endTime: Date
   isCancelled: boolean
-  // status: string
+  cancelledBy: 'User' | 'Theater' | 'Admin'
 }
 
 export interface ITempTicket extends Omit<ITicket, 'isCancelled'> {
@@ -42,7 +42,7 @@ export interface ITempTicketRes extends Omit<ITempTicket, 'showId' | 'screenId' 
 export interface IApiTempTicketRes extends IApiRes<ITempTicketRes | null> {}
 export interface IApiTempTicketsRes extends IApiRes<ITempTicketRes[]> {}
 
-export interface ITicketReqs extends Omit<ITicket, '_id' | 'isCancelled' | 'seats'> {
+export interface ITicketReqs extends Omit<ITicket, '_id' | 'isCancelled' | 'cancelledBy' | 'seats'> {
   seats: ISelectedSeat[]
 }
 export interface ITicketRes extends Omit<ITicket, 'showId' | 'screenId' | 'movieId' | 'theaterId' | 'userId'> {

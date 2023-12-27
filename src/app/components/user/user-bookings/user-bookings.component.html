@@ -35,7 +35,9 @@
                     <p class="text-gray-700 text-center">Tickets</p>
                 </div>
                 <div *ngIf="ticket.isCancelled">
-                    <p class="text-red-600 text-lg font-medium">Cancelled</p>
+                    <p *ngIf="ticket.cancelledBy === 'User'" class="text-red-600">Cancelled</p>
+                    <p *ngIf="ticket.cancelledBy === 'Theater'" class="text-red-600">Cancelled By Theater</p>
+                    <p *ngIf="ticket.cancelledBy === 'Admin'" class="text-red-600">Cancelled By Admin</p>
                 </div>
                 <div *ngIf="!ticket.isCancelled &&  (now > getFourHourBeforeTime(ticket.startTime)) && getDate(ticket.startTime) > now">
                     <p class="text-red-600 text-lg font-medium">Cancelling is only allowed before 4hrs of show</p>

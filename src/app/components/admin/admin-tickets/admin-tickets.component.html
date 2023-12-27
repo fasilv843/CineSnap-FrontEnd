@@ -46,9 +46,14 @@
                     </td>
                     <td class="px-3 py-2">
                         <div *ngIf="tkt.isCancelled">
-                            <p class="text-red-600">Cancelled</p>
+                            <p *ngIf="tkt.cancelledBy === 'User'" class="text-red-600">Cancelled</p>
+                            <p *ngIf="tkt.cancelledBy === 'Theater'" class="text-red-600">Cancelled By Theater</p>
+                            <p *ngIf="tkt.cancelledBy === 'Admin'" class="text-red-600">Cancelled By Admin</p>
                         </div>
-                        <button *ngIf="!tkt.isCancelled" type="button" title="Open details"
+                        <div *ngIf="!tkt.isCancelled && getDate(tkt.startTime) <= now">
+                            <p class="text-white">Show Started</p>
+                        </div>
+                        <button *ngIf="!tkt.isCancelled && getDate(tkt.startTime) > now" type="button" title="Open details"
                             class="px-2 rounded-full dark:text-black bg-red-500 focus:dark:bg-red-600"
                             (click)="cancelTicket(tkt._id)">
                             Cancel

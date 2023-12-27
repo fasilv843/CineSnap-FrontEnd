@@ -13,6 +13,7 @@ export class AdminTicketsComponent {
   ticketCount = 0
   currPage = 1
   itemsPerPage = 10
+  now = new Date()
 
   constructor (
     private readonly ticketService: TicketService
@@ -20,6 +21,10 @@ export class AdminTicketsComponent {
 
   ngOnInit (): void {
     this.getTickets()
+  }
+
+  getDate (date: Date): Date {
+    return new Date(date)
   }
 
   getTickets (): void {
@@ -46,6 +51,15 @@ export class AdminTicketsComponent {
   }
 
   cancelTicket (ticketId: string): void {
-
+    this.ticketService.cancelTicketByAdmin(ticketId).subscribe({
+      next: () => {
+        const ticketIdx = this.tickets.findIndex(tkt => tkt._id === ticketId)
+        this.tickets = [
+          ...this.tickets.slice(0, ticketIdx),
+          { ...this.tickets[ticketIdx], isCancelled: true, cancelledBy: 'Admin' },
+          ...this.tickets.slice(ticketIdx + 1)
+        ]
+      }
+    })
   }
 }

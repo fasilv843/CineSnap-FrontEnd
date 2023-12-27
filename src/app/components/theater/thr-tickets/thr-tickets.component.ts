@@ -15,6 +15,7 @@ export class ThrTicketsComponent implements OnInit {
   ticketCount = 0
   currPage = 1
   itemsPerPage = 10
+  now = new Date()
 
   constructor (
     private readonly route: ActivatedRoute,
@@ -27,6 +28,10 @@ export class ThrTicketsComponent implements OnInit {
 
   ngOnInit (): void {
     this.getTickets()
+  }
+
+  getDate (date: Date): Date {
+    return new Date(date)
   }
 
   getTickets (): void {
@@ -53,6 +58,15 @@ export class ThrTicketsComponent implements OnInit {
   }
 
   cancelTicket (ticketId: string): void {
-
+    this.ticketService.cancelTicketByTheater(ticketId).subscribe({
+      next: () => {
+        const ticketIdx = this.tickets.findIndex(tkt => tkt._id === ticketId)
+        this.tickets = [
+          ...this.tickets.slice(0, ticketIdx),
+          { ...this.tickets[ticketIdx], isCancelled: true, cancelledBy: 'Theater' },
+          ...this.tickets.slice(ticketIdx + 1)
+        ]
+      }
+    })
   }
 }
