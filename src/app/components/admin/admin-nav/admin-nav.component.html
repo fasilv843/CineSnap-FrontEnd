@@ -21,9 +21,9 @@
             <li>
               <a class="hover:text-amber-500" routerLink="/admin/users">Users</a>
             </li>
-            <li>
+            <!-- <li>
                 <a class="hover:text-amber-500" routerLink="/admin/messages">Messages</a>
-            </li>
+            </li> -->
             <li>
                 <a class="hover:text-amber-500" routerLink="/admin/movies">Movies</a>
             </li>
@@ -31,22 +31,14 @@
           <!-- Header Icons -->
           <div class="hidden md:flex items-center space-x-5">
             <a class="flex items-center hover:text-amber-500"  (click)="onLogout()">
-              <!-- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg> --> Logout
+              Logout
             </a>
           </div>
         </div>
         <!-- Responsive navbar -->
         <div class="flex items-end md:hidden">
           <a class="hover:text-amber-500 mx-2 self-center" (click)="onLogout()">
-            <!-- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg> --> Logout
+             Logout
           </a>
           <a class="navbar-burger self-center mr-12 cursor-pointer" (click)="toggleSideBar()">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
@@ -88,12 +80,12 @@
         </span>
       </a>
 
-      <a routerLink="/admin/messages" (click)="toggleSideBar()">
+      <!-- <a routerLink="/admin/messages" (click)="toggleSideBar()">
         <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
           <i class="w-8 fas fa-th p-2 bg-gray-800 rounded-full"></i>
           <span class="mx-2">Messages</span>
         </span>
-      </a>
+      </a> -->
   
       <a routerLink="/admin/movies" (click)="toggleSideBar()">
         <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
