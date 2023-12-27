@@ -1,4 +1,4 @@
-import { type IChatRes } from './chat'
+import { type IUsersListForChats, type IChatRes } from './chat'
 import { type ICSMovieRes } from './movie'
 import { type IScreen } from './screens'
 import { type IShowRes, type IShowsOnAScreen, type IShow } from './show'
@@ -32,7 +32,7 @@ export interface ICoords {
 }
 
 export type AllResTypes = ITheaterRes | ITheaterRes[]
-| IUserRes | IUserRes[] | IShowRes | IShowsOnAScreen[] | ITheatersAndCount
+| IUserRes | IUserRes[] | IShowRes | IShowsOnAScreen[] | ITheatersAndCount | IUsersListForChats[]
 | IShow | IChatRes | ITicketRes | ITicketRes[] | ICSMovieRes | IUsersAndCount | ITicketsAndCount
 | ICSMovieRes[] | IScreen | IScreen[] | Seats | ITempTicketRes | ITempTicketRes[] | null
 

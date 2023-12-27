@@ -7,6 +7,7 @@ import { TheaterService } from 'src/app/services/theater.service'
 import { WebSocketService } from 'src/app/services/web-socket.service'
 import { imagesFolderPath } from 'src/app/shared/constants'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
+// import { NgxIntersectionObserverDirective } from 'ngx-intersection-observer'
 
 @Component({
   selector: 'app-user-message',
@@ -14,6 +15,9 @@ import { selectUserDetails } from 'src/app/states/user/user.selector'
   styleUrls: ['./user-message.component.css']
 })
 export class UserMessageComponent implements OnInit, OnDestroy {
+  // @ViewChild('messageContainer') messageContainer: ElementRef
+  // @ViewChild(NgxIntersectionObserverDirective) observer: NgxIntersectionObserverDirective
+
   message: string = ''
   // feedback: string = ''
   chats: IChatMessage[] = []
@@ -115,7 +119,8 @@ export class UserMessageComponent implements OnInit, OnDestroy {
       this.chats.push({
         sender: 'User',
         message: this.message,
-        time: new Date()
+        time: new Date(),
+        isRead: false
       })
       this.socketService.emit('send-message', msgData)
       this.message = ''

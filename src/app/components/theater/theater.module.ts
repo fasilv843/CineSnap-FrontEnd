@@ -30,6 +30,7 @@ import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
 import { SpinnerComponent } from '../common/spinner/spinner.component';
 import { ThrTicketsComponent } from './thr-tickets/thr-tickets.component';
 import { TableFilterComponent } from '../common/table-filter/table-filter.component';
+// import { InsideViewportDirective } from 'src/app/directives/inside-viewport.directive';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { TableFilterComponent } from '../common/table-filter/table-filter.compon
     ApprovalPendingComponent,
     ApprovalRejectedComponent,
     ThrTicketsComponent
+    // InsideViewportDirective
   ],
   imports: [
     CommonModule,

@@ -14,7 +14,7 @@
         <div *ngFor="let theater of theaters">
             <a (click)="onSelectTheater(theater)">
                 <div class="flex items-center space-x-4 mb-4 relative">
-                    <span class="absolute top-1/2 right-2 transform -translate-y-1/2 h-4 min-w-4 bg-amber-500 rounded-full flex items-center justify-center text-white text-xs p-2">99+</span>
+                    <!-- <span class="absolute top-1/2 right-2 transform -translate-y-1/2 h-4 min-w-4 bg-amber-500 rounded-full flex items-center justify-center text-white text-xs p-2">99+</span> -->
                     <img *ngIf="theater.profilePic" [src]="imageFolderPath + theater.profilePic" [alt]="theater.name + 'Profile'" class="w-8 h-8 rounded-full">
                     <div *ngIf="!theater.profilePic" class="rounded-full h-8 w-8 border-2 border-amber-300 hover:border-amber-500 bg-black text-amber-300 hover:text-amber-500 text-center align-middle">
                         <span class="flex items-center justify-center h-full">

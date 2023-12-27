@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IApiUserRes, IApiUsersRes, IUserUpdate, IUsersAndCount } from '../models/users';
 import { IApiRes } from '../models/common';
+import { IUsersListForChats } from '../models/chat';
 
 @Injectable({
   providedIn: 'root'
@@ -46,8 +47,8 @@ export class UserService {
     return this.http.patch<IApiUserRes>(`user/remove/profileimage/${userId}`, {})
   }
 
-  getUsersChattedWith (theaterId: string): Observable<IApiUsersRes> {
-    return this.http.get<IApiUsersRes>(`theater/chat/users/${theaterId}`)
+  getUsersChattedWith (theaterId: string): Observable<IApiRes<IUsersListForChats[] | null>> {
+    return this.http.get<IApiRes<IUsersListForChats[] | null>>(`theater/chat/users/${theaterId}`)
   }
 
   updateUserWallet (userId: string, amount: number): Observable<IApiUserRes> {

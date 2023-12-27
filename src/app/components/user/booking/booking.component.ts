@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/quotes */
 /* eslint-disable @typescript-eslint/semi */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core'
+import { Component, OnDestroy, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { getLanguage } from 'src/app/helpers/movie';
