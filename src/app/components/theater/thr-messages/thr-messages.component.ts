@@ -23,7 +23,8 @@ export class ThrMessagesComponent implements OnInit, OnDestroy {
   userId = ''
   theaterName = ''
   users: IUserRes[] = []
-  currUser!: IUserRes
+  currUser?: IUserRes
+  unreadMessages: Record<string, number> = {}
   imageFolderPath = imagesFolderPath
 
   constructor (
@@ -62,7 +63,6 @@ export class ThrMessagesComponent implements OnInit, OnDestroy {
       }
     })
 
-    // this.socketService.listen('typing').subscribe((data) => { this.updateFeedback(data) })
     this.socketService.listen('recieve-message').subscribe((data) => { this.updateMessage(data) })
   }
 
@@ -76,6 +76,7 @@ export class ThrMessagesComponent implements OnInit, OnDestroy {
       next: (res) => {
         if (res.data !== null) {
           this.chats = res.data.messages
+          this.unreadMessages[user._id] = 0
         }
       }
     })
@@ -84,7 +85,18 @@ export class ThrMessagesComponent implements OnInit, OnDestroy {
   updateMessage (res: IApiChatRes): void {
     if (res.data == null) return
     console.log(res.data.messages, 'data from update message')
-    this.chats = res.data.messages
+    // eslint-disable-next-line eqeqeq
+    if (this.currUser !== undefined && this.currUser._id == res.data.userId) {
+      this.chats = res.data.messages
+    } else {
+      const unreadCount = this.unreadMessages[res.data.userId as string]
+      this.unreadMessages[res.data.userId as string] = (unreadCount === undefined) ? 1 : unreadCount + 1
+    }
+  }
+
+  getUnreadCount (userId: string): number {
+    console.log(this.unreadMessages, 'unreadMessages object')
+    return this.unreadMessages[userId] ?? 0
   }
 
   // updateFeedback (data: { name: string, sender: string, reciever: string }): void {
@@ -104,6 +116,7 @@ export class ThrMessagesComponent implements OnInit, OnDestroy {
   // }
 
   sendMessage (): void {
+    if (this.currUser === undefined) return
     if (this.message !== '') {
       const msgData: IChatReqs = {
         userId: this.currUser._id,
