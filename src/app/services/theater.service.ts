@@ -75,4 +75,11 @@ export class TheaterService {
   updateTheaterWallet (theaterId: string, amount: number): Observable<IApiTheaterRes> {
     return this.http.patch<IApiTheaterRes>(`theater/wallet/add/${theaterId}`, { amount })
   }
+
+  markLastMessageAsRead (userId: string | undefined, theaterId: string | undefined, adminId: string | undefined, msgId: string): Observable<IApiRes<null>> {
+    // if (userId === undefined || userId === null) userId = ''
+    // if (theaterId === undefined || userId === null) theaterId = ''
+    // if (adminId === undefined || userId === null) adminId = ''
+    return this.http.patch<IApiRes<null>>(`theater/chat/mark/read?userId=${userId ?? ''}&theaterId=${theaterId ?? ''}&adminId=${adminId ?? ''}&msgId=${msgId}`, {})
+  }
 }

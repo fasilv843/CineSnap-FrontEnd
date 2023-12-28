@@ -76,32 +76,19 @@ export class ThrMessagesComponent implements OnInit, OnDestroy {
     })
   }
 
-  // handleInsideViewport (event: Event): void {
-  //   const customEvent = event as CustomEvent<{ messageId: string, isInView: boolean }>
-  //   const { messageId, isInView } = customEvent.detail
-  //   console.warn('handling the event')
-  //   if (isInView) {
-  //     // Call a function to mark the message as read or update your logic
-  //     this.markMessageAsRead(messageId)
-  //   } else {
-  //     console.error('handling event but not in view')
-  //   }
-  // }
-
-  // markMessageAsRead (messageId: string): void {
-  //   console.warn(`Message ${messageId} is now visible on the screen\n create events or service for setting the message as read`)
-  // }
-
   updateMessage (chatRes: IChatRes): void {
     console.log(chatRes.messages, 'data from update message')
     // eslint-disable-next-line eqeqeq
     if (this.currUser !== undefined && this.currUser._id == chatRes.userId) {
       this.chats = chatRes.messages
-      // const lastIdx = chatRes.messages.length - 1
-      // const lastMsg = chatRes.messages.pop()
-      // if (lastMsg != null) {
-      //   this.theaterService.markMessageAsRead(lastIdx)
-      // }
+      const lastMsg = chatRes.messages[chatRes.messages.length - 1]
+      if (lastMsg !== undefined) {
+        this.theaterService.markLastMessageAsRead(chatRes.userId, chatRes.theaterId, chatRes.adminId, lastMsg._id).subscribe({
+          next: () => {
+            console.log('message marked as read successfully')
+          }
+        })
+      }
     } else {
       const userIdx = this.users.findIndex(user => user._id === chatRes.userId)
       this.users = [
