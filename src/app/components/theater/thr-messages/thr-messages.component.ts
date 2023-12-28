@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, Inject, type OnInit, type OnDestroy } from '@angular/core'
 import { select, Store } from '@ngrx/store'
-import { type IChatMessage, type IApiChatRes, type IChatReqs, type IChatRes, type IUsersListForChats } from 'src/app/models/chat'
+import { type IApiChatRes, type IChatReqs, type IChatRes, type IUsersListForChats, IChatMessageRes } from 'src/app/models/chat'
 import { TheaterService } from 'src/app/services/theater.service'
 import { UserService } from 'src/app/services/user.service'
 import { WebSocketService } from 'src/app/services/web-socket.service'
@@ -15,7 +15,7 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 })
 export class ThrMessagesComponent implements OnInit, OnDestroy {
   message: string = ''
-  chats: IChatMessage[] = []
+  chats: IChatMessageRes[] = []
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
   theaterId: string = ''
   userId = ''
@@ -97,6 +97,11 @@ export class ThrMessagesComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line eqeqeq
     if (this.currUser !== undefined && this.currUser._id == chatRes.userId) {
       this.chats = chatRes.messages
+      // const lastIdx = chatRes.messages.length - 1
+      // const lastMsg = chatRes.messages.pop()
+      // if (lastMsg != null) {
+      //   this.theaterService.markMessageAsRead(lastIdx)
+      // }
     } else {
       const userIdx = this.users.findIndex(user => user._id === chatRes.userId)
       this.users = [
@@ -118,6 +123,7 @@ export class ThrMessagesComponent implements OnInit, OnDestroy {
       }
       console.log('sending message', msgData)
       this.chats.push({
+        _id: '',
         sender: 'Theater',
         message: this.message,
         time: new Date(),

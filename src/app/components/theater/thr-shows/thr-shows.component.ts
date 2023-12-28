@@ -7,6 +7,7 @@ import { ShowFormModalComponent } from '../../common/show-form-modal/show-form-m
 import { type IShowsOnAScreen } from 'src/app/models/show'
 import { getGenre, getLanguage } from 'src/app/helpers/movie'
 import { MovieService } from 'src/app/services/movie.service'
+import { isSameDay } from 'src/app/helpers/date'
 
 @Component({
   selector: 'app-thr-shows',
@@ -55,7 +56,7 @@ export class ThrShowsComponent implements OnInit {
         console.log('submitted form data', result)
         this.showService.addShow(result).subscribe({
           next: (res) => {
-            if (res.data !== null) {
+            if (res.data !== null && isSameDay(res.data.startTime, this.currDate)) { // && isSameDay(res.data.startTime, this.currDate)
               const { seats, ...newShow } = res.data
               console.log(res.data, 'res from addShow')
               const { screenId, movieId } = res.data

@@ -7,6 +7,10 @@ export interface IChatMessage {
   isRead: boolean
 }
 
+export interface IChatMessageRes extends IChatMessage {
+  _id: string
+}
+
 export interface IChatHistory {
   userId?: string // User _id
   theaterId?: string // Theater _id
@@ -15,7 +19,9 @@ export interface IChatHistory {
 }
 
 export interface IChatReqs extends Omit<IChatHistory, 'messages'>, Omit<IChatMessage, 'time' | 'isRead'> {}
-export interface IChatRes extends IChatHistory { }
+export interface IChatRes extends Omit<IChatHistory, 'messages'> {
+  messages: IChatMessageRes[]
+}
 export interface IApiChatRes extends IApiRes<IChatRes | null> { }
 
 export interface IUsersListForChats {
