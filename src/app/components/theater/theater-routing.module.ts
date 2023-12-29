@@ -10,8 +10,6 @@ import { ThrMessagesComponent } from './thr-messages/thr-messages.component';
 import { ThrProfileComponent } from './thr-profile/thr-profile.component';
 import { ThrMoviesComponent } from './thr-movies/thr-movies.component';
 import { LoginGuard } from 'src/app/guards/login.guard';
-import { AddScreenComponent } from './add-screen/add-screen.component';
-import { EditScreenComponent } from './edit-screen/edit-screen.component';
 import { AuthGuard } from 'src/app/guards/auth.guard';
 import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater-profile.component';
 import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
@@ -68,14 +66,6 @@ const routes: Routes = [
         component: ThrScreensComponent
       },
       {
-        path: 'add',
-        component: AddScreenComponent
-      },
-      {
-        path: 'edit/:screenId',
-        component: EditScreenComponent
-      },
-      {
         path: ':screenId',
         component: ThrSeatingComponent
       }
@@ -96,7 +86,6 @@ const routes: Routes = [
   {
     path: 'profile',
     title: 'CineSnap | Theater Profile',
-    // component: ThrProfileComponent,
     canActivate: [AuthGuard],
     children: [
       {

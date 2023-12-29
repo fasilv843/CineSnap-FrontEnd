@@ -2,12 +2,11 @@ import { Component, Inject, type OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { Store, select } from '@ngrx/store'
-import { type IApiScreensRes, type IScreen } from 'src/app/models/screens'
+import { type IScreenRequirements, type IApiScreensRes, type IScreen } from 'src/app/models/screens'
 import { ScreenService } from 'src/app/services/screen.service'
-// import { screenFields } from 'src/app/shared/validationFields/screenFields'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import Swal from 'sweetalert2'
-// import { DynamicFormModalComponent } from '../../common/dynamic-form-modal/dynamic-form-modal.component'
+import { ScreenFormModalComponent } from '../screen-form-modal/screen-form-modal.component'
 
 @Component({
   selector: 'app-thr-screens',
@@ -41,24 +40,29 @@ export class ThrScreensComponent implements OnInit {
     })
   }
 
-  // openAddScreenModal (): void {
-  //   const modalRef = this.modalService.open(DynamicFormModalComponent, { backdrop: 'static', centered: true })
-  //   // Access the component instance and set input values
-  //   modalRef.componentInstance.modalTitle = 'Add New Screen'
-  //   modalRef.componentInstance.submitBtn = 'Add'
-  //   modalRef.componentInstance.fields = screenFields
-  //   // modalRef.componentInstance.fields = yourFieldsArray
+  addNewScreen (): void {
+    const modalRef = this.modalService.open(ScreenFormModalComponent, { backdrop: 'static', centered: true })
 
-  //   void modalRef.result.then(
-  //     (result) => {
-  //       console.log('submitted form data', result)
-  //     },
-  //     (reason) => {
-  //       // Handle dismissal or any other reason
-  //       console.log('Modal dismissed with reason:', reason)
-  //     }
-  //   )
-  // }
+    modalRef.componentInstance.modalTitle = 'Add Screen'
+    modalRef.componentInstance.submitBtn = 'Add'
+
+    void modalRef.result.then(
+      (result: IScreenRequirements) => {
+        result.theaterId = this.theaterId
+        console.log('submitted form data', result)
+        this.screenService.addScreen(result).subscribe({
+          next: (res) => {
+            this.screens.push(res.data)
+            void this.router.navigate(['/theater/screens/seat']) // redirect to seat edit page
+          }
+        })
+      },
+      (reason) => {
+        // Handle dismissal or any other reason
+        console.log('Modal dismissed with reason:', reason)
+      }
+    )
+  }
 
   viewScreen (screenId: string): void {
     void this.router.navigate(['/theater/screens', screenId])

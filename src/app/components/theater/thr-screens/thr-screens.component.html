@@ -4,23 +4,12 @@
     *ngIf="screens.length !== 0"
     class="flex justify-end pr-10 pt-5">
     <button
-    routerLink="/theater/screens/add"
+      (click)="addNewScreen()"
       class="block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2"
     >
       Add Screen
     </button>
 </div>
-
-  <!-- <div 
-    *ngIf="screens.length !== 0"
-    class="flex justify-end pr-10 pt-5">
-    <button
-    (click)="openAddScreenModal()"
-      class="block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2"
-    >
-      Add Screen
-    </button>
-  </div> -->
 
   <div *ngIf="screens.length !== 0; else noScreens">
       <div *ngFor="let screen of screens" class="max-w-md mx-auto bg-white rounded-xl overflow-hidden shadow-md border border-gray-300 md:max-w-2xl mt-8">
@@ -37,7 +26,7 @@
                     <p class="text-gray-800">Columns: {{ screen.col }}</p>
                   </div>
                 </div>
-                <p class="text-gray-800">Default Price: {{ screen.defaultPrice }}</p>
+                <!-- <p class="text-gray-800">Default Price: {{ screen.defaultPrice }}</p> -->
               </div>
               <div class="mt-6 flex justify-end">
                 <button (click)="viewScreen(screen._id)" class="bg-gray-500 text-white px-4 py-2 rounded-full mr-2 hover:bg-gray-600">View</button>
@@ -54,7 +43,7 @@
     <div class="text-center">
       <p class="text-lg font-semibold text-gray-600">Screens not added yet!</p>
       <p class="text-gray-500">Add new screens to continue.</p>
-      <button routerLink="/theater/screens/add" class="mt-4 px-4 py-2 rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800">Add New Screens</button>
+      <button (click)="addNewScreen()" class="mt-4 px-4 py-2 rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800">Add New Screens</button>
     </div>
   </div>
 </ng-template>

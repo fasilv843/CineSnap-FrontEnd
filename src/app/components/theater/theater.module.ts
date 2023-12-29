@@ -16,8 +16,6 @@ import { ThrProfileComponent } from './thr-profile/thr-profile.component';
 import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { StoreModule } from '@ngrx/store';
 import { theaterReducer } from 'src/app/states/theater/theater.reducer';
-import { AddScreenComponent } from './add-screen/add-screen.component';
-import { EditScreenComponent } from './edit-screen/edit-screen.component';
 import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater-profile.component';
 import { ImageModule } from 'src/app/modules/image/image.module';
 import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
@@ -43,8 +41,6 @@ import { TableFilterComponent } from '../common/table-filter/table-filter.compon
     ThrMessagesComponent,
     ThrMoviesComponent,
     ThrProfileComponent,
-    AddScreenComponent,
-    EditScreenComponent,
     EditTheaterProfileComponent,
     ThrSeatingComponent,
     ApprovalPendingComponent,
