@@ -3,7 +3,7 @@
 import { Component, Inject, type OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { ColNumType } from 'src/app/models/common'
-import { IScreenSeatCategoryRes } from 'src/app/models/screenSeat'
+import { IScreenSeatCategoryRes, IScreenSeatRes } from 'src/app/models/screenSeat'
 import { ScreenSeatService } from 'src/app/services/screen-seat.service'
 // import { ScreenService } from 'src/app/services/screen.service'
 
@@ -61,7 +61,18 @@ export class ThrSeatingComponent implements OnInit {
     if (!this.editMode) {
       this.editMode = true
     } else {
-      this.editMode = false
+      const screenSeat: IScreenSeatRes = {
+        _id: this.seatId,
+        diamond: this.diamond,
+        gold: this.gold,
+        silver: this.silver
+      }
+      this.screenSeatService.updateScreenSeat(screenSeat).subscribe({
+        next: (res) => {
+          console.log(res, 'screen seat data saved successfully')
+          this.editMode = false
+        }
+      })
     }
   }
 

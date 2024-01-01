@@ -3,7 +3,8 @@
 
 <div class="flex flex-col items-center mt-8 overflow-x-auto">
     <div *ngIf="getRowKeys(diamond).length" class="mb-20">
-        <h4>{{ diamond.name }}</h4>
+        <input *ngIf="editMode" [(ngModel)]="diamond.name" />
+        <h4 *ngIf="!editMode">{{ diamond.name }}</h4>        
         <div class="flex items-center gap-4">
             <div *ngIf="editMode" class="seat p-3 text-center text-sm with-margin">
                 <button class="btn-icon" (click)="addDummySeatsAt('Start', diamond)">+</button>
@@ -23,7 +24,7 @@
                                 {{ seatRow + seatCol }}
                                 <button *ngIf="editMode" class="close-btn px-1" (click)="removeSeat(seatRow, i, diamond)">x</button>
                               </div>
-                              <div *ngIf="seatCol === 0" class="seat p-3 text-center text-sm with-margin">
+                              <div *ngIf="seatCol === 0" class="{{ editMode ? 'seat' : 'empty-space'}} p-3 text-center text-sm with-margin">
                                   <button *ngIf="editMode" (click)="addSeat(seatRow, i, diamond)"> + </button>
                               </div>
                           </div>
@@ -69,7 +70,7 @@
                                 {{ seatRow + seatCol }}
                                 <button *ngIf="editMode" class="close-btn px-1" (click)="removeSeat(seatRow, i, gold)">x</button>
                               </div>
-                              <div *ngIf="seatCol === 0" class="seat p-3 text-center text-sm with-margin">
+                              <div *ngIf="seatCol === 0" class="{{ editMode ? 'seat' : 'empty-space'}} p-3 text-center text-sm with-margin">
                                   <button *ngIf="editMode" (click)="addSeat(seatRow, i, gold)"> + </button>
                               </div>
                           </div>
@@ -115,7 +116,7 @@
                                 {{ seatRow + seatCol }}
                                 <button *ngIf="editMode" class="close-btn px-1" (click)="removeSeat(seatRow, i, silver)">x</button>
                               </div>
-                              <div *ngIf="seatCol === 0" class="seat p-3 text-center text-sm with-margin">
+                              <div *ngIf="seatCol === 0" class="{{ editMode ? 'seat' : 'empty-space'}} p-3 text-center text-sm with-margin">
                                   <button *ngIf="editMode" (click)="addSeat(seatRow, i, silver)"> + </button>
                               </div>
                           </div>
