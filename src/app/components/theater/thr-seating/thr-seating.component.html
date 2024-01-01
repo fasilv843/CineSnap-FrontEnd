@@ -1,32 +1,148 @@
 <app-thr-nav></app-thr-nav>
 
-<!-- theater-seating.component.html -->
+
 <div class="flex flex-col items-center mt-8 overflow-x-auto">
-    <div class="mb-20">
-        <ng-container *ngFor="let row of getRowCharacters()">
-            <div class=" flex flex-nowrap">
-                <!-- Left side of the row -->
-                <ng-container *ngFor="let col of colsArr.slice(0, cols/2)">
-                    <div class="seat p-3 text-center text-sm with-margin">
-                        {{ row + col }}
-                    </div>
-                </ng-container>
-
-                <!-- Gap in the center -->
-                <div class="w-5"></div>
-
-                <!-- Right side of the row -->
-                <ng-container *ngFor="let col of colsArr.slice(cols/2)">
-                    <div class="seat p-3 text-center text-sm with-margin">
-                        {{ row + col }}
-                    </div>
-                </ng-container>
+    <div *ngIf="getRowKeys(diamond).length" class="mb-20">
+        <h4>{{ diamond.name }}</h4>
+        <div class="flex items-center gap-4">
+            <div *ngIf="editMode" class="seat p-3 text-center text-sm with-margin">
+                <button class="btn-icon" (click)="addDummySeatsAt('Start', diamond)">+</button>
             </div>
-        </ng-container>
+            <div>
+                <!-- <div *ngIf="editMode" class="flex">
+                    <div *ngFor="let c of getRows(diamond); index as i" class="seat p-3 text-center text-sm with-margin">
+                        <button class="btn-icon" (click)="dummifyColumn(i)"> - </button>
+                    </div>
+                </div> -->
+                    <ng-container *ngFor="let seatRow of getRowKeys(diamond)">
+                      <div class="flex flex-nowrap items-center">
+                
+                        <ng-container *ngFor="let seatCol of diamond.seats[seatRow]; index as i">
+                          <div class="flex flex-col">
+                              <div *ngIf="seatCol !== 0" class="seat p-3 text-center text-sm with-margin relative">
+                                {{ seatRow + seatCol }}
+                                <button *ngIf="editMode" class="close-btn px-1" (click)="removeSeat(seatRow, i, diamond)">x</button>
+                              </div>
+                              <div *ngIf="seatCol === 0" class="seat p-3 text-center text-sm with-margin">
+                                  <button *ngIf="editMode" (click)="addSeat(seatRow, i, diamond)"> + </button>
+                              </div>
+                          </div>
+                        </ng-container>
+                        
+                      </div>
+                    </ng-container>
+            </div>
+            <div *ngIf="editMode">
+                <div class="seat p-3 text-center text-sm with-margin">
+                    <button class="btn-icon" (click)="addDummySeatsAt('End', diamond)">+</button>
+                </div>
+                <div class="seat p-3 text-center text-sm with-margin">
+                    <button class="btn-icon" (click)="deleteColumn('Diamond')">-</button>
+                </div>
+            </div>
+        </div>
+  
+        <div *ngIf="editMode" class="flex justify-center">
+            <button class="btn" (click)="addRow('Diamond')">Add Row</button>
+            <button class="btn" (click)="deleteRow('Diamond')">Delete Row</button>
+        </div>
     </div>
 
-    <div class="fixed py-4 w-full bottom-0">
-        <img src="../../../../assets/screen-icon.svg" alt="Screen SVG" class="w-full h-12">
+    <div *ngIf="getRowKeys(gold).length" class="mb-20">
+        <h4>{{ gold.name }}</h4>
+        <div class="flex items-center gap-4">
+            <div *ngIf="editMode" class="seat p-3 text-center text-sm with-margin">
+                <button class="btn-icon" (click)="addDummySeatsAt('Start', gold)">+</button>
+            </div>
+            <div>
+                <!-- <div *ngIf="editMode" class="flex">
+                    <div *ngFor="let c of getRows(gold); index as i" class="seat p-3 text-center text-sm with-margin">
+                        <button class="btn-icon" (click)="dummifyColumn(i)"> - </button>
+                    </div>
+                </div> -->
+                    <ng-container *ngFor="let seatRow of getRowKeys(gold)">
+                      <div class="flex flex-nowrap items-center">
+                
+                        <ng-container *ngFor="let seatCol of gold.seats[seatRow]; index as i">
+                          <div class="flex flex-col">
+                              <div *ngIf="seatCol !== 0" class="seat p-3 text-center text-sm with-margin relative">
+                                {{ seatRow + seatCol }}
+                                <button *ngIf="editMode" class="close-btn px-1" (click)="removeSeat(seatRow, i, gold)">x</button>
+                              </div>
+                              <div *ngIf="seatCol === 0" class="seat p-3 text-center text-sm with-margin">
+                                  <button *ngIf="editMode" (click)="addSeat(seatRow, i, gold)"> + </button>
+                              </div>
+                          </div>
+                        </ng-container>
+                        
+                      </div>
+                    </ng-container>
+            </div>
+            <div *ngIf="editMode">
+                <div class="seat p-3 text-center text-sm with-margin">
+                    <button class="btn-icon" (click)="addDummySeatsAt('End', gold)">+</button>
+                </div>
+                <div class="seat p-3 text-center text-sm with-margin">
+                    <button class="btn-icon" (click)="deleteColumn('Gold')">-</button>
+                </div>
+            </div>
+        </div>
+  
+        <div *ngIf="editMode" class="flex justify-center">
+            <button class="btn" (click)="addRow('Gold')">Add Row</button>
+            <button class="btn" (click)="deleteRow('Gold')">Delete Row</button>
+        </div>
     </div>
 
-</div>
+    <div *ngIf="getRowKeys(silver).length" class="mb-40">
+        <h4>{{ silver.name }}</h4>
+        <div class="flex items-center gap-4">
+            <div *ngIf="editMode" class="seat p-3 text-center text-sm with-margin">
+                <button class="btn-icon" (click)="addDummySeatsAt('Start', silver)">+</button>
+            </div>
+            <div>
+                <!-- <div *ngIf="editMode" class="flex">
+                    <div *ngFor="let c of getRows(silver); index as i" class="seat p-3 text-center text-sm with-margin">
+                        <button class="btn-icon" (click)="dummifyColumn(i)"> - </button>
+                    </div>
+                </div> -->
+                    <ng-container *ngFor="let seatRow of getRowKeys(silver)">
+                      <div class="flex flex-nowrap items-center">
+                
+                        <ng-container *ngFor="let seatCol of silver.seats[seatRow]; index as i">
+                          <div class="flex flex-col">
+                              <div *ngIf="seatCol !== 0" class="seat p-3 text-center text-sm with-margin relative">
+                                {{ seatRow + seatCol }}
+                                <button *ngIf="editMode" class="close-btn px-1" (click)="removeSeat(seatRow, i, silver)">x</button>
+                              </div>
+                              <div *ngIf="seatCol === 0" class="seat p-3 text-center text-sm with-margin">
+                                  <button *ngIf="editMode" (click)="addSeat(seatRow, i, silver)"> + </button>
+                              </div>
+                          </div>
+                        </ng-container>
+                        
+                      </div>
+                    </ng-container>
+            </div>
+            <div *ngIf="editMode">
+                <div class="seat p-3 text-center text-sm with-margin">
+                    <button class="btn-icon" (click)="addDummySeatsAt('End', silver)">+</button>
+                </div>
+                <div class="seat p-3 text-center text-sm with-margin">
+                    <button class="btn-icon" (click)="deleteColumn('Silver')">-</button>
+                </div>
+            </div>
+        </div>
+  
+        <div *ngIf="editMode" class="flex justify-center">
+            <button class="btn" (click)="addRow('Silver')">Add Row</button>
+            <button class="btn" (click)="deleteRow('Silver')">Delete Row</button>
+        </div>
+    </div>
+  
+    <div class="fixed flex py-4 w-full bottom-0">
+      <img src="../../../../assets/screen-icon.svg" alt="Screen SVG" class="w-full h-12">
+      <button (click)="editScreenSeats()" class="btn items-end text-gray-900 m-4 justify-center bg-amber-500 hover:bg-amber-600">{{ editMode ? 'Update' : 'Edit' }}</button>
+    </div>
+  </div>
+  

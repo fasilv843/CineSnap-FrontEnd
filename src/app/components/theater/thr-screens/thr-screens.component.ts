@@ -34,6 +34,7 @@ export class ThrScreensComponent implements OnInit {
 
     this.screenService.findScreens(this.theaterId).subscribe({
       next: (res: IApiScreensRes) => {
+        if (res.data === null) return
         console.log(res.data)
         this.screens = res.data
       }
@@ -52,8 +53,9 @@ export class ThrScreensComponent implements OnInit {
         console.log('submitted form data', result)
         this.screenService.addScreen(result).subscribe({
           next: (res) => {
-            this.screens.push(res.data)
-            void this.router.navigate(['/theater/screens/seat']) // redirect to seat edit page
+            if (res.data === null) return
+            console.log(res.data, 'res.data from saving screen')
+            void this.router.navigate(['/theater/screens/seat', res.data.seatId])
           }
         })
       },
@@ -64,8 +66,8 @@ export class ThrScreensComponent implements OnInit {
     )
   }
 
-  viewScreen (screenId: string): void {
-    void this.router.navigate(['/theater/screens', screenId])
+  viewScreen (screenSeatId: string): void {
+    void this.router.navigate(['/theater/screens/seat', screenSeatId])
   }
 
   deleteScreen (screenId: string): void {

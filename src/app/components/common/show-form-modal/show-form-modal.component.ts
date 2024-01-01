@@ -75,6 +75,7 @@ export class ShowFormModalComponent implements OnInit {
 
     this.screenService.findScreens(this.theaterId).subscribe({
       next: (res) => {
+        if (res.data === null) return
         this.screens = res.data
       }
     })

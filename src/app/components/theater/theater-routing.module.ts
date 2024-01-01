@@ -66,7 +66,7 @@ const routes: Routes = [
         component: ThrScreensComponent
       },
       {
-        path: ':screenId',
+        path: 'seat/:seatId',
         component: ThrSeatingComponent
       }
     ]

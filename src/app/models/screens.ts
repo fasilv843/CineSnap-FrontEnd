@@ -4,12 +4,12 @@ export interface IScreen {
   _id: string
   theaterId: string
   name: string
-  row: string
-  col: number
+  rows: string
+  cols: number
   seatsCount: number
-  seats: Map<string, number[]>
+  seatId: string
 }
 
-export interface IScreenRequirements extends Omit<IScreen, '_id' | 'seatsCount' | 'seats'> {}
-export interface IApiScreenRes extends IApiRes<IScreen> {}
-export interface IApiScreensRes extends IApiRes<IScreen[]> {}
+export interface IScreenRequirements extends Omit<IScreen, '_id' | 'seatsCount' | 'seatId'> { }
+export interface IApiScreenRes extends IApiRes<IScreen | null> { }
+export interface IApiScreensRes extends IApiRes<IScreen[] | null> { }
