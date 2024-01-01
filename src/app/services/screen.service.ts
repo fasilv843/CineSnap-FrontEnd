@@ -23,8 +23,8 @@ export class ScreenService {
     return this.http.delete<IApiScreenRes>(`theater/screens/delete/${screenId}`)
   }
 
-  editScreen (screen: IScreenRequirements, screenId: string): Observable<IApiScreenRes> {
-    return this.http.put<IApiScreenRes>(`theater/screens/edit/${screenId}`, screen)
+  updateScreenName (screenId: string, screenName: string): Observable<IApiScreenRes> {
+    return this.http.patch<IApiScreenRes>(`theater/screens/edit/${screenId}`, { screenName })
   }
 
   getScreenData (screenId: string): Observable<IApiScreenRes> {

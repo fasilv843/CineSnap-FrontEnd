@@ -90,7 +90,7 @@ export class ThrScreensComponent implements OnInit {
     })
   }
 
-  editScreen (screenId: string): void {
-    void this.router.navigate(['/theater/screens/edit', screenId])
-  }
+  // updateScreenName (screenId: string, screenName: string): void {
+  //   this.screenService.updateScreenName(screenId, screenName).subscribe({})
+  // }
 }
