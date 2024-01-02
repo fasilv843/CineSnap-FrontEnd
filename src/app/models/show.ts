@@ -14,14 +14,18 @@ export interface IShow {
   ticketPrice: number
   totalSeatCount: number
   availableSeatCount: number
-  seats: Record<string, IShowSeat[]>
+  seatId: string
 }
 
-export interface IShowRequirements extends Omit<IShow, '_id' | 'totalSeatCount' | 'availableSeatCount' | 'seats'> {}
+export interface IShowRequirements extends Omit<IShow, '_id' | 'totalSeatCount' | 'availableSeatCount' | 'seatId'> {
+  diamondPrice: number
+  goldPrice?: number
+  silverPrice?: number
+}
 
 export interface IShowRes {
   movieId: ICSMovieRes
-  shows: Array<Omit<IShow, 'seats'>>
+  shows: Array<Omit<IShow, 'seatId'>>
 }
 
 export interface IApiShowsRes {

@@ -28,6 +28,9 @@ export class ShowSeatsComponent implements OnInit {
   selectedSeats: ISelectedSeat[] = []
   holdedSeats: ISelectedSeat[] = []
 
+  // commented template and component code that cause error
+  // finish it after completing add show
+
   constructor (
     @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
     @Inject(Store) private readonly store: Store,
@@ -47,10 +50,10 @@ export class ShowSeatsComponent implements OnInit {
         console.log(res.data, 'show data from getShowDetails')
         if (res.data !== null) {
           this.show = res.data as unknown as IShowWithMovie
-          console.log(res.data.seats, 'log seats')
-          console.log(typeof res.data.seats, 'type of seats')
-          console.dir(res.data.seats, 'dir seats')
-          this.rows = Array.from(Object.keys(res.data.seats))
+          // console.log(res.data.seats, 'log seats')
+          // console.log(typeof res.data.seats, 'type of seats')
+          // console.dir(res.data.seats, 'dir seats')
+          // this.rows = Array.from(Object.keys(res.data.seats))
         }
       }
     })
@@ -113,12 +116,12 @@ export class ShowSeatsComponent implements OnInit {
     })
   }
 
-  getColumnFirstHalf (row: string): IShowSeat[] {
-    return this.show.seats[row].slice(0, this.show.seats[row].length / 2)
+  getColumnFirstHalf (row: string): void { // : IShowSeat[] return type
+    // return this.show.seats[row].slice(0, this.show.seats[row].length / 2)
   }
 
-  getColumnSecondHalf (row: string): IShowSeat[] {
-    return this.show.seats[row].slice(this.show.seats[row].length / 2)
+  getColumnSecondHalf (row: string): void { // : IShowSeat[] return type
+    // return this.show.seats[row].slice(this.show.seats[row].length / 2)
   }
 
   isSeatSelected (row: string, col: number): boolean {

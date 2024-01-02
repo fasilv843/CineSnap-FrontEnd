@@ -44,6 +44,8 @@ export class ShowFormModalComponent implements OnInit {
   endingTime: string = '00:00'
   currDate: Date = new Date()
 
+  priceControls: Array<{ category: string, label: string, controlName: string }> = []
+
   constructor (
     @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
     @Inject(NgbActiveModal) public activeModal: NgbActiveModal,
@@ -59,8 +61,7 @@ export class ShowFormModalComponent implements OnInit {
       movieId: ['', [validateByTrimming(requiredValidator)]],
       screenId: ['', [validateByTrimming(requiredValidator)]],
       startTime: ['', [validateByTrimming(requiredValidator)]],
-      date: [this.currDate.toISOString().substring(0, 10), [validateByTrimming(requiredValidator)]],
-      ticketPrice: ['', [validateByTrimming(defaultPriceValidators)]]
+      date: [this.currDate.toISOString().substring(0, 10), [validateByTrimming(requiredValidator)]]
     })
 
     this.theaterData$.subscribe(theater => {
@@ -77,6 +78,30 @@ export class ShowFormModalComponent implements OnInit {
       next: (res) => {
         if (res.data === null) return
         this.screens = res.data
+      }
+    })
+  }
+
+  onScreenChange (event: Event): void {
+    console.log(event, 'event on screen change')
+    const target = event.target as HTMLSelectElement
+    const screenId = target.value
+
+    this.screenService.getAvailSeatsOnScreen(screenId).subscribe({
+      next: (res) => {
+        if (res.data === null) return
+        for (const category in res.data) {
+          if (Object.prototype.hasOwnProperty.call(res.data, category)) {
+            const priceControlName = `${category}Price`
+            console.log(priceControlName, 'price control name')
+
+            // Check if the control already exists to avoid duplicates
+            if (this.showForm.get(priceControlName) == null) {
+              this.showForm.addControl(priceControlName, this.formBuilder.control('', [validateByTrimming(defaultPriceValidators)]))
+              this.priceControls.push({ category, label: res.data[category as keyof typeof res.data] as string, controlName: priceControlName })
+            }
+          }
+        }
       }
     })
   }

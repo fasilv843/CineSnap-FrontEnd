@@ -17,9 +17,13 @@
           
             <div class="mb-3">
               <label for="screen" class="block mb-2 text-sm font-semibold text-gray-700">Screen:</label>
-              <select id="screen" formControlName="screenId" class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm" placeholder="Select a screen">
+              <select id="screen" formControlName="screenId" 
+              class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm" 
+              placeholder="Select a screen"
+              (change)="onScreenChange($event)"
+              >
                 <option value="" disabled selected>Select a screen</option>
-                <option *ngFor="let screen of screens" [value]="screen._id">{{ screen.name }}</option>
+                <option  *ngFor="let screen of screens" [value]="screen._id">{{ screen.name }}</option>
               </select>
               <app-screen-select-validation [screenControl]="showForm.get('screenId')" [isSubmitted]="isSubmitted"></app-screen-select-validation>
             </div>
@@ -42,13 +46,15 @@
               </div>
             </div>
             
-            
           
-            <div class="mb-3">
-              <label for="ticketPrice" class="block mb-2 text-sm font-semibold text-gray-700">Ticket Price:</label>
-              <input id="ticketPrice" formControlName="ticketPrice" type="text" class="block w-full bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" />
-              <app-def-price-validation [priceControl]="showForm.get('ticketPrice')" [isSubmitted]="isSubmitted"></app-def-price-validation>
+            <div *ngFor="let priceControl of priceControls">
+              <div class="mb-3">
+                <label [for]="priceControl.controlName" class="block mb-2 text-sm font-semibold text-gray-700">{{ priceControl.label }} Price:</label>
+                <input [id]="priceControl.controlName" [formControlName]="priceControl.controlName" type="text" class="block w-full bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Enter Ticket Price"/>
+                <app-def-price-validation [priceControl]="showForm.get(priceControl.controlName)" [isSubmitted]="isSubmitted"></app-def-price-validation>
+              </div>
             </div>
+            
           </ng-container>
           
   

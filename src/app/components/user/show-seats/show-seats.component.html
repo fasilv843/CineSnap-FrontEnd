@@ -6,7 +6,7 @@
       <ng-container *ngFor="let row of rows">
         <div class="flex flex-nowrap">
           <!-- Left side of the row -->
-          <ng-container *ngFor="let column of getColumnFirstHalf(row)">
+          <!-- <ng-container *ngFor="let column of getColumnFirstHalf(row)">
             <div
               class="seat p-3 text-center text-sm with-margin"
               appSeatStatus
@@ -18,13 +18,13 @@
             >
               {{ row + column.col }}
             </div>
-          </ng-container>
+          </ng-container> -->
   
           <!-- Gap in the center -->
           <div class="w-5"></div>
   
           <!-- Right side of the row -->
-          <ng-container *ngFor="let column of getColumnSecondHalf(row)">
+          <!-- <ng-container *ngFor="let column of getColumnSecondHalf(row)">
             <div
               class="seat p-3 text-center text-sm with-margin"
               appSeatStatus
@@ -36,7 +36,7 @@
             >
               {{ row + column.col }}
             </div>
-          </ng-container>
+          </ng-container> -->
         </div>
       </ng-container>
     </div>

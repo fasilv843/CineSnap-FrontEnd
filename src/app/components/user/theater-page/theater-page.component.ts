@@ -24,6 +24,8 @@ export class TheaterPageComponent implements OnInit {
   isShowLoading = true
   imagesFolderPath = imagesFolderPath
 
+  // Commented template codes that may cause error, until add show complete
+
   constructor (
     @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
     @Inject(ShowService) private readonly showService: ShowService,
@@ -63,7 +65,7 @@ export class TheaterPageComponent implements OnInit {
     })
   }
 
-  getTextColor (show: Omit<IShow, 'seats'>): string {
+  getTextColor (show: Omit<IShow, 'seatId'>): string {
     const percentatge = show.availableSeatCount / show.totalSeatCount
 
     if (percentatge >= 0.5) return 'text-green-500'

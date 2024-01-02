@@ -1,3 +1,4 @@
+import { type IAvailCatsOnScreen } from '../services/screen.service'
 import { type IUsersListForChats, type IChatRes } from './chat'
 import { type ICSMovieRes } from './movie'
 import { type IScreenSeatRes, type IScreenSeat } from './screenSeat'
@@ -32,7 +33,7 @@ export interface ICoords {
   coordinates: [number, number]
 }
 
-export type AllResTypes = ITheaterRes | ITheaterRes[] | IScreenSeat | IScreenSeatRes
+export type AllResTypes = ITheaterRes | ITheaterRes[] | IScreenSeat | IScreenSeatRes | IAvailCatsOnScreen
 | IUserRes | IUserRes[] | IShowRes | IShowsOnAScreen[] | ITheatersAndCount | IUsersListForChats[]
 | IShow | IChatRes | ITicketRes | ITicketRes[] | ICSMovieRes | IUsersAndCount | ITicketsAndCount
 | ICSMovieRes[] | IScreen | IScreen[] | Seats | ITempTicketRes | ITempTicketRes[] | null

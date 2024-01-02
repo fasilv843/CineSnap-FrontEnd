@@ -2,6 +2,13 @@ import { HttpClient } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
 import { type IApiScreenRes, type IApiScreensRes, type IScreenRequirements } from '../models/screens'
 import { type Observable } from 'rxjs'
+import { type IApiRes } from '../models/common'
+
+export interface IAvailCatsOnScreen {
+  diamond: string | undefined
+  gold: string | undefined
+  silver: string | undefined
+}
 
 @Injectable({
   providedIn: 'root'
@@ -29,5 +36,9 @@ export class ScreenService {
 
   getScreenData (screenId: string): Observable<IApiScreenRes> {
     return this.http.get<IApiScreenRes>(`theater/screens/get/${screenId}`)
+  }
+
+  getAvailSeatsOnScreen (screenId: string): Observable<IApiRes<IAvailCatsOnScreen | null>> {
+    return this.http.get<IApiRes<IAvailCatsOnScreen | null>>(`theater/screens/get/seats/${screenId}`)
   }
 }

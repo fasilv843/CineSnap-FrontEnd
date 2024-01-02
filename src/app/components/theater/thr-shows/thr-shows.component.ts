@@ -42,8 +42,6 @@ export class ThrShowsComponent implements OnInit {
 
   addNewShow (): void {
     const modalRef = this.modalService.open(ShowFormModalComponent, { backdrop: 'static', centered: true })
-    // You can pass data to the modal using modalRef.componentInstance.propertyName
-    // For example: modalRef.componentInstance.myData = someData;
 
     // Access the component instance and set input values
     modalRef.componentInstance.modalTitle = 'Add Show'
@@ -57,7 +55,7 @@ export class ThrShowsComponent implements OnInit {
         this.showService.addShow(result).subscribe({
           next: (res) => {
             if (res.data !== null && isSameDay(res.data.startTime, this.currDate)) { // && isSameDay(res.data.startTime, this.currDate)
-              const { seats, ...newShow } = res.data
+              const newShow = res.data
               console.log(res.data, 'res from addShow')
               const { screenId, movieId } = res.data
               const screenIdx = this.screens.findIndex(screen => screen.screenId === screenId)
