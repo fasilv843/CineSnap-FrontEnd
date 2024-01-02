@@ -1,5 +1,5 @@
 import { Component, Inject, type OnInit } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { getGenre, getLanguage } from 'src/app/helpers/movie'
 import { type IShow, type IShowsOnAScreen } from 'src/app/models/show'
 import { type IApiTheaterRes, type ITheaterRes } from 'src/app/models/theater'
@@ -29,7 +29,8 @@ export class TheaterPageComponent implements OnInit {
   constructor (
     @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
     @Inject(ShowService) private readonly showService: ShowService,
-    @Inject(TheaterService) private readonly theaterService: TheaterService
+    @Inject(TheaterService) private readonly theaterService: TheaterService,
+    @Inject(Router) private readonly router: Router
   ) {}
 
   ngOnInit (): void {
@@ -44,6 +45,15 @@ export class TheaterPageComponent implements OnInit {
     })
 
     this.onSelectDate(new Date())
+  }
+
+  redirectToSeatPage (showSeatId: string, showId: string, theaterId: string): void {
+    console.warn('redirecting to show seats page')
+    void this.router.navigate(['/user/show/seats', showSeatId], {
+      queryParams: {
+        showId, theaterId
+      }
+    })
   }
 
   onSelectDate (date: Date): void {
@@ -65,7 +75,7 @@ export class TheaterPageComponent implements OnInit {
     })
   }
 
-  getTextColor (show: Omit<IShow, 'seatId'>): string {
+  getTextColor (show: IShow): string {
     const percentatge = show.availableSeatCount / show.totalSeatCount
 
     if (percentatge >= 0.5) return 'text-green-500'

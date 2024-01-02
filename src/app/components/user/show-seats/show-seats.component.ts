@@ -3,7 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { type ICSMovieRes } from 'src/app/models/movie'
 import { type IShow, type IShowSeat } from 'src/app/models/show'
+import { type IShowSeatsRes } from 'src/app/models/showSeat'
 import { type ISelectedSeat, type ITicketReqs } from 'src/app/models/ticket'
+import { ShowSeatService } from 'src/app/services/show-seat.service'
 import { ShowService } from 'src/app/services/show.service'
 import { TicketService } from 'src/app/services/ticket.service'
 import { ChargePerTicket } from 'src/app/shared/constants'
@@ -22,9 +24,11 @@ export class ShowSeatsComponent implements OnInit {
   userDetails$ = this.store.pipe(select(selectUserDetails))
   userId = ''
   theaterId = ''
+  showId = ''
   rows: string[] = []
-  showId: string = ''
+  showSeatId: string = ''
   show!: IShowWithMovie
+  seats!: IShowSeatsRes
   selectedSeats: ISelectedSeat[] = []
   holdedSeats: ISelectedSeat[] = []
 
@@ -36,13 +40,29 @@ export class ShowSeatsComponent implements OnInit {
     @Inject(Store) private readonly store: Store,
     @Inject(Router) private readonly router: Router,
     @Inject(ShowService) private readonly showService: ShowService,
-    @Inject(TicketService) private readonly ticketService: TicketService
+    @Inject(TicketService) private readonly ticketService: TicketService,
+    @Inject(ShowSeatService) private readonly showSeatService: ShowSeatService
   ) {}
 
   ngOnInit (): void {
     this.route.params.subscribe(params => {
-      this.theaterId = params['theaterId']
-      this.showId = params['showId']
+      this.showSeatId = params['seatId']
+    })
+
+    this.route.queryParamMap.subscribe(params => {
+      this.theaterId = params.get('theaterId') as string
+      this.showId = params.get('showId') as string
+      console.log('queryMap working')
+    })
+
+    console.warn(this.theaterId, this.showId, 'theaterId, showId')
+
+    this.showSeatService.getShowSeatDetails(this.showSeatId).subscribe({
+      next: (res) => {
+        if (res.data === null) return
+        this.seats = res.data
+        console.log(this.seats, 'seats from get show seats')
+      }
     })
 
     this.showService.getShowDetails(this.showId).subscribe({
@@ -50,7 +70,7 @@ export class ShowSeatsComponent implements OnInit {
         console.log(res.data, 'show data from getShowDetails')
         if (res.data !== null) {
           this.show = res.data as unknown as IShowWithMovie
-          // console.log(res.data.seats, 'log seats')
+          // console.log(res.data, 'log seats')
           // console.log(typeof res.data.seats, 'type of seats')
           // console.dir(res.data.seats, 'dir seats')
           // this.rows = Array.from(Object.keys(res.data.seats))
@@ -58,30 +78,30 @@ export class ShowSeatsComponent implements OnInit {
       }
     })
 
-    this.ticketService.getHoldedSeats(this.showId).subscribe({
-      next: (res) => {
-        console.log(res, 'res from holded seats')
-        if (res.data !== null) {
-          res.data.forEach(seats => {
-            Object.entries(seats).forEach(([key, seatsData]) => {
-              console.log(key, 'seat key data from seats')
-              console.log(seatsData, typeof seatsData, 'seats data from res')
+    // this.ticketService.getHoldedSeats(this.showId).subscribe({
+    //   next: (res) => {
+    //     console.log(res, 'res from holded seats')
+    //     if (res.data !== null) {
+    //       res.data.forEach(seats => {
+    //         Object.entries(seats).forEach(([key, seatsData]) => {
+    //           console.log(key, 'seat key data from seats')
+    //           console.log(seatsData, typeof seatsData, 'seats data from res')
 
-              Object.entries(seatsData).forEach(([row, cols]: [string, any]) => {
-                console.log(row, cols, 'row and cols')
+    //           Object.entries(seatsData).forEach(([row, cols]: [string, any]) => {
+    //             console.log(row, cols, 'row and cols')
 
-                cols.forEach((col: number) => {
-                  const holdedSeat: ISelectedSeat = { row, col }
-                  this.holdedSeats.push(holdedSeat)
-                })
-              })
-            })
-          })
+    //             cols.forEach((col: number) => {
+    //               const holdedSeat: ISelectedSeat = { row, col }
+    //               this.holdedSeats.push(holdedSeat)
+    //             })
+    //           })
+    //         })
+    //       })
 
-          console.log(this.holdedSeats, 'holded seats after response')
-        }
-      }
-    })
+    //       console.log(this.holdedSeats, 'holded seats after response')
+    //     }
+    //   }
+    // })
   }
 
   bookTicket (): void {

@@ -59,10 +59,6 @@ const routes: Routes = [
         path: ':theaterId',
         component: TheaterPageComponent
       }
-      // {
-      //   path: 'shows/:theaterId/:showId',
-      //   component: ShowSeatsComponent
-      // }
     ]
   },
   {
@@ -70,7 +66,7 @@ const routes: Routes = [
     title: 'CineSnap | Show',
     children: [
       {
-        path: 'seats/:theaterId/:showId',
+        path: 'seats/:seatId',
         component: ShowSeatsComponent
       },
       {

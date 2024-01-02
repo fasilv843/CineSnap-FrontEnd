@@ -68,20 +68,16 @@
                 </div>
           
                 <!-- Show Timings Section -->
-                <!-- <div *ngFor="let show of show.shows" class="mb-4">
-                  <a [routerLink]="['/user/show/seats', theaterId, show._id]" class="cursor-pointer">
-                    <div class="rounded-md px-4 py-3 bg-gray-100 text-gray-700">
-                      <div class="flex justify-between mb-2">
+                <div *ngFor="let show of show.shows" class="mb-4">
+                  <a (click)="redirectToSeatPage(show.seatId, show._id, theaterId)" class="cursor-pointer">
+                    <div class="rounded-md px- py-3 bg-gray-100 text-gray-700">
+                      <div class="flex flex-col justify-center items-center mb-2">
                         <span class="font-semibold">Time</span>
-                        <p class="text-right font-semibold" [ngClass]="getTextColor(show)">{{ show.startTime | date: 'h:mm a' }} - {{ show.endTime | date: 'h:mm a' }}</p>
-                      </div>
-                      <div class="flex justify-between">
-                        <span class="font-semibold">Price</span>
-                        <p class="text-right">&#8377; {{ show.ticketPrice }}</p>
+                        <p class="font-semibold" [ngClass]="getTextColor(show)">{{ show.startTime | date: 'h:mm a' }}</p>
                       </div>
                     </div>
                   </a>
-                </div> -->
+                </div>
                 <!-- Timing Section End -->
           
               </div>

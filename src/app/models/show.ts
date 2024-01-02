@@ -25,7 +25,7 @@ export interface IShowRequirements extends Omit<IShow, '_id' | 'totalSeatCount' 
 
 export interface IShowRes {
   movieId: ICSMovieRes
-  shows: Array<Omit<IShow, 'seatId'>>
+  shows: IShow[]
 }
 
 export interface IApiShowsRes {
