@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { type ICSMovieRes } from 'src/app/models/movie'
 import { type IShow, type IShowSeat } from 'src/app/models/show'
-import { type IShowSeatsRes } from 'src/app/models/showSeat'
+import { type IShowSeatCategoryRes, type IShowSeatsRes } from 'src/app/models/showSeat'
 import { type ISelectedSeat, type ITicketReqs } from 'src/app/models/ticket'
 import { ShowSeatService } from 'src/app/services/show-seat.service'
 import { ShowService } from 'src/app/services/show.service'
@@ -32,8 +32,9 @@ export class ShowSeatsComponent implements OnInit {
   selectedSeats: ISelectedSeat[] = []
   holdedSeats: ISelectedSeat[] = []
 
-  // commented template and component code that cause error
-  // finish it after completing add show
+  diamond!: IShowSeatCategoryRes
+  gold!: IShowSeatCategoryRes
+  silver!: IShowSeatCategoryRes
 
   constructor (
     @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
@@ -61,6 +62,9 @@ export class ShowSeatsComponent implements OnInit {
       next: (res) => {
         if (res.data === null) return
         this.seats = res.data
+        this.diamond = res.data.diamond
+        this.gold = res.data.gold
+        this.silver = res.data.silver
         console.log(this.seats, 'seats from get show seats')
       }
     })
@@ -136,14 +140,6 @@ export class ShowSeatsComponent implements OnInit {
     })
   }
 
-  getColumnFirstHalf (row: string): void { // : IShowSeat[] return type
-    // return this.show.seats[row].slice(0, this.show.seats[row].length / 2)
-  }
-
-  getColumnSecondHalf (row: string): void { // : IShowSeat[] return type
-    // return this.show.seats[row].slice(this.show.seats[row].length / 2)
-  }
-
   isSeatSelected (row: string, col: number): boolean {
     for (const seat of this.selectedSeats) {
       if (seat.row === row && seat.col === col) return true
@@ -169,5 +165,9 @@ export class ShowSeatsComponent implements OnInit {
         }
       }
     }
+  }
+
+  getRowKeys (category: IShowSeatCategoryRes): string[] {
+    return Object.keys(category.seats)
   }
 }
