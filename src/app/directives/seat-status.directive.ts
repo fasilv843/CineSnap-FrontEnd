@@ -11,7 +11,17 @@ export class SeatStatusDirective implements OnInit {
   @Input() row = ''
   @Input() col!: IShowSeat
   @Input() isBooked = false
-  @Input() holdedSeats: ISelectedSeat[] = []
+  private _holdedSeats: ISelectedSeat[] = []
+
+  @Input()
+  set holdedSeats (value: ISelectedSeat[]) {
+    this._holdedSeats = value
+    this.applyStatusClasses()
+  }
+
+  get holdedSeats (): ISelectedSeat[] {
+    return this._holdedSeats
+  }
 
   constructor (
     private readonly el: ElementRef,
@@ -19,6 +29,7 @@ export class SeatStatusDirective implements OnInit {
   ) { }
 
   ngOnInit (): void {
+    // console.warn('seat status directive is initializing')
     this.applyStatusClasses()
   }
 

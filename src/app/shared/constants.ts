@@ -31,4 +31,6 @@ export const MinDate = new Date(1960, 0, 1)
 export const nonAuthRotues = ['login', 'register']
 
 export const imagesFolderPath = environments.backendUrl + '/images/'
-export const ChargePerTicket = 10 // Rupees
+export const ChargePerDiamondTicket = 25 // Rupees
+export const ChargePerGoldTicket = 20 // Rupees
+export const ChargePerSilverTicket = 10 // Rupees

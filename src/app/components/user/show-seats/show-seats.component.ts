@@ -4,11 +4,11 @@ import { Store, select } from '@ngrx/store'
 import { type ICSMovieRes } from 'src/app/models/movie'
 import { type IShow, type IShowSeat } from 'src/app/models/show'
 import { type IShowSeatCategoryRes, type IShowSeatsRes } from 'src/app/models/showSeat'
-import { type ISelectedSeat, type ITicketReqs } from 'src/app/models/ticket'
+import { type ITicketSeat, type ISelectedSeat, type ITicketReqs } from 'src/app/models/ticket'
 import { ShowSeatService } from 'src/app/services/show-seat.service'
 import { ShowService } from 'src/app/services/show.service'
 import { TicketService } from 'src/app/services/ticket.service'
-import { ChargePerTicket } from 'src/app/shared/constants'
+import { ChargePerDiamondTicket, ChargePerGoldTicket, ChargePerSilverTicket } from 'src/app/shared/constants'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 
 interface IShowWithMovie extends Omit<IShow, 'movieId'> {
@@ -53,10 +53,10 @@ export class ShowSeatsComponent implements OnInit {
     this.route.queryParamMap.subscribe(params => {
       this.theaterId = params.get('theaterId') as string
       this.showId = params.get('showId') as string
-      console.log('queryMap working')
+      // console.log('queryMap working')
     })
 
-    console.warn(this.theaterId, this.showId, 'theaterId, showId')
+    // console.warn(this.theaterId, this.showId, 'theaterId, showId')
 
     this.showSeatService.getShowSeatDetails(this.showSeatId).subscribe({
       next: (res) => {
@@ -82,30 +82,44 @@ export class ShowSeatsComponent implements OnInit {
       }
     })
 
-    // this.ticketService.getHoldedSeats(this.showId).subscribe({
-    //   next: (res) => {
-    //     console.log(res, 'res from holded seats')
-    //     if (res.data !== null) {
-    //       res.data.forEach(seats => {
-    //         Object.entries(seats).forEach(([key, seatsData]) => {
-    //           console.log(key, 'seat key data from seats')
-    //           console.log(seatsData, typeof seatsData, 'seats data from res')
+    this.ticketService.getHoldedSeats(this.showId).subscribe({
+      next: (res) => {
+        console.warn(res, 'res from holded seats')
+        if (res.data === null) return
+        res.data.forEach(tkt => {
+          console.log(tkt, 'tkt from forEach holded seat')
+          if (tkt.diamondSeats !== undefined) {
+            const holded = tkt.diamondSeats.seats.map(seat => ({ row: seat[0], col: parseInt(seat.slice(1)) }))
+            console.log(holded, 'holded from diamond')
+            this.holdedSeats = [...holded, ...this.holdedSeats]
+          }
 
-    //           Object.entries(seatsData).forEach(([row, cols]: [string, any]) => {
-    //             console.log(row, cols, 'row and cols')
+          if (tkt.goldSeats !== undefined) {
+            const holded = tkt.goldSeats.seats.map(seat => ({ row: seat[0], col: parseInt(seat.slice(1)) }))
+            console.log(holded, 'holded from gold')
+            this.holdedSeats = [...holded, ...this.holdedSeats]
+          }
 
-    //             cols.forEach((col: number) => {
-    //               const holdedSeat: ISelectedSeat = { row, col }
-    //               this.holdedSeats.push(holdedSeat)
-    //             })
-    //           })
-    //         })
-    //       })
+          if (tkt.silverSeats !== undefined) {
+            const holded = tkt.silverSeats.seats.map(seat => ({ row: seat[0], col: parseInt(seat.slice(1)) }))
+            console.log(holded, 'holded from silver')
+            this.holdedSeats = [...holded, ...this.holdedSeats]
+          }
+        })
 
-    //       console.log(this.holdedSeats, 'holded seats after response')
-    //     }
-    //   }
-    // })
+        console.log(this.holdedSeats, 'holded seats')
+      }
+    })
+  }
+
+  getSeatDefaultValue (cat: IShowSeatCategoryRes, CSCharge: number): ITicketSeat {
+    return {
+      seats: [],
+      name: cat.name,
+      singlePrice: cat.price,
+      CSFeePerTicket: CSCharge,
+      totalPrice: 0
+    }
   }
 
   bookTicket (): void {
@@ -113,28 +127,52 @@ export class ShowSeatsComponent implements OnInit {
       if (user != null) this.userId = user._id
     })
 
+    const diamondKeys = this.getRowKeys(this.diamond)
+    const goldKeys = this.getRowKeys(this.gold)
+    const silverKeys = this.getRowKeys(this.silver)
+
+    const diamondSeats = this.getSeatDefaultValue(this.diamond, ChargePerDiamondTicket)
+    const goldSeats = this.getSeatDefaultValue(this.gold, ChargePerGoldTicket)
+    const silverSeats = this.getSeatDefaultValue(this.silver, ChargePerSilverTicket)
+
+    this.selectedSeats.forEach(seat => {
+      if (diamondKeys.includes(seat.row)) {
+        diamondSeats.seats.push(seat.row + seat.col)
+      } else if (goldKeys.includes(seat.row)) {
+        goldSeats.seats.push(seat.row + seat.col)
+      } else if (silverKeys.includes(seat.row)) {
+        silverSeats.seats.push(seat.row + seat.col)
+      }
+    })
+
+    diamondSeats.totalPrice = (diamondSeats.singlePrice + diamondSeats.CSFeePerTicket) * diamondSeats.seats.length
+    goldSeats.totalPrice = (goldSeats.singlePrice + goldSeats.CSFeePerTicket) * goldSeats.seats.length
+    silverSeats.totalPrice = (silverSeats.singlePrice + silverSeats.CSFeePerTicket) * silverSeats.seats.length
+
+    const totalPrice = diamondSeats.totalPrice + goldSeats.totalPrice + silverSeats.totalPrice
+
     const ticketReqs: ITicketReqs = {
       showId: this.showId,
       screenId: this.show.screenId,
       movieId: this.show.movieId._id,
       theaterId: this.theaterId,
       userId: this.userId,
-      singlePrice: this.show.ticketPrice,
-      feePerTicket: ChargePerTicket,
-      totalPrice: (this.show.ticketPrice + ChargePerTicket) * this.selectedSeats.length,
+      totalPrice,
       seatCount: this.selectedSeats.length,
       startTime: this.show.startTime,
-      endTime: this.show.endTime,
-      seats: this.selectedSeats
+      endTime: this.show.endTime
     }
-    console.log('booking ticket', ticketReqs)
+
+    if (diamondSeats.seats.length > 0) ticketReqs.diamondSeats = diamondSeats
+    if (goldSeats.seats.length > 0) ticketReqs.goldSeats = goldSeats
+    if (silverSeats.seats.length > 0) ticketReqs.silverSeats = silverSeats
+
+    // console.warn('booking ticket', ticketReqs)
     this.ticketService.bookTicket(ticketReqs).subscribe({
       next: (res) => {
         if (res.data != null) {
-          console.log(res.data, 'res from bookTicket')
+          // console.log(res.data, 'res from bookTicket')
           void this.router.navigate(['/user/show/book', res.data._id])
-        } else {
-          console.warn('res.data from bookTicket is null')
         }
       }
     })

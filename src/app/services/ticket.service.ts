@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { IApiSeatsRes, type ITicketReqs, IApiTempTicketRes, IApiTicketRes, IApiTicketsRes, ITicketsAndCount } from '../models/ticket'
+import { type ITicketReqs, IApiTempTicketRes, IApiTicketRes, IApiTicketsRes, ITicketsAndCount, IApiHoldSeatsRes } from '../models/ticket'
 import { type Observable } from 'rxjs'
 import { IApiRes } from '../models/common'
 
@@ -34,8 +34,8 @@ export class TicketService {
     return this.http.get<IApiRes<ITicketsAndCount | null>>(`admin/tickets/all?page=${page}&limit=${limit}`)
   }
 
-  getHoldedSeats (showId: string): Observable<IApiSeatsRes> {
-    return this.http.get<IApiSeatsRes>(`user/show/seats/holded/${showId}`)
+  getHoldedSeats (showId: string): Observable<IApiHoldSeatsRes> {
+    return this.http.get<IApiHoldSeatsRes>(`user/show/seats/holded/${showId}`)
   }
 
   getTempTicketData (ticketId: string): Observable<IApiTempTicketRes> {

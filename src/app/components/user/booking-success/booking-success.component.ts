@@ -13,7 +13,7 @@ import { TicketService } from 'src/app/services/ticket.service'
 export class BookingSuccessComponent implements OnInit {
   ticketId = ''
   ticket!: ITicketRes
-  seats: string[] = []
+  // seats: string[] = []
   getLanguage = getLanguage
 
   constructor (
@@ -28,35 +28,18 @@ export class BookingSuccessComponent implements OnInit {
   ngOnInit (): void {
     console.log(this.ticketId, 'ticketId from success component')
 
-    this.ticketService.getTicketData(this.ticketId).subscribe({
-      next: (res) => {
-        if (res.data !== null) {
-          console.warn(res.data, 'res data from get ticket data')
-          this.ticket = res.data
-          Object.entries(res.data.seats).forEach(([row, cols]: [string, number[]]) => {
-            cols.forEach(col => {
-              this.seats.push(row + col)
-            })
-          })
-        }
-      }
-    })
+    // this.ticketService.getTicketData(this.ticketId).subscribe({
+    //   next: (res) => {
+    //     if (res.data !== null) {
+    //       console.warn(res.data, 'res data from get ticket data')
+    //       this.ticket = res.data
+    //       Object.entries(res.data.seats).forEach(([row, cols]: [string, number[]]) => {
+    //         cols.forEach(col => {
+    //           this.seats.push(row + col)
+    //         })
+    //       })
+    //     }
+    //   }
+    // })
   }
-
-  // getter methods to use in template
-  // get getMovie (): ICSMovieRes {
-  //   return this.ticket.movieId
-  // }
-
-  // get getTheater (): ITheaterRes {
-  //   return this.ticket.theaterId
-  // }
-
-  // get getShow (): IShowRes {
-  //   return this.ticket.showId
-  // }
-
-  // get getScreen (): IScreen {
-  //   return this.ticket.screenId
-  // }
 }

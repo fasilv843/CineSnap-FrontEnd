@@ -13,7 +13,7 @@ import { ITheaterRes } from 'src/app/models/theater';
 import { ITempTicketRes } from 'src/app/models/ticket';
 import { IUserRes } from 'src/app/models/users';
 import { TicketService } from 'src/app/services/ticket.service';
-import { ChargePerTicket, TICKET_EXPIRE_TIME } from 'src/app/shared/constants';
+import { TICKET_EXPIRE_TIME } from 'src/app/shared/constants';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
 import { IRazorpayRes } from 'src/app/models/common';
 import { RazorpayService } from 'src/app/services/razorpay.service';
@@ -34,8 +34,8 @@ export class BookingComponent implements OnInit, OnDestroy {
   formattedTime = '10:00'
   remainingTime = 0
   theater!: ITheaterRes
-  seats: string[] = []
-  CineSnapCharge = ChargePerTicket
+  // seats: string[] = []
+  // CineSnapCharge = ChargePerTicket
   private readonly paymentResultSubscription: Subscription;
 
   getLanguage = getLanguage
@@ -87,13 +87,13 @@ export class BookingComponent implements OnInit, OnDestroy {
           this.tempTicket = res.data
           this.movie = res.data.movieId
           this.theater = res.data.theaterId
-          Object.entries(res.data.seats).forEach(([row, cols]: [string, number[]]) => {
-            cols.forEach(col => {
-              this.seats.push(row + col)
-            })
-          })
+          // Object.entries(res.data.seats).forEach(([row, cols]: [string, number[]]) => {
+          //   cols.forEach(col => {
+          //     this.seats.push(row + col)
+          //   })
+          // })
 
-          this.seats = this.seats.sort()
+          // this.seats = this.seats.sort()
         }
       }
     })

@@ -10,6 +10,14 @@ export interface ISelectedSeat {
   col: number
 }
 
+export interface ITicketSeat {
+  seats: string[]
+  readonly name: string
+  readonly singlePrice: number
+  readonly CSFeePerTicket: number
+  totalPrice: number
+}
+
 export interface ITicket {
   _id: string
   showId: string
@@ -17,15 +25,16 @@ export interface ITicket {
   screenId: string
   movieId: string
   theaterId: string
-  singlePrice: number
-  feePerTicket: number
+  diamondSeats?: ITicketSeat
+  goldSeats?: ITicketSeat
+  silverSeats?: ITicketSeat
   totalPrice: number
   seatCount: number
-  seats: Map<string, number[]>
   startTime: Date
   endTime: Date
   isCancelled: boolean
-  cancelledBy: 'User' | 'Theater' | 'Admin'
+  cancelledBy?: 'User' | 'Theater' | 'Admin'
+  paymentMethod: 'Wallet' | 'Razorpay'
 }
 
 export interface ITempTicket extends Omit<ITicket, 'isCancelled'> {
@@ -42,9 +51,7 @@ export interface ITempTicketRes extends Omit<ITempTicket, 'showId' | 'screenId' 
 export interface IApiTempTicketRes extends IApiRes<ITempTicketRes | null> {}
 export interface IApiTempTicketsRes extends IApiRes<ITempTicketRes[]> {}
 
-export interface ITicketReqs extends Omit<ITicket, '_id' | 'isCancelled' | 'cancelledBy' | 'seats'> {
-  seats: ISelectedSeat[]
-}
+export interface ITicketReqs extends Omit<ITicket, '_id' | 'isCancelled' | 'cancelledBy' | 'paymentMethod'> {}
 export interface ITicketRes extends Omit<ITicket, 'showId' | 'screenId' | 'movieId' | 'theaterId' | 'userId'> {
   showId: IShowRes
   screenId: IScreen
@@ -56,7 +63,14 @@ export interface IApiTicketRes extends IApiRes<ITicketRes | null> {}
 export interface IApiTicketsRes extends IApiRes<ITicketRes[]> {}
 
 export type Seats = Array<Map<string, number[]>>
-export interface IApiSeatsRes extends IApiRes<Seats | null> {}
+
+export interface IHoldedSeat {
+  diamondSeats?: ITicketSeat
+  goldSeats?: ITicketSeat
+  silverSeats?: ITicketSeat
+}
+
+export interface IApiHoldSeatsRes extends IApiRes<IHoldedSeat[] | null> {}
 
 export interface ITicketsAndCount {
   tickets: ITicketRes[]

@@ -14,7 +14,7 @@ export class UserBookingsComponent implements OnInit {
   userDetails$ = this.store.pipe(select(selectUserDetails))
   userId = ''
   tickets: ITicketRes[] = []
-  seats: string[] = []
+  // seats: string[] = []
   now = new Date()
   fourHoursBefore!: Date // new Date(this.now.getTime() - 4 * 60 * 60 * 1000)
 
@@ -30,13 +30,13 @@ export class UserBookingsComponent implements OnInit {
       if (user !== null) this.userId = user._id
     })
 
-    this.ticketService.getTicketsOfUser(this.userId).subscribe({
-      next: (res) => {
-        console.log(res.data, 'user tickets data')
-        this.tickets = res.data
-        console.log(new Date(this.tickets[0].startTime), this.fourHoursBefore, new Date(this.tickets[0].startTime) > this.fourHoursBefore)
-      }
-    })
+    // this.ticketService.getTicketsOfUser(this.userId).subscribe({
+    //   next: (res) => {
+    //     console.log(res.data, 'user tickets data')
+    //     this.tickets = res.data
+    //     console.log(new Date(this.tickets[0].startTime), this.fourHoursBefore, new Date(this.tickets[0].startTime) > this.fourHoursBefore)
+    //   }
+    // })
   }
 
   getFourHourBeforeTime (date: Date): Date {
@@ -62,13 +62,13 @@ export class UserBookingsComponent implements OnInit {
     })
   }
 
-  seatMapToStringArr (seatsObj: Map<string, number[]>): string[] {
-    const seats: string[] = []
-    Object.entries(seatsObj).forEach(([row, cols]: [string, number[]]) => {
-      cols.forEach(col => {
-        seats.push(row + col)
-      })
-    })
-    return seats
-  }
+  // seatMapToStringArr (seatsObj: Map<string, number[]>): string[] {
+  //   const seats: string[] = []
+  //   Object.entries(seatsObj).forEach(([row, cols]: [string, number[]]) => {
+  //     cols.forEach(col => {
+  //       seats.push(row + col)
+  //     })
+  //   })
+  //   return seats
+  // }
 }
