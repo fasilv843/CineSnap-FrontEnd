@@ -1,7 +1,7 @@
 import { Component, Inject, type OnInit } from '@angular/core'
 import { Store, select } from '@ngrx/store'
 import { getLanguage } from 'src/app/helpers/movie'
-import { type ITicketRes } from 'src/app/models/ticket'
+import { type ITicketSeat, type ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 
@@ -14,9 +14,7 @@ export class UserBookingsComponent implements OnInit {
   userDetails$ = this.store.pipe(select(selectUserDetails))
   userId = ''
   tickets: ITicketRes[] = []
-  // seats: string[] = []
   now = new Date()
-  fourHoursBefore!: Date // new Date(this.now.getTime() - 4 * 60 * 60 * 1000)
 
   getLanguage = getLanguage
 
@@ -30,13 +28,12 @@ export class UserBookingsComponent implements OnInit {
       if (user !== null) this.userId = user._id
     })
 
-    // this.ticketService.getTicketsOfUser(this.userId).subscribe({
-    //   next: (res) => {
-    //     console.log(res.data, 'user tickets data')
-    //     this.tickets = res.data
-    //     console.log(new Date(this.tickets[0].startTime), this.fourHoursBefore, new Date(this.tickets[0].startTime) > this.fourHoursBefore)
-    //   }
-    // })
+    this.ticketService.getTicketsOfUser(this.userId).subscribe({
+      next: (res) => {
+        console.log(res.data, 'user tickets data')
+        this.tickets = res.data
+      }
+    })
   }
 
   getFourHourBeforeTime (date: Date): Date {
@@ -62,13 +59,17 @@ export class UserBookingsComponent implements OnInit {
     })
   }
 
-  // seatMapToStringArr (seatsObj: Map<string, number[]>): string[] {
-  //   const seats: string[] = []
-  //   Object.entries(seatsObj).forEach(([row, cols]: [string, number[]]) => {
-  //     cols.forEach(col => {
-  //       seats.push(row + col)
-  //     })
-  //   })
-  //   return seats
-  // }
+  getSeatsArr (diamondSeats?: ITicketSeat, goldSeats?: ITicketSeat, silverSeats?: ITicketSeat): string[] {
+    let seats: string[] = []
+    if (diamondSeats !== undefined) {
+      seats = [...seats, ...diamondSeats.seats]
+    }
+    if (goldSeats !== undefined) {
+      seats = [...seats, ...goldSeats.seats]
+    }
+    if (silverSeats !== undefined) {
+      seats = [...seats, ...silverSeats.seats]
+    }
+    return seats.sort()
+  }
 }

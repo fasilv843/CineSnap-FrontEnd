@@ -10,7 +10,7 @@ import { getLanguage } from 'src/app/helpers/movie';
 import { formatTime } from 'src/app/helpers/timer';
 import { ICSMovieRes } from 'src/app/models/movie';
 import { ITheaterRes } from 'src/app/models/theater';
-import { ITempTicketRes } from 'src/app/models/ticket';
+import { ITempTicketRes, ITicketSeat } from 'src/app/models/ticket';
 import { IUserRes } from 'src/app/models/users';
 import { TicketService } from 'src/app/services/ticket.service';
 import { TICKET_EXPIRE_TIME } from 'src/app/shared/constants';
@@ -34,8 +34,13 @@ export class BookingComponent implements OnInit, OnDestroy {
   formattedTime = '10:00'
   remainingTime = 0
   theater!: ITheaterRes
-  // seats: string[] = []
+  seats: string[] = []
   // CineSnapCharge = ChargePerTicket
+
+  diamondSeats?: ITicketSeat
+  goldSeats?: ITicketSeat
+  silverSeats?: ITicketSeat
+
   private readonly paymentResultSubscription: Subscription;
 
   getLanguage = getLanguage
@@ -87,13 +92,19 @@ export class BookingComponent implements OnInit, OnDestroy {
           this.tempTicket = res.data
           this.movie = res.data.movieId
           this.theater = res.data.theaterId
-          // Object.entries(res.data.seats).forEach(([row, cols]: [string, number[]]) => {
-          //   cols.forEach(col => {
-          //     this.seats.push(row + col)
-          //   })
-          // })
-
-          // this.seats = this.seats.sort()
+          if (res.data.diamondSeats !== undefined) {
+            this.diamondSeats = res.data.diamondSeats
+            this.seats = [...this.seats, ...res.data.diamondSeats.seats]
+          }
+          if (res.data.goldSeats !== undefined) {
+            this.goldSeats = res.data.goldSeats
+            this.seats = [...this.seats, ...res.data.goldSeats.seats]
+          }
+          if (res.data.silverSeats !== undefined) {
+            this.silverSeats = res.data.silverSeats
+            this.seats = [...this.seats, ...res.data.silverSeats.seats]
+          }
+          this.seats = this.seats.sort()
         }
       }
     })

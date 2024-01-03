@@ -29,7 +29,7 @@ export class SeatStatusDirective implements OnInit {
   ) { }
 
   ngOnInit (): void {
-    // console.warn('seat status directive is initializing')
+    console.warn('seat status directive is initializing')
     this.applyStatusClasses()
   }
 

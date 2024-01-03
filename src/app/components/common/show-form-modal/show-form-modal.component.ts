@@ -90,6 +90,11 @@ export class ShowFormModalComponent implements OnInit {
     this.screenService.getAvailSeatsOnScreen(screenId).subscribe({
       next: (res) => {
         if (res.data === null) return
+        console.log(res.data, 'res from getAvailSEats on screen')
+        this.showForm.removeControl('diamondPrice')
+        this.showForm.removeControl('goldPrice')
+        this.showForm.removeControl('silverPrice')
+        this.priceControls = []
         for (const category in res.data) {
           if (Object.prototype.hasOwnProperty.call(res.data, category)) {
             const priceControlName = `${category}Price`

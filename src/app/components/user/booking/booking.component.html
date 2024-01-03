@@ -22,9 +22,9 @@
                 <div class="flex flex-col mr-4">
                     <h6 class="text-lg font-semibold mb-1">{{ tempTicket.startTime  | date: 'EEE, dd MMM yyyy, hh:mm a' }}</h6>
                     <span class="text-gray-600">{{ tempTicket.screenId.name }}</span>
-                    <!-- <div class="flex flex-wrap gap-1 mt-1">
+                    <div class="flex flex-wrap gap-1 mt-1">
                         <span *ngFor="let seat of seats" class="bg-green-500 text-white p-1 rounded w-1/6">{{ seat }}</span>
-                    </div>                       -->
+                    </div>                      
                 </div>
                 <div class="bg-gray-200 p-2 rounded-md">
                     <p class="text-gray-900 text-lg text-center font-semibold">{{ tempTicket.seatCount }}</p>
@@ -34,21 +34,25 @@
         </div>
     </div>
     <div class="flex-col bg-gray-200 p-4 rounded-lg border-1">
-        <!-- <div>
+        <div>
             <h5 class="text-xl font-semibold mb-4">Payment Details</h5>
-            <div class="flex justify-between mb-2">
-                <p>{{  tempTicket.seatCount }} Tickets</p>
-                <span>&#8377; {{ tempTicket.seatCount * tempTicket.singlePrice }}</span>
+            <div *ngIf="diamondSeats as d" class="flex justify-between mb-2">
+                <p>{{ d.name }} x {{ d.seats.length }}</p>
+                <span>&#8377; {{ (d.singlePrice + d.CSFeePerTicket) * d.seats.length }}</span>
             </div>
-            <div class="flex justify-between mb-2">
-                <p>Tax & Fee</p>
-                <span>&#8377; {{ tempTicket.seatCount * tempTicket.feePerTicket }}</span>
+            <div *ngIf="goldSeats as g" class="flex justify-between mb-2">
+                <p>{{ g.name }} x {{ g.seats.length }}</p>
+                <span>&#8377; {{ (g.singlePrice + g.CSFeePerTicket) * g.seats.length }}</span>
+            </div>
+            <div *ngIf="silverSeats as s" class="flex justify-between mb-2">
+                <p>{{ s.name }} x {{ s.seats.length }}</p>
+                <span>&#8377; {{ (s.singlePrice + s.CSFeePerTicket) * s.seats.length }}</span>
             </div>
             <div class="flex justify-between font-bold mb-4">
                 <p>Total</p>
                 <span>&#8377; {{ tempTicket.totalPrice }}</span>
             </div>
-        </div> -->
+        </div>
         <button (click)="payForTicket(tempTicket.totalPrice)" class="w-full bg-amber-400 hover:bg-amber-600 text-white rounded-md px-5 py-2">Proceed To Pay &#8377; {{ tempTicket.totalPrice }}</button>
     </div>
 </div>

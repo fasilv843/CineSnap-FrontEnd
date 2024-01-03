@@ -32,9 +32,13 @@ export class ShowSeatsComponent implements OnInit {
   selectedSeats: ISelectedSeat[] = []
   holdedSeats: ISelectedSeat[] = []
 
-  diamond!: IShowSeatCategoryRes
-  gold!: IShowSeatCategoryRes
-  silver!: IShowSeatCategoryRes
+  diamond?: IShowSeatCategoryRes
+  gold?: IShowSeatCategoryRes
+  silver?: IShowSeatCategoryRes
+
+  diamondKeys = this.getDiamondKeys
+  goldKeys = this.getGoldKeys
+  silverKeys = this.getSilverKeys
 
   constructor (
     @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
@@ -65,6 +69,10 @@ export class ShowSeatsComponent implements OnInit {
         this.diamond = res.data.diamond
         this.gold = res.data.gold
         this.silver = res.data.silver
+
+        this.diamondKeys = this.getDiamondKeys
+        this.goldKeys = this.getGoldKeys
+        this.silverKeys = this.getSilverKeys
         console.log(this.seats, 'seats from get show seats')
       }
     })
@@ -112,11 +120,11 @@ export class ShowSeatsComponent implements OnInit {
     })
   }
 
-  getSeatDefaultValue (cat: IShowSeatCategoryRes, CSCharge: number): ITicketSeat {
+  getSeatDefaultValue (cat: IShowSeatCategoryRes | undefined, CSCharge: number): ITicketSeat {
     return {
       seats: [],
-      name: cat.name,
-      singlePrice: cat.price,
+      name: cat?.name ?? '',
+      singlePrice: cat !== undefined ? cat.price : 0,
       CSFeePerTicket: CSCharge,
       totalPrice: 0
     }
@@ -127,20 +135,20 @@ export class ShowSeatsComponent implements OnInit {
       if (user != null) this.userId = user._id
     })
 
-    const diamondKeys = this.getRowKeys(this.diamond)
-    const goldKeys = this.getRowKeys(this.gold)
-    const silverKeys = this.getRowKeys(this.silver)
+    // const diamondKeys = this.getDiamondKeys
+    // const goldKeys = this.getGoldKeys
+    // const silverKeys = this.getSilverKeys
 
     const diamondSeats = this.getSeatDefaultValue(this.diamond, ChargePerDiamondTicket)
     const goldSeats = this.getSeatDefaultValue(this.gold, ChargePerGoldTicket)
     const silverSeats = this.getSeatDefaultValue(this.silver, ChargePerSilverTicket)
 
     this.selectedSeats.forEach(seat => {
-      if (diamondKeys.includes(seat.row)) {
+      if (this.diamondKeys.length > 0 && this.diamondKeys.includes(seat.row)) {
         diamondSeats.seats.push(seat.row + seat.col)
-      } else if (goldKeys.includes(seat.row)) {
+      } else if (this.goldKeys.length > 0 && this.goldKeys.includes(seat.row)) {
         goldSeats.seats.push(seat.row + seat.col)
-      } else if (silverKeys.includes(seat.row)) {
+      } else if (this.silverKeys.length > 0 && this.silverKeys.includes(seat.row)) {
         silverSeats.seats.push(seat.row + seat.col)
       }
     })
@@ -167,7 +175,7 @@ export class ShowSeatsComponent implements OnInit {
     if (goldSeats.seats.length > 0) ticketReqs.goldSeats = goldSeats
     if (silverSeats.seats.length > 0) ticketReqs.silverSeats = silverSeats
 
-    // console.warn('booking ticket', ticketReqs)
+    console.warn('booking ticket', ticketReqs)
     this.ticketService.bookTicket(ticketReqs).subscribe({
       next: (res) => {
         if (res.data != null) {
@@ -205,7 +213,27 @@ export class ShowSeatsComponent implements OnInit {
     }
   }
 
-  getRowKeys (category: IShowSeatCategoryRes): string[] {
-    return Object.keys(category.seats)
+  get getDiamondKeys (): string[] {
+    console.log(this.diamond, 'keys from getDiamondKeys')
+    if (this.diamond === undefined) return []
+    return Object.keys(this.diamond.seats)
   }
+
+  get getGoldKeys (): string[] {
+    console.log(this.gold, 'keys from getgoldKeys')
+    if (this.gold === undefined) return []
+    return Object.keys(this.gold.seats)
+  }
+
+  get getSilverKeys (): string[] {
+    console.log(this.silver, 'keys from getsilverKeys')
+    if (this.silver === undefined) return []
+    return Object.keys(this.silver.seats)
+  }
+
+  // getRowKeys (category?: IShowSeatCategoryRes): string[] {
+  //   console.log(category, 'category from getRowKeys')
+  //   if (category === undefined) return []
+  //   return Object.keys(category.seats)
+  // }
 }
