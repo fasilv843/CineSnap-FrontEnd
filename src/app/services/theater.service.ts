@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IApiTheaterRes, IApiTheatersRes, ITheaterUpdate, ITheatersAndCount } from '../models/theater';
 import { IApiChatRes } from '../models/chat';
-import { IApiRes, IWalletHistory } from '../models/common';
+import { IApiRes, IWalletHistoryAndCount } from '../models/common';
 
 @Injectable({
   providedIn: 'root'
@@ -80,7 +80,7 @@ export class TheaterService {
     return this.http.patch<IApiRes<null>>(`theater/chat/mark/read?userId=${userId ?? ''}&theaterId=${theaterId ?? ''}&adminId=${adminId ?? ''}&msgId=${msgId}`, {})
   }
 
-  getTheaterWalletHistory (theaterId: string): Observable<IApiRes<IWalletHistory[] | null>> {
-    return this.http.get<IApiRes<IWalletHistory[] | null>>(`theater/wallet-history/${theaterId}`)
+  getTheaterWalletHistory (theaterId: string): Observable<IApiRes<IWalletHistoryAndCount | null>> {
+    return this.http.get<IApiRes<IWalletHistoryAndCount | null>>(`theater/wallet-history/${theaterId}`)
   }
 }

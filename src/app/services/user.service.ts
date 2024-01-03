@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IApiUserRes, IApiUsersRes, IUserUpdate, IUsersAndCount } from '../models/users';
-import { IApiRes, IWalletHistory } from '../models/common';
+import { IApiRes, IWalletHistoryAndCount } from '../models/common';
 import { IUsersListForChats } from '../models/chat';
 
 @Injectable({
@@ -55,7 +55,7 @@ export class UserService {
     return this.http.patch<IApiUserRes>(`user/wallet/add/${userId}`, { amount })
   }
 
-  getUserWalletHistory (userId: string): Observable<IApiRes<IWalletHistory[] | null>> {
-    return this.http.get<IApiRes<IWalletHistory[] | null>>(`user/wallet-history/${userId}`)
+  getUserWalletHistory (userId: string, page: number, limit: number): Observable<IApiRes<IWalletHistoryAndCount | null>> {
+    return this.http.get<IApiRes<IWalletHistoryAndCount | null>>(`user/wallet-history/${userId}?page=${page}&limit=${limit}`)
   }
 }

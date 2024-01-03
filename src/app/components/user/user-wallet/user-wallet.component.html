@@ -1,3 +1,8 @@
 <app-user-nav></app-user-nav>
 
-<app-wallet-history></app-wallet-history>
+<app-wallet-history
+    [walletHistory]="walletHistory"
+    [transCount]="count"
+    (pageChange)="onPageChange($event)"
+    (itemsPerPageChange)="onItemsPerPageChange($event)"
+></app-wallet-history>

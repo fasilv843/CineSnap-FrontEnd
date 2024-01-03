@@ -29,6 +29,11 @@ export interface IWalletHistory {
   date: Date
 }
 
+export interface IWalletHistoryAndCount {
+  walletHistory: IWalletHistory[]
+  count: number
+}
+
 export interface ICoords {
   type?: string
   coordinates: [number, number]
@@ -37,7 +42,7 @@ export interface ICoords {
 export type AllResTypes = ITheaterRes | ITheaterRes[] | IScreenSeat | IScreenSeatRes | IAvailCatsOnScreen
 | IUserRes | IUserRes[] | IShowRes | IShowsOnAScreen[] | ITheatersAndCount | IUsersListForChats[]
 | IShow | IChatRes | ITicketRes | ITicketRes[] | ICSMovieRes | IUsersAndCount | ITicketsAndCount | IHoldedSeat[]
-| ICSMovieRes[] | IScreen | IScreen[] | Seats | ITempTicketRes | ITempTicketRes[] | null | IShowSeatsRes | IWalletHistory[]
+| ICSMovieRes[] | IScreen | IScreen[] | Seats | ITempTicketRes | ITempTicketRes[] | null | IShowSeatsRes | IWalletHistoryAndCount
 
 export type SuccessTypes = Exclude<AllResTypes, null>
 
