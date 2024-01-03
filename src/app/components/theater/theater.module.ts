@@ -28,6 +28,8 @@ import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
 import { SpinnerComponent } from '../common/spinner/spinner.component';
 import { ThrTicketsComponent } from './thr-tickets/thr-tickets.component';
 import { TableFilterComponent } from '../common/table-filter/table-filter.component';
+import { ThrWalletComponent } from './thr-wallet/thr-wallet.component';
+import { WalletHistoryComponent } from '../common/wallet-history/wallet-history.component';
 // import { InsideViewportDirective } from 'src/app/directives/inside-viewport.directive';
 
 @NgModule({
@@ -45,7 +47,8 @@ import { TableFilterComponent } from '../common/table-filter/table-filter.compon
     ThrSeatingComponent,
     ApprovalPendingComponent,
     ApprovalRejectedComponent,
-    ThrTicketsComponent
+    ThrTicketsComponent,
+    ThrWalletComponent
     // InsideViewportDirective
   ],
   imports: [
@@ -61,7 +64,8 @@ import { TableFilterComponent } from '../common/table-filter/table-filter.compon
     SearchComponent,
     CsMoviesComponent,
     SpinnerComponent,
-    TableFilterComponent
+    TableFilterComponent,
+    WalletHistoryComponent
   ]
 })
 export class TheaterModule { }

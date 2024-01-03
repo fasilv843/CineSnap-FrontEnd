@@ -19,6 +19,7 @@ import { FilterComponent } from '../common/filter/filter.component';
 import { SearchComponent } from '../common/search/search.component';
 import { TableFilterComponent } from '../common/table-filter/table-filter.component';
 import { AdminTicketsComponent } from './admin-tickets/admin-tickets.component';
+import { AdminWalletComponent } from './admin-wallet/admin-wallet.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { AdminTicketsComponent } from './admin-tickets/admin-tickets.component';
     AdminCsMoviesComponent,
     AdminMoviesSearchComponent,
     AdminMoviesExploreComponent,
-    AdminTicketsComponent
+    AdminTicketsComponent,
+    AdminWalletComponent
   ],
   imports: [
     CommonModule,

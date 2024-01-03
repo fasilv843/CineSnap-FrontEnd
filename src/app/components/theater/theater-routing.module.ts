@@ -16,6 +16,7 @@ import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
 import { ApprovalPendingComponent } from './approval-pending/approval-pending.component';
 import { ApprovalRejectedComponent } from './approval-rejected/approval-rejected.component';
 import { ThrTicketsComponent } from './thr-tickets/thr-tickets.component';
+import { ThrWalletComponent } from './thr-wallet/thr-wallet.component';
 
 const routes: Routes = [
   {
@@ -95,6 +96,10 @@ const routes: Routes = [
       {
         path: 'edit/:theaterId',
         component: EditTheaterProfileComponent
+      },
+      {
+        path: 'wallet-history',
+        component: ThrWalletComponent
       }
     ]
   },

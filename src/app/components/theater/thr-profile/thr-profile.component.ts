@@ -104,4 +104,8 @@ export class ThrProfileComponent {
     this.store.dispatch(deleteTheaterFromStore())
     void this.router.navigate(['/theater/home'])
   }
+
+  openWalletHistory (): void {
+    void this.router.navigate(['/theater/profile/wallet-history'])
+  }
 }
