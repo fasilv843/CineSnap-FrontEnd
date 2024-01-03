@@ -80,7 +80,7 @@ export class TheaterService {
     return this.http.patch<IApiRes<null>>(`theater/chat/mark/read?userId=${userId ?? ''}&theaterId=${theaterId ?? ''}&adminId=${adminId ?? ''}&msgId=${msgId}`, {})
   }
 
-  getTheaterWalletHistory (theaterId: string): Observable<IApiRes<IWalletHistoryAndCount | null>> {
-    return this.http.get<IApiRes<IWalletHistoryAndCount | null>>(`theater/wallet-history/${theaterId}`)
+  getTheaterWalletHistory (theaterId: string, page: number, limit: number): Observable<IApiRes<IWalletHistoryAndCount | null>> {
+    return this.http.get<IApiRes<IWalletHistoryAndCount | null>>(`theater/wallet-history/${theaterId}?page=${page}&limit=${limit}`)
   }
 }
