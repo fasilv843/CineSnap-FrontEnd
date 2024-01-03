@@ -1,0 +1,33 @@
+<app-table-filter
+    [searchField]="false"
+    (pageChange)="onPageChange($event)"
+    (itemsPerPageChange)="onItemsPerPageChange($event)"
+    [totalItems]="transCount"
+>
+    <div class="overflow-x-auto">
+        <table class="w-full p-6 text-xs text-left whitespace-nowrap bg-gray-800 text-white">
+            <thead>
+                <tr class="dark:bg-gray-700">
+                    <th class="p-3">No</th>
+                    <th class="p-3">Amount</th>
+                    <th class="p-3">Message</th>
+                    <th class="p-3">Date</th>
+                </tr>
+            </thead>
+            <tbody class="border-b dark:bg-gray-900 dark:border-gray-700">
+                <tr *ngFor="let transaction of walletHistory; index as i">
+                    <td class="px-3 font-medium dark:text-gray-400">{{ ((currPage -1) * itemsPerPage) + (i + 1) }}</td>
+                    <td class="px-3 py-2">
+                        <p>{{ transaction.amount }}</p>
+                    </td>
+                    <td class="px-3 py-2">
+                        <span>{{ transaction.message }}</span>
+                    </td>
+                    <td class="px-3 py-2">
+                        <p>{{ transaction.date | date: 'dd/MM/yyyy' }}</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</app-table-filter>

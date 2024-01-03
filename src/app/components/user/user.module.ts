@@ -35,6 +35,8 @@ import { SeatStatusDirective } from 'src/app/directives/seat-status.directive';
 import { SpinnerComponent } from '../common/spinner/spinner.component';
 import { SearchComponent } from '../common/search/search.component';
 import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
+import { UserWalletComponent } from './user-wallet/user-wallet.component';
+import { WalletHistoryComponent } from '../common/wallet-history/wallet-history.component';
 // import { InsideViewportDirective } from 'src/app/directives/inside-viewport.directive';
 
 // import { AngularFireModule } from '@angular/fire/compat';
@@ -73,7 +75,8 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     ShowSeatsComponent,
     BookingComponent,
     BookingSuccessComponent,
-    SeatStatusDirective
+    SeatStatusDirective,
+    UserWalletComponent
     // InsideViewportDirective
   ],
   imports: [
@@ -90,7 +93,8 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     DateComponent,
     SpinnerComponent,
     SearchComponent,
-    CsMoviesComponent
+    CsMoviesComponent,
+    WalletHistoryComponent
   ],
   providers: [
     {

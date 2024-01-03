@@ -109,4 +109,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.store.dispatch(deleteUserFromStore())
     void this.router.navigate(['/user/home'])
   }
+
+  openWalletHistory (): void {
+    void this.router.navigate(['/user/profile/wallet-history'])
+  }
 }

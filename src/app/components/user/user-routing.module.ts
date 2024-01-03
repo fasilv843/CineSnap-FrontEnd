@@ -16,6 +16,7 @@ import { UserMessageComponent } from './user-message/user-message.component';
 import { ShowSeatsComponent } from './show-seats/show-seats.component';
 import { BookingComponent } from './booking/booking.component';
 import { BookingSuccessComponent } from './booking-success/booking-success.component';
+import { UserWalletComponent } from './user-wallet/user-wallet.component';
 
 const routes: Routes = [
   {
@@ -38,13 +39,7 @@ const routes: Routes = [
   {
     path: 'movies',
     title: 'CineSnap | Movies',
-    component: UserMoviesComponent,
-    children: [
-      {
-        path: ':filter',
-        component: UserMoviesComponent
-      }
-    ]
+    component: UserMoviesComponent
   },
   {
     path: 'theaters',
@@ -96,6 +91,10 @@ const routes: Routes = [
       {
         path: 'edit/:userId',
         component: EditUserProfileComponent
+      },
+      {
+        path: 'wallet-history',
+        component: UserWalletComponent
       }
     ]
   },
