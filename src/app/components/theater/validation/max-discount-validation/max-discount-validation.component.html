@@ -1,0 +1,6 @@
+
+<div *ngIf="isSubmitted && maxDiscountControl && maxDiscountControl.errors">
+    <div *ngIf="maxDiscountControl.errors['pattern']" style="color: red;">Discount must be a number</div>
+    <div *ngIf="maxDiscountControl.errors['min']" style="color: red;">Discount Can't be less than 0</div>
+    <div *ngIf="maxDiscountControl.errors['max']" style="color: red;">Max discount is 5000</div>
+</div>

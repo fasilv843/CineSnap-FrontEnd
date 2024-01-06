@@ -71,4 +71,58 @@ export const walletAmountValidators = [
   Validators.max(MAX_WALLET_ADD)
 ]
 
+// Coupon Validators
+
+export const codeValidators = [
+  Validators.required,
+  Validators.pattern('^[A-Z0-9]{3,15}$')
+]
+
+export const descriptionValidators = [
+  Validators.required,
+  Validators.minLength(10),
+  Validators.maxLength(100)
+]
+
+export const startDateValidators = [
+  Validators.required
+]
+
+export const endDateValidators = [
+  Validators.required
+]
+
+export const discountValidators = [
+  Validators.required,
+  Validators.min(1),
+  Validators.max(1000),
+  Validators.pattern(numRegex)
+
+]
+
+export const minTicketCountValidators = [
+  Validators.min(0),
+  Validators.max(10),
+  Validators.pattern(numRegex)
+]
+
+export const couponTypeValidators = [
+  Validators.required
+]
+
+export const discountTypeValidators = [
+  Validators.required
+]
+
+export const maxDiscountAmtValidators = [
+  Validators.min(0),
+  Validators.max(5000),
+  Validators.pattern(numRegex)
+]
+
+export const couponCountValidators = [
+  Validators.min(0),
+  Validators.pattern(numRegex)
+]
+
 export const requiredValidator = [Validators.required]

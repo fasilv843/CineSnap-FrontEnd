@@ -1,21 +1,21 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { type ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { ScreenFormModalComponent } from './screen-form-modal.component';
+import { ScreenFormModalComponent } from './screen-form-modal.component'
 
 describe('ScreenFormModalComponent', () => {
-  let component: ScreenFormModalComponent;
-  let fixture: ComponentFixture<ScreenFormModalComponent>;
+  let component: ScreenFormModalComponent
+  let fixture: ComponentFixture<ScreenFormModalComponent>
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ScreenFormModalComponent]
-    });
-    fixture = TestBed.createComponent(ScreenFormModalComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    })
+    fixture = TestBed.createComponent(ScreenFormModalComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

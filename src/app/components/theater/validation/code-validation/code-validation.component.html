@@ -1,0 +1,5 @@
+
+<div *ngIf="isSubmitted && codeControl && codeControl.errors">
+    <div *ngIf="codeControl.errors['required']" style="color: red;">Code is required</div>
+    <div *ngIf="codeControl.errors['pattern']" style="color: red;">Invalid Code format</div>
+</div>

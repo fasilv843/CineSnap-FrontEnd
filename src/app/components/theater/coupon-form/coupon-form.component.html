@@ -1,0 +1,92 @@
+<div class="max-w-2xl mx-auto shadow-xl rounded-lg text-gray-900 border-2 border-gray-300 bg-white">
+    <div class="p-4 md:p-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ modalTitle }}</h2>
+
+      <form [formGroup]="couponForm" (ngSubmit)="onSubmit()">
+        <ng-container class="flex flex-col">
+
+          <div class="mb-3">
+            <label for="code" class="font-semibold text-gray-700 my-1">Coupon Code :</label>
+            <input id="code"  formControlName="code" type="text" class="border-b border-gray-500 focus:outline-none mt-1 w-full" placeholder="Enter Coupon Code"/>
+            <app-code-validation [codeControl]="couponForm.get('code')" [isSubmitted]="isSubmitted"></app-code-validation>
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="font-semibold text-gray-700 my-1">Description :</label>
+            <input id="description"  formControlName="description" type="text" class="border-b border-gray-500 focus:outline-none mt-1 w-full" placeholder="Enter Description"/>
+            <app-description-validation [descriptionControl]="couponForm.get('description')" [isSubmitted]="isSubmitted"></app-description-validation>
+          </div>
+
+
+          <div class="mb-3">
+            <label for="couponType" class="block mb-2 text-sm font-semibold text-gray-700">Coupon Type</label>
+            <select id="movie" formControlName="couponType" class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm">
+              <option value="" selected disabled>Please select a type</option>
+              <option value="Once">Once</option>
+              <option value="Weekly">Weekly</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Yearly">Yearly</option>
+            </select>
+            <app-coupon-type-validation [couponTypeControl]="couponForm.get('couponType')" [isSubmitted]="isSubmitted"></app-coupon-type-validation>
+          </div>
+
+          <div class="mb-3">
+            <label for="discountType" class="block mb-2 text-sm font-semibold text-gray-700">Discount Type</label>
+            <select id="discountType" formControlName="discountType" class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm">
+              <option value="" selected disabled>Please select discount type</option>
+              <option value="Fixed Amount">Fixed Amount</option>
+              <option value="Percentage">Percentage</option>
+            </select>
+            <app-discount-type-validation [discountTypeControl]="couponForm.get('discountType')" [isSubmitted]="isSubmitted"></app-discount-type-validation>
+          </div>
+
+          <div class="mb-3">
+            <label for="discount" class="font-semibold text-gray-700 my-1">Discount :</label>
+            <input id="discount"  formControlName="discount" type="text" class="border-b border-gray-500 focus:outline-none mt-1 w-full" placeholder="Enter Discount"/>
+            <app-discount-validation [discountControl]="couponForm.get('discount')" [isSubmitted]="isSubmitted"></app-discount-validation>
+          </div>
+
+          <div class="mb-3 flex flex-col sm:flex-row">
+            <div class="flex-grow mb-2 sm:mr-2">
+              <label for="startDate" class="block mb-2 text-sm font-semibold text-gray-700">Starting Date:</label>
+              <input id="startDate" formControlName="startDate" type="date" class="block w-full bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Select start Date"/>
+              <app-coupon-start-validation [startControl]="couponForm.get('startDate')" [isSubmitted]="isSubmitted"></app-coupon-start-validation>
+            </div>
+            <div class="flex-grow mb-2 sm:mr-2">
+              <label for="endDate" class="block mb-2 text-sm font-semibold text-gray-700">Ending Date:</label>
+              <input id="endDate" formControlName="endDate" type="date" class="block w-full bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Select end Date" />
+              <app-coupon-end-validation [endControl]="couponForm.get('endDate')" [isSubmitted]="isSubmitted"></app-coupon-end-validation>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="maxDiscountAmt" class="block mb-2 text-sm font-semibold text-gray-700">Max Discount Amount:</label>
+            <input id="maxDiscountAmt" formControlName="maxDiscountAmt" type="text" class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm" placeholder="Enter Max Amount to be discounted" />
+            <app-max-discount-validation [maxDiscountControl]="couponForm.get('maxDiscountAmt')" [isSubmitted]="isSubmitted"></app-max-discount-validation>
+          </div>
+
+          <div class="mb-3 flex flex-col sm:flex-row">
+            <div class="flex-grow mb-2 sm:mr-2">
+              <label for="couponCount" class="block mb-2 text-sm font-semibold text-gray-700">Coupon Count:</label>
+              <input id="couponCount" formControlName="couponCount" type="text" class="block w-full bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Enter Coupon Count"/>
+              <app-coupon-count-validation [couponCountControl]="couponForm.get('couponCount')" [isSubmitted]="isSubmitted"></app-coupon-count-validation>
+            </div>
+            <div class="flex-grow mb-2 sm:mr-2">
+              <label for="minTicketCount" class="block mb-2 text-sm font-semibold text-gray-700">Min Ticket Count:</label>
+              <input id="minTicketCount" formControlName="minTicketCount" type="text" class="block w-full bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Enter Min Ticket Count" />
+              <app-min-ticket-validation [minTicketControl]="couponForm.get('minTicketCount')" [isSubmitted]="isSubmitted"></app-min-ticket-validation>
+            </div>
+          </div>
+          
+        </ng-container>
+        
+
+        <hr class="border-t mx-0 mt-2">
+
+        <div class="flex justify-around items-center p-4 space-x-4">
+          <button (click)="onCancel()" class="w-full md:w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">Cancel</button>
+          <button type="submit" class="w-full md:w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">{{ submitBtn }}</button>
+        </div>
+      </form>
+    </div>
+  </div>

@@ -1,0 +1,53 @@
+<app-thr-nav></app-thr-nav>
+
+<div 
+    class="flex justify-end pr-10 pt-5">
+    <button
+      (click)="addNewCoupon()"
+      class="block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2"
+    >
+      Add Coupon
+    </button>
+</div>
+
+
+<div class="overflow-x-auto">
+    <table class="table">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Code</th>
+          <th>Description</th>
+          <th>Discount</th>
+          <th>Duration</th>
+          <th>Max Discount</th>
+          <th>Min Ticket</th>
+          <th>Count</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr *ngFor="let coupon of coupons; index as i">
+          <td>
+            {{ i }}
+          </td>
+          <td>
+            {{ coupon.code }}
+          </td>
+          <td>{{ coupon.description }}</td>
+          <td>{{ coupon.discount }}</td>
+          <td>{{ coupon.endDate }}</td>
+          <td>{{ coupon.maxDiscountAmt }}</td>
+          <td>{{ coupon.minTicketCount }}</td>
+          <td>{{ coupon.couponCount }}</td>
+          <th>
+            <button (click)="onCancel(coupon._id)" class="">{{ coupon.isCancelled ? 'Add' : 'Cancel' }}</button>
+          </th>
+        </tr>
+
+      </tbody>
+      
+    </table>
+  </div>

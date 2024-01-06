@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationModule } from 'src/app/modules/validation/validation.module';
-import { ScreenService } from 'src/app/services/screen.service';
 import { Store, select } from '@ngrx/store';
 import { validateByTrimming } from 'src/app/helpers/validations';
 import { colValidators, rowValidators, screenNameValidators } from 'src/app/shared/valiators';
@@ -35,11 +34,11 @@ export class ScreenFormModalComponent implements OnInit {
   constructor (
     @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
     @Inject(NgbActiveModal) public activeModal: NgbActiveModal,
-    @Inject(ScreenService) private readonly screenService: ScreenService,
     @Inject(Store) private readonly store: Store
   ) {}
 
   ngOnInit (): void {
+    console.log('modal form is initializing')
     this.screenForm = this.formBuilder.group({
       name: ['', [validateByTrimming(screenNameValidators)]],
       rows: ['', [validateByTrimming(rowValidators)]],

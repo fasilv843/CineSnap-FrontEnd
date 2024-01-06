@@ -1,0 +1,4 @@
+
+<div *ngIf="isSubmitted && startControl && startControl.errors">
+    <div *ngIf="startControl.errors['required']" style="color: red;">Start Date is required</div>
+</div>

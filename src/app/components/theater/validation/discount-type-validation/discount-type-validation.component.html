@@ -1,0 +1,4 @@
+
+<div *ngIf="isSubmitted && discountTypeControl && discountTypeControl.errors">
+    <div *ngIf="discountTypeControl.errors['required']" style="color: red;">Discount Type is required</div>
+</div>

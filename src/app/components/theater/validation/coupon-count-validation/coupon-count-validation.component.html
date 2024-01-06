@@ -1,0 +1,4 @@
+<div *ngIf="isSubmitted && couponCountControl && couponCountControl.errors">
+    <div *ngIf="couponCountControl.errors['min']" style="color: red;">Coupon Count can't be negative</div>
+    <div *ngIf="couponCountControl.errors['pattern']" style="color: red;">Enter a number</div>
+</div>

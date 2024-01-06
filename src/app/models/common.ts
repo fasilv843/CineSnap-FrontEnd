@@ -1,5 +1,6 @@
 import { type IAvailCatsOnScreen } from '../services/screen.service'
 import { type IUsersListForChats, type IChatRes } from './chat'
+import { type ICouponRes } from './coupon'
 import { type ICSMovieRes } from './movie'
 import { type IScreenSeatRes, type IScreenSeat } from './screenSeat'
 import { type IScreen } from './screens'
@@ -40,7 +41,7 @@ export interface ICoords {
 }
 
 export type AllResTypes = ITheaterRes | ITheaterRes[] | IScreenSeat | IScreenSeatRes | IAvailCatsOnScreen
-| IUserRes | IUserRes[] | IShowRes | IShowsOnAScreen[] | ITheatersAndCount | IUsersListForChats[]
+| IUserRes | IUserRes[] | IShowRes | IShowsOnAScreen[] | ITheatersAndCount | IUsersListForChats[] | ICouponRes | ICouponRes[]
 | IShow | IChatRes | ITicketRes | ITicketRes[] | ICSMovieRes | IUsersAndCount | ITicketsAndCount | IHoldedSeat[]
 | ICSMovieRes[] | IScreen | IScreen[] | Seats | ITempTicketRes | ITempTicketRes[] | null | IShowSeatsRes | IWalletHistoryAndCount
 

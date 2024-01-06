@@ -30,7 +30,7 @@ import { ThrTicketsComponent } from './thr-tickets/thr-tickets.component';
 import { TableFilterComponent } from '../common/table-filter/table-filter.component';
 import { ThrWalletComponent } from './thr-wallet/thr-wallet.component';
 import { WalletHistoryComponent } from '../common/wallet-history/wallet-history.component';
-// import { InsideViewportDirective } from 'src/app/directives/inside-viewport.directive';
+import { ThrCouponComponent } from './thr-coupon/thr-coupon.component';
 
 @NgModule({
   declarations: [
@@ -48,8 +48,8 @@ import { WalletHistoryComponent } from '../common/wallet-history/wallet-history.
     ApprovalPendingComponent,
     ApprovalRejectedComponent,
     ThrTicketsComponent,
-    ThrWalletComponent
-    // InsideViewportDirective
+    ThrWalletComponent,
+    ThrCouponComponent
   ],
   imports: [
     CommonModule,

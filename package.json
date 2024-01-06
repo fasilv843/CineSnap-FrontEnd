@@ -40,7 +40,7 @@
     "socket.io-client": "^4.7.2",
     "sweetalert2": "^11.6.13",
     "tailwind": "^4.0.0",
-    "tslib": "^2.3.0",
+    "tslib": "^2.6.2",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {

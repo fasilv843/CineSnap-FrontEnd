@@ -70,6 +70,8 @@ export class BookingComponent implements OnInit, OnDestroy {
           console.log('Payment failed');
         }
       });
+
+    // this.paymentResultSubscription = razorpayService.
   }
 
   ngOnInit (): void {

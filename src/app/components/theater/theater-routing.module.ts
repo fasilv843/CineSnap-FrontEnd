@@ -17,6 +17,7 @@ import { ApprovalPendingComponent } from './approval-pending/approval-pending.co
 import { ApprovalRejectedComponent } from './approval-rejected/approval-rejected.component';
 import { ThrTicketsComponent } from './thr-tickets/thr-tickets.component';
 import { ThrWalletComponent } from './thr-wallet/thr-wallet.component';
+import { ThrCouponComponent } from './thr-coupon/thr-coupon.component';
 
 const routes: Routes = [
   {
@@ -107,6 +108,11 @@ const routes: Routes = [
     path: 'tickets/:theaterId',
     title: 'CineSnap | Tickets',
     component: ThrTicketsComponent
+  },
+  {
+    path: 'coupons',
+    title: 'CineSnap | Coupons',
+    component: ThrCouponComponent
   },
   {
     path: '',

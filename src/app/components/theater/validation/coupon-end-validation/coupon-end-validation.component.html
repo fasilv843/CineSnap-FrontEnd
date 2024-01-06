@@ -1,0 +1,4 @@
+
+<div *ngIf="isSubmitted && endControl && endControl.errors">
+    <div *ngIf="endControl.errors['required']" style="color: red;">End Date is required</div>
+</div>
