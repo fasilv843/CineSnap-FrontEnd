@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { IApiTheaterRes, IApiTheatersRes, ITheaterUpdate, ITheatersAndCount } from '../models/theater';
 import { IApiChatRes } from '../models/chat';
 import { IApiRes, IWalletHistoryAndCount } from '../models/common';
+import { IRevenueData } from '../models/charts';
 
 @Injectable({
   providedIn: 'root'
@@ -82,5 +83,9 @@ export class TheaterService {
 
   getTheaterWalletHistory (theaterId: string, page: number, limit: number): Observable<IApiRes<IWalletHistoryAndCount | null>> {
     return this.http.get<IApiRes<IWalletHistoryAndCount | null>>(`theater/wallet-history/${theaterId}?page=${page}&limit=${limit}`)
+  }
+
+  getRevenueData (theaterId: string): Observable<IApiRes<IRevenueData | null>> {
+    return this.http.get<IApiRes<IRevenueData | null>>(`theater/dashboard/revenue/${theaterId}`)
   }
 }

@@ -1,4 +1,5 @@
 import { type IAvailCatsOnScreen } from '../services/screen.service'
+import { type IRevenueData } from './charts'
 import { type IUsersListForChats, type IChatRes } from './chat'
 import { type ICouponRes } from './coupon'
 import { type ICSMovieRes } from './movie'
@@ -42,7 +43,7 @@ export interface ICoords {
 
 export type AllResTypes = ITheaterRes | ITheaterRes[] | IScreenSeat | IScreenSeatRes | IAvailCatsOnScreen
 | IUserRes | IUserRes[] | IShowRes | IShowsOnAScreen[] | ITheatersAndCount | IUsersListForChats[] | ICouponRes | ICouponRes[]
-| IShow | IChatRes | ITicketRes | ITicketRes[] | ICSMovieRes | IUsersAndCount | ITicketsAndCount | IHoldedSeat[]
+| IShow | IChatRes | ITicketRes | ITicketRes[] | ICSMovieRes | IUsersAndCount | ITicketsAndCount | IHoldedSeat[] | IRevenueData
 | ICSMovieRes[] | IScreen | IScreen[] | Seats | ITempTicketRes | ITempTicketRes[] | null | IShowSeatsRes | IWalletHistoryAndCount
 
 export type SuccessTypes = Exclude<AllResTypes, null>

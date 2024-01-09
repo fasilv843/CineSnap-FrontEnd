@@ -31,6 +31,7 @@ import { TableFilterComponent } from '../common/table-filter/table-filter.compon
 import { ThrWalletComponent } from './thr-wallet/thr-wallet.component';
 import { WalletHistoryComponent } from '../common/wallet-history/wallet-history.component';
 import { ThrCouponComponent } from './thr-coupon/thr-coupon.component';
+import { LineGraphComponent } from '../common/line-graph/line-graph.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { ThrCouponComponent } from './thr-coupon/thr-coupon.component';
     CsMoviesComponent,
     SpinnerComponent,
     TableFilterComponent,
-    WalletHistoryComponent
+    WalletHistoryComponent,
+    LineGraphComponent
   ]
 })
 export class TheaterModule { }
