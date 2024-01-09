@@ -22,10 +22,10 @@
             <label for="couponType" class="block mb-2 text-sm font-semibold text-gray-700">Coupon Type</label>
             <select id="movie" formControlName="couponType" class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm">
               <option value="" selected disabled>Please select a type</option>
-              <option value="Once">Once</option>
-              <option value="Weekly">Weekly</option>
+              <option value="Once" >Once</option>
+              <!-- <option value="Weekly">Weekly</option>
               <option value="Monthly">Monthly</option>
-              <option value="Yearly">Yearly</option>
+              <option value="Yearly">Yearly</option> -->
             </select>
             <app-coupon-type-validation [couponTypeControl]="couponForm.get('couponType')" [isSubmitted]="isSubmitted"></app-coupon-type-validation>
           </div>

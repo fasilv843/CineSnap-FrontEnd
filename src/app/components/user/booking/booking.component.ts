@@ -18,6 +18,10 @@ import { selectUserDetails } from 'src/app/states/user/user.selector';
 import { IRazorpayRes } from 'src/app/models/common';
 import { RazorpayService } from 'src/app/services/razorpay.service';
 import { Subscription } from 'rxjs';
+import { CouponService } from 'src/app/services/coupon.service';
+import { ICouponRes } from 'src/app/models/coupon';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CouponModalComponent } from '../coupon-modal/coupon-modal.component';
 
 // declare var Razorpay: any;
 @Component({
@@ -35,7 +39,10 @@ export class BookingComponent implements OnInit, OnDestroy {
   remainingTime = 0
   theater!: ITheaterRes
   seats: string[] = []
-  // CineSnapCharge = ChargePerTicket
+  coupons: ICouponRes[] = []
+  appliedCouponId = ''
+  appliedCoupon: ICouponRes | undefined
+  suggestionCoupon!: ICouponRes
 
   diamondSeats?: ITicketSeat
   goldSeats?: ITicketSeat
@@ -50,7 +57,9 @@ export class BookingComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly store: Store,
-    private readonly razorpayService: RazorpayService
+    private readonly razorpayService: RazorpayService,
+    private readonly couponService: CouponService,
+    private readonly ngbModal: NgbModal
   ) {
     this.paymentResultSubscription = this.razorpayService
       .getPaymentResultObservable()
@@ -58,7 +67,7 @@ export class BookingComponent implements OnInit, OnDestroy {
         if (response !== null) {
         // Payment was successful, handle accordingly
           console.log('Payment successful from component, confirming ticket');
-          this.ticketService.confirmTicket(this.ticketId).subscribe({
+          this.ticketService.confirmTicket(this.ticketId, this.appliedCoupon?._id).subscribe({
             next: (res) => {
               if (res.data !== null) {
                 void this.router.navigate(['/user/show/book/success', res.data._id])
@@ -77,7 +86,7 @@ export class BookingComponent implements OnInit, OnDestroy {
   ngOnInit (): void {
     this.route.params.subscribe(params => {
       this.ticketId = params['ticketId']
-      console.log('ticketId', this.ticketId, 'from booking comp, route')
+      // console.log('ticketId', this.ticketId, 'from booking comp, route')
     })
 
     this.userDetails$.subscribe(user => {
@@ -90,7 +99,7 @@ export class BookingComponent implements OnInit, OnDestroy {
     this.ticketService.getTempTicketData(this.ticketId).subscribe({
       next: (res) => {
         if (res.data != null) {
-          console.log(res.data, 'res data from getTempTicketData')
+          // console.log(res.data, 'res data from getTempTicketData')
           this.tempTicket = res.data
           this.movie = res.data.movieId
           this.theater = res.data.theaterId
@@ -111,6 +120,16 @@ export class BookingComponent implements OnInit, OnDestroy {
       }
     })
 
+    this.couponService.getApplicableCouopns(this.user._id, this.ticketId).subscribe({
+      next: (res) => {
+        console.log(res.data, 'coupons from applicable coupons')
+        if (res.data !== null) {
+          this.coupons = res.data
+          this.suggestionCoupon = this.coupons[0]
+        }
+      }
+    })
+
     this.startTimer()
   }
 
@@ -119,8 +138,67 @@ export class BookingComponent implements OnInit, OnDestroy {
     this.paymentResultSubscription.unsubscribe();
   }
 
+  showCouponsModal (): void {
+    console.warn('show more button clicked, but didnt implemented');
+    const modalRef = this.ngbModal.open(CouponModalComponent, { backdrop: 'static', centered: true })
+    modalRef.componentInstance.coupons = this.coupons
+    modalRef.componentInstance.appliedCouponId = this.appliedCouponId
+
+    void modalRef.result.then(
+      (result: ICouponRes) => {
+        if (result._id === this.appliedCouponId) {
+          this.appliedCouponId = ''
+          this.appliedCoupon = undefined
+        } else {
+          console.log(result, 'result of coupon modal')
+          this.appliedCouponId = result._id
+          this.suggestionCoupon = result
+          this.appliedCoupon = this.suggestionCoupon
+        }
+      },
+      (reason) => {
+        console.log('Modal dismissed with reason:', reason)
+      }
+    )
+  }
+
+  calculateTheaterShare (ticket: ITempTicketRes): number {
+    let price = 0
+    if (ticket.diamondSeats !== undefined) {
+      price += ticket.diamondSeats.seats.length * ticket.diamondSeats.singlePrice
+    }
+    if (ticket.goldSeats !== undefined) {
+      price += ticket.goldSeats.seats.length * ticket.goldSeats.singlePrice
+    }
+    if (ticket.silverSeats !== undefined) {
+      price += ticket.silverSeats.seats.length * ticket.silverSeats.singlePrice
+    }
+    return price
+  }
+
+  getDiscountedAmt (appliedCoupon: ICouponRes | undefined): number {
+    if (appliedCoupon === undefined) return 0
+    if (appliedCoupon.discountType === 'Fixed Amount') {
+      return appliedCoupon.discount
+    } else if (appliedCoupon.discountType === 'Percentage') {
+      const totalTicketPrice = this.calculateTheaterShare(this.tempTicket)
+      return (totalTicketPrice / 100) * appliedCoupon.discount
+    }
+    return 0 // never reaches here, discountType only can be 2 types
+  }
+
+  applyCoupon (suggestionCoupon: ICouponRes): void {
+    if (suggestionCoupon._id === this.appliedCouponId) {
+      this.appliedCouponId = ''
+      this.appliedCoupon = undefined
+    } else {
+      this.appliedCouponId = suggestionCoupon._id
+      this.appliedCoupon = suggestionCoupon
+    }
+  }
+
   payForTicket (amount: number): void {
-    console.log('initiating razorpay payment');
+    // console.log('initiating razorpay payment');
 
     this.razorpayService.initiateRazorpayPayment(amount, {
       name: this.user.name,

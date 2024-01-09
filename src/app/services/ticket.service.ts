@@ -46,8 +46,8 @@ export class TicketService {
     return this.http.post('user/show/book/payment', { token: stripeToken })
   }
 
-  confirmTicket (ticketId: string): Observable<IApiTicketRes> {
-    return this.http.post<IApiTicketRes>('user/show/book/confirm/ticket', { ticketId })
+  confirmTicket (ticketId: string, couponId: string | undefined): Observable<IApiTicketRes> {
+    return this.http.post<IApiTicketRes>('user/show/book/confirm/ticket', { ticketId, couponId })
   }
 
   cancelTicket (ticketId: string): Observable<IApiTicketRes> {

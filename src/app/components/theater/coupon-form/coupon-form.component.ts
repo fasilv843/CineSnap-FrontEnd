@@ -77,6 +77,8 @@ export class CouponFormComponent {
     if (this.couponForm.valid) {
       const couponData = this.couponForm.value
       console.log(couponData, 'screen form data from modal')
+      if (couponData.minTicketCount === '') delete couponData.minTicketCount
+      if (couponData.couponCount === '') delete couponData.couponCount
       this.activeModal.close(couponData)
     } else {
       console.log('couponForm is invalid', this.couponForm.controls)

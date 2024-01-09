@@ -11,8 +11,10 @@ export interface ICoupon {
   discountType: 'Fixed Amount' | 'Percentage'
   maxDiscountAmt: number
   isCancelled: boolean
-  couponCount: number
+  couponCount?: number
 }
 
 export interface ICouponReqs extends Omit<ICoupon, '_id' | 'isCancelled'> {}
-export interface ICouponRes extends ICoupon {}
+export interface ICouponRes extends Omit<ICoupon, 'couponCount'> {
+  couponCount: number
+}

@@ -46,6 +46,7 @@ export class ThrCouponComponent implements OnInit {
     void modalRef.result.then(
       (result: ICouponReqs) => {
         result.theaterId = this.theaterId
+        if (isNaN(Number(result.couponCount))) delete result.couponCount
         console.log('submitted form data', result)
         this.couponService.saveCoupon(result).subscribe({
           next: (res) => {

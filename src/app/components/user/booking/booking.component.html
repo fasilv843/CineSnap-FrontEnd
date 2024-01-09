@@ -52,7 +52,33 @@
                 <p>Total</p>
                 <span>&#8377; {{ tempTicket.totalPrice }}</span>
             </div>
+            <div *ngIf="appliedCoupon" class="flex justify-between font-bold mb-4">
+                <p>Coupon Discount: </p>
+                <span>&#8377; {{ getDiscountedAmt(appliedCoupon) }}</span>
+            </div>
         </div>
-        <button (click)="payForTicket(tempTicket.totalPrice)" class="w-full bg-amber-400 hover:bg-amber-600 text-white rounded-md px-5 py-2">Proceed To Pay &#8377; {{ tempTicket.totalPrice }}</button>
+        <div class="flex justify-between my-2" *ngIf="coupons.length">
+            <div class="flex items-center">
+                <div>
+                    <p class="text-lg font-bold">{{ suggestionCoupon.code }}</p>
+                    <p class="text-sm text-gray-500">{{ suggestionCoupon.description }}</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button (click)="applyCoupon(suggestionCoupon)" *ngIf="appliedCouponId !== suggestionCoupon._id"
+                    class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+                    Apply
+                </button>
+                
+                <button (click)="applyCoupon(suggestionCoupon)" *ngIf="appliedCouponId === suggestionCoupon._id"
+                    class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:border-green-300">
+                    Applied
+                </button>
+            </div>
+        </div>
+        <div class="my-2">
+            <a (click)="showCouponsModal()" *ngIf="coupons.length > 1" class="cursor-pointer text-blue-600 underline">Show more coupons</a>
+        </div>
+        <button (click)="payForTicket(tempTicket.totalPrice- getDiscountedAmt(appliedCoupon))" class="w-full bg-amber-400 hover:bg-amber-600 text-white rounded-md px-5 py-2">Proceed To Pay &#8377; {{ tempTicket.totalPrice - getDiscountedAmt(appliedCoupon) }}</button>
     </div>
 </div>

@@ -24,4 +24,8 @@ export class CouponService {
   cancelCoupon (couponId: string): Observable<IApiRes<ICouponRes | null>> {
     return this.http.patch<IApiRes<ICouponRes | null>>(`theater/coupons/cancel/${couponId}`, {})
   }
+
+  getApplicableCouopns (userId: string, ticketId: string): Observable<IApiRes<ICouponRes[] | null>> {
+    return this.http.get<IApiRes<ICouponRes[] | null>>(`user/coupons/applicable-coupons/${userId}?ticketId=${ticketId}`)
+  }
 }
