@@ -43,6 +43,7 @@ export class BookingComponent implements OnInit, OnDestroy {
   appliedCouponId = ''
   appliedCoupon: ICouponRes | undefined
   suggestionCoupon!: ICouponRes
+  paymentMethod: 'Razorpay' | 'Wallet' | '' = ''
 
   diamondSeats?: ITicketSeat
   goldSeats?: ITicketSeat
@@ -67,13 +68,7 @@ export class BookingComponent implements OnInit, OnDestroy {
         if (response !== null) {
         // Payment was successful, handle accordingly
           console.log('Payment successful from component, confirming ticket');
-          this.ticketService.confirmTicket(this.ticketId, this.appliedCoupon?._id).subscribe({
-            next: (res) => {
-              if (res.data !== null) {
-                void this.router.navigate(['/user/show/book/success', res.data._id])
-              }
-            }
-          })
+          this.confirmTicket()
         } else {
         // Payment failed, handle accordingly
           console.log('Payment failed');
@@ -81,6 +76,16 @@ export class BookingComponent implements OnInit, OnDestroy {
       });
 
     // this.paymentResultSubscription = razorpayService.
+  }
+
+  confirmTicket (): void {
+    this.ticketService.confirmTicket(this.ticketId, this.paymentMethod, this.appliedCoupon?._id).subscribe({
+      next: (res) => {
+        if (res.data !== null) {
+          void this.router.navigate(['/user/show/book/success', res.data._id])
+        }
+      }
+    })
   }
 
   ngOnInit (): void {
@@ -200,11 +205,15 @@ export class BookingComponent implements OnInit, OnDestroy {
   payForTicket (amount: number): void {
     // console.log('initiating razorpay payment');
 
-    this.razorpayService.initiateRazorpayPayment(amount, {
-      name: this.user.name,
-      email: this.user.email,
-      mobile: (this.user.mobile !== undefined) ? `${this.user.mobile}` : ''
-    })
+    if (this.paymentMethod === 'Razorpay') {
+      this.razorpayService.initiateRazorpayPayment(amount, {
+        name: this.user.name,
+        email: this.user.email,
+        mobile: (this.user.mobile !== undefined) ? `${this.user.mobile}` : ''
+      })
+    } else if (this.paymentMethod === 'Wallet') {
+      this.confirmTicket()
+    }
   }
 
   startTimer (): void {
