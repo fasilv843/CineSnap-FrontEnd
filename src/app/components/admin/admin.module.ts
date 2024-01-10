@@ -20,6 +20,7 @@ import { SearchComponent } from '../common/search/search.component';
 import { TableFilterComponent } from '../common/table-filter/table-filter.component';
 import { AdminTicketsComponent } from './admin-tickets/admin-tickets.component';
 import { AdminWalletComponent } from './admin-wallet/admin-wallet.component';
+import { LineGraphComponent } from '../common/line-graph/line-graph.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { AdminWalletComponent } from './admin-wallet/admin-wallet.component';
     ValidationModule,
     FilterComponent,
     SearchComponent,
-    TableFilterComponent
+    TableFilterComponent,
+    LineGraphComponent
   ]
 })
 export class AdminModule { }
