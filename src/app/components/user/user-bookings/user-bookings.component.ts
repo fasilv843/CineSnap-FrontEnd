@@ -2,6 +2,7 @@ import { Component, Inject, type OnInit } from '@angular/core'
 import { Store, select } from '@ngrx/store'
 import { getLanguage } from 'src/app/helpers/movie'
 import { type ITicketSeat, type ITicketRes } from 'src/app/models/ticket'
+import { InvoiceService } from 'src/app/services/invoice.service'
 import { TicketService } from 'src/app/services/ticket.service'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 
@@ -15,12 +16,14 @@ export class UserBookingsComponent implements OnInit {
   userId = ''
   tickets: ITicketRes[] = []
   now = new Date()
+  invoiceTicket!: ITicketRes
 
   getLanguage = getLanguage
 
   constructor (
     @Inject(TicketService) private readonly ticketService: TicketService,
-    @Inject(Store) private readonly store: Store
+    @Inject(Store) private readonly store: Store,
+    @Inject(InvoiceService) private readonly invoiceService: InvoiceService
   ) {}
 
   ngOnInit (): void {
@@ -44,6 +47,14 @@ export class UserBookingsComponent implements OnInit {
 
   getDate (date: Date): Date {
     return new Date(date)
+  }
+
+  downloadInvoice (ticket: ITicketRes): void {
+    this.invoiceTicket = ticket
+    void this.invoiceService.generateInvoice(this.invoiceTicket).then((imageUrl) => {
+      console.log('Generated Image URL:', imageUrl)
+      this.invoiceService.downloadInvoice(imageUrl)
+    })
   }
 
   cancelTicket (ticketId: string): void {

@@ -37,23 +37,6 @@ import { SearchComponent } from '../common/search/search.component';
 import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
 import { UserWalletComponent } from './user-wallet/user-wallet.component';
 import { WalletHistoryComponent } from '../common/wallet-history/wallet-history.component';
-// import { InsideViewportDirective } from 'src/app/directives/inside-viewport.directive';
-
-// import { AngularFireModule } from '@angular/fire/compat';
-// import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-// import { AngularFireStorageModule } from '@angular/fire/compat/storage';
-// const socialAuthServiceConfig: SocialAuthServiceConfig = {
-//   autoLogin: false,
-//   providers: [
-//     {
-//       id: GoogleLoginProvider.PROVIDER_ID,
-//       provider: new GoogleLoginProvider(environments.google_client_id)
-//     }
-//   ],
-//   onError: (err: any) => {
-//     console.error(err);
-//   }
-// };
 
 export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionReducer<any> {
   return ngrxLocalStorageSync({ keys: ['user'], rehydrate: true })(reducer);
@@ -77,7 +60,6 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     BookingSuccessComponent,
     SeatStatusDirective,
     UserWalletComponent
-    // InsideViewportDirective
   ],
   imports: [
     CommonModule,
