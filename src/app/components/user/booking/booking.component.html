@@ -80,9 +80,9 @@
             <a (click)="showCouponsModal()" *ngIf="coupons.length > 1" class="cursor-pointer text-blue-600 underline">Show more coupons</a>
         </div>
 
-            <div class="flex flex-col">
+            <div *ngIf="user.wallet >= tempTicket.totalPrice - getDiscountedAmt(appliedCoupon)" class="flex flex-col">
                 <label class="inline-flex my-1">
-                  <input type="radio" class="form-radio" name="payment-method" [(ngModel)]="paymentMethod" value="Razorpay">
+                  <input type="radio" class="form-radio" name="payment-method" [(ngModel)]="paymentMethod" value="Razorpay" selected>
                   <span class="ml-2">Razorpay</span>
                 </label>
               
@@ -91,10 +91,18 @@
                   <span class="ml-2">Wallet {{ user.wallet }}</span>
                 </label>
             </div>
+
+            <div *ngIf="user.wallet < tempTicket.totalPrice - getDiscountedAmt(appliedCoupon) && user.wallet > 0" class="flex flex-col">
+                <label class="inline-flex items-center my-2">
+                  <input type="checkbox" (click)="toggleUsewallet()">
+                  <span class="ml-2">Use Wallet {{ user.wallet }}</span>
+                </label>
+            </div>
               
             <button type="submit" class="w-full bg-amber-400 hover:bg-amber-600 text-white rounded-md px-5 py-2" (click)="payForTicket(tempTicket.totalPrice - getDiscountedAmt(appliedCoupon))">
-                Proceed To Pay &#8377; {{ tempTicket.totalPrice - getDiscountedAmt(appliedCoupon) }}
+                Proceed To Pay &#8377; {{ getPayAmount() }}
             </button>
+
 
         <!-- <div *ngIf="user.wallet > tempTicket.totalPrice - getDiscountedAmt(appliedCoupon); else showCheckbox" class="flex flex-col ">
             <label class="inline-flex my-1">

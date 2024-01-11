@@ -43,7 +43,8 @@ export class BookingComponent implements OnInit, OnDestroy {
   appliedCouponId = ''
   appliedCoupon: ICouponRes | undefined
   suggestionCoupon!: ICouponRes
-  paymentMethod: 'Razorpay' | 'Wallet' | '' = ''
+  paymentMethod: 'Razorpay' | 'Wallet' = 'Razorpay'
+  useWallet = false
 
   diamondSeats?: ITicketSeat
   goldSeats?: ITicketSeat
@@ -79,13 +80,17 @@ export class BookingComponent implements OnInit, OnDestroy {
   }
 
   confirmTicket (): void {
-    this.ticketService.confirmTicket(this.ticketId, this.paymentMethod, this.appliedCoupon?._id).subscribe({
+    this.ticketService.confirmTicket(this.ticketId, this.paymentMethod, this.useWallet, this.appliedCoupon?._id).subscribe({
       next: (res) => {
         if (res.data !== null) {
           void this.router.navigate(['/user/show/book/success', res.data._id])
         }
       }
     })
+  }
+
+  toggleUsewallet (): void {
+    this.useWallet = !this.useWallet
   }
 
   ngOnInit (): void {
@@ -202,10 +207,16 @@ export class BookingComponent implements OnInit, OnDestroy {
     }
   }
 
+  getPayAmount (): number {
+    const price = this.tempTicket.totalPrice - this.getDiscountedAmt(this.appliedCoupon)
+    return this.useWallet ? price - this.user.wallet : price
+  }
+
   payForTicket (amount: number): void {
     // console.log('initiating razorpay payment');
 
     if (this.paymentMethod === 'Razorpay') {
+      if (this.useWallet) amount -= this.user.wallet
       this.razorpayService.initiateRazorpayPayment(amount, {
         name: this.user.name,
         email: this.user.email,
