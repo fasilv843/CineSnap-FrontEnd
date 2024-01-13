@@ -3,218 +3,76 @@
 
 
 <!-- Search Results  -->
-<div class="ml-1" *ngIf="searchResultMovies.length">
-  <div class="flex justify-between my-3">
-    <div class="text-lg font-bold ms-3">
-      <h3>Search Results</h3>
-    </div>
-    <!-- <div class="text-blue-700 text-sm font-semibold me-3">
-    </div> -->
-  </div>
-
-  <div class="flex my-2 overflow-x-scroll scrolling-touch">
-    <div *ngFor="let movie of searchResultMovies"
-      class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" loading="lazy"
-        class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">
-        {{ isMovieAlreadyExist(movie.tmdbId) ? 'Update' : 'Add' }}
-      </div>
-    </div>
-  </div>
-</div>
+<app-movie-row *ngIf="searchResultMovies.length"
+  [tmdbIds]="tmdbIds"
+  [searchResult]="true"
+  [movies]="searchResultMovies"
+  [language]="searchResultMovies[0].language"
+  (exploreLangEvent)="exploreLanguage($event)"
+  (addMovieEvent)="addMovie($event)"
+  >
+</app-movie-row>
 
 
 <!-- Malyalam Movies Row  -->
-<div class="ml-1">
-  <div class="flex justify-between my-3">
-    <div class="text-lg font-bold ms-3">
-      <h3>Malayalam Movies</h3>
-    </div>
-    <div (click)="exploreLanguage('ml')" class="text-blue-700 text-sm font-semibold me-3 cursor-pointer">
-      <p>More...</p>
-    </div>
-  </div>
-
-  <div class="flex my-2 overflow-x-scroll scrolling-touch">
-    <div *ngFor="let movie of malayalamMovies"
-      class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
-        class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">
-        {{ isMovieAlreadyExist(movie.tmdbId) ? 'Update' : 'Add' }}
-      </div>
-    </div>
-  </div>
-</div>
+<app-movie-row *ngIf="malayalamMovies.length"
+  [tmdbIds]="tmdbIds"
+  [movies]="malayalamMovies"
+  [language]="malayalamMovies[0].language"
+  (exploreLangEvent)="exploreLanguage($event)"
+  (addMovieEvent)="addMovie($event)"
+  >
+</app-movie-row>
 
 
 <!-- Tamil Movies Row  -->
-<div class="ml-1">
-  <div class="flex justify-between my-3">
-    <div class="text-lg font-bold ms-3">
-      <h3>Tamil Movies</h3>
-    </div>
-    <div (click)="exploreLanguage('ta')" class="text-blue-700 text-sm font-semibold me-3 cursor-pointer">
-      <p>More...</p>
-    </div>
-  </div>
+<app-movie-row *ngIf="tamilMovies.length"
+  [tmdbIds]="tmdbIds"
+  [movies]="tamilMovies"
+  [language]="tamilMovies[0].language"
+  (exploreLangEvent)="exploreLanguage($event)"
+  (addMovieEvent)="addMovie($event)"
+  >
+</app-movie-row>
 
-  <div class="flex my-2 overflow-x-scroll scrolling-touch">
-    <div *ngFor="let movie of tamilMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
-        class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">
-        {{ isMovieAlreadyExist(movie.tmdbId) ? 'Update' : 'Add' }}
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Hindi Movies Row  -->
-<div class="ml-1">
-  <div class="flex justify-between my-3">
-    <div class="text-lg font-bold ms-3">
-      <h3>Hindi Movies</h3>
-    </div>
-    <div (click)="exploreLanguage('hi')" class="text-blue-700 text-sm font-semibold me-3 cursor-pointer">
-      <p>More...</p>
-    </div>
-  </div>
+<app-movie-row *ngIf="hindiMovies.length"
+  [tmdbIds]="tmdbIds"
+  [movies]="hindiMovies"
+  [language]="hindiMovies[0].language"
+  (exploreLangEvent)="exploreLanguage($event)"
+  (addMovieEvent)="addMovie($event)"
+  >
+</app-movie-row>
 
-  <div class="flex my-2 overflow-x-scroll scrolling-touch">
-    <div *ngFor="let movie of hindiMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
-        class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">
-        {{ isMovieAlreadyExist(movie.tmdbId) ? 'Update' : 'Add' }}
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Telugu Movies Row  -->
-<!-- <div class="ml-1">
-  <div class="flex justify-between my-3">
-    <div class="text-lg font-bold ms-3">
-      <h3>Telugu Movies</h3>
-    </div>
-    <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
-      <p>More...</p>
-    </div>
-  </div>
-
-  <div class="flex my-2 overflow-x-scroll scrolling-touch">
-    <div *ngFor="let movie of teluguMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
-    </div>
-  </div>
-</div> -->
+<app-movie-row *ngIf="teluguMovies.length"
+  [tmdbIds]="tmdbIds"
+  [movies]="teluguMovies"
+  [language]="teluguMovies[0].language"
+  (exploreLangEvent)="exploreLanguage($event)"
+  (addMovieEvent)="addMovie($event)"
+  >
+</app-movie-row>
 
 <!-- Kannada Movies Row  -->
-<!-- <div class="ml-1">
-  <div class="flex justify-between my-3">
-    <div class="text-lg font-bold ms-3">
-      <h3>Kannada Movies</h3>
-    </div>
-    <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
-      <p>More...</p>
-    </div>
-  </div>
-
-  <div class="flex my-2 overflow-x-scroll scrolling-touch">
-    <div *ngFor="let movie of kannadaMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
-    </div>
-  </div>
-</div> -->
+<app-movie-row *ngIf="kannadaMovies.length"
+  [tmdbIds]="tmdbIds"
+  [movies]="kannadaMovies"
+  [language]="kannadaMovies[0].language"
+  (exploreLangEvent)="exploreLanguage($event)"
+  (addMovieEvent)="addMovie($event)"
+  >
+</app-movie-row>
 
 <!-- English Movies Row  -->
-<!-- <div class="ml-1">
-  <div class="flex justify-between my-3">
-    <div class="text-lg font-bold ms-3">
-      <h3>English Movies</h3>
-    </div>
-    <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
-      <p>More...</p>
-    </div>
-  </div>
-
-  <div class="flex my-2 overflow-x-scroll scrolling-touch">
-    <div *ngFor="let movie of englishMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
-        class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">ADD
-      </div>
-    </div>
-  </div>
-</div> -->
-
-<!-- Bengali Movies Row  -->
-<!-- <div class="ml-1">
-  <div class="flex justify-between my-3">
-    <div class="text-lg font-bold ms-3">
-      <h3>Bengali Movies</h3>
-    </div>
-    <div routerLink="" class="text-blue-700 text-sm font-semibold me-3">
-      <p>More...</p>
-    </div>
-  </div>
-
-  <div class="flex my-2 overflow-x-scroll scrolling-touch">
-    <div *ngFor="let movie of bengaliMovies" class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-full object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
-    </div>
-  </div>
-</div> -->
-
-<!-- Movie Poster and Add button only design  -->
-<!-- <div class="container mx-auto px-4">
-  <div class="text-lg font-bold mb-3">
-    <h3>English Movies</h3>
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-    <div *ngFor="let movie of englishMovies" class="bg-amber-800 overflow-hidden relative">
-      <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-80 object-cover" />
-      <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
-    </div>
-  </div>
-</div> -->
-
-
-
-<!-- <div class="container mx-auto px-4">
-  <div class="text-lg font-bold mb-3">
-    <h3>English Movies</h3>
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-    <ng-container *ngFor="let movie of englishMovies"> -->
-<!-- For larger screens, use the original design -->
-<!-- <div class="bg-amber-800 overflow-hidden">
-        <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-80 object-cover" />
-        <div class="bg-gray-500 text-white text-center">{{ movie.title }} - {{ movie.release_date.getFullYear() }}</div>
-        <div class="bg-green-500 text-white text-center" (click)="addMovie(movie)">ADD</div>
-      </div> -->
-
-<!-- For smaller screens, use a split layout -->
-<!-- <div class="flex flex-col sm:flex-row sm:space-x-4 my-4 sm:my-0" *ngIf="true">
-        <div class="w-full sm:w-1/2 bg-amber-800 overflow-hidden relative">
-          <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" class="w-full h-80 object-cover" />
-        </div>
-        <div class="w-full sm:w-1/2 bg-gray-500 text-white p-4">
-          <p class="text-lg font-bold">{{ movie.title }}</p>
-          <p>{{ movie.release_date }}</p> -->
-<!-- Add more details or buttons here as needed -->
-<!-- <button class="bg-blue-700 text-white px-4 py-2 mt-2" (click)="addMovie(movie)">ADD</button>
-        </div>
-      </div>
-    </ng-container>
-  </div>
-</div> -->
-
-
+<app-movie-row *ngIf="englishMovies.length"
+  [tmdbIds]="tmdbIds"
+  [movies]="englishMovies"
+  [language]="englishMovies[0].language"
+  (exploreLangEvent)="exploreLanguage($event)"
+  (addMovieEvent)="addMovie($event)"
+  >
+</app-movie-row>

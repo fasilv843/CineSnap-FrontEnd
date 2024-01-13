@@ -75,8 +75,6 @@ export class BookingComponent implements OnInit, OnDestroy {
           console.log('Payment failed');
         }
       });
-
-    // this.paymentResultSubscription = razorpayService.
   }
 
   confirmTicket (): void {
@@ -96,7 +94,6 @@ export class BookingComponent implements OnInit, OnDestroy {
   ngOnInit (): void {
     this.route.params.subscribe(params => {
       this.ticketId = params['ticketId']
-      // console.log('ticketId', this.ticketId, 'from booking comp, route')
     })
 
     this.userDetails$.subscribe(user => {
@@ -109,7 +106,6 @@ export class BookingComponent implements OnInit, OnDestroy {
     this.ticketService.getTempTicketData(this.ticketId).subscribe({
       next: (res) => {
         if (res.data != null) {
-          // console.log(res.data, 'res data from getTempTicketData')
           this.tempTicket = res.data
           this.movie = res.data.movieId
           this.theater = res.data.theaterId
@@ -132,7 +128,6 @@ export class BookingComponent implements OnInit, OnDestroy {
 
     this.couponService.getApplicableCouopns(this.user._id, this.ticketId).subscribe({
       next: (res) => {
-        console.log(res.data, 'coupons from applicable coupons')
         if (res.data !== null) {
           this.coupons = res.data
           this.suggestionCoupon = this.coupons[0]
@@ -213,8 +208,6 @@ export class BookingComponent implements OnInit, OnDestroy {
   }
 
   payForTicket (amount: number): void {
-    // console.log('initiating razorpay payment');
-
     if (this.paymentMethod === 'Razorpay') {
       if (this.useWallet) amount -= this.user.wallet
       this.razorpayService.initiateRazorpayPayment(amount, {

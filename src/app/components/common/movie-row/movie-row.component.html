@@ -1,0 +1,21 @@
+<div class="ml-1">
+    <div class="flex justify-between my-3">
+      <div class="text-lg font-bold ms-3">
+        <h3>{{ getTitle() }}</h3>
+      </div>
+      <div (click)="exploreLanguage()" class="text-blue-700 text-sm font-semibold me-3 cursor-pointer">
+        <p>More...</p>
+      </div>
+    </div>
+  
+    <div class="flex my-2 overflow-x-scroll scrolling-touch">
+      <div *ngFor="let movie of movies"
+        class="w-60 m-1 h-80 bg-amber-800 flex-shrink-0 overflow-hidden relative">
+        <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
+          class="w-full h-full object-cover" />
+        <div class="absolute bottom-0 left-0 right-0 p-2 bg-gray-500 text-white text-center cursor-pointer" (click)="addMovie(movie)">
+          {{ isMovieAlreadyExist(movie.tmdbId) ? 'Update' : 'Add' }}
+        </div>
+      </div>
+    </div>
+</div>

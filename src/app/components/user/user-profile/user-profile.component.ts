@@ -53,11 +53,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       });
   }
 
-  // updateWalletAmount (amount: number): void {
-  //   console.log('updating wallet amount', amount)
-  //   this.user.wallet = amount
-  // }
-
   ngOnInit (): void {
     this.userDetails$.subscribe((user) => {
       console.log(user, 'user data from state, user profile')

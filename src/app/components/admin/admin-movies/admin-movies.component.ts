@@ -3,12 +3,10 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-// import { Observable } from 'rxjs';
 import { Movie } from 'src/app/models/movie';
 import { MovieService } from 'src/app/services/movie.service';
 import { TMDBService } from 'src/app/services/tmdb.service';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { BENGALI, ENGLISH, HINDI, KANNADA, MALAYALAM, TAMIL, TELUGU } from 'src/app/shared/langAbbreviation';
+import { Language } from 'src/app/shared/langAbbreviation';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -28,19 +26,17 @@ export class AdminMoviesComponent implements OnInit {
   malayalamMovies: Movie[] = []
   tamilMovies: Movie[] = []
   hindiMovies: Movie[] = []
-  // teluguMovies: Movie[] = []
-  // kannadaMovies: Movie[] = []
-  // englishMovies: Movie[] = []
-  // bengaliMovies: Movie[] = []
+  teluguMovies: Movie[] = []
+  kannadaMovies: Movie[] = []
+  englishMovies: Movie[] = []
 
   ngOnInit (): void {
     this.getMalayalmMovies()
     this.getTamilMovies()
     this.getHindiMovies()
-    // this.getTeluguMovies()
-    // this.getKannadaMovies()
-    // this.getEnglishMovies()
-    // this.getBenaliMovies()
+    this.getTeluguMovies()
+    this.getKannadaMovies()
+    this.getEnglishMovies()
 
     this.movieService.fetchCineSnapMovies().subscribe({
       next: (res) => {
@@ -73,66 +69,50 @@ export class AdminMoviesComponent implements OnInit {
   }
 
   getMalayalmMovies (): void {
-    this.tmdbService.fetchMovieByLanguage(MALAYALAM).subscribe({
+    this.tmdbService.fetchMovieByLanguage(Language.MALAYALAM).subscribe({
       next: (res) => {
         this.malayalamMovies = res
-        console.log(res, 'res mal')
       }
     })
   }
 
   getTamilMovies (): void {
-    this.tmdbService.fetchMovieByLanguage(TAMIL).subscribe({
+    this.tmdbService.fetchMovieByLanguage(Language.TAMIL).subscribe({
       next: (res) => {
         this.tamilMovies = res
-        console.log(res, 'res, tamil')
       }
     })
   }
 
   getHindiMovies (): void {
-    this.tmdbService.fetchMovieByLanguage(HINDI).subscribe({
+    this.tmdbService.fetchMovieByLanguage(Language.HINDI).subscribe({
       next: (res) => {
         this.hindiMovies = res
       }
     })
   }
 
-  // getTeluguMovies (): void {
-  //   this.tmdbService.fetchMovieByLanguage(TELUGU).subscribe({
-  //     next: (res) => {
-  //       this.teluguMovies = res
-  //       // console.log(res, 'res, hindi')
-  //     }
-  //   })
-  // }
+  getTeluguMovies (): void {
+    this.tmdbService.fetchMovieByLanguage(Language.TELUGU).subscribe({
+      next: (res) => {
+        this.teluguMovies = res
+      }
+    })
+  }
 
-  // getKannadaMovies (): void {
-  //   this.tmdbService.fetchMovieByLanguage(KANNADA).subscribe({
-  //     next: (res) => {
-  //       this.kannadaMovies = res
-  //       console.log(res, 'res, kannada')
-  //     }
-  //   })
-  // }
+  getKannadaMovies (): void {
+    this.tmdbService.fetchMovieByLanguage(Language.KANNADA).subscribe({
+      next: (res) => {
+        this.kannadaMovies = res
+      }
+    })
+  }
 
-  // getEnglishMovies (): void {
-  //   this.tmdbService.fetchMovieByLanguage(ENGLISH).subscribe({
-  //     next: (res) => {
-  //       this.englishMovies = res
-  //       console.log(res, 'res, english')
-  //     }
-  //   })
-  // }
-
-  // getBenaliMovies (): void {
-  //   this.tmdbService.fetchMovieByLanguage(BENGALI).subscribe({
-  //     next: (res) => {
-  //       this.bengaliMovies = res
-  //       // console.log(res, 'res, hindi')
-  //     }
-  //   })
-  // }
+  getEnglishMovies (): void {
+    this.tmdbService.fetchMovieByLanguage(Language.ENGLISH).subscribe({
+      next: (res) => {
+        this.englishMovies = res
+      }
+    })
+  }
 }
-
-// Remove Unused Languages that imported from constants

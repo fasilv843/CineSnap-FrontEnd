@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/semi */
 import { NgModule } from '@angular/core';
 import { RouterModule, type Routes } from '@angular/router';
-import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { PageNotFoundComponent } from './components/common/page-not-found/page-not-found.component';
 
 const routes: Routes = [
   { path: 'user', title: 'User', loadChildren: () => import('./components/user/user.module').then(m => m.UserModule) },

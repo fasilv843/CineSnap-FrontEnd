@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core'
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { Store, select } from '@ngrx/store'
@@ -17,7 +17,7 @@ import { TheaterService } from 'src/app/services/theater.service'
   templateUrl: './thr-profile.component.html',
   styleUrls: ['./thr-profile.component.css']
 })
-export class ThrProfileComponent {
+export class ThrProfileComponent implements OnInit, OnDestroy {
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
   theater!: ITheaterRes
   profilePic: string = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=200'
@@ -37,17 +37,8 @@ export class ThrProfileComponent {
       .subscribe((response: IRazorpayRes | null) => {
         if (response !== null) {
           // Payment was successful, handle accordingly
-          console.log('Payment successful from component, confirming ticket')
-          // this.userService.updateUserWallet(this.userId, this.amountToAdd).subscribe({
-          //   next: (res) => {
-          //     console.log(res.data.wallet, 'wallet from update wallet')
-          //     this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
-          //     this.user.wallet = res.data.wallet
-          //   }
-          // })
           this.theaterService.updateTheaterWallet(this.theaterId, this.amountToAdd).subscribe({
             next: (res) => {
-              console.log(res.data.wallet, 'wallet from update wallet')
               this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
               this.theater.wallet = res.data.wallet
             }
@@ -67,6 +58,10 @@ export class ThrProfileComponent {
         if (theater.profilePic !== undefined) this.profilePic = environments.backendUrl + `/images/${theater.profilePic}`
       }
     })
+  }
+
+  ngOnDestroy (): void {
+    this.paymentResultSubscription.unsubscribe()
   }
 
   addToWallet (): void {
@@ -98,7 +93,6 @@ export class ThrProfileComponent {
   }
 
   logout (): void {
-    console.log('loggin out from theater')
     localStorage.removeItem('theaterAccessToken')
     localStorage.removeItem('theaterRefreshToken')
     this.store.dispatch(deleteTheaterFromStore())

@@ -9,7 +9,6 @@ import { TransformUrlInterceptor } from './interceptors/transform-url.intercepto
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component'
 import { StoreModule, type MetaReducer } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { ErrorHandlerInterceptor } from './interceptors/error-handler.interceptor';
@@ -21,10 +20,7 @@ import { reducers } from './states/app.state';
 export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    PageNotFoundComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

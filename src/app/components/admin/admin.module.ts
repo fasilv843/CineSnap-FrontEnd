@@ -21,6 +21,7 @@ import { TableFilterComponent } from '../common/table-filter/table-filter.compon
 import { AdminTicketsComponent } from './admin-tickets/admin-tickets.component';
 import { AdminWalletComponent } from './admin-wallet/admin-wallet.component';
 import { LineGraphComponent } from '../common/line-graph/line-graph.component';
+import { MovieRowComponent } from '../common/movie-row/movie-row.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { LineGraphComponent } from '../common/line-graph/line-graph.component';
     FilterComponent,
     SearchComponent,
     TableFilterComponent,
-    LineGraphComponent
+    LineGraphComponent,
+    MovieRowComponent
   ]
 })
 export class AdminModule { }
