@@ -1,14 +1,3 @@
-export const MALAYALAM = 'ml'
-export const ENGLISH = 'en'
-export const HINDI = 'hi'
-export const TELUGU = 'te'
-export const TAMIL = 'ta'
-export const BENGALI = 'bn'
-export const KANNADA = 'kn'
-export const JAPAN = 'ja'
-export const FRENCH = 'fr'
-export const SPANISH = 'es'
-
 export enum Language {
   MALAYALAM = 'ml',
   ENGLISH = 'en',
@@ -34,5 +23,3 @@ export enum LanguageAbbreviation {
   fr = 'French',
   es = 'Spanish'
 }
-
-// if i change like this can i use LanguageAbbreviation[Language.MALAYALAM], is this possible

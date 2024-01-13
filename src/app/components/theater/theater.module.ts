@@ -18,7 +18,7 @@ import { StoreModule } from '@ngrx/store';
 import { theaterReducer } from 'src/app/states/theater/theater.reducer';
 import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater-profile.component';
 import { ImageModule } from 'src/app/modules/image/image.module';
-import { ThrSeatingComponent } from './thr-seating/thr-seating.component'; 
+import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
 import { FilterComponent } from '../common/filter/filter.component';
 import { DateComponent } from '../common/date/date.component';
 import { ApprovalPendingComponent } from './approval-pending/approval-pending.component';
