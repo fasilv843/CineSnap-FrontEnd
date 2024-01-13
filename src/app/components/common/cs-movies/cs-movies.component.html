@@ -1,9 +1,10 @@
 
 <div class="flex">
   <!-- Filter Sidebar -->
-  <app-filter class="h-screen" (filterApplied)="filterMovies($event)" [isAdmin]="false"></app-filter>
+  <app-filter class="h-screen" (filterApplied)="filterMovies($event)" [isAdmin]="isAdmin"></app-filter>
 <div class="container mx-auto overflow-y-scroll h-screen flex-1">
-  <app-search (searchEvent)="searchCineSnapMovies($event)"></app-search>
+  <app-search *ngIf="!isAdmin" (searchEvent)="searchCineSnapMovies($event)"></app-search>
+  <app-admin-movies-search *ngIf="isAdmin" class="bg-white w-full" (search)="searchCineSnapMovies($event)"></app-admin-movies-search>
 
   <div class="font-bold mb-3 flex justify-between">
     <h3 class="text-lg ">Movies</h3>
@@ -17,6 +18,18 @@
         <div class="bg-amber-800 overflow-hidden relative">
           <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" loading="lazy"
             class="w-full h-80 object-cover" />
+
+          <ng-container *ngIf="isAdmin">
+            <button *ngIf="!movie.isDeleted" (click)="deleteMovie(movie._id, 'Delete')" class="absolute top-2 right-2 flex items-center justify-center bg-red-500 text-white p-1 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+              </svg>            
+            </button>
+            <button *ngIf="movie.isDeleted" (click)="deleteMovie(movie._id, 'Add')" class="absolute top-2 right-2 flex items-center justify-center bg-green-500 text-white p-1 rounded-full">
+              Add            
+            </button>
+          </ng-container>
+
           <div class="bg-gray-900 text-white text-center p-2">
             <p class="text-base font-medium line-clamp-1">{{ movie.title }}</p>
             <p class="text-sm">{{ movie.release_date | date: 'yyyy' }}</p>

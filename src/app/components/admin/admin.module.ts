@@ -22,6 +22,7 @@ import { AdminWalletComponent } from './admin-wallet/admin-wallet.component';
 import { LineGraphComponent } from '../common/line-graph/line-graph.component';
 import { MovieRowComponent } from '../common/movie-row/movie-row.component';
 import { AdminMoviesSearchComponent } from './admin-movies-search/admin-movies-search.component';
+import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { AdminMoviesSearchComponent } from './admin-movies-search/admin-movies-s
     TableFilterComponent,
     LineGraphComponent,
     MovieRowComponent,
+    CsMoviesComponent,
     AdminMoviesSearchComponent,
     SearchComponent
   ]

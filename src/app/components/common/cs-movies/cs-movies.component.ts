@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, ElementRef, HostListener, Input } from '@angular/core'
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FilterComponent } from '../filter/filter.component'
 import { SearchComponent } from '../search/search.component'
@@ -7,7 +7,9 @@ import { type IFilterEvent } from 'src/app/models/filter'
 import { type ICSMovieRes } from 'src/app/models/movie'
 import { SpinnerComponent } from '../spinner/spinner.component'
 import { MovieService } from 'src/app/services/movie.service'
-import { InputModalityDetector } from '@angular/cdk/a11y'
+import { AdminMoviesSearchComponent } from '../../admin/admin-movies-search/admin-movies-search.component'
+import { DataServiceService } from 'src/app/services/data-service.service'
+import { Subscription } from 'rxjs'
 
 @Component({
   selector: 'app-cs-movies',
@@ -16,12 +18,15 @@ import { InputModalityDetector } from '@angular/cdk/a11y'
     CommonModule,
     FilterComponent,
     SearchComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    AdminMoviesSearchComponent
   ],
   templateUrl: './cs-movies.component.html',
   styleUrls: ['./cs-movies.component.css']
 })
-export class CsMoviesComponent {
+export class CsMoviesComponent implements OnInit, OnDestroy {
+  @Input() isAdmin = false
+  @Output() deleteMovieEvent = new EventEmitter<{ movieId: string, action: 'Add' | 'Delete' }>()
   movies: ICSMovieRes[] = []
   page: number = 1
   isCompleted = false
@@ -34,10 +39,12 @@ export class CsMoviesComponent {
   }
 
   showSpellingError = false
+  private dataServiceSubscription!: Subscription
 
   constructor (
     private readonly movieService: MovieService,
-    private readonly el: ElementRef
+    private readonly el: ElementRef,
+    private readonly dataService: DataServiceService
   ) {}
 
   @HostListener('window:scroll', ['$event'])
@@ -50,7 +57,21 @@ export class CsMoviesComponent {
   }
 
   ngOnInit (): void {
+    this.movieFilter.availability = this.isAdmin ? 'All' : 'Available'
     this.findCineSnapMovies()
+    this.dataServiceSubscription = this.dataService.getCurrentData().subscribe(id => {
+      this.movies = this.movies.map(movie => id === movie._id ? { ...movie, isDeleted: !movie.isDeleted } : movie)
+    })
+  }
+
+  ngOnDestroy (): void {
+    this.dataServiceSubscription.unsubscribe()
+  }
+
+  deleteMovie (movieId: string, action: 'Add' | 'Delete'): void {
+    if (this.isAdmin) {
+      this.deleteMovieEvent.emit({ movieId, action })
+    }
   }
 
   findCineSnapMovies (): void {
@@ -73,7 +94,6 @@ export class CsMoviesComponent {
   filterMovies (filters: IFilterEvent): void {
     console.log(filters, 'event data')
     this.page = 1
-    filters.availability = 'Available'
     this.movieFilter = filters
     this.isLoading = true
     this.findCineSnapMovies()

@@ -42,7 +42,7 @@ export class MovieService {
 
     if (genreStr !== '') url += '&' + genreStr
     if (languageStr !== '') url += '&' + languageStr
-
+    url += `&availability=${filters.availability}`
     console.warn(url, 'url that passing to backend for filtering');
     return this.http.get<IApiCSMoviesRes>(url)
   }
@@ -60,7 +60,6 @@ export class MovieService {
   }
 
   deleteMovie (movieId: string): Observable<IApiCSMovieRes> {
-    console.log(movieId);
     return this.http.patch<IApiCSMovieRes>(`admin/movies/delete/${movieId}`, {})
   }
 
