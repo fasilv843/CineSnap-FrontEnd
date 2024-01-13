@@ -12,7 +12,6 @@ import { AdminUsersComponent } from './admin-users/admin-users.component';
 import { AdminMessagesComponent } from './admin-messages/admin-messages.component';
 import { AdminMoviesComponent } from './admin-movies/admin-movies.component';
 import { AdminCsMoviesComponent } from './admin-cs-movies/admin-cs-movies.component';
-import { AdminMoviesSearchComponent } from './admin-movies-search/admin-movies-search.component';
 import { AdminMoviesExploreComponent } from './admin-movies-explore/admin-movies-explore.component';
 import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { FilterComponent } from '../common/filter/filter.component';
@@ -22,6 +21,7 @@ import { AdminTicketsComponent } from './admin-tickets/admin-tickets.component';
 import { AdminWalletComponent } from './admin-wallet/admin-wallet.component';
 import { LineGraphComponent } from '../common/line-graph/line-graph.component';
 import { MovieRowComponent } from '../common/movie-row/movie-row.component';
+import { AdminMoviesSearchComponent } from './admin-movies-search/admin-movies-search.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +33,6 @@ import { MovieRowComponent } from '../common/movie-row/movie-row.component';
     AdminMessagesComponent,
     AdminMoviesComponent,
     AdminCsMoviesComponent,
-    AdminMoviesSearchComponent,
     AdminMoviesExploreComponent,
     AdminTicketsComponent,
     AdminWalletComponent
@@ -48,7 +47,9 @@ import { MovieRowComponent } from '../common/movie-row/movie-row.component';
     SearchComponent,
     TableFilterComponent,
     LineGraphComponent,
-    MovieRowComponent
+    MovieRowComponent,
+    AdminMoviesSearchComponent,
+    SearchComponent
   ]
 })
 export class AdminModule { }

@@ -1,33 +1,36 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
-import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Output } from '@angular/core'
+import { SearchComponent } from '../../common/search/search.component';
+import { Router } from '@angular/router';
 
 @Component({
+  standalone: true,
+  imports: [
+    CommonModule,
+    SearchComponent
+  ],
   selector: 'app-admin-movies-search',
   templateUrl: './admin-movies-search.component.html',
   styleUrls: ['./admin-movies-search.component.css']
 })
 export class AdminMoviesSearchComponent {
-  // @Input() searchRoute: string = ''
   @Output() search = new EventEmitter<string>()
-  searchForm!: FormGroup;
-
-  ngOnInit (): void {
-    this.searchForm = this.fb.group({
-      movieName: [''] // You can provide an initial value here if needed
-    });
-  }
 
   constructor (
-    // private readonly route: ActivatedRoute,
-    private readonly fb: FormBuilder
+    private readonly router: Router
   ) {}
 
-  onSearch (): void {
-    const movieName = this.searchForm.get('movieName')?.value;
-    console.log(movieName, 'searched name from onSearch()');
+  showTmdbMovies (): void {
+    void this.router.navigate(['/admin/movies/tmdb'])
+  }
+
+  showCineSnapMovies (): void {
+    void this.router.navigate(['/admin/movies/cinesnap'])
+  }
+
+  onSearch (movieName: string): void {
     this.search.emit(movieName);
   }
 }

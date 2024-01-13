@@ -2,6 +2,7 @@
 import { Component, EventEmitter, Output } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms'
+import { Subject, debounceTime } from 'rxjs'
 
 @Component({
   selector: 'app-search',
@@ -14,22 +15,20 @@ import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms'
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent {
-  @Output() search = new EventEmitter<string>()
-  searchForm!: FormGroup
+  @Output() searchEvent = new EventEmitter<string>()
+  searchSubject = new Subject<string>()
 
   ngOnInit (): void {
-    this.searchForm = this.fb.group({
-      movieName: [''] // You can provide an initial value here if needed
-    })
+    this.searchSubject
+      .pipe(debounceTime(500))
+      .subscribe(movieName => {
+        console.warn('search event emitted')
+        this.searchEvent.emit(movieName)
+      })
   }
 
-  constructor (
-    private readonly fb: FormBuilder
-  ) {}
-
-  onSearch (): void {
-    const movieName = this.searchForm.get('movieName')?.value
-    console.log(movieName, 'searched name from onSearch()')
-    this.search.emit(movieName)
+  onSearch (movieName: string | null): void {
+    console.log('search subject called next()')
+    if (movieName !== null) this.searchSubject.next(movieName)
   }
 }

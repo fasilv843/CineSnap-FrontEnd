@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, ElementRef, HostListener } from '@angular/core'
+import { Component, ElementRef, HostListener, Input } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FilterComponent } from '../filter/filter.component'
 import { SearchComponent } from '../search/search.component'
@@ -7,7 +7,7 @@ import { type IFilterEvent } from 'src/app/models/filter'
 import { type ICSMovieRes } from 'src/app/models/movie'
 import { SpinnerComponent } from '../spinner/spinner.component'
 import { MovieService } from 'src/app/services/movie.service'
-import Swal from 'sweetalert2'
+import { InputModalityDetector } from '@angular/cdk/a11y'
 
 @Component({
   selector: 'app-cs-movies',
@@ -33,6 +33,8 @@ export class CsMoviesComponent {
     filterLanguages: []
   }
 
+  showSpellingError = false
+
   constructor (
     private readonly movieService: MovieService,
     private readonly el: ElementRef
@@ -52,6 +54,7 @@ export class CsMoviesComponent {
   }
 
   findCineSnapMovies (): void {
+    this.showSpellingError = false
     this.movieService.findCineSnapFilteredMovies(this.movieFilter, this.page).subscribe({
       next: (res) => {
         console.log(res, 'res from findCineSnapFilteredMovies()')
@@ -82,8 +85,10 @@ export class CsMoviesComponent {
       next: (res) => {
         console.log(res, 'responce from search movie')
         if (res.data.length === 0) {
-          void Swal.fire('Sorry :<', 'We don\'t have the movie that you are looking for', 'info')
+          // void Swal.fire('Sorry :<', 'We don\'t have the movie that you are looking for', 'info')
+          this.showSpellingError = true
         } else {
+          this.showSpellingError = false
           this.movies = res.data
         }
       }
