@@ -1,3 +1,3 @@
-<div *ngIf="isSubmitted && movieIdControl && movieIdControl.errors">
-    <div *ngIf="movieIdControl.errors['required']" style="color: red;">Screen is required</div>
+<div *ngIf="isSubmitted && movieId === ''">
+    <div style="color: red;">Movie is required</div>
 </div>

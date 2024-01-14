@@ -7,6 +7,7 @@ import { type AbstractControl } from '@angular/forms'
   styleUrls: ['./movie-select-validation.component.css']
 })
 export class MovieSelectValidationComponent {
-  @Input() movieIdControl: AbstractControl | null = null
+  // @Input() movieIdControl: AbstractControl | null = null
+  @Input() movieId = ''
   @Input() isSubmitted: boolean = false
 }

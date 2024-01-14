@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { CommonModule } from '@angular/common'
-import { Component, Inject, OnInit } from '@angular/core'
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap'
 import { Store, select } from '@ngrx/store'
 import * as moment from 'moment'
+import { Subject, debounceTime } from 'rxjs'
 import { validateByTrimming } from 'src/app/helpers/validations'
 import { ICSMovieRes, IDuration } from 'src/app/models/movie'
 import { IScreen } from 'src/app/models/screens'
@@ -26,8 +27,9 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
   templateUrl: './show-form-modal.component.html',
   styleUrls: ['./show-form-modal.component.css']
 })
-export class ShowFormModalComponent implements OnInit {
+export class ShowFormModalComponent implements OnInit, OnDestroy {
   theaterData$ = this.store.pipe(select(selectTheaterDetails))
+  searchSubject = new Subject<string>()
   showForm!: FormGroup
   isSubmitted = false
   movies: ICSMovieRes[] = []
@@ -44,6 +46,50 @@ export class ShowFormModalComponent implements OnInit {
   endingTime: string = '00:00'
   currDate: Date = new Date()
 
+  showMovieOptions = false
+  showMovieError = false
+  selectedMovieId = ''
+
+  onInputBlur (): void {
+    setTimeout(() => {
+      this.showMovieOptions = false
+    }, 200)
+  }
+
+  onInputFocus (): void {
+    setTimeout(() => {
+      this.showMovieOptions = true
+    }, 200)
+  }
+
+  onInputChange (event: any): void {
+    const query = event.target.value as string
+    this.searchSubject.next(query)
+  }
+
+  selectMovie (movie: ICSMovieRes): void {
+    this.isMovieSelected = true
+    this.showForm.controls['movie'].setValue(movie.title)
+    this.showForm.controls['movie'].disable()
+    this.showMovieOptions = false
+    this.showMovieError = false
+    this.selectedMovieId = movie._id
+    this.movieDuration = movie.duration
+    console.log(movie, 'selected movie')
+    if (this.isStartTimeSelected) {
+      this.calculateEndTime(this.startTimeStr, movie.duration)
+    }
+  }
+
+  changeMovie (): void {
+    console.log('allowing movie change')
+    this.showForm.controls['movie'].enable()
+    this.showMovieOptions = true
+    this.isMovieSelected = false
+    this.selectedMovieId = ''
+    this.endingTime = ''
+  }
+
   priceControls: Array<{ category: string, label: string, controlName: string }> = []
 
   constructor (
@@ -52,13 +98,11 @@ export class ShowFormModalComponent implements OnInit {
     @Inject(MovieService) private readonly movieService: MovieService,
     @Inject(ScreenService) private readonly screenService: ScreenService,
     @Inject(Store) private readonly store: Store
-  ) {
-
-  }
+  ) {}
 
   ngOnInit (): void {
     this.showForm = this.formBuilder.group({
-      movieId: ['', [validateByTrimming(requiredValidator)]],
+      movie: ['', [validateByTrimming(requiredValidator)]],
       screenId: ['', [validateByTrimming(requiredValidator)]],
       startTime: ['', [validateByTrimming(requiredValidator)]],
       date: [this.currDate.toISOString().substring(0, 10), [validateByTrimming(requiredValidator)]]
@@ -80,6 +124,14 @@ export class ShowFormModalComponent implements OnInit {
         this.screens = res.data
       }
     })
+
+    this.searchSubject
+      .pipe(debounceTime(500))
+      .subscribe(movieName => {
+        this.movieService.searchMovie(movieName, false).subscribe((res) => {
+          this.movies = res.data
+        })
+      })
   }
 
   onScreenChange (event: Event): void {
@@ -111,18 +163,8 @@ export class ShowFormModalComponent implements OnInit {
     })
   }
 
-  onMovieSelect (): void {
-    // Access value of the form control named 'movie'
-    this.isMovieSelected = true
-    const movieId = this.showForm.get('movieId')?.value
-    const movie = this.movies.find(movie => movie._id === movieId)
-    if (movie != null) {
-      this.movieDuration = movie.duration
-      console.log(movie, 'selected movie')
-      if (this.isStartTimeSelected) {
-        this.calculateEndTime(this.startTimeStr, movie.duration)
-      }
-    }
+  ngOnDestroy (): void {
+    this.searchSubject.unsubscribe()
   }
 
   onStartTimeChange (event: any): void {
@@ -152,12 +194,14 @@ export class ShowFormModalComponent implements OnInit {
 
   onSubmit (): void {
     this.isSubmitted = true
-    if (this.showForm.valid) {
+    if (this.showForm.valid && this.selectedMovieId !== '') {
       const showFormData = this.showForm.value
       console.log(showFormData, 'show form data from modal')
       showFormData.startTime = this.convertTimeStrToDateObj(showFormData.startTime, new Date(showFormData.date))
       console.log(showFormData.startTime, 'start time from modal')
       this.activeModal.close(showFormData)
+    } else if (this.selectedMovieId === '') {
+      this.showMovieError = true
     } else {
       console.log('showForm is invalid', this.showForm.controls)
     }

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, EventEmitter, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { Subject, debounceTime } from 'rxjs'
 
@@ -10,7 +10,7 @@ import { Subject, debounceTime } from 'rxjs'
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   @Output() searchEvent = new EventEmitter<string>()
   searchSubject = new Subject<string>()
 
@@ -20,6 +20,10 @@ export class SearchComponent implements OnInit {
       .subscribe(movieName => {
         this.searchEvent.emit(movieName)
       })
+  }
+
+  ngOnDestroy (): void {
+    this.searchSubject.unsubscribe()
   }
 
   onSearch (movieName: string | null): void {

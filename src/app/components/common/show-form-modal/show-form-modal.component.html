@@ -6,13 +6,22 @@
   
         <form [formGroup]="showForm" (ngSubmit)="onSubmit()">
           <ng-container class="flex flex-col">
-            <div class="mb-3">
+
+            <div class="mb-3 relative">
               <label for="screenName" class="block mb-2 text-sm font-semibold text-gray-700">Movie:</label>
-              <select id="movie" formControlName="movieId" class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm" placeholder="Select a movie" (change)="onMovieSelect()">
-                <option value="" disabled selected>Select a movie</option>
-                <option *ngFor="let movie of movies" [value]="movie._id">{{ movie.title }} {{ movie.release_date | date: 'yyyy' }}</option>
-              </select>
-              <app-movie-select-validation [movieIdControl]="showForm.get('movieId')" [isSubmitted]="isSubmitted"></app-movie-select-validation>
+              <input type="text" formControlName="movie"
+                    (dblclick)="changeMovie()" (input)="onInputChange($event)" (blur)="onInputBlur()" 
+                    (focus)="onInputFocus()" placeholder="Search Movie Name"
+                    class=" block w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              >
+              <app-movie-select-validation [movieId]="selectedMovieId" [isSubmitted]="isSubmitted"></app-movie-select-validation>
+              <div *ngIf="showMovieOptions" class="absolute top-16 z-40 bg-white shadow-lg max-h-60 rounded-md py-1 overflow-auto mt-1 w-full">
+                <div *ngIf="movies.length === 0" class="bg-gray-400 px-4 py-2 text-sm">Movie Not Available</div>
+                <div *ngFor="let movie of movies" (click)="selectMovie(movie)"
+                     class="cursor-pointer hover:bg-gray-200 px-4 py-2 text-sm">
+                  {{ movie.title }} {{ movie.release_date | date: 'yyyy' }}
+                </div>
+              </div>
             </div>
           
             <div class="mb-3">

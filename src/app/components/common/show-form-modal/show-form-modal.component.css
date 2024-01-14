@@ -1,0 +1,6 @@
+select.hidden {
+    /* display: none; */
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+}
