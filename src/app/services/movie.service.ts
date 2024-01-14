@@ -55,7 +55,8 @@ export class MovieService {
 
   // }
 
-  searchMovie (title: string): Observable<IApiCSMoviesRes> {
+  searchMovie (title: string, isAdmin: boolean): Observable<IApiCSMoviesRes> {
+    if (isAdmin) return this.http.get<IApiCSMoviesRes>(`admin/movies?title=${title}&isAdmin=true`)
     return this.http.get<IApiCSMoviesRes>(`user/movies?title=${title}`)
   }
 

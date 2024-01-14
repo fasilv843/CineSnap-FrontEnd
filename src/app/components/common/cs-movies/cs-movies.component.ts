@@ -101,7 +101,7 @@ export class CsMoviesComponent implements OnInit, OnDestroy {
 
   searchCineSnapMovies (title: string): void {
     console.log('title from cinesnap movies search', title)
-    this.movieService.searchMovie(title).subscribe({
+    this.movieService.searchMovie(title, this.isAdmin).subscribe({
       next: (res) => {
         console.log(res, 'responce from search movie')
         if (res.data.length === 0) {
