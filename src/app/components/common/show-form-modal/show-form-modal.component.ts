@@ -196,6 +196,7 @@ export class ShowFormModalComponent implements OnInit, OnDestroy {
     this.isSubmitted = true
     if (this.showForm.valid && this.selectedMovieId !== '') {
       const showFormData = this.showForm.value
+      showFormData.movieId = this.selectedMovieId
       console.log(showFormData, 'show form data from modal')
       showFormData.startTime = this.convertTimeStrToDateObj(showFormData.startTime, new Date(showFormData.date))
       console.log(showFormData.startTime, 'start time from modal')

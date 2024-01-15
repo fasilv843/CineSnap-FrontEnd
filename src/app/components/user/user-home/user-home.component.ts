@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 // import { type HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit } from '@angular/core'
 import { Router } from '@angular/router'
@@ -7,6 +8,7 @@ import { getGenre, getLanguage } from 'src/app/helpers/movie'
 import { type genreType, type langType } from 'src/app/models/filter'
 import { type ICSMovieRes } from 'src/app/models/movie'
 import { type ITheaterRes } from 'src/app/models/theater'
+import { DataServiceService } from 'src/app/services/data-service.service'
 import { MovieService } from 'src/app/services/movie.service'
 import { TheaterService } from 'src/app/services/theater.service'
 import { saveCoords } from 'src/app/states/coords/coords.actions'

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { getLanguage } from 'src/app/helpers/movie'
 import { ITicketRes, ITicketSeat } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-booking-success',
@@ -26,6 +27,7 @@ export class BookingSuccessComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly ticketService: TicketService
+
   ) {
     this.route.params.subscribe(params => {
       this.ticketId = params['ticketId']
@@ -56,6 +58,12 @@ export class BookingSuccessComponent implements OnInit {
           this.seats = this.seats.sort()
         }
       }
+    })
+  }
+
+  downloadInvoice (): void {
+    this.ticketService.sendInvoiceRequest(this.ticketId).subscribe(() => {
+      void Swal.fire('Mail Sent', 'Invoice Sent to your mail', 'success')
     })
   }
 

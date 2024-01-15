@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="flex flex-col">
-                <div class="my-2">
+                <div *ngIf="!ticket.isCancelled" class="my-2">
                     <button (click)="downloadInvoice(ticket)">Invoice</button>
                 </div>
                 <img src="path/to/qr-code-placeholder.png" alt="QR Code" class="w-12 h-12 object-cover rounded">
@@ -55,48 +55,6 @@
         </div>
         <div *ngIf="!ticket.isCancelled && (now < getFourHourBeforeTime(ticket.startTime))" class="flex justify-end">
             <button class="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded-md cursor-pointer focus:outline-none" (click)="cancelTicket(ticket._id)">Cancel</button>
-        </div>
-    </div>
-</div>
-
-<div *ngIf="invoiceTicket" id="invoice-container" class="flex flex-col md:flex-row w-full justify-around h-fit border p-4 my-4 bg-white shadow-lg rounded-lg overflow-hidden">
-    <div class="flex flex-col md:flex-row border-1 p-4">
-        <div class="mb-4 md:mr-4">
-            <img src="https://image.tmdb.org/t/p/original/{{ invoiceTicket.movieId.poster_path }}" alt="{{ invoiceTicket.movieId.title }} Poster" class=" h-80 object-cover rounded-lg shadow-md">
-        </div>
-        <div class="flex flex-col">
-            <div class="mb-4">
-                <h6 class="text-xl font-semibold mb-2">{{ invoiceTicket.movieId.title }}</h6>
-                <span class="text-gray-600">{{ getLanguage(invoiceTicket.movieId.language) }}</span>
-            </div>
-            <div class="mb-4">
-                <h6 class="text-xl font-semibold mb-2">{{ invoiceTicket.theaterId.name }}</h6>
-                <span class="text-gray-600">
-                    {{ invoiceTicket.theaterId.address.city }}, 
-                    {{ invoiceTicket.theaterId.address.district }}, 
-                    {{ invoiceTicket.theaterId.address.state }}, 
-                    {{ invoiceTicket.theaterId.address.country }}, 
-                    {{ invoiceTicket.theaterId.address.zip }}
-                </span>
-            </div>
-            <div class="flex items-center mb-4">
-                <div class="flex flex-col mr-4">
-                    <h6 class="text-lg font-semibold mb-1">{{ invoiceTicket.startTime  | date: 'EEE, dd MMM yyyy, hh:mm a' }}</h6>
-                    <span class="text-gray-600">{{ invoiceTicket.screenId.name }}</span>
-                    <div class="flex flex-wrap gap-1 mt-1">
-                        <div class="flex flex-wrap gap-1 mt-1">
-                            <span *ngFor="let seat of getSeatsArr(invoiceTicket.diamondSeats, invoiceTicket.goldSeats, invoiceTicket.silverSeats).slice(0, 5)" class="bg-green-500 text-white p-1 rounded">{{ seat }}</span>
-                        </div>
-                        <div *ngIf="getSeatsArr(invoiceTicket.diamondSeats, invoiceTicket.goldSeats, invoiceTicket.silverSeats).length > 5" class="flex flex-wrap gap-1 mt-1">
-                            <span *ngFor="let seat of getSeatsArr(invoiceTicket.diamondSeats, invoiceTicket.goldSeats, invoiceTicket.silverSeats).slice(5)" class="bg-green-500 text-white p-1 rounded">{{ seat }}</span>
-                        </div>
-                    </div>                      
-                </div>
-                <div class="bg-gray-200 p-2 rounded-md">
-                    <p class="text-gray-900 text-lg text-center font-semibold">{{ invoiceTicket.seatCount }}</p>
-                    <p class="text-gray-700 text-center">Tickets</p>
-                </div>
-            </div>
         </div>
     </div>
 </div>

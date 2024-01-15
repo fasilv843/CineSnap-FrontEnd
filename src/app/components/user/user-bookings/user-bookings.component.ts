@@ -2,9 +2,9 @@ import { Component, Inject, type OnInit } from '@angular/core'
 import { Store, select } from '@ngrx/store'
 import { getLanguage } from 'src/app/helpers/movie'
 import { type ITicketSeat, type ITicketRes } from 'src/app/models/ticket'
-import { InvoiceService } from 'src/app/services/invoice.service'
 import { TicketService } from 'src/app/services/ticket.service'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-user-bookings',
@@ -16,14 +16,12 @@ export class UserBookingsComponent implements OnInit {
   userId = ''
   tickets: ITicketRes[] = []
   now = new Date()
-  invoiceTicket!: ITicketRes
 
   getLanguage = getLanguage
 
   constructor (
     @Inject(TicketService) private readonly ticketService: TicketService,
-    @Inject(Store) private readonly store: Store,
-    @Inject(InvoiceService) private readonly invoiceService: InvoiceService
+    @Inject(Store) private readonly store: Store
   ) {}
 
   ngOnInit (): void {
@@ -50,10 +48,8 @@ export class UserBookingsComponent implements OnInit {
   }
 
   downloadInvoice (ticket: ITicketRes): void {
-    this.invoiceTicket = ticket
-    void this.invoiceService.generateInvoice(this.invoiceTicket).then((imageUrl) => {
-      console.log('Generated Image URL:', imageUrl)
-      this.invoiceService.downloadInvoice(imageUrl)
+    this.ticketService.sendInvoiceRequest(ticket._id).subscribe(() => {
+      void Swal.fire('Mail Sent', 'Invoice Sent to your mail', 'success')
     })
   }
 

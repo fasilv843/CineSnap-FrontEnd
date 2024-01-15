@@ -54,11 +54,15 @@ export class TicketService {
     return this.http.patch<IApiTicketRes>(`user/ticket/cancel/${ticketId}`, { cancelledBy: 'User' })
   }
 
-  cancelTicketByTheater (tikcetId: string): Observable<IApiTicketRes> {
-    return this.http.patch<IApiTicketRes>(`theater/tickets/cancel/${tikcetId}`, { cancelledBy: 'Theater' })
+  cancelTicketByTheater (ticketId: string): Observable<IApiTicketRes> {
+    return this.http.patch<IApiTicketRes>(`theater/tickets/cancel/${ticketId}`, { cancelledBy: 'Theater' })
   }
 
-  cancelTicketByAdmin (tikcetId: string): Observable<IApiTicketRes> {
-    return this.http.patch<IApiTicketRes>(`admin/tickets/cancel/${tikcetId}`, { cancelledBy: 'Admin' })
+  cancelTicketByAdmin (ticketId: string): Observable<IApiTicketRes> {
+    return this.http.patch<IApiTicketRes>(`admin/tickets/cancel/${ticketId}`, { cancelledBy: 'Admin' })
+  }
+
+  sendInvoiceRequest (ticketId: string): Observable<IApiRes<null>> {
+    return this.http.post<IApiRes<null>>('user/tickets/invoice/mail', { ticketId })
   }
 }
