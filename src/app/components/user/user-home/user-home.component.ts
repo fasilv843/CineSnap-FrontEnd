@@ -4,7 +4,7 @@ import { Component, Inject, type OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { Subject, takeUntil } from 'rxjs'
-import { getGenre, getGenreId, getLanguage } from 'src/app/helpers/movie'
+import { getGenre, getGenreId, getLanguage, getLanguageAbbr } from 'src/app/helpers/movie'
 import { type genreType, type langType } from 'src/app/models/filter'
 import { type ICSMovieRes } from 'src/app/models/movie'
 import { type ITheaterRes } from 'src/app/models/theater'
@@ -32,6 +32,7 @@ export class UserHomeComponent implements OnInit {
   getLanguage = getLanguage
   getGenre = getGenre
   getGenreId = getGenreId
+  getLanguageAbbr = getLanguageAbbr
 
   constructor (
     @Inject(MovieService) private readonly movieService: MovieService,
@@ -87,12 +88,17 @@ export class UserHomeComponent implements OnInit {
   onClickGenre (genre: string): void {
     const genreId = getGenreId(genre)
     console.log(genreId, 'genreId')
-    // void this.router.navigate(['/user/movies', genre])
+    void this.router.navigate(['/user/movies'], {
+      queryParams: { genreId }
+    })
   }
 
   onClickLanguage (language: string): void {
     console.log(language, 'language from labels event')
-    // void this.router.navigate(['/user/movies', language])
+    const langAbbr = getLanguageAbbr(language)
+    void this.router.navigate(['/user/movies'], {
+      queryParams: { langAbbr }
+    })
   }
 
   onClickTheaterName (theaterName: string): void {

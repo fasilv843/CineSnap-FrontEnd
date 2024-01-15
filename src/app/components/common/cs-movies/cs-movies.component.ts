@@ -3,7 +3,7 @@ import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, On
 import { CommonModule } from '@angular/common'
 import { FilterComponent } from '../filter/filter.component'
 import { SearchComponent } from '../search/search.component'
-import { type IFilterEvent } from 'src/app/models/filter'
+import { langType, type IFilterEvent } from 'src/app/models/filter'
 import { type ICSMovieRes } from 'src/app/models/movie'
 import { SpinnerComponent } from '../spinner/spinner.component'
 import { MovieService } from 'src/app/services/movie.service'
@@ -26,6 +26,8 @@ import { Subscription } from 'rxjs'
 })
 export class CsMoviesComponent implements OnInit, OnDestroy {
   @Input() isAdmin = false
+  @Input() genreId: number | undefined
+  @Input() language: langType | undefined
   @Output() deleteMovieEvent = new EventEmitter<{ movieId: string, action: 'Add' | 'Delete' }>()
   movies: ICSMovieRes[] = []
   page: number = 1
@@ -58,6 +60,16 @@ export class CsMoviesComponent implements OnInit, OnDestroy {
 
   ngOnInit (): void {
     this.movieFilter.availability = this.isAdmin ? 'All' : 'Available'
+    if (this.genreId !== undefined) {
+      this.movieFilter.filterGenres.push(this.genreId)
+    }
+    if (this.language !== undefined) {
+      this.movieFilter.filterLanguages.push(this.language)
+    }
+    console.log(this.genreId, 'genreId')
+    console.log(this.language, 'language')
+    console.log(this.movieFilter, 'movie filter')
+
     this.findCineSnapMovies()
     this.dataServiceSubscription = this.dataService.getCurrentData().subscribe(id => {
       this.movies = this.movies.map(movie => id === movie._id ? { ...movie, isDeleted: !movie.isDeleted } : movie)

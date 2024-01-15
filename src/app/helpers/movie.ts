@@ -11,8 +11,12 @@ export function getGenreId (genreName: string): number | undefined {
   return (genreId !== undefined) ? parseInt(genreId) : undefined
 }
 
-export function getLanguage (lang: keyof typeof LanguageAbbreviation): string {
+export function getLanguage (lang: langType): string {
   return LanguageAbbreviation[lang]
+}
+
+export function getLanguageAbbr (language: string): langType | undefined {
+  return Object.keys(LanguageAbbreviation).find((lang) => LanguageAbbreviation[lang as langType] === language) as langType | undefined
 }
 
 export function isGenreType (value: valueType): value is genreType {
