@@ -8,7 +8,7 @@
               {{ label }}
             </a>
           </div>
-          <mat-icon (click)="scrollLeft()" class="scroll-button left-0" aria-label="Scroll Left">arrow_left</mat-icon>
-          <mat-icon (click)="scrollRight()" class="scroll-button right-0" aria-label="Scroll Right">arrow_right</mat-icon>
+          <mat-icon *ngIf="showLeftArrow" (click)="scrollLeft()" class="scroll-button left-0" aria-label="Scroll Left">arrow_left</mat-icon>
+          <mat-icon *ngIf="showRightArrow" (click)="scrollRight()" class="scroll-button right-0" aria-label="Scroll Right">arrow_right</mat-icon>
     </div>
 </div>
