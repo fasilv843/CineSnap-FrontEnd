@@ -6,6 +6,11 @@ export function getGenre (genre: keyof typeof GENRE_NAMES): string {
   return GENRE_NAMES[genre]
 }
 
+export function getGenreId (genreName: string): number | undefined {
+  const genreId = Object.keys(GENRE_NAMES).find((id) => GENRE_NAMES[parseInt(id)] === genreName)
+  return (genreId !== undefined) ? parseInt(genreId) : undefined
+}
+
 export function getLanguage (lang: keyof typeof LanguageAbbreviation): string {
   return LanguageAbbreviation[lang]
 }

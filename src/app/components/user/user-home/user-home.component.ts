@@ -4,7 +4,7 @@ import { Component, Inject, type OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { Subject, takeUntil } from 'rxjs'
-import { getGenre, getLanguage } from 'src/app/helpers/movie'
+import { getGenre, getGenreId, getLanguage } from 'src/app/helpers/movie'
 import { type genreType, type langType } from 'src/app/models/filter'
 import { type ICSMovieRes } from 'src/app/models/movie'
 import { type ITheaterRes } from 'src/app/models/theater'
@@ -23,13 +23,15 @@ export class UserHomeComponent implements OnInit {
   coords$ = this.store.pipe(select(selectCoords))
   bannerMovies: ICSMovieRes[] = []
   active = 1
-  languages: langType[] = []
-  genres: genreType[] = []
+  languages: string[] = []
+  genres: string[] = []
   theaters: ITheaterRes[] = []
+  theaterNames: string[] = []
   unsubscribe$ = new Subject<void>()
 
   getLanguage = getLanguage
   getGenre = getGenre
+  getGenreId = getGenreId
 
   constructor (
     @Inject(MovieService) private readonly movieService: MovieService,
@@ -60,8 +62,8 @@ export class UserHomeComponent implements OnInit {
     this.movieService.fetchFilterDatas().subscribe({
       next: (res) => {
         console.log(res, 'res from filter component')
-        this.languages = res.languages
-        this.genres = res.genres
+        this.languages = res.languages.map(l => getLanguage(l))
+        this.genres = res.genres.map(g => getGenre(g))
       }
     })
 
@@ -73,6 +75,7 @@ export class UserHomeComponent implements OnInit {
           next: (res) => {
             console.log(res, 'nearest theater response')
             this.theaters = res.data
+            this.theaterNames = this.theaters.map(t => t.name)
           }
         })
       } else {
@@ -81,16 +84,20 @@ export class UserHomeComponent implements OnInit {
     })
   }
 
-  moviesWithGenre (genre: genreType): void {
+  onClickGenre (genre: string): void {
+    const genreId = getGenreId(genre)
+    console.log(genreId, 'genreId')
     // void this.router.navigate(['/user/movies', genre])
   }
 
-  moviesWithLanguage (language: langType): void {
+  onClickLanguage (language: string): void {
+    console.log(language, 'language from labels event')
     // void this.router.navigate(['/user/movies', language])
   }
 
-  openTheaterPage (theaterId: string): void {
-    void this.router.navigate(['/user/theater', theaterId])
+  onClickTheaterName (theaterName: string): void {
+    const theater = this.theaters.find(t => t.name === theaterName)
+    if (theater !== undefined) void this.router.navigate(['/user/theater', theater._id])
   }
 
   setActive (index: number): void {

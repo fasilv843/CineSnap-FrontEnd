@@ -20,7 +20,7 @@ export enum GENRES {
   WESTERN = 37
 }
 
-export const GENRE_NAMES = {
+export const GENRE_NAMES: Record<number, string> = {
   28: 'Action',
   12: 'Adventure',
   16: 'Animation',

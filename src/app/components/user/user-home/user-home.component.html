@@ -41,36 +41,14 @@
 
 <hr class="mt-4">
 
-<div class="container mx-auto p-4">
-    <h2 class="text-xl font-semibold mb-3">Filter By Genre</h2>
-    <div class="flex flex-wrap -mx-2">
-      <a (click)="moviesWithGenre(genre)" class="px-3 py-1 cursor-pointer bg-gray-500 text-white font-medium rounded-full shadow-md mr-2 mb-2" *ngFor="let genre of genres">
-        {{ getGenre(genre) }}
-      </a>
-    </div>
-</div>
+<app-scroll-h-tabs [labels]="genres" [labelTitle]="'Genres'" (labelClick)="onClickGenre($event)"></app-scroll-h-tabs>
 
 <hr>
 
-<div class="container mx-auto p-4">
-    <h2 class="text-xl font-semibold mb-3">Filter By Language</h2>
-    <div class="flex flex-wrap -mx-2">
-      <a (click)="moviesWithLanguage(language)" class="px-3 py-1 cursor-pointer bg-gray-500 text-white font-medium rounded-full shadow-md mr-2 mb-2" *ngFor="let language of languages">
-        {{ getLanguage(language) }}
-      </a>
-    </div>
-</div>
+<app-scroll-h-tabs [labels]="languages" [labelTitle]="'Languages'" (labelClick)="onClickLanguage($event)"></app-scroll-h-tabs>
 
 <hr>
 
-
-<div class="container mx-auto p-4">
-    <h2 class="text-xl font-semibold mb-3">Nearby Theaters</h2>
-    <div class="flex flex-wrap -mx-2">
-      <a (click)="openTheaterPage(theater._id)" class="px-3 py-1 cursor-pointer bg-gray-500 text-white font-medium rounded-full shadow-md mr-2 mb-2" *ngFor="let theater of theaters">
-        {{ theater.name }}
-      </a>
-    </div>
-</div>
+<app-scroll-h-tabs [labels]="theaterNames" [labelTitle]="'Nearby Theaters'" (labelClick)="onClickTheaterName($event)"></app-scroll-h-tabs>
 
 <hr>

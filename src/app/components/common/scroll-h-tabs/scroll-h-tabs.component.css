@@ -1,0 +1,10 @@
+/* horizontal-scrollable-tabs.component.css */
+
+.scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px; /* Adjust the font size as needed */
+  color: #000; /* Adjust the color as needed */
+  cursor: pointer;
+}

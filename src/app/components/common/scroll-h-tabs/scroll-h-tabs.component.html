@@ -1,0 +1,14 @@
+<!-- horizontal-scrollable-tabs.component.html -->
+<div class="py-3 px-8">
+    <h2 class="mb-2 text-lg font-bold text-gray-800">{{ labelTitle }}</h2>
+    <div class="relative px-8">
+          <div #labelsContainer class="tabs w-full flex gap-3 overflow-x-hidden whitespace-nowrap py-2">
+            <a class="bg-gray-100 border py-2 px-3 rounded-lg hover:bg-slate-200 transition duration-300 cursor-pointer"
+              *ngFor="let label of labels" (click)="onClickLabel(label)">
+              {{ label }}
+            </a>
+          </div>
+          <mat-icon (click)="scrollLeft()" class="scroll-button left-0" aria-label="Scroll Left">arrow_left</mat-icon>
+          <mat-icon (click)="scrollRight()" class="scroll-button right-0" aria-label="Scroll Right">arrow_right</mat-icon>
+    </div>
+</div>

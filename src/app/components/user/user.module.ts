@@ -37,6 +37,7 @@ import { SearchComponent } from '../common/search/search.component';
 import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
 import { UserWalletComponent } from './user-wallet/user-wallet.component';
 import { WalletHistoryComponent } from '../common/wallet-history/wallet-history.component';
+import { ScrollHTabsComponent } from '../common/scroll-h-tabs/scroll-h-tabs.component';
 
 export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionReducer<any> {
   return ngrxLocalStorageSync({ keys: ['user'], rehydrate: true })(reducer);
@@ -76,7 +77,8 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     SpinnerComponent,
     SearchComponent,
     CsMoviesComponent,
-    WalletHistoryComponent
+    WalletHistoryComponent,
+    ScrollHTabsComponent
   ],
   providers: [
     {
