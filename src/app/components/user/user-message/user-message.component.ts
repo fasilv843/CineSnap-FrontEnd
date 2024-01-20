@@ -4,6 +4,7 @@ import { Store, select } from '@ngrx/store'
 import { type IChatReqs, type IChatMessage, type IApiChatRes } from 'src/app/models/chat'
 import { type ITheaterRes } from 'src/app/models/theater'
 import { TheaterService } from 'src/app/services/theater.service'
+import { UserService } from 'src/app/services/user.service'
 import { WebSocketService } from 'src/app/services/web-socket.service'
 import { imagesFolderPath } from 'src/app/shared/constants'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
@@ -32,6 +33,7 @@ export class UserMessageComponent implements OnInit, OnDestroy {
   constructor (
     @Inject(WebSocketService) private readonly socketService: WebSocketService,
     @Inject(TheaterService) private readonly theaterService: TheaterService,
+    @Inject(UserService) private readonly userService: UserService,
     @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
     @Inject(Store) private readonly store: Store
   ) {
@@ -75,7 +77,7 @@ export class UserMessageComponent implements OnInit, OnDestroy {
 
   onSelectTheater (theater: ITheaterRes): void {
     this.currTheater = theater
-    this.theaterService.getChatHistory(theater._id, this.userId).subscribe({
+    this.userService.getChatHistory(theater._id, this.userId).subscribe({
       next: (res) => {
         if (res.data !== null) {
           this.chats = res.data.messages

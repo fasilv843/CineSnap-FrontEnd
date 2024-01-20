@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IApiUserRes, IApiUsersRes, IUserUpdate, IUsersAndCount } from '../models/users';
 import { IApiRes, IWalletHistoryAndCount } from '../models/common';
-import { IUsersListForChats } from '../models/chat';
+import { IApiChatRes, IUsersListForChats } from '../models/chat';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +49,10 @@ export class UserService {
 
   getUsersChattedWith (theaterId: string): Observable<IApiRes<IUsersListForChats[] | null>> {
     return this.http.get<IApiRes<IUsersListForChats[] | null>>(`theater/chat/users/${theaterId}`)
+  }
+
+  getChatHistory (theaterId: string, userId: string): Observable<IApiChatRes> {
+    return this.http.get<IApiChatRes>(`user/chat/history?theaterId=${theaterId}&userId=${userId}`)
   }
 
   updateUserWallet (userId: string, amount: number): Observable<IApiUserRes> {
