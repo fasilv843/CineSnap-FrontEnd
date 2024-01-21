@@ -43,7 +43,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
             next: (res) => {
               console.log(res.data.wallet, 'wallet from update wallet')
               this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
-              this.user.wallet = res.data.wallet
+              this.user = res.data
             }
           })
         } else {

@@ -80,22 +80,6 @@ export class EditUserProfileComponent implements OnInit {
       }
       console.log(this.dpUrl, 'dpUrl from edit profile')
     })
-
-    // if (this.user === null) {
-    //   const userToken = localStorage.getItem('userToken')
-    //   if (userToken === null) {
-    //     console.log('login again, token not available')
-    //     // code to logout
-    //   } else {
-    //     const tokenData = parseJwt(userToken)
-    //     console.log(tokenData, 'tokenData that got from parseJwt')
-    //     this.userService.getUserDetails(tokenData.id).subscribe({
-    //       next: (res) => {
-    //         if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
-    //       }
-    //     })
-    //   }
-    // }
   }
 
   onSubmit (): void {
@@ -176,8 +160,4 @@ export class EditUserProfileComponent implements OnInit {
       })
     }
   }
-
-  // updateAddress (): void {
-  //   this.addressUpdateMode = !this.addressUpdateMode
-  // }
 }

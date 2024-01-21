@@ -23,7 +23,6 @@ export class JwtInterceptor implements HttpInterceptor {
   intercept (request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // If there is bypass interceptor header, don't add jwt
     if (request.headers.has('Bypass-Interceptor')) {
-      request.headers.append('Access-Control-Allow-Origin', 'http://localhost:4200')
       console.log('bypassing interceptor from JwtInterceptor');
       return next.handle(request)
     }
