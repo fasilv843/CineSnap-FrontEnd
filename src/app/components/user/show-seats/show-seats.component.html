@@ -1,35 +1,42 @@
 <app-user-nav></app-user-nav>
 
 <div class="flex flex-col items-center mt-8 overflow-x-auto">
-  <div *ngIf="diamond" class="mb-10">
-    <h4>{{ diamond.name }}</h4>
-    <div class="flex items-center gap-4">
-      <div>
-        <ng-container *ngFor="let row of diamondKeys">
-          <div class="flex flex-nowrap items-center">
-            <ng-container *ngFor="let seatCol of diamond.seats[row]; index as i">
-              <div class="flex flex-col">
-                <a *ngIf="seatCol.col !== 0 && !seatCol.isBooked" (click)="selectSeat(row, seatCol)">
-                  <div class="seat p-3 text-center text-sm with-margin relative" appSeatStatus
-                    [row]="row" [col]="seatCol" [holdedSeats]="holdedSeats"
-                    [class.selected]="isSeatSelected(row, seatCol.col)">
+
+    <div *ngIf="diamond" class="mb-10">
+      <div class="flex justify-between font-bold text-lg px-1 mb-2">
+        <h4 class="">{{ diamond.name }} </h4>
+        <span>&#8377; {{ diamond.price }}</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div>
+          <ng-container *ngFor="let row of diamondKeys">
+            <div class="flex flex-nowrap items-center">
+              <ng-container *ngFor="let seatCol of diamond.seats[row]; index as i">
+                <div class="flex flex-col">
+                  <a *ngIf="seatCol.col !== 0 && !seatCol.isBooked" (click)="selectSeat(row, seatCol)">
+                    <div class="seat p-3 text-center text-sm with-margin relative" appSeatStatus
+                      [row]="row" [col]="seatCol" [holdedSeats]="holdedSeats"
+                      [class.selected]="isSeatSelected(row, seatCol.col)">
+                      {{ row + seatCol.col }}
+                    </div>
+                  </a>
+                  <div *ngIf="seatCol.col !== 0 && seatCol.isBooked" class="seat booked p-3 text-center text-sm with-margin">
                     {{ row + seatCol.col }}
                   </div>
-                </a>
-                <div *ngIf="seatCol.col !== 0 && seatCol.isBooked" class="seat booked p-3 text-center text-sm with-margin">
-                  {{ row + seatCol.col }}
+                  <div *ngIf="seatCol.col === 0" class="empty-space p-3 text-center text-sm with-margin"></div>
                 </div>
-                <div *ngIf="seatCol.col === 0" class="empty-space p-3 text-center text-sm with-margin"></div>
-              </div>
-            </ng-container>
-          </div>
-        </ng-container>
+              </ng-container>
+            </div>
+          </ng-container>
+        </div>
       </div>
     </div>
-  </div>
 
   <div *ngIf="gold" class="mb-10">
-    <h4>{{ gold.name }}</h4>
+    <div class="flex justify-between font-bold text-lg px-1 mb-2">
+      <h4 class="">{{ gold.name }} </h4>
+      <span>&#8377; {{ gold.price }}</span>
+    </div>
     <div class="flex items-center gap-4">
       <div>
         <ng-container *ngFor="let row of goldKeys">
@@ -56,7 +63,10 @@
   </div>
 
   <div *ngIf="silver" class="mb-32">
-    <h4>{{ silver.name }}</h4>
+    <div class="flex justify-between font-bold text-lg px-1 mb-2">
+      <h4 class="">{{ silver.name }} </h4>
+      <span>&#8377; {{ silver.price }}</span>
+    </div>
     <div class="flex items-center gap-4">
       <div>
         <ng-container *ngFor="let row of silverKeys">
