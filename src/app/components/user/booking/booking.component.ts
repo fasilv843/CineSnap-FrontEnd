@@ -22,6 +22,7 @@ import { CouponService } from 'src/app/services/coupon.service';
 import { ICouponRes } from 'src/app/models/coupon';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CouponModalComponent } from '../coupon-modal/coupon-modal.component';
+import { fetchUserData } from 'src/app/states/user/user.actions';
 
 // declare var Razorpay: any;
 @Component({
@@ -81,6 +82,7 @@ export class BookingComponent implements OnInit, OnDestroy {
     this.ticketService.confirmTicket(this.ticketId, this.paymentMethod, this.useWallet, this.appliedCoupon?._id).subscribe({
       next: (res) => {
         if (res.data !== null) {
+          this.store.dispatch(fetchUserData({ userId: this.user._id }))
           void this.router.navigate(['/user/show/book/success', res.data._id])
         }
       }

@@ -3,6 +3,7 @@ import { Store, select } from '@ngrx/store'
 import { getLanguage } from 'src/app/helpers/movie'
 import { type ITicketSeat, type ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
+import { fetchUserData } from 'src/app/states/user/user.actions'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 import Swal from 'sweetalert2'
 
@@ -62,6 +63,7 @@ export class UserBookingsComponent implements OnInit {
           { ...this.tickets[ticketIdx], isCancelled: true, cancelledBy: 'User' },
           ...this.tickets.slice(ticketIdx + 1)
         ]
+        this.store.dispatch(fetchUserData({ userId: this.userId }))
       }
     })
   }

@@ -25,6 +25,7 @@
     "@cloudinary/ng": "^2.0.0",
     "@cloudinary/url-gen": "^1.13.0",
     "@ng-bootstrap/ng-bootstrap": "^15.1.2",
+    "@ngrx/effects": "^16.3.0",
     "@ngrx/store": "^16.3.0",
     "@ngrx/store-devtools": "^16.3.0",
     "@ngx-env/builder": "^16.1.3",
