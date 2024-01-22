@@ -1,10 +1,17 @@
 import { Component, EventEmitter, Input, Output, computed, effect, inject, signal } from '@angular/core'
-import { MatDialog } from '@angular/material/dialog'
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'
 import { CropperDialogueComponent, type CropperDialogueResult } from '../cropper-dialogue/cropper-dialogue.component'
 import { filter } from 'rxjs'
+import { CommonModule } from '@angular/common'
 
 @Component({
   selector: 'app-profile-dp',
+  standalone: true,
+  imports: [
+    CommonModule,
+    CropperDialogueComponent,
+    MatDialogModule
+  ],
   templateUrl: './profile-dp.component.html',
   styleUrls: ['./profile-dp.component.css']
 })

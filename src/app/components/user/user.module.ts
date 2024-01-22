@@ -21,7 +21,6 @@ import { environments } from 'src/environments/environment';
 import { coordsReducer } from 'src/app/states/coords/coords.reducer';
 import { localStorageSync as ngrxLocalStorageSync } from 'ngrx-store-localstorage';
 
-import { ImageModule } from 'src/app/modules/image/image.module';
 import { UserBookingsComponent } from './user-bookings/user-bookings.component';
 import { TheaterPageComponent } from './theater-page/theater-page.component';
 import { FilterComponent } from '../common/filter/filter.component';
@@ -49,6 +48,7 @@ import { RepeatPassValidationComponent } from '../common/validation/repeat-pass-
 import { StateValidationComponent } from '../common/validation/state-validation/state-validation.component';
 import { ZipValidationComponent } from '../common/validation/zip-validation/zip-validation.component';
 import { DobValidationComponent } from '../common/validation/dob-validation/dob-validation.component';
+import { ProfileDpComponent } from '../common/profile-dp/profile-dp.component';
 
 export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionReducer<any> {
   return ngrxLocalStorageSync({ keys: ['user'], rehydrate: true })(reducer);
@@ -81,7 +81,6 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     StoreModule.forFeature('user', userReducer),
     StoreModule.forFeature('coords', coordsReducer),
     SocialLoginModule,
-    ImageModule,
     FilterComponent,
     DateComponent,
     SpinnerComponent,
@@ -89,6 +88,7 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     CsMoviesComponent,
     WalletHistoryComponent,
     ScrollHTabsComponent,
+    ProfileDpComponent,
 
     NameValidationComponent,
     MobileValidationComponent,

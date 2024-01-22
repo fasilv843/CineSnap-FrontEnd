@@ -16,7 +16,6 @@ import { ThrProfileComponent } from './thr-profile/thr-profile.component';
 import { StoreModule } from '@ngrx/store';
 import { theaterReducer } from 'src/app/states/theater/theater.reducer';
 import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater-profile.component';
-import { ImageModule } from 'src/app/modules/image/image.module';
 import { ThrSeatingComponent } from './thr-seating/thr-seating.component';
 import { FilterComponent } from '../common/filter/filter.component';
 import { DateComponent } from '../common/date/date.component';
@@ -42,6 +41,7 @@ import { RepeatPassValidationComponent } from '../common/validation/repeat-pass-
 import { MobileValidationComponent } from '../common/validation/mobile-validation/mobile-validation.component';
 import { EmailValidationComponent } from '../common/validation/email-validation/email-validation.component';
 import { NameValidationComponent } from '../common/validation/name-validation/name-validation.component';
+import { ProfileDpComponent } from '../common/profile-dp/profile-dp.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +68,6 @@ import { NameValidationComponent } from '../common/validation/name-validation/na
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forFeature('theater', theaterReducer),
-    ImageModule,
     FilterComponent,
     DateComponent,
     SearchComponent,
@@ -77,6 +76,7 @@ import { NameValidationComponent } from '../common/validation/name-validation/na
     TableFilterComponent,
     WalletHistoryComponent,
     LineGraphComponent,
+    ProfileDpComponent,
 
     // Validation Components
     NameValidationComponent,

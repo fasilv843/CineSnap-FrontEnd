@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { Store, select } from '@ngrx/store'
 import { ShowService } from 'src/app/services/show.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import { ShowFormModalComponent } from '../../common/show-form-modal/show-form-modal.component'
+import { ShowFormModalComponent } from '../show-form-modal/show-form-modal.component'
 import { type IShowsOnAScreen } from 'src/app/models/show'
 import { getGenre, getLanguage } from 'src/app/helpers/movie'
 import { MovieService } from 'src/app/services/movie.service'
@@ -47,14 +47,13 @@ export class ThrShowsComponent implements OnInit {
     modalRef.componentInstance.modalTitle = 'Add Show'
     modalRef.componentInstance.submitBtn = 'Add'
     modalRef.componentInstance.currDate = this.currDate
-    // modalRef.componentInstance.fields = yourFieldsArray
 
     void modalRef.result.then(
       (result) => {
         console.log('submitted form data', result)
         this.showService.addShow(result).subscribe({
           next: (res) => {
-            if (res.data !== null && isSameDay(res.data.startTime, this.currDate)) { // && isSameDay(res.data.startTime, this.currDate)
+            if (res.data !== null && isSameDay(res.data.startTime, this.currDate)) {
               const newShow = res.data
               console.log(res.data, 'res from addShow')
               const { screenId, movieId } = res.data
