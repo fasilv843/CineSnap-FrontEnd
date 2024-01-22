@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/5b64ca89-3841-412c-a19e-88fcefc1c156/deploy-status)](https://app.netlify.com/sites/cinesnap/deploys)
+
 # FrontEnd
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.2.
