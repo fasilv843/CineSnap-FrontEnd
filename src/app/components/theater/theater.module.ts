@@ -13,7 +13,6 @@ import { ThrScreensComponent } from './thr-screens/thr-screens.component';
 import { ThrMessagesComponent } from './thr-messages/thr-messages.component';
 import { ThrMoviesComponent } from './thr-movies/thr-movies.component';
 import { ThrProfileComponent } from './thr-profile/thr-profile.component';
-// import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { StoreModule } from '@ngrx/store';
 import { theaterReducer } from 'src/app/states/theater/theater.reducer';
 import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater-profile.component';
@@ -68,7 +67,6 @@ import { NameValidationComponent } from '../common/validation/name-validation/na
     TheaterRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    // ValidationModule,
     StoreModule.forFeature('theater', theaterReducer),
     ImageModule,
     FilterComponent,

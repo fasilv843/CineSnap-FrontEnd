@@ -19,7 +19,6 @@ import { SocialLoginModule, GoogleLoginProvider } from '@abacritt/angularx-socia
 
 import { environments } from 'src/environments/environment';
 import { coordsReducer } from 'src/app/states/coords/coords.reducer';
-// import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { localStorageSync as ngrxLocalStorageSync } from 'ngrx-store-localstorage';
 
 import { ImageModule } from 'src/app/modules/image/image.module';
@@ -49,7 +48,7 @@ import { PasswordValidationComponent } from '../common/validation/password-valid
 import { RepeatPassValidationComponent } from '../common/validation/repeat-pass-validation/repeat-pass-validation.component';
 import { StateValidationComponent } from '../common/validation/state-validation/state-validation.component';
 import { ZipValidationComponent } from '../common/validation/zip-validation/zip-validation.component';
-import { DobValidationComponent } from '../validation/dob-validation/dob-validation.component';
+import { DobValidationComponent } from '../common/validation/dob-validation/dob-validation.component';
 
 export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionReducer<any> {
   return ngrxLocalStorageSync({ keys: ['user'], rehydrate: true })(reducer);
@@ -82,7 +81,6 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     StoreModule.forFeature('user', userReducer),
     StoreModule.forFeature('coords', coordsReducer),
     SocialLoginModule,
-    // ValidationModule,
     ImageModule,
     FilterComponent,
     DateComponent,

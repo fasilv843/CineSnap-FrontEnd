@@ -13,11 +13,11 @@ import { MovieService } from 'src/app/services/movie.service'
 import { ScreenService } from 'src/app/services/screen.service'
 import { defaultPriceValidators, requiredValidator } from 'src/app/shared/valiators'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import { MovieSelectValidationComponent } from './validation/movie-select-validation/movie-select-validation.component'
+import { DefPriceValidationComponent } from './validation/def-price-validation/def-price-validation.component'
 import { ScreenSelectValidationComponent } from './validation/screen-select-validation/screen-select-validation.component'
 import { ShowDateValidationComponent } from './validation/show-date-validation/show-date-validation.component'
 import { StartTimeValidationComponent } from './validation/start-time-validation/start-time-validation.component'
-import { DefPriceValidationComponent } from './validation/def-price-validation/def-price-validation.component'
-import { MovieSelectValidationComponent } from '../../validation/movie-select-validation/movie-select-validation.component'
 
 @Component({
   standalone: true,

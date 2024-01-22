@@ -13,7 +13,6 @@ import { AdminMessagesComponent } from './admin-messages/admin-messages.componen
 import { AdminMoviesComponent } from './admin-movies/admin-movies.component';
 import { AdminCsMoviesComponent } from './admin-cs-movies/admin-cs-movies.component';
 import { AdminMoviesExploreComponent } from './admin-movies-explore/admin-movies-explore.component';
-// import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { FilterComponent } from '../common/filter/filter.component';
 import { SearchComponent } from '../common/search/search.component';
 import { TableFilterComponent } from '../common/table-filter/table-filter.component';
@@ -45,7 +44,6 @@ import { PasswordValidationComponent } from '../common/validation/password-valid
     AdminRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    // ValidationModule,
     FilterComponent,
     SearchComponent,
     TableFilterComponent,
