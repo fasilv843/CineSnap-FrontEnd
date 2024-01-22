@@ -13,7 +13,7 @@ import { ThrScreensComponent } from './thr-screens/thr-screens.component';
 import { ThrMessagesComponent } from './thr-messages/thr-messages.component';
 import { ThrMoviesComponent } from './thr-movies/thr-movies.component';
 import { ThrProfileComponent } from './thr-profile/thr-profile.component';
-import { ValidationModule } from 'src/app/modules/validation/validation.module';
+// import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { StoreModule } from '@ngrx/store';
 import { theaterReducer } from 'src/app/states/theater/theater.reducer';
 import { EditTheaterProfileComponent } from './edit-theater-profile/edit-theater-profile.component';
@@ -32,6 +32,17 @@ import { ThrWalletComponent } from './thr-wallet/thr-wallet.component';
 import { WalletHistoryComponent } from '../common/wallet-history/wallet-history.component';
 import { ThrCouponComponent } from './thr-coupon/thr-coupon.component';
 import { LineGraphComponent } from '../common/line-graph/line-graph.component';
+import { CityValidationComponent } from '../common/validation/city-validation/city-validation.component';
+import { OtpValidationComponent } from '../common/validation/otp-validation/otp-validation.component';
+import { CountryValidationComponent } from '../common/validation/country-validation/country-validation.component';
+import { StateValidationComponent } from '../common/validation/state-validation/state-validation.component';
+import { DistrictValidationComponent } from '../common/validation/district-validation/district-validation.component';
+import { ZipValidationComponent } from '../common/validation/zip-validation/zip-validation.component';
+import { PasswordValidationComponent } from '../common/validation/password-validation/password-validation.component';
+import { RepeatPassValidationComponent } from '../common/validation/repeat-pass-validation/repeat-pass-validation.component';
+import { MobileValidationComponent } from '../common/validation/mobile-validation/mobile-validation.component';
+import { EmailValidationComponent } from '../common/validation/email-validation/email-validation.component';
+import { NameValidationComponent } from '../common/validation/name-validation/name-validation.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +68,7 @@ import { LineGraphComponent } from '../common/line-graph/line-graph.component';
     TheaterRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    ValidationModule,
+    // ValidationModule,
     StoreModule.forFeature('theater', theaterReducer),
     ImageModule,
     FilterComponent,
@@ -67,7 +78,20 @@ import { LineGraphComponent } from '../common/line-graph/line-graph.component';
     SpinnerComponent,
     TableFilterComponent,
     WalletHistoryComponent,
-    LineGraphComponent
+    LineGraphComponent,
+
+    // Validation Components
+    NameValidationComponent,
+    MobileValidationComponent,
+    EmailValidationComponent,
+    PasswordValidationComponent,
+    RepeatPassValidationComponent,
+    OtpValidationComponent,
+    CountryValidationComponent,
+    StateValidationComponent,
+    DistrictValidationComponent,
+    CityValidationComponent,
+    ZipValidationComponent
   ]
 })
 export class TheaterModule { }

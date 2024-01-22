@@ -3,13 +3,13 @@ import { Component, Input } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
-  selector: 'app-dob-validation',
+  selector: 'app-screen-name-validation',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './dob-validation.component.html',
-  styleUrls: ['./dob-validation.component.css']
+  templateUrl: './screen-name-validation.component.html',
+  styleUrls: ['./screen-name-validation.component.css']
 })
-export class DobValidationComponent {
-  @Input() dobControl: AbstractControl | null = null
+export class ScreenNameValidationComponent {
+  @Input() nameControl: AbstractControl | null = null
   @Input() isSubmitted: boolean = false
 }

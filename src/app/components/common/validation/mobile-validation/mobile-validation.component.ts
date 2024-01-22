@@ -3,13 +3,13 @@ import { Component, Input } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
-  selector: 'app-dob-validation',
+  selector: 'app-mobile-validation',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './dob-validation.component.html',
-  styleUrls: ['./dob-validation.component.css']
+  templateUrl: './mobile-validation.component.html',
+  styleUrls: ['./mobile-validation.component.css']
 })
-export class DobValidationComponent {
-  @Input() dobControl: AbstractControl | null = null
+export class MobileValidationComponent {
+  @Input() mobileControl: AbstractControl | null = null
   @Input() isSubmitted: boolean = false
 }

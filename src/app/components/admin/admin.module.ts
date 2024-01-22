@@ -13,7 +13,7 @@ import { AdminMessagesComponent } from './admin-messages/admin-messages.componen
 import { AdminMoviesComponent } from './admin-movies/admin-movies.component';
 import { AdminCsMoviesComponent } from './admin-cs-movies/admin-cs-movies.component';
 import { AdminMoviesExploreComponent } from './admin-movies-explore/admin-movies-explore.component';
-import { ValidationModule } from 'src/app/modules/validation/validation.module';
+// import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { FilterComponent } from '../common/filter/filter.component';
 import { SearchComponent } from '../common/search/search.component';
 import { TableFilterComponent } from '../common/table-filter/table-filter.component';
@@ -23,6 +23,8 @@ import { LineGraphComponent } from '../common/line-graph/line-graph.component';
 import { MovieRowComponent } from '../common/movie-row/movie-row.component';
 import { AdminMoviesSearchComponent } from './admin-movies-search/admin-movies-search.component';
 import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
+import { EmailValidationComponent } from '../common/validation/email-validation/email-validation.component';
+import { PasswordValidationComponent } from '../common/validation/password-validation/password-validation.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,7 @@ import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
     AdminRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    ValidationModule,
+    // ValidationModule,
     FilterComponent,
     SearchComponent,
     TableFilterComponent,
@@ -51,7 +53,10 @@ import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
     MovieRowComponent,
     CsMoviesComponent,
     AdminMoviesSearchComponent,
-    SearchComponent
+    SearchComponent,
+
+    EmailValidationComponent,
+    PasswordValidationComponent
   ]
 })
 export class AdminModule { }

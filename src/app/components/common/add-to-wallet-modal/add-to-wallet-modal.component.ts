@@ -4,7 +4,7 @@ import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap'
 import { FormBuilder, type FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { validateByTrimming } from 'src/app/helpers/validations'
 import { walletAmountValidators } from 'src/app/shared/valiators'
-import { WalletAmountValidationComponent } from '../../validation/wallet-amount-validation/wallet-amount-validation.component'
+import { WalletAmountValidationComponent } from './validation/wallet-amount-validation/wallet-amount-validation.component'
 
 @Component({
   selector: 'app-add-to-wallet-modal',

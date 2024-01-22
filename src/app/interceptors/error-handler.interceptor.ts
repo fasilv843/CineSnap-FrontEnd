@@ -22,4 +22,3 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
     )
   }
 }
-

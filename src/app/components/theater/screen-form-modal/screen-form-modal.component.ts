@@ -4,11 +4,13 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { Store, select } from '@ngrx/store';
 import { validateByTrimming } from 'src/app/helpers/validations';
 import { colValidators, rowValidators, screenNameValidators } from 'src/app/shared/valiators';
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector';
+import { ScreenNameValidationComponent } from './validation/screen-name-validation/screen-name-validation.component';
+import { RowValidationComponent } from './validation/row-validation/row-validation.component';
+import { ColValidationComponent } from './validation/col-validation/col-validation.component';
 
 @Component({
   selector: 'app-screen-form-modal',
@@ -17,7 +19,11 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector';
     CommonModule,
     NgbModalModule,
     ReactiveFormsModule,
-    ValidationModule
+
+    // ? Validation Error Message Components
+    ScreenNameValidationComponent,
+    RowValidationComponent,
+    ColValidationComponent
   ],
   templateUrl: './screen-form-modal.component.html',
   styleUrls: ['./screen-form-modal.component.css']

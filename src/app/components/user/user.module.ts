@@ -19,7 +19,7 @@ import { SocialLoginModule, GoogleLoginProvider } from '@abacritt/angularx-socia
 
 import { environments } from 'src/environments/environment';
 import { coordsReducer } from 'src/app/states/coords/coords.reducer';
-import { ValidationModule } from 'src/app/modules/validation/validation.module';
+// import { ValidationModule } from 'src/app/modules/validation/validation.module';
 import { localStorageSync as ngrxLocalStorageSync } from 'ngrx-store-localstorage';
 
 import { ImageModule } from 'src/app/modules/image/image.module';
@@ -38,6 +38,18 @@ import { CsMoviesComponent } from '../common/cs-movies/cs-movies.component';
 import { UserWalletComponent } from './user-wallet/user-wallet.component';
 import { WalletHistoryComponent } from '../common/wallet-history/wallet-history.component';
 import { ScrollHTabsComponent } from '../common/scroll-h-tabs/scroll-h-tabs.component';
+import { CityValidationComponent } from '../common/validation/city-validation/city-validation.component';
+import { CountryValidationComponent } from '../common/validation/country-validation/country-validation.component';
+import { DistrictValidationComponent } from '../common/validation/district-validation/district-validation.component';
+import { EmailValidationComponent } from '../common/validation/email-validation/email-validation.component';
+import { MobileValidationComponent } from '../common/validation/mobile-validation/mobile-validation.component';
+import { NameValidationComponent } from '../common/validation/name-validation/name-validation.component';
+import { OtpValidationComponent } from '../common/validation/otp-validation/otp-validation.component';
+import { PasswordValidationComponent } from '../common/validation/password-validation/password-validation.component';
+import { RepeatPassValidationComponent } from '../common/validation/repeat-pass-validation/repeat-pass-validation.component';
+import { StateValidationComponent } from '../common/validation/state-validation/state-validation.component';
+import { ZipValidationComponent } from '../common/validation/zip-validation/zip-validation.component';
+import { DobValidationComponent } from '../validation/dob-validation/dob-validation.component';
 
 export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionReducer<any> {
   return ngrxLocalStorageSync({ keys: ['user'], rehydrate: true })(reducer);
@@ -70,7 +82,7 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     StoreModule.forFeature('user', userReducer),
     StoreModule.forFeature('coords', coordsReducer),
     SocialLoginModule,
-    ValidationModule,
+    // ValidationModule,
     ImageModule,
     FilterComponent,
     DateComponent,
@@ -78,7 +90,20 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     SearchComponent,
     CsMoviesComponent,
     WalletHistoryComponent,
-    ScrollHTabsComponent
+    ScrollHTabsComponent,
+
+    NameValidationComponent,
+    MobileValidationComponent,
+    EmailValidationComponent,
+    DobValidationComponent,
+    PasswordValidationComponent,
+    RepeatPassValidationComponent,
+    OtpValidationComponent,
+    CountryValidationComponent,
+    StateValidationComponent,
+    DistrictValidationComponent,
+    CityValidationComponent,
+    ZipValidationComponent
   ],
   providers: [
     {
