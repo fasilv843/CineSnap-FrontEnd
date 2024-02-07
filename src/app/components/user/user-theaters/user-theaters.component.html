@@ -15,7 +15,7 @@
                     <h3 class="font-bold text-xl">{{ thr.name }}</h3>
                     <p class="text-gray-500 text-sm">{{ thr.address.landmark }} {{ thr.address.city }}</p>
                 </div>
-                <div class="flex justify-between">
+                <div class="flex gap-2">
                     <a target="_blank" href="http://maps.google.co.uk/maps?q={{ thr.coords.coordinates[1] }},{{ thr.coords.coordinates[0] }}" class="btn btn-primary">Direction</a>
                     <a [routerLink]="['/user/theater', thr._id]" class="btn btn-secondary">View</a>
                 </div>

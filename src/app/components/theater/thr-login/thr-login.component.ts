@@ -54,7 +54,11 @@ export class ThrLoginComponent {
             } else if (res.data.approvalStatus === 'Pending') {
               void this.router.navigate(['/theater/approval/pending'])
             } else if (res.data.approvalStatus === 'Rejected') {
-              void this.router.navigate(['/theater/approval/rejected'])
+              void this.router.navigate(['/theater/approval/rejected'], {
+                queryParams: {
+                  reason: 'Rejection'
+                }
+              })
             }
           }
         }
