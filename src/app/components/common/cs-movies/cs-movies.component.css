@@ -1,0 +1,11 @@
+.backdrop {
+    position: fixed; /* Covers the entire viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20; /* Ensure it's behind the filter component */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background for darkness */
+    /* Or, for a blur effect: */
+    backdrop-filter: blur(5px);
+}

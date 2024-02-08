@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core'
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FilterComponent } from '../filter/filter.component'
 import { SearchComponent } from '../search/search.component'
@@ -34,6 +34,8 @@ export class CsMoviesComponent implements OnInit, OnDestroy {
   isCompleted = false
   isLoading = true
   scrollDistance = 5
+  // Show filter for small screens
+  showFilter = false
   movieFilter: IFilterEvent = {
     availability: 'Available',
     filterGenres: [],
@@ -42,6 +44,16 @@ export class CsMoviesComponent implements OnInit, OnDestroy {
 
   showSpellingError = false
   private dataServiceSubscription!: Subscription
+
+  @HostBinding() isLargeScreen = window.innerWidth > 768
+
+  // Listen for window resize events
+  @HostListener('window:resize', ['$event'])
+  onResize (): void {
+    // Update variable name based on screen size
+    this.isLargeScreen = window.innerWidth > 768
+    console.log('resizing', this.isLargeScreen)
+  }
 
   constructor (
     private readonly movieService: MovieService,
@@ -78,6 +90,10 @@ export class CsMoviesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy (): void {
     this.dataServiceSubscription.unsubscribe()
+  }
+
+  toggleFilter (): void {
+    this.showFilter = !this.showFilter
   }
 
   deleteMovie (movieId: string, action: 'Add' | 'Delete'): void {
