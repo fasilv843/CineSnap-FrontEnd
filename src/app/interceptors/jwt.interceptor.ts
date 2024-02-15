@@ -87,31 +87,9 @@ export class JwtInterceptor implements HttpInterceptor {
           return next.handle(newAccessRequest)
         }
       })
-
-      // .pipe(
-      //   switchMap((res) => {
-      //     const newAccessToken = res.accessToken
-      //     console.log(newAccessToken, 'new access token from backend');
-
-      //     localStorage.setItem(user + 'AccessToken', newAccessToken)
-      //     const newAccessRequest = request.clone({
-      //       setHeaders: { Authorization: `Bearer ${newAccessToken}` }
-      //     });
-      //     console.log('handling request with new access token')
-
-      //     return next.handle(newAccessRequest)
-      //   })
-
-      // )
-
     }
 
-    // If refresh token is not available, redirect to login page
-    // console.warn('removing refresh token, !!!');
-    // localStorage.removeItem(user + 'RefreshToken')
-    console.log(request.headers, 'req.headers');
-    // if (user !== 'user')
-    console.log('handling request without jwt token');
+    console.warn('handling request without jwt token');
     return next.handle(request);
   }
 }
