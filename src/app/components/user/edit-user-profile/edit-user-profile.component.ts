@@ -4,7 +4,6 @@ import { Router } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { dateToString } from 'src/app/helpers/date'
 import { getLocation } from 'src/app/helpers/location'
-// import { parseJwt } from 'src/app/helpers/jwt-token'
 import { validateByTrimming, validateDOB } from 'src/app/helpers/validations'
 import { type ICoords, type IUserAddress } from 'src/app/models/common'
 import { type IUserUpdate, type IUserRes } from 'src/app/models/users'
@@ -12,10 +11,8 @@ import { GeoLocationService } from 'src/app/services/geo-location.service'
 import { UserService } from 'src/app/services/user.service'
 import { mobileValidators, nameValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators'
 import { saveUserOnStore } from 'src/app/states/user/user.actions'
-// import { saveUserOnStore } from 'src/app/states/user/user.actions'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 import { environments } from 'src/environments/environment'
-// import { MatToolbarModule } from '@angular/material/toolbar'
 
 @Component({
   selector: 'app-edit-user-profile',
