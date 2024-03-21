@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-// import { type HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { Subject, takeUntil } from 'rxjs'
 import { getGenre, getGenreId, getLanguage, getLanguageAbbr } from 'src/app/helpers/movie'
-import { type ICSMovieRes } from 'src/app/models/movie'
+// import { type ICSMovieRes } from 'src/app/models/movie'
 import { type ITheaterRes } from 'src/app/models/theater'
 import { MovieService } from 'src/app/services/movie.service'
 import { TheaterService } from 'src/app/services/theater.service'
 import { saveCoords } from 'src/app/states/coords/coords.actions'
 import { selectCoords } from 'src/app/states/coords/coords.selector'
+import { ICarouselData } from './carousel/carousel.component'
 
 @Component({
   selector: 'app-user-home',
@@ -19,7 +19,7 @@ import { selectCoords } from 'src/app/states/coords/coords.selector'
 })
 export class UserHomeComponent implements OnInit {
   coords$ = this.store.pipe(select(selectCoords))
-  bannerMovies: ICSMovieRes[] = []
+  bannerMovies: ICarouselData[] = []
   active = 1
   languages: string[] = []
   genres: string[] = []
@@ -53,8 +53,13 @@ export class UserHomeComponent implements OnInit {
   ngOnInit (): void {
     this.movieService.getBannerMovies().subscribe({
       next: (res) => {
-        console.log(res.data, 'res.data from bannermvooeis')
-        this.bannerMovies = res.data
+        console.log(res.data, 'res.data from bannerMovies')
+        this.bannerMovies = res.data.map(movie => {
+          return {
+            imageUrl: 'https://image.tmdb.org/t/p/original/' + movie.backdrop_path,
+            title: movie.title
+          }
+        })
       }
     })
 

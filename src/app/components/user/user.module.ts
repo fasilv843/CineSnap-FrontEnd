@@ -49,6 +49,7 @@ import { StateValidationComponent } from '../common/validation/state-validation/
 import { ZipValidationComponent } from '../common/validation/zip-validation/zip-validation.component';
 import { DobValidationComponent } from '../common/validation/dob-validation/dob-validation.component';
 import { ProfileDpComponent } from '../common/profile-dp/profile-dp.component';
+import { CarouselComponent } from './user-home/carousel/carousel.component';
 
 export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionReducer<any> {
   return ngrxLocalStorageSync({ keys: ['user'], rehydrate: true })(reducer);
@@ -89,6 +90,7 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
     WalletHistoryComponent,
     ScrollHTabsComponent,
     ProfileDpComponent,
+    CarouselComponent,
 
     NameValidationComponent,
     MobileValidationComponent,

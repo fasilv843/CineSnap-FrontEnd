@@ -1,0 +1,15 @@
+
+<div class="bg-slate-950 bg-opacity-40 p-3">
+    <ngb-carousel *ngIf="images.length" class="p-3">
+      <ng-template ngbSlide *ngFor="let image of images">
+        <div class="picsum-img-wrapper flex justify-center">
+          <img [src]="image.imageUrl" [alt]="image.title + ' Poster'" class="w-auto max-h-96 rounded-lg" />
+          <div class="carousel-caption ">
+            <h3 class="text-amber-600 text-stroke-3 text-lg font-semibold">{{ image.title }}</h3>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-carousel>
+</div>
+  
+  

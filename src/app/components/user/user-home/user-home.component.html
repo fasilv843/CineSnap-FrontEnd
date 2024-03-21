@@ -1,6 +1,6 @@
 <app-user-nav></app-user-nav>
 
-<div *ngIf="bannerMovies?.length" class="mx-auto px-4 mt-8">
+<!-- <div *ngIf="bannerMovies?.length" class="mx-auto px-4 mt-8">
     <div id="" class="relative flex gap-2 justify-center overflow-hidden rounded-lg">
 
         <div class="flex flex-col justify-center w-1/12">
@@ -37,7 +37,11 @@
         </div>
 
     </div>
-</div>
+</div> -->
+
+<app-carousel
+    [images]="bannerMovies"
+></app-carousel>
 
 <hr class="mt-4">
 
