@@ -66,7 +66,6 @@ export class UserNavComponent implements OnInit {
   }
 
   onLogout (): void {
-    console.log('removing access and refresh')
     localStorage.removeItem('userAccessToken')
     localStorage.removeItem('userRefreshToken')
     this.store.dispatch(deleteUserFromStore())
