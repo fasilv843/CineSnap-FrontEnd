@@ -1,0 +1,50 @@
+<div>
+	<div class="offcanvas-header max-w-full px-3">
+		<h4 class="offcanvas-title text-lg " >Pages</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="onDismiss('Cross Click')"> &#10006; </button>
+	</div>
+	<div class="offcanvas-body">
+        <div >
+
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet" />
+            <div class="w-60 px-2  text-left capitalize font-medium">
+          
+              <a (click)="onClose('home')" class="w-full">
+                <span class="cursor-pointer px-2 hover:bg-gray-800 hover:text-amber-500 rounded block mb-3">
+                  <i class="w-8 fas fa-stream p-2 rounded-full"></i>
+                  <span class="mx-2">Home</span>
+                </span>
+              </a>
+          
+              <a (click)="onClose('movies')"  class="w-full">
+                <span class="cursor-pointer px-2 hover:bg-gray-800 hover:text-amber-500 rounded block mb-3">
+                  <i class="w-8 fas fa-stream p-2 rounded-full"></i>
+                  <span class="mx-2">Movies</span>
+                </span>
+              </a>
+          
+              <a (click)="onClose('theaters')"  class="w-full">
+                <span class="cursor-pointer px-2 hover:bg-gray-800 hover:text-amber-500 rounded block mb-3">
+                  <i class="w-8 fas fa-search p-2 rounded-full"></i>
+                  <span class="mx-2">Theaters</span>
+                </span>
+              </a>
+          
+              <a (click)="onClose('messages')"  class="w-full">
+                <span class="cursor-pointer px-2 hover:bg-gray-800 hover:text-amber-500 rounded block mb-3">
+                  <i class="w-8 fas fa-th p-2 rounded-full"></i>
+                  <span class="mx-2">Messages</span>
+                </span>
+              </a>
+          
+              <a (click)="onClose('logout')" class="w-full" >
+                <span class="cursor-pointer px-2 hover:bg-gray-800 hover:text-amber-500 rounded block mb-3">
+                  <i class="w-8 fas fa-calendar-alt p-2 rounded-full"></i>
+                  <span class="mx-2">Logout</span>
+                </span>
+              </a>
+          
+            </div>
+          </div>
+	</div>
+</div>

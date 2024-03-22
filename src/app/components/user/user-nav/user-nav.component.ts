@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/semi */
 import { Component, Inject, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { Store, select } from '@ngrx/store';
 import { imagesFolderPath } from 'src/app/shared/constants';
 import { saveCoords } from 'src/app/states/coords/coords.actions';
 import { selectCoords } from 'src/app/states/coords/coords.selector';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
+import { UserOffcanvasComponent } from './user-offcanvas/user-offcanvas.component';
+import { deleteUserFromStore } from 'src/app/states/user/user.actions';
 
 @Component({
   selector: 'app-user-nav',
@@ -14,7 +17,6 @@ import { selectUserDetails } from 'src/app/states/user/user.selector';
 })
 export class UserNavComponent implements OnInit {
   isLoggedIn: boolean = false
-  showSidebar = false
   userDetails$ = this.store.pipe(select(selectUserDetails))
   coords$ = this.store.pipe(select(selectCoords))
   latitude: number | undefined;
@@ -23,7 +25,8 @@ export class UserNavComponent implements OnInit {
 
   constructor (
     @Inject(Router) private readonly router: Router,
-    @Inject(Store) private readonly store: Store
+    @Inject(Store) private readonly store: Store,
+    @Inject(NgbOffcanvas) private readonly ngbOffcanvas: NgbOffcanvas
   ) {}
 
   ngOnInit (): void {
@@ -40,13 +43,25 @@ export class UserNavComponent implements OnInit {
     }
   }
 
-  toggleSideBar (): void {
-    this.showSidebar = !this.showSidebar
+  openOffcanvas (): void {
+    this.ngbOffcanvas.open(UserOffcanvasComponent, { backdrop: true }).result.then(
+      (result) => {
+        console.log(result, 'result of canvas')
+        if (result === 'logout') this.onLogout()
+        else {
+          void this.router.navigate([`/user/${result}`])
+        }
+      },
+      (closeReason) => {
+        console.log('off canvas closed with reason : ' + closeReason)
+      }
+    )
   }
 
   onLogout (): void {
-    localStorage.removeItem('userToken')
+    localStorage.removeItem('userAccessToken')
+    localStorage.removeItem('userRefreshToken')
+    this.store.dispatch(deleteUserFromStore())
     void this.router.navigate(['/user/home'])
-    this.toggleSideBar()
   }
 }
