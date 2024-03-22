@@ -1,7 +1,9 @@
-import { Component } from '@angular/core'
+/* eslint-disable @typescript-eslint/consistent-type-imports */
+import { Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { NgbActiveOffcanvas, NgbOffcanvasModule } from '@ng-bootstrap/ng-bootstrap'
+import { Store } from '@ngrx/store'
+import { selectUserDetails } from 'src/app/states/user/user.selector'
 
 @Component({
   selector: 'app-user-offcanvas',
@@ -10,11 +12,21 @@ import { NgbActiveOffcanvas, NgbOffcanvasModule } from '@ng-bootstrap/ng-bootstr
   templateUrl: './user-offcanvas.component.html',
   styleUrls: ['./user-offcanvas.component.css']
 })
-export class UserOffcanvasComponent {
+export class UserOffcanvasComponent implements OnInit {
   // private readonly _ngbActiveOffcanvas = inject(NgbActiveOffcanvas)
+  userDetails$ = this._store.select(selectUserDetails)
+  isLoggedIn = false
+
   constructor (
-    private readonly _ngbActiveOffcanvas: NgbActiveOffcanvas
+    private readonly _ngbActiveOffcanvas: NgbActiveOffcanvas,
+    private readonly _store: Store
   ) {}
+
+  ngOnInit (): void {
+    this.userDetails$.subscribe((user) => {
+      if (user != null) this.isLoggedIn = true
+    })
+  }
 
   onDismiss (reason: string): void {
     this._ngbActiveOffcanvas.dismiss(reason)

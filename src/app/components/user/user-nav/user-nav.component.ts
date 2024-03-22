@@ -41,14 +41,21 @@ export class UserNavComponent implements OnInit {
     } else {
       console.log('No support for geolocation')
     }
+
+    this.userDetails$.subscribe(user => {
+      if (user !== null) this.isLoggedIn = true
+    })
   }
 
   openOffcanvas (): void {
     this.ngbOffcanvas.open(UserOffcanvasComponent, { backdrop: true }).result.then(
       (result) => {
         console.log(result, 'result of canvas')
-        if (result === 'logout') this.onLogout()
-        else {
+        if (result === 'logout') {
+          console.log(result, this.isLoggedIn);
+          if (this.isLoggedIn) this.onLogout()
+          else void this.router.navigate(['/user/login'])
+        } else {
           void this.router.navigate([`/user/${result}`])
         }
       },
@@ -59,9 +66,11 @@ export class UserNavComponent implements OnInit {
   }
 
   onLogout (): void {
+    console.log('removing access and refresh')
     localStorage.removeItem('userAccessToken')
     localStorage.removeItem('userRefreshToken')
     this.store.dispatch(deleteUserFromStore())
     void this.router.navigate(['/user/home'])
+    this.isLoggedIn = false
   }
 }

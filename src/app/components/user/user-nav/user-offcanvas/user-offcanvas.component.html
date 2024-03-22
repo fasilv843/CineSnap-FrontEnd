@@ -40,7 +40,7 @@
               <a (click)="onClose('logout')" class="w-full" >
                 <span class="cursor-pointer px-2 hover:bg-gray-800 hover:text-amber-500 rounded block mb-3">
                   <i class="w-8 fas fa-calendar-alt p-2 rounded-full"></i>
-                  <span class="mx-2">Logout</span>
+                  <span class="mx-2">{{ isLoggedIn ? 'Logout' : 'Login' }}</span>
                 </span>
               </a>
           
