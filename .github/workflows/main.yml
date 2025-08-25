@@ -1,0 +1,53 @@
+name: Deploy to S3 and Invalidate CloudFront
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: AWS
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+        env:
+          NG_APP_ENV: ${{ vars.NG_APP_ENV }}
+          NG_APP_BASE_URL: ${{ vars.NG_APP_BASE_URL }}
+          NG_APP_BACKEND_URL: ${{ vars.NG_APP_BACKEND_URL }}
+          NG_APP_EMAIL: ${{ vars.NG_APP_EMAIL }}
+          NG_APP_GEOPIFY_API: ${{ vars.NG_APP_GEOPIFY_API }}
+          NG_APP_TMDB_API: ${{ vars.NG_APP_TMDB_API }}
+
+          NG_APP_GEOPIFY_KEY: ${{ secrets.NG_APP_GEOPIFY_KEY }}
+          NG_APP_TMDB_KEY: ${{ secrets.NG_APP_TMDB_KEY }}
+          NG_APP_GOOGLE_CLIENT_ID: ${{ secrets.NG_APP_GOOGLE_CLIENT_ID }}
+          NG_APP_GOOGLE_CLIENT_SECRET: ${{ secrets.NG_APP_GOOGLE_CLIENT_SECRET }}
+          NG_APP_RAZORPAY_PUBLIC_KEY: ${{ secrets.NG_APP_RAZORPAY_PUBLIC_KEY }}
+
+      - name: Sync S3
+        run: aws s3 sync dist/front-end s3://cinesnap/dist --delete
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
+
+      - name: Invalidate CloudFront
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/*"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
