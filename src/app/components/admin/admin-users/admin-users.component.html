@@ -53,8 +53,8 @@
             </td>
             <td class="px-3 py-2">
               <button type="button" title="Open details"
-                class="px-2 rounded-full dark:text-black focus:dark:bg-gray-700"
-                [ngClass]="user.isBlocked ? 'bg-green-400 focus:dark:bg-green-600' : 'bg-red-500 focus:dark:bg-red-600'"
+                class="px-2 rounded-full dark:text-black dark:focus:bg-gray-700"
+                [ngClass]="user.isBlocked ? 'bg-green-400 dark:focus:bg-green-600' : 'bg-red-500 dark:focus:bg-red-600'"
                 (click)="onBlock(user._id, user.isBlocked ?  'Unblock' : 'Block')">
                 {{ user.isBlocked ? 'Unblock' : 'Block' }}
               </button>

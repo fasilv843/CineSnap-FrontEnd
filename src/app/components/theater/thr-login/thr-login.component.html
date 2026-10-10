@@ -11,12 +11,12 @@
               <form [formGroup]="form" (submit)="onSubmit()">
 
                 <div class="mb-3">
-                  <input type="email"  formControlName="email" id="form3Example3cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter Email" />
+                  <input type="email"  formControlName="email" id="form3Example3cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Email" />
                   <app-email-validation [emailControl]="form.get('email')" [isSubmitted]="isSubmitted"></app-email-validation>
                 </div>
 
                 <div class="mb-3">
-                    <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
+                    <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
                     <app-password-validation [passwordControl]="form.get('password')" [isSubmitted]="isSubmitted"></app-password-validation>
                 </div>
                   

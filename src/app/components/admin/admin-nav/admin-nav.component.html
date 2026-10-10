@@ -57,38 +57,38 @@
   <!--dark mode - wide side navigation-->
   @if (showSidebar) {
     <div
-      class="w-60 py-4 px-2 text-amber-300 bg-black text-left rounded mr-3 capitalize font-medium shadow-lg md:hidden fixed right-0 top-24">
+      class="w-60 py-4 px-2 text-amber-300 bg-black text-left rounded-sm mr-3 capitalize font-medium shadow-lg md:hidden fixed right-0 top-24">
       <a routerLink="/admin/home" (click)="toggleSideBar()">
-        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded-sm block mb-4">
           <i class="w-8 fas fa-stream p-2 rounded-full"></i>
           <span class="mx-2">Home</span>
         </span>
       </a>
       <a routerLink="/admin/theaters" (click)="toggleSideBar()">
-        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded-sm block mb-4">
           <i class="w-8 fas fa-search p-2 bg-gray-800 rounded-full"></i>
           <span class="mx-2">Theaters</span>
         </span>
       </a>
       <a routerLink="/admin/users" (click)="toggleSideBar()">
-        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+        <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded-sm block mb-4">
           <i class="w-8 fas fa-th p-2 bg-gray-800 rounded-full"></i>
           <span class="mx-2">Users</span>
         </span>
       </a>
       <!-- <a routerLink="/admin/messages" (click)="toggleSideBar()">
-      <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+      <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded-sm block mb-4">
         <i class="w-8 fas fa-th p-2 bg-gray-800 rounded-full"></i>
         <span class="mx-2">Messages</span>
       </span>
     </a> -->
     <a routerLink="/admin/movies" (click)="toggleSideBar()">
-      <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+      <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded-sm block mb-4">
         <i class="w-8 fas fa-stream p-2 rounded-full"></i>
         <span class="mx-2">Movies</span>
       </span>
     </a>
-    <!-- <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+    <!-- <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded-sm block mb-4">
     <a routerLink="/admin/">
       <span class="w-8 mb-5 relative">
         <i class="w-8 fas fa-user p-2 bg-gray-800 rounded-full"></i>
@@ -99,7 +99,7 @@
     </a>
   </span> -->
   <a (click)="onLogout()">
-    <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded block mb-4">
+    <span class="cursor-pointer px-2 py-1 hover:bg-gray-800 hover:text-amber-500 rounded-sm block mb-4">
       <i class="w-8 fas fa-calendar-alt p-2 bg-gray-800 rounded-full"></i>
       <span class="mx-2">Logout</span>
     </span>

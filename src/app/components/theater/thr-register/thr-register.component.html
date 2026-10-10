@@ -11,12 +11,12 @@
               <form [formGroup]="form" (submit)="onSubmit()">
 
                 <div class="mb-3">
-                  <input type="text"  formControlName="name" id="form3Example1cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Theater Name" />
+                  <input type="text"  formControlName="name" id="form3Example1cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Theater Name" />
                   <app-name-validation [nameControl]="form.get('name')" [isSubmitted]="isSubmitted"></app-name-validation>
                 </div>
 
                 <div class="mb-3">
-                  <input type="email"  formControlName="email" id="form3Example3cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Business Mail" />
+                  <input type="email"  formControlName="email" id="form3Example3cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Business Mail" />
                   <app-email-validation [emailControl]="form.get('email')" [isSubmitted]="isSubmitted"></app-email-validation>
                 </div>
 
@@ -29,7 +29,7 @@
                 @if (!showOtpField) {
                   <div class="mb-3 flex gap-x-2">
                     <div>
-                      <input type="text"  formControlName="country" [(ngModel)]="country"  id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Country" />
+                      <input type="text"  formControlName="country" [(ngModel)]="country"  id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Country" />
                       @if (isSubmitted && form.controls['country'].errors) {
                         <div>
                           @if (form.controls['country'].errors['required']) {
@@ -39,7 +39,7 @@
                       }
                     </div>
                     <div>
-                      <input type="text"  formControlName="state"  [(ngModel)]="state" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="State" />
+                      <input type="text"  formControlName="state"  [(ngModel)]="state" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="State" />
                       @if (isSubmitted && form.controls['state'].errors) {
                         <div>
                           @if (form.controls['state'].errors['required']) {
@@ -54,7 +54,7 @@
                 @if (!showOtpField) {
                   <div class="mb-3 flex gap-x-2">
                     <div>
-                      <input type="text"  formControlName="district"  [(ngModel)]="district" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="District" />
+                      <input type="text"  formControlName="district"  [(ngModel)]="district" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="District" />
                       @if (isSubmitted && form.controls['district'].errors) {
                         <div>
                           @if (form.controls['district'].errors['required']) {
@@ -64,7 +64,7 @@
                       }
                     </div>
                     <div>
-                      <input type="text"  formControlName="city"  [(ngModel)]="city" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="City" />
+                      <input type="text"  formControlName="city"  [(ngModel)]="city" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="City" />
                       @if (isSubmitted && form.controls['city'].errors) {
                         <div>
                           @if (form.controls['city'].errors['required']) {
@@ -79,7 +79,7 @@
 
                 @if (!showOtpField) {
                   <div class="mb-3 flex gap-x-2">
-                    <input type="text"  formControlName="zip"  [(ngModel)]="zip" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="ZIP Code" />
+                    <input type="text"  formControlName="zip"  [(ngModel)]="zip" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="ZIP Code" />
                     @if (isSubmitted && form.controls['zip'].errors) {
                       <div>
                         @if (form.controls['zip'].errors['required']) {
@@ -95,13 +95,13 @@
 
                 @if (!showOtpField) {
                   <div class="mb-3">
-                    <input type="text" formControlName="landmark" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Landmark" />
+                    <input type="text" formControlName="landmark" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Landmark" />
                   </div>
                 }
 
                 @if (!showOtpField) {
                   <div class="mb-3">
-                    <input type="text" formControlName="liscenceId" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Liscence ID" />
+                    <input type="text" formControlName="liscenceId" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Liscence ID" />
                     @if (isSubmitted && f['liscenceId'].errors) {
                       <div>
                         @if (f['liscenceId'].errors['required']) {
@@ -114,21 +114,21 @@
 
                 @if (!showOtpField) {
                   <div  class="mb-3">
-                    <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
+                    <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
                     <app-password-validation [passwordControl]="form.get('password')" [isSubmitted]="isSubmitted"></app-password-validation>
                   </div>
                 }
 
                 @if (!showOtpField) {
                   <div  class="mb-3">
-                    <input type="password" formControlName="repeatPassword" id="form3Example4cdg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Repeat Password" />
+                    <input type="password" formControlName="repeatPassword" id="form3Example4cdg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Repeat Password" />
                     <app-repeat-pass-validation [repeatPassControl]="form.get('repeatPassword')" [isSubmitted]="isSubmitted"></app-repeat-pass-validation>
                   </div>
                 }
 
                 @if (showOtpField) {
                   <div>
-                    <input type="text" formControlName="otp" id="otp" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter OTP" />
+                    <input type="text" formControlName="otp" id="otp" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter OTP" />
                     <app-otp-validation [otpControl]="form.get('otp')" [showOTPResend]="showOTPResend" [timerStr]="formattedTime" (OTPResend)="resendOTP()"></app-otp-validation>
                   </div>
                 }

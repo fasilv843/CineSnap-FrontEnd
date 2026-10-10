@@ -14,13 +14,13 @@
           <div class="flex items-center space-x-2">
             @if (appliedCouponId !== coupon._id) {
               <button (click)="onApply(coupon)"
-                class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+                class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-hidden focus:ring-3 focus:border-blue-300">
                 Apply
               </button>
             }
             @if (appliedCouponId === coupon._id) {
               <button (click)="onApply(coupon)"
-                class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:border-green-300">
+                class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-hidden focus:ring-3 focus:border-green-300">
                 Applied
               </button>
             }

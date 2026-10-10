@@ -5,7 +5,7 @@
 
         <div class="flex flex-col justify-center w-1/12">
             <button *ngIf="active > 0" (click)="setActive(active - 1)"
-                class="p-4 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                class="p-4 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 <- </button>
         </div>
 
@@ -15,7 +15,7 @@
                     *ngFor="let movie of bannerMovies; let i = index" [class.active]="active === i">
                     <img src="https://image.tmdb.org/t/p/original/{{ movie.backdrop_path }}"
                         class="w-full h-full object-cover" [alt]="movie.title + 'Poster'">
-                    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black bg-opacity-50 flex items-center justify-center"
+                    <div class="absolute inset-0 bg-linear-to-b from-transparent to-black bg-opacity-50 flex items-center justify-center"
                         style="height: 100%;">
                         <h2 class="text-white text-3xl font-bold tracking-wider">{{ movie.title }}</h2>
                     </div>
@@ -31,7 +31,7 @@
 
         <div class="flex flex-col justify-center w-1/12">
             <button *ngIf="active < bannerMovies.length - 1" (click)="setActive(active + 1)"
-                class="p-4 bg-gray-200 rounded-full cursor-pointer float-right hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                class="p-4 bg-gray-200 rounded-full cursor-pointer float-right hover:bg-gray-300 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 ->
             </button>
         </div>

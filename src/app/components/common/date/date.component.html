@@ -1,11 +1,11 @@
 
-<div class="flex flex-col bg-gray-200 rounded shadow-md px-4 py-2">
+<div class="flex flex-col bg-gray-200 rounded-sm shadow-md px-4 py-2">
   <div class="flex flex-col md:flex-row justify-between">
     <div class="flex items-center justify-between gap-3">
       <div class="flex gap-2 ">
         <div class="sm:hidden">
           <div class="month-separator flex">
-            <div class="w-5 h-14 bg-gray-500 vertical-text rounded-sm flex items-center justify-center mr-1">
+            <div class="w-5 h-14 bg-gray-500 vertical-text rounded-xs flex items-center justify-center mr-1">
               {{ dates[0] | date: 'MMM' | uppercase }}
             </div>
             <div  [class]="isCurrDate(dates[0]) ? 'border-gray-900 bg-amber-500' : 'border-gray-500'"
@@ -21,7 +21,7 @@
           <div class="hidden sm:inline-block">
             @if ((date | date: 'MM') !== (dates[i - 1] | date: 'MM') || i === 0) {
               <div class="month-separator flex">
-                <div class="w-5 h-14 bg-gray-500 vertical-text rounded-sm flex items-center justify-center mr-1">
+                <div class="w-5 h-14 bg-gray-500 vertical-text rounded-xs flex items-center justify-center mr-1">
                   {{ date | date: 'MMM' | uppercase }}
                 </div>
                 <div [class]="isCurrDate(date) ? 'border-gray-900 bg-amber-500' : 'border-gray-500'"

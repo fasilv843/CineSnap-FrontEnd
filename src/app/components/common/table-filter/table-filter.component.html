@@ -5,8 +5,8 @@
         <div>
           <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="flex items-center">
             <input type="text" formControlName="searchQuery" id="filter"  placeholder="Search..."
-              class="border border-gray-400 rounded-md px-4 py-2 bg-gray-700 text-white focus:outline-none">
-              <button type="submit" class="ml-2 bg-amber-500 text-black px-4 py-2 rounded-md hover:bg-amber-600 focus:outline-none">
+              class="border border-gray-400 rounded-md px-4 py-2 bg-gray-700 text-white focus:outline-hidden">
+              <button type="submit" class="ml-2 bg-amber-500 text-black px-4 py-2 rounded-md hover:bg-amber-600 focus:outline-hidden">
                 Search
               </button>
             </form>

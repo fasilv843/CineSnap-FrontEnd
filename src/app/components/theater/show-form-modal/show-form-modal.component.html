@@ -12,7 +12,7 @@
           <input type="text" formControlName="movie"
             (dblclick)="changeMovie()" (input)="onInputChange($event)" (blur)="onInputBlur()"
             (focus)="onInputFocus()" placeholder="Search Movie Name"
-            class=" block w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            class=" block w-full bg-white border border-gray-300 rounded-md shadow-xs pl-3 pr-10 py-2 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
             <app-movie-select-validation [movieId]="selectedMovieId" [isSubmitted]="isSubmitted"></app-movie-select-validation>
             @if (showMovieOptions) {
@@ -33,7 +33,7 @@
           <div class="mb-3">
             <label for="screen" class="block mb-2 text-sm font-semibold text-gray-700">Screen:</label>
             <select id="screen" formControlName="screenId"
-              class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm"
+              class="block bg-gray-50 border rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm"
               placeholder="Select a screen"
               (change)="onScreenChange($event)"
               >
@@ -47,17 +47,17 @@
 
           <div class="mb-3">
             <label for="date" class="block mb-2 text-sm font-semibold text-gray-700">Date:</label>
-            <input id="date" formControlName="date" type="date" class="block bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm" placeholder="Select a date" />
+            <input id="date" formControlName="date" type="date" class="block bg-gray-50 border rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm" placeholder="Select a date" />
             <app-show-date-validation [showDateControl]="showForm.get('date')" [isSubmitted]="isSubmitted"></app-show-date-validation>
           </div>
 
           <div class="mb-3 flex flex-col sm:flex-row">
-            <div class="flex-grow mb-2 sm:mr-2">
+            <div class="grow mb-2 sm:mr-2">
               <label for="startTime" class="block mb-2 text-sm font-semibold text-gray-700">Starting Time:</label>
-              <input id="startTime" formControlName="startTime" type="time" class="block w-full bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Select start time" (change)="onStartTimeChange($event)" />
+              <input id="startTime" formControlName="startTime" type="time" class="block w-full bg-gray-50 border rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Select start time" (change)="onStartTimeChange($event)" />
               <app-start-time-validation [startTimeControl]="showForm.get('startTime')" [isSubmitted]="isSubmitted"></app-start-time-validation>
             </div>
-            <div class="flex-grow mb-2 sm:ml-2">
+            <div class="grow mb-2 sm:ml-2">
               <span class="block mb-2 text-sm font-bold text-gray-700">Ending Time:</span>
               <span class="bg-gray-100 rounded-md p-2.5 text-gray-700 sm:text-sm">{{ endingTime }}</span>
             </div>
@@ -68,7 +68,7 @@
             <div>
               <div class="mb-3">
                 <label [for]="priceControl.controlName" class="block mb-2 text-sm font-semibold text-gray-700">{{ priceControl.label }} Price:</label>
-                <input [id]="priceControl.controlName" [formControlName]="priceControl.controlName" type="text" class="block w-full bg-gray-50 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Enter Ticket Price"/>
+                <input [id]="priceControl.controlName" [formControlName]="priceControl.controlName" type="text" class="block w-full bg-gray-50 border rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Enter Ticket Price"/>
                 <app-def-price-validation [priceControl]="showForm.get(priceControl.controlName)" [isSubmitted]="isSubmitted"></app-def-price-validation>
               </div>
             </div>

@@ -60,7 +60,7 @@
                     <div  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       <!-- Movie Section -->
                       <div class="flex items-center mb-4">
-                        <img class="w-24 h-24 object-cover rounded" src="https://image.tmdb.org/t/p/original/{{ show.movieId.poster_path }}" alt="{{ show.movieId.title }} poster">
+                        <img class="w-24 h-24 object-cover rounded-sm" src="https://image.tmdb.org/t/p/original/{{ show.movieId.poster_path }}" alt="{{ show.movieId.title }} poster">
                         <div class="ml-4">
                           <h5 class="text-xl font-semibold">{{ show.movieId.title }}</h5>
                           <small class="text-gray-600">{{ getLanguage(show.movieId.language) }}</small>

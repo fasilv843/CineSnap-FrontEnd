@@ -11,32 +11,32 @@
               <form [formGroup]="form" (submit)="onSubmit()">
 
                 <div class="mb-3">
-                  <input type="text"  formControlName="name" id="form3Example1cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter Name" />
+                  <input type="text"  formControlName="name" id="form3Example1cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Name" />
                   <app-name-validation  [nameControl]="form.get('name')" [isSubmitted]="isSubmitted"></app-name-validation>
                 </div>
 
                 <div class="mb-3">
-                  <input type="email"  formControlName="email" id="form3Example3cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter Email" />
+                  <input type="email"  formControlName="email" id="form3Example3cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Email" />
                   <app-email-validation [emailControl]="form.get('email')" [isSubmitted]="isSubmitted"></app-email-validation>
                 </div>
 
                 @if (!showOtpField) {
                   <div class="mb-3">
-                    <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
+                    <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
                     <app-password-validation [passwordControl]="form.get('password')" [isSubmitted]="isSubmitted"></app-password-validation>
                   </div>
                 }
 
                 @if (!showOtpField) {
                   <div class="mb-3">
-                    <input type="password" formControlName="repeatPassword" id="form3Example4cdg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Repeat Password" />
+                    <input type="password" formControlName="repeatPassword" id="form3Example4cdg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Repeat Password" />
                     <app-repeat-pass-validation [repeatPassControl]="form.get('repeatPassword')" [isSubmitted]="isSubmitted"></app-repeat-pass-validation>
                   </div>
                 }
 
                 @if (showOtpField) {
                   <div>
-                    <input type="text" formControlName="otp" id="otp" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter OTP" />
+                    <input type="text" formControlName="otp" id="otp" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter OTP" />
                     <app-otp-validation [otpControl]="form.get('otp')" [showOTPResend]="showOTPResend" [timerStr]="formattedTime" (OTPResend)="resendOTP()"></app-otp-validation>
                   </div>
                 }
