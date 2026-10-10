@@ -1,59 +1,43 @@
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
-
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ActiveModal } from 'src/app/services/modal.service'
-import { FormBuilder, type FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { validateByTrimming } from 'src/app/helpers/validations'
 import { walletAmountValidators } from 'src/app/shared/valiators'
-import { WalletAmountValidationComponent } from './validation/wallet-amount-validation/wallet-amount-validation.component'
+import { MAX_WALLET_ADD, MIN_WALLET_ADD } from 'src/app/shared/constants'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 
+/** Asks for an amount to add to a wallet. Closes with `{ amount }` (the typed string); payment happens in the caller. */
 @Component({
-    selector: 'app-add-to-wallet-modal',
-    imports: [
-    ReactiveFormsModule,
-    WalletAmountValidationComponent
-],
-    templateUrl: './add-to-wallet-modal.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    styleUrls: ['./add-to-wallet-modal.component.css']
+  selector: 'app-add-to-wallet-modal',
+  imports: [ReactiveFormsModule, ButtonDirective, FieldErrorComponent],
+  templateUrl: './add-to-wallet-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager
 })
-export class AddToWalletModalComponent implements OnInit {
-  isSubmitted = false
-  amountSetByCode = false
-  form!: FormGroup
+export class AddToWalletModalComponent {
+  private readonly activeModal = inject(ActiveModal)
 
-  constructor (
-    @Inject(ActiveModal) public activeModal: ActiveModal,
-    @Inject(FormBuilder) private readonly formBuilder: FormBuilder
-  ) { }
-
-  ngOnInit (): void {
-    this.form = this.formBuilder.group({
-      amount: ['', [validateByTrimming(walletAmountValidators)]]
-    })
+  protected readonly amount = new FormControl('', { nonNullable: true, validators: [validateByTrimming(walletAmountValidators)] })
+  protected readonly form = new FormGroup({ amount: this.amount })
+  protected readonly submitted = signal(false)
+  protected readonly presets = [100, 500, 1000]
+  protected readonly errorMessages = {
+    required: 'Enter an amount',
+    pattern: 'Use whole rupees, numbers only',
+    min: `The minimum is ₹${MIN_WALLET_ADD}`,
+    max: `The maximum is ₹${MAX_WALLET_ADD}`
   }
 
-  onSubmit (): void {
-    this.isSubmitted = true
-    if (this.form.valid && !this.amountSetByCode) {
-      const amountData = this.form.value
-      console.log(amountData, 'amountData from onSubmit()')
-      this.activeModal.close(amountData)
-    } else {
-      console.log('wallet form erros', this.form.controls['amount'].errors)
-    }
+  protected usePreset (value: number): void {
+    this.amount.setValue(String(value))
   }
 
-  fillAmount (amount: number): void {
-    this.amountSetByCode = true
-    this.form.get('amount')?.setValue(String(amount))
-    // this.amountSetByCode = false
+  protected onSubmit (): void {
+    this.submitted.set(true)
+    if (this.amount.valid) this.activeModal.close({ amount: this.amount.value })
   }
 
-  onClickAdd (): void {
-    this.amountSetByCode = false
-  }
-
-  onCancel (): void {
+  protected onCancel (): void {
     this.activeModal.dismiss('cancel')
   }
 }

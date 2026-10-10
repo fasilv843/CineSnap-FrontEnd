@@ -1,69 +1,88 @@
-<section class="min-h-screen bg-cover bg-center"
-  style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
-  <div class="flex min-h-screen items-center">
-    <div class="container">
-      <div class="py-8 flex justify-center items-center">
-        <div class="w-full md:w-9/12 lg:w-7/12 xl:w-6/12">
-          <div class="bg-white shadow-lg" style="border-radius: 15px;">
-            <div class="p-6 sm:p-12">
-              <h2 class="uppercase text-2xl font-semibold text-center mb-12">Create an account</h2>
+@if (step() === 'details') {
+  <cs-auth-shell heading="Create your account" subheading="Book seats at theaters near you and keep every ticket in one place.">
+    <cs-google-button text="signup_with" />
+    @if (googleFailed()) {
+      <p class="mt-2 text-center text-sm text-danger" role="alert">Google sign-up didn't go through. Try again, or use your email.</p>
+    }
 
-              <form [formGroup]="form" (submit)="onSubmit()">
-
-                <div class="mb-3">
-                  <input type="text"  formControlName="name" id="form3Example1cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Name" />
-                  <app-name-validation  [nameControl]="form.get('name')" [isSubmitted]="isSubmitted"></app-name-validation>
-                </div>
-
-                <div class="mb-3">
-                  <input type="email"  formControlName="email" id="form3Example3cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Email" />
-                  <app-email-validation [emailControl]="form.get('email')" [isSubmitted]="isSubmitted"></app-email-validation>
-                </div>
-
-                @if (!showOtpField) {
-                  <div class="mb-3">
-                    <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
-                    <app-password-validation [passwordControl]="form.get('password')" [isSubmitted]="isSubmitted"></app-password-validation>
-                  </div>
-                }
-
-                @if (!showOtpField) {
-                  <div class="mb-3">
-                    <input type="password" formControlName="repeatPassword" id="form3Example4cdg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Repeat Password" />
-                    <app-repeat-pass-validation [repeatPassControl]="form.get('repeatPassword')" [isSubmitted]="isSubmitted"></app-repeat-pass-validation>
-                  </div>
-                }
-
-                @if (showOtpField) {
-                  <div>
-                    <input type="text" formControlName="otp" id="otp" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter OTP" />
-                    <app-otp-validation [otpControl]="form.get('otp')" [showOTPResend]="showOTPResend" [timerStr]="formattedTime" (OTPResend)="resendOTP()"></app-otp-validation>
-                  </div>
-                }
-
-
-                <div class="flex justify-center my-2">
-                  <button type="submit" [disabled]="formattedTime === '00:00'"
-                  class="w-full rounded-md bg-amber-400 hover:bg-amber-500 disabled:opacity-60 px-6 py-2 text-lg font-semibold text-gray-900">{{ showOtpField ? 'Verify' : 'Register' }}</button>
-                </div>
-
-                @if (!showOtpField) {
-                  <p class="text-center text-gray-500 mt-3 mb-0">Have already an account?
-                    <a routerLink="/user/login" class="font-bold text-gray-900"><u>Login here</u></a>
-                  </p>
-                }
-
-              </form>
-
-            </div>
-
-            <!-- <hr class="my-2"> -->
-
-            <!-- <asl-google-signin-button type='icon' size='large'></asl-google-signin-button> -->
-
-          </div>
-        </div>
-      </div>
+    <div class="my-6 flex items-center gap-3 text-sm text-subtle" role="separator">
+      <span class="flex-1 border-t border-default"></span>
+      or sign up with email
+      <span class="flex-1 border-t border-default"></span>
     </div>
-  </div>
-</section>
+
+    <form [formGroup]="details" (ngSubmit)="sendCode()" novalidate class="space-y-4">
+      <div>
+        <label for="name" class="mb-1.5 block text-sm font-semibold">Full name</label>
+        <input id="name" class="input" formControlName="name" autocomplete="name" />
+        <cs-field-error [control]="details.controls.name" [submitted]="detailsSubmitted()" [messages]="messages.name" />
+      </div>
+
+      <div>
+        <label for="email" class="mb-1.5 block text-sm font-semibold">Email</label>
+        <input id="email" type="email" class="input" formControlName="email" autocomplete="email" placeholder="you@example.com" />
+        <cs-field-error [control]="details.controls.email" [submitted]="detailsSubmitted()" [messages]="messages.email" />
+      </div>
+
+      <div>
+        <label for="password" class="mb-1.5 block text-sm font-semibold">Password</label>
+        <div class="relative">
+          <input id="password" class="input pr-16" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
+            autocomplete="new-password" aria-describedby="password-hint" />
+          <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-control px-2 py-1 text-sm font-semibold text-muted hover:text-default"
+            [attr.aria-pressed]="showPassword()" (click)="showPassword.set(!showPassword())">
+            {{ showPassword() ? 'Hide' : 'Show' }}<span class="sr-only"> password</span>
+          </button>
+        </div>
+        <p id="password-hint" class="mt-1 text-xs text-subtle">At least 8 characters, with an uppercase letter, a lowercase letter and a number.</p>
+        <cs-field-error [control]="details.controls.password" [submitted]="detailsSubmitted()" [messages]="messages.password" />
+      </div>
+
+      <div>
+        <label for="repeat-password" class="mb-1.5 block text-sm font-semibold">Confirm password</label>
+        <input id="repeat-password" class="input" [type]="showPassword() ? 'text' : 'password'" formControlName="repeatPassword" autocomplete="new-password" />
+        <cs-field-error [control]="details.controls.repeatPassword" [submitted]="detailsSubmitted()" [messages]="messages.repeatPassword" />
+      </div>
+
+      <button csButton size="lg" type="submit" class="w-full" [disabled]="busy()">{{ busy() ? 'Sending code…' : 'Continue' }}</button>
+    </form>
+
+    <p class="mt-6 text-center text-muted">
+      Already have an account?
+      <a routerLink="/user/login" class="font-semibold text-default underline decoration-accent underline-offset-4">Sign in</a>
+    </p>
+  </cs-auth-shell>
+} @else {
+  <cs-auth-shell heading="Check your email" [subheading]="'Enter the 4-digit code we sent to ' + details.controls.email.value + '.'">
+    <form (submit)="$event.preventDefault(); verify()" novalidate class="space-y-4">
+      <div>
+        <label for="otp" class="mb-1.5 block text-sm font-semibold">Verification code</label>
+        <input id="otp" class="input text-center font-display text-3xl tracking-[0.5em]" [formControl]="otp"
+          inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="••••" />
+        <cs-field-error [control]="otp" [submitted]="otpSubmitted()" [messages]="messages.otp" />
+      </div>
+
+      <p class="text-sm" aria-live="polite">
+        @if (expired()) {
+          <span class="font-semibold text-danger">This code has expired.</span>
+        } @else {
+          <span class="text-muted">The code expires in <span class="font-semibold tabular-nums text-default">{{ countdown() }}</span></span>
+        }
+      </p>
+
+      <button csButton size="lg" type="submit" class="w-full" [disabled]="busy() || expired()">{{ busy() ? 'Verifying…' : 'Verify and create account' }}</button>
+    </form>
+
+    <div class="mt-6 flex flex-wrap items-center justify-between gap-3 text-sm">
+      @if (canResend()) {
+        <button csButton variant="link" type="button" (click)="resendCode()">Send a new code</button>
+      } @else {
+        <span class="text-subtle">You've used all code resends. Start again to get a new one.</span>
+      }
+      <button csButton variant="link" type="button" (click)="changeDetails()">Change email</button>
+    </div>
+    @if (resendNote(); as note) {
+      <p class="mt-3 text-sm text-success" role="status">{{ note }}</p>
+    }
+  </cs-auth-shell>
+}

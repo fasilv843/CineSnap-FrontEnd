@@ -1,90 +1,63 @@
-<div class="flex flex-wrap w-screen">
-  <section class="relative mx-auto">
-    <!-- navbar -->
-    <nav class="flex justify-between bg-black text-amber-300 w-screen">
-      <div class="px-5 xl:px-12 py-6 flex w-full items-center">
-        <a class="" routerLink="/user/home">
-          <img class="h-9" src="../../../../assets/logo.png" alt="CineSnap Logo" />
-          <!-- Logo Here. -->
+<header class="sticky top-0 z-40 border-b border-default bg-surface/90 backdrop-blur supports-[backdrop-filter]:bg-surface/75">
+  <div class="container flex h-16 max-w-6xl items-center gap-6">
+    <cs-logo link="/user/home" />
+
+    <nav class="hidden flex-1 items-center gap-1 sm:flex" aria-label="Main">
+      @for (link of links; track link.path) {
+        <a [routerLink]="link.path" routerLinkActive="bg-secondary text-secondary-foreground" ariaCurrentWhenActive="page"
+          class="rounded-control px-3 py-2 text-sm font-semibold text-muted transition-colors hover:text-default">
+          {{ link.label }}
         </a>
-        <!-- Nav Links -->
-        <ul class="hidden sm:flex px-4 mx-auto font-heading space-x-12">
-          <li>
-            <a class="hover:text-amber-500" routerLink="/user/home">Home</a>
-          </li>
-          <li>
-            <a class="hover:text-amber-500" routerLink="/user/movies">Movies</a>
-          </li>
-          <li>
-            <a class="hover:text-amber-500" routerLink="/user/theaters">Theaters</a>
-          </li>
-        </ul>
-
-        <div class="hidden sm:flex items-center space-x-5">
-
-          @if (userDetails(); as user) {
-            <div class="flex items-center" routerLink="/user/profile">
-              @if (user.profilePic) {
-                <div>
-                  <img [src]="imageFolderPath + user.profilePic" [alt]="user.name + ' Profile Picture'" class="rounded-full h-8 w-8 border-2 border-amber-300 hover:border-amber-500">
-                </div>
-              } @else {
-                <div class="rounded-full h-8 w-8 border-2 border-amber-300 hover:border-amber-500 bg-black text-amber-300 hover:text-amber-500 text-center align-middle">
-                  <span class="flex items-center justify-center h-full">
-                    {{ user.name | slice:0:1 | uppercase }}
-                  </span>
-                </div>
-              }
-            </div>
-          } @else {
-            <a  class="flex items-center hover:text-amber-500" routerLink="/user/profile">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </a>
-          }
-        </div>
-      </div>
-      
-      <!-- Responsive navbar -->
-      <div class="flex justify-center items-center sm:hidden">
-        <div class="items-center space-x-5">
-
-          @if (userDetails(); as user) {
-            <div class="flex items-center self-center" routerLink="/user/profile">
-              @if (user.profilePic) {
-                <div>
-                  <img [src]="imageFolderPath + user.profilePic" [alt]="user.name + ' Profile Picture'" class="rounded-full h-8 w-8 border-2 border-amber-300 hover:border-amber-500">
-                </div>
-              } @else {
-                <div class="rounded-full h-8 w-8 border-2 border-amber-300 hover:border-amber-500 bg-black text-amber-300 hover:text-amber-500 text-center align-middle">
-                  <span class="flex items-center justify-center h-full">
-                    {{ user.name | slice:0:1 | uppercase }}
-                  </span>
-                </div>
-              }
-            </div>
-          } @else {
-            <a  class="flex items-center hover:text-amber-500 self-center" routerLink="/user/profile">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </a>
-          }
-        </div>
-
-        <a class="navbar-burger self-center mr-12 cursor-pointer" (click)="openOffcanvas()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-amber-500" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </a>
-      </div>
+      }
     </nav>
-  </section>
-</div>
 
+    <div class="ml-auto flex items-center gap-1">
+      <cs-theme-toggle />
+
+      @if (user(); as user) {
+        <button type="button" [cdkMenuTriggerFor]="accountMenu" aria-label="Account menu"
+          class="ml-1 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+          @if (avatarUrl(); as url) {
+            <img [src]="url" alt="" class="size-9 rounded-full border-2 border-accent object-cover" />
+          } @else {
+            <span class="flex size-9 items-center justify-center rounded-full border-2 border-accent bg-muted font-semibold">{{ initial() }}</span>
+          }
+        </button>
+
+        <ng-template #accountMenu>
+          <div cdkMenu class="mt-2 min-w-56 rounded-card border border-default bg-raised p-1.5 text-default shadow-raised">
+            <div class="px-3 pb-2 pt-1.5">
+              <p class="font-semibold">{{ user.name }}</p>
+              <p class="text-sm text-muted">Wallet balance ₹{{ user.wallet }}</p>
+            </div>
+            <div class="my-1 border-t border-default"></div>
+            <a cdkMenuItem routerLink="/user/profile" class="menu-item">Profile</a>
+            <a cdkMenuItem [routerLink]="['/user/bookings', user._id]" class="menu-item">My bookings</a>
+            <a cdkMenuItem routerLink="/user/profile/wallet-history" class="menu-item">Wallet history</a>
+            <a cdkMenuItem routerLink="/user/messages" class="menu-item">Messages</a>
+            <div class="my-1 border-t border-default"></div>
+            <button cdkMenuItem type="button" (click)="logout()" class="menu-item w-full text-left text-danger">Log out</button>
+          </div>
+        </ng-template>
+      } @else {
+        <a csButton size="sm" routerLink="/user/login" class="ml-1">Log in</a>
+      }
+    </div>
+  </div>
+</header>
+
+<!-- Mobile tab bar: the main destinations stay one tap away -->
+<nav class="tab-bar fixed inset-x-0 bottom-0 z-40 border-t border-default bg-surface sm:hidden" aria-label="Main">
+  <div class="grid grid-cols-4">
+    @for (link of links; track link.path) {
+      <a [routerLink]="link.path" routerLinkActive="tab-active" ariaCurrentWhenActive="page" class="tab">
+        <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path [attr.d]="link.icon" /></svg>
+        {{ link.label }}
+      </a>
+    }
+    <a [routerLink]="user() ? '/user/profile' : '/user/login'" routerLinkActive="tab-active" ariaCurrentWhenActive="page" class="tab">
+      <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path [attr.d]="icons.account" /></svg>
+      {{ user() ? 'Account' : 'Log in' }}
+    </a>
+  </div>
+</nav>

@@ -1,30 +1,22 @@
-<!-- Modal Header -->
-<div class="text-black p-6">
-    <h2 class="text-2xl font-semibold">Enter Amount</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="card w-[min(26rem,calc(100vw-2rem))] p-6 shadow-raised">
+  <h2 class="font-display text-3xl font-extrabold tracking-tight">Add money to wallet</h2>
+  <p class="mt-1 text-sm text-muted">You'll pay securely with Razorpay. The money is added as soon as the payment goes through.</p>
+
+  <label for="wallet-amount" class="mt-5 block text-sm font-semibold">Amount</label>
+  <div class="relative mt-1.5">
+    <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" aria-hidden="true">₹</span>
+    <input id="wallet-amount" type="text" inputmode="numeric" class="input pl-8" [formControl]="amount" placeholder="500" autocomplete="off" />
   </div>
-  
-  <!-- Modal Body -->
-  <div class="p-6">
-    <!-- Input Field -->
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="mb-4">
-                <label for="amount" class="block text-gray-700 text-sm font-bold mb-2">Amount</label>
-                <input type="text" id="amount" formControlName="amount" name="amount" class="w-full px-3 py-2 border rounded-sm focus:outline-hidden focus:shadow-outline" placeholder="Enter Amount">
-                <app-wallet-amount-validation [amountControl]="form.get('amount')" [isSubmitted]="isSubmitted"></app-wallet-amount-validation>
-            </div>
-            
-            <!-- Auto Fill Buttons -->
-            <div class="flex space-x-2 mb-4">
-                <button (click)="fillAmount(100)" class="bg-gray-300 px-4 py-1 rounded-sm hover:bg-yellow-900 focus:outline-hidden focus:ring-3 focus:border-blue-300 grow">100</button>
-                <button (click)="fillAmount(500)" class="bg-gray-300 px-4 py-1 rounded-sm hover:bg-yellow-900 focus:outline-hidden focus:ring-3 focus:border-blue-300 grow">500</button>
-                <button (click)="fillAmount(1000)" class="bg-gray-300 px-4 py-1 rounded-sm hover:bg-yellow-900 focus:outline-hidden focus:ring-3 focus:border-blue-300 grow">1000</button>
-            </div>
-            
-            <!-- Action Buttons -->
-            <div class="flex justify-end space-x-2">
-                <button (click)="onCancel()" class="bg-gray-500 text-gray-800 px-6 py-3 rounded-full hover:bg-gray-700 focus:outline-hidden focus:ring-3 focus:border-blue-300">Cancel</button>
-                <button (click)="onClickAdd()" type="submit" class="px-6 py-3 rounded-full hover:bg-yellow-900 focus:outline-hidden focus:ring-3 focus:border-blue-300">Add</button>
-            </div>
-    </form>
-</div>
-  
+  <cs-field-error [control]="amount" [submitted]="submitted()" [messages]="errorMessages" />
+
+  <div class="mt-3 flex gap-2" role="group" aria-label="Quick amounts">
+    @for (preset of presets; track preset) {
+      <button type="button" csButton variant="secondary" size="sm" class="flex-1" (click)="usePreset(preset)">₹{{ preset }}</button>
+    }
+  </div>
+
+  <div class="mt-6 flex justify-end gap-2">
+    <button type="button" csButton variant="ghost" (click)="onCancel()">Cancel</button>
+    <button type="submit" csButton>Continue to payment</button>
+  </div>
+</form>

@@ -1,119 +1,97 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, type OnInit, ChangeDetectionStrategy, inject, effect, Injector } from '@angular/core'
-import { Router } from '@angular/router'
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core'
+import { rxResource } from '@angular/core/rxjs-interop'
+import { RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { getGenre, getGenreId, getLanguage, getLanguageAbbr } from 'src/app/helpers/movie'
-// import { type ICSMovieRes } from 'src/app/models/movie'
-import { type ITheaterRes } from 'src/app/models/theater'
+import { map } from 'rxjs'
+import { toFilterOptions, toMovieCard } from 'src/app/helpers/movie-card'
+import { distanceKm, formatDistance } from 'src/app/helpers/distance'
+import { LocationService } from 'src/app/services/location.service'
 import { MovieService } from 'src/app/services/movie.service'
 import { TheaterService } from 'src/app/services/theater.service'
-import { saveCoords } from 'src/app/states/coords/coords.actions'
+import { imagesFolderPath } from 'src/app/shared/constants'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { selectCoords } from 'src/app/states/coords/coords.selector'
-import { ICarouselData, CarouselComponent } from './carousel/carousel.component'
-import { UserNavComponent } from '../user-nav/user-nav.component';
-import { ScrollHTabsComponent } from '../../common/scroll-h-tabs/scroll-h-tabs.component';
+import { selectUserDetails } from 'src/app/states/user/user.selector'
+import { UserNavComponent } from '../user-nav/user-nav.component'
+
+const HERO_INTERVAL_MS = 7000
 
 @Component({
-    selector: 'app-user-home',
-    templateUrl: './user-home.component.html',
-    styleUrls: ['./user-home.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [UserNavComponent, CarouselComponent, ScrollHTabsComponent]
+  selector: 'app-user-home',
+  templateUrl: './user-home.component.html',
+  styleUrl: './user-home.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [UserNavComponent, RouterLink, ButtonDirective]
 })
-export class UserHomeComponent implements OnInit {
+export class UserHomeComponent {
   private readonly movieService = inject(MovieService)
-  private readonly injector = inject(Injector)
   private readonly theaterService = inject(TheaterService)
   private readonly store = inject(Store)
-  private readonly router = inject(Router)
+  protected readonly location = inject(LocationService)
 
-  coords = this.store.selectSignal(selectCoords)
-  bannerMovies: ICarouselData[] = []
-  active = 1
-  languages: string[] = []
-  genres: string[] = []
-  theaters: ITheaterRes[] = []
-  theaterNames: string[] = []
+  protected readonly user = this.store.selectSignal(selectUserDetails)
+  private readonly coords = this.store.selectSignal(selectCoords)
+  // Compared by value: a fresh GPS reading with the same position must not refetch theaters
+  private readonly coordinates = computed(() => this.coords()?.coordinates, {
+    equal: (a, b) => a?.[0] === b?.[0] && a?.[1] === b?.[1]
+  })
 
-  getLanguage = getLanguage
-  getGenre = getGenre
-  getGenreId = getGenreId
-  getLanguageAbbr = getLanguageAbbr
+  protected readonly locationBlocked = computed(() => ['denied', 'unsupported'].includes(this.location.status()))
+
+  // Data ---------------------------------------------------------------------
+
+  protected readonly featured = rxResource({
+    stream: () => this.movieService.getBannerMovies().pipe(map(res => res.data.map(toMovieCard).filter(m => m.backdrop !== null)))
+  })
+
+  protected readonly nowShowing = rxResource({
+    stream: () => this.movieService
+      .findCineSnapFilteredMovies({ availability: 'Available', filterGenres: [], filterLanguages: [] }, 1)
+      .pipe(map(res => res.data.map(toMovieCard)))
+  })
+
+  protected readonly filters = rxResource({
+    stream: () => this.movieService.fetchFilterDatas().pipe(map(res => toFilterOptions(res.genres, res.languages)))
+  })
+
+  // Re-fetches whenever the stored coordinates change; stays idle (no request) until the location is known
+  protected readonly theaters = rxResource({
+    params: () => this.coordinates(),
+    stream: ({ params: [lon, lat] }) => this.theaterService.getNearestTheaters(lon, lat).pipe(
+      map(res => res.data.map(theater => ({
+        id: theater._id,
+        name: theater.name,
+        place: [theater.address.landmark, theater.address.city].filter(Boolean).join(', '),
+        image: theater.profilePic !== undefined && theater.profilePic !== '' ? imagesFolderPath + theater.profilePic : null,
+        distance: formatDistance(distanceKm([lon, lat], theater.coords.coordinates))
+      })))
+    )
+  })
+
+  // Featured hero ------------------------------------------------------------
+
+  protected readonly heroIndex = signal(0)
+  protected readonly hero = computed(() => {
+    const movies = this.featured.value() ?? []
+    return movies.length > 0 ? movies[this.heroIndex() % movies.length] : null
+  })
+
+  private heroPaused = false
 
   constructor () {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const lon = position.coords.longitude
-        const lat = position.coords.latitude
-        this.store.dispatch(saveCoords({ coords: { coordinates: [lon, lat] } }))
-      })
-    } else {
-      console.log('No support for geolocation')
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (!reducedMotion) {
+      const timer = setInterval(() => {
+        const count = this.featured.value()?.length ?? 0
+        if (!this.heroPaused && count > 1) this.heroIndex.update(i => (i + 1) % count)
+      }, HERO_INTERVAL_MS)
+      inject(DestroyRef).onDestroy(() => { clearInterval(timer) })
     }
   }
 
-  ngOnInit (): void {
-    this.movieService.getBannerMovies().subscribe({
-      next: (res) => {
-        console.log(res.data, 'res.data from bannerMovies')
-        this.bannerMovies = res.data.map(movie => {
-          return {
-            imageUrl: 'https://image.tmdb.org/t/p/original/' + movie.backdrop_path,
-            title: movie.title
-          }
-        })
-      }
-    })
-
-    this.movieService.fetchFilterDatas().subscribe({
-      next: (res) => {
-        console.log(res, 'res from filter component')
-        this.languages = res.languages.map(l => getLanguage(l))
-        this.genres = res.genres.map(g => getGenre(g))
-      }
-    })
-
-    effect(() => {
-      const coords = this.coords()
-      if (coords !== null) {
-        const lon = coords.coordinates[0]
-        const lat = coords.coordinates[1]
-        this.theaterService.getNearestTheaters(lon, lat).subscribe({
-          next: (res) => {
-            console.log(res, 'nearest theater response')
-            this.theaters = res.data
-            this.theaterNames = this.theaters.map(t => t.name)
-          }
-        })
-      } else {
-        console.log('coords not available now')
-      }
-    }, { injector: this.injector })
+  protected pauseHero (paused: boolean): void {
+    this.heroPaused = paused
   }
 
-  onClickGenre (genre: string): void {
-    const genreId = getGenreId(genre)
-    console.log(genreId, 'genreId')
-    void this.router.navigate(['/user/movies'], {
-      queryParams: { genreId }
-    })
-  }
-
-  onClickLanguage (language: string): void {
-    console.log(language, 'language from labels event')
-    const langAbbr = getLanguageAbbr(language)
-    void this.router.navigate(['/user/movies'], {
-      queryParams: { langAbbr }
-    })
-  }
-
-  onClickTheaterName (theaterName: string): void {
-    const theater = this.theaters.find(t => t.name === theaterName)
-    if (theater !== undefined) void this.router.navigate(['/user/theater', theater._id])
-  }
-
-  setActive (index: number): void {
-    this.active = index
-  }
+  protected readonly skeletons = Array.from({ length: 6 }, (_, i) => i)
 }

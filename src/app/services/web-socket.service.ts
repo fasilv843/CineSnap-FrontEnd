@@ -19,10 +19,11 @@ export class WebSocketService {
   }
 
   listen (eventName: string): Observable<any> {
-    return new Observable((subscribe) => {
-      this.socket.on(eventName, (data) => {
-        subscribe.next(data)
-      })
+    return new Observable((subscriber) => {
+      const handler = (data: unknown): void => { subscriber.next(data) }
+      this.socket.on(eventName, handler)
+      // Remove the handler on unsubscribe so revisiting a page doesn't stack listeners
+      return () => { this.socket.off(eventName, handler) }
     })
   }
 

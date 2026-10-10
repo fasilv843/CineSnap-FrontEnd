@@ -1,118 +1,90 @@
-<app-user-nav></app-user-nav>
-<div class="max-w-2xl mx-auto shadow-xl rounded-lg text-gray-900 border-2 border-gray-300 bg-white">
-  <div class="rounded-t-lg h-32 bg-linear-to-br from-gray-800 via-gray-700 to-amber-500 overflow-hidden"></div>
-  <div class="mx-auto w-40 h-40 relative -mt-20 border-4 border-white rounded-full overflow-hidden">
-    <div class="relative">
-      <app-profile-dp [hieght]="155" [width]="155" [currDp]="dpUrl" (deleteDp)="deleteProfilePic()" (imageReady)="imageReady($event)"></app-profile-dp>
+<app-user-nav />
+
+<main class="container max-w-3xl pb-28 pt-6 sm:pt-8">
+  <a routerLink="/user/profile" class="text-sm font-semibold text-muted hover:text-default">‹ Back to profile</a>
+  <h1 class="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">Edit profile</h1>
+
+  <!-- Photo: uploads immediately, separate from the form below -->
+  <section class="card mt-6 flex flex-wrap items-center gap-6 p-6" aria-labelledby="photo-heading">
+    <div class="relative size-32 overflow-hidden rounded-full border-2 border-accent bg-muted">
+      <app-profile-dp [hieght]="128" [width]="128" [currDp]="photoUrl()" (imageReady)="uploadPhoto($event)" (deleteDp)="removePhoto()" />
     </div>
-  </div>
+    <div>
+      <h2 id="photo-heading" class="font-semibold">Profile photo</h2>
+      <p class="mt-1 max-w-sm text-sm text-muted">Use the camera icon on the photo to upload and crop a new one, or the cross to remove it. Changes save right away.</p>
+    </div>
+  </section>
 
-  <div class="py-4 px-24 my-3">
-    <ng-container class="flex flex-col">
-      <form [formGroup]="profileForm" (submit)="onSubmit()">
-
-        <div class="flex items-center mb-3">
-          <label class="font-semibold text-gray-700 my-1">Name:</label>
-          <div class="flex flex-col flex-1">
-            <input class="border-b border-gray-500 focus:outline-hidden ml-2 flex-1" formControlName="name">
-            <app-name-validation [nameControl]="profileForm.get('name')"
-            [isSubmitted]="isSubmitted"></app-name-validation>
-          </div>
+  <form id="profile-form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <section class="card mt-6 p-6" aria-labelledby="details-heading">
+      <h2 id="details-heading" class="font-semibold">Personal details</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <label for="name" class="field-label">Full name</label>
+          <input id="name" class="input" formControlName="name" autocomplete="name" />
+          <cs-field-error [control]="form.controls.name" [submitted]="submitted()" [messages]="messages.name" />
         </div>
-
-
-        <div class="flex items-center mb-3">
-          <label class="font-semibold text-gray-700 my-1">Mobile:</label>
-          <div class="flex flex-col flex-1">
-            <input class="border-b border-gray-500 focus:outline-hidden ml-2 flex-1" formControlName="mobile">
-            <app-mobile-validation [mobileControl]="profileForm.get('mobile')"
-            [isSubmitted]="isSubmitted"></app-mobile-validation>
-          </div>
-        </div>
-
-        <div class="flex items-center mb-3">
-          <label class="font-semibold text-gray-700 my-1">Date of Birth:</label>
-          <div class="flex flex-col flex-1">
-            <input type="date" class="border-b border-gray-500 focus:outline-hidden ml-2 flex-1" formControlName="dob">
-            <app-dob-validation [dobControl]="profileForm.get('dob')" [isSubmitted]="isSubmitted"></app-dob-validation>
-          </div>
-        </div>
-
-        <!-- <div *ngIf="!addressUpdateMode" class="flex items-center mb-3">
-        <input (click)="updateAddress()" type="radio" class="mr-2">
-        <label for="updateAddress" class="text-gray-700">Update Address</label>
-      </div> -->
-
-      @if (addressUpdateMode) {
         <div>
-          <!-- Auto Detect button above City and District -->
-          <div class="flex items-center mb-3">
-            <input (click)="autoFillAddress()" type="radio" id="autoDetect" name="locationType" class="mr-2">
-            <label for="autoDetect" class="text-gray-700">Auto Detect</label>
-          </div>
-          <!-- City and District on the same line -->
-          <div class="flex mb-3 flex-col sm:flex-row">
-            <div class="flex items-center mb-2 flex-1 sm:mb-0">
-              <label class="font-semibold text-gray-700">City:</label>
-              <div class="flex flex-col flex-1">
-                <input type="text" [(ngModel)]="city" class="border-b border-gray-500 focus:outline-hidden ml-2 flex-1"
-                  formControlName="city">
-                  <app-city-validation [cityControl]="profileForm.get('city')"
-                  [isSubmitted]="isSubmitted" [addressUpdateMode]="true"></app-city-validation>
-                </div>
-              </div>
-              <div class="flex items-center mb-2 flex-1 sm:mb-0">
-                <label class="font-semibold text-gray-700">District:</label>
-                <div class="flex flex-col flex-1">
-                  <input type="text" [(ngModel)]="district"
-                    class="border-b border-gray-500 focus:outline-hidden ml-2 flex-1" formControlName="district">
-                    <app-district-validation [districtControl]="profileForm.get('district')"
-                    [isSubmitted]="isSubmitted"></app-district-validation>
-                  </div>
-                </div>
-              </div>
-              <!-- State and Country on the same line -->
-              <div class="flex mb-3 flex-col sm:flex-row">
-                <div class="flex items-center mb-2 flex-1">
-                  <label class="font-semibold text-gray-700">State:</label>
-                  <div class="flex flex-col flex-1">
-                    <input type="text" [(ngModel)]="state" class="border-b border-gray-500 focus:outline-hidden ml-2 flex-1"
-                      formControlName="state">
-                      <app-state-validation [stateControl]="profileForm.get('state')"
-                      [isSubmitted]="isSubmitted"></app-state-validation>
-                    </div>
-                  </div>
-                  <div class="flex items-center mb-2 flex-1">
-                    <label class="font-semibold text-gray-700">Country:</label>
-                    <div class="flex flex-col flex-1">
-                      <input type="text" [(ngModel)]="country" class="border-b border-gray-500 focus:outline-hidden ml-2 flex-1"
-                        formControlName="country">
-                        <app-country-validation [countryControl]="profileForm.get('country')"
-                        [isSubmitted]="isSubmitted"></app-country-validation>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Zip on a separate line -->
-                  <div class="flex items-center mb-3">
-                    <label class="font-semibold text-gray-700">Zip:</label>
-                    <div class="flex flex-col flex-1">
-                      <input type="text" [(ngModel)]="zip" class="border-b border-gray-500 focus:outline-hidden ml-2 flex-1"
-                        formControlName="zip">
-                        <app-zip-validation [zipControl]="profileForm.get('zip')"
-                        [isSubmitted]="isSubmitted"></app-zip-validation>
-                      </div>
-                    </div>
-                  </div>
-                }
-                <hr class="border-t mx-8 mt-2">
-                <div class="flex justify-around items-center p-4 space-x-4">
-                  <button routerLink="/user/profile"
-                  class="w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">Cancel</button>
-                  <button type="submit"
-                  class="w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">Save</button>
-                </div>
-              </form>
-            </ng-container>
-          </div>
+          <label for="mobile" class="field-label">Mobile <span class="font-normal text-subtle">(optional)</span></label>
+          <input id="mobile" class="input" formControlName="mobile" inputmode="numeric" autocomplete="tel-national" placeholder="9876543210" />
+          <cs-field-error [control]="form.controls.mobile" [submitted]="submitted()" [messages]="messages.mobile" />
         </div>
-      <!-- </div> -->
+        <div>
+          <label for="dob" class="field-label">Date of birth</label>
+          <input id="dob" class="input" type="date" formControlName="dob" autocomplete="bday" />
+          <cs-field-error [control]="form.controls.dob" [submitted]="submitted()" [messages]="messages.dob" />
+        </div>
+      </div>
+    </section>
+
+    <section class="card mt-6 p-6" aria-labelledby="address-heading">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="address-heading" class="font-semibold">Address</h2>
+        <button csButton variant="secondary" size="sm" type="button" (click)="useCurrentLocation()" [disabled]="locating() === 'busy'">
+          {{ locating() === 'busy' ? 'Finding your address…' : 'Use my current location' }}
+        </button>
+      </div>
+      @if (locating() === 'failed') {
+        <p class="mt-2 text-sm text-danger" role="alert">Couldn't get your location. Allow location access in the browser, or fill in the address yourself.</p>
+      }
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="city" class="field-label">City</label>
+          <input id="city" class="input" formControlName="city" autocomplete="address-level2" />
+          <cs-field-error [control]="form.controls.city" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="district" class="field-label">District</label>
+          <input id="district" class="input" formControlName="district" />
+          <cs-field-error [control]="form.controls.district" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="state" class="field-label">State</label>
+          <input id="state" class="input" formControlName="state" autocomplete="address-level1" />
+          <cs-field-error [control]="form.controls.state" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="country" class="field-label">Country</label>
+          <input id="country" class="input" formControlName="country" autocomplete="country-name" />
+          <cs-field-error [control]="form.controls.country" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="zip" class="field-label">PIN code</label>
+          <input id="zip" class="input" formControlName="zip" inputmode="numeric" autocomplete="postal-code" />
+          <cs-field-error [control]="form.controls.zip" [submitted]="submitted()" [messages]="messages.zip" />
+        </div>
+      </div>
+    </section>
+  </form>
+</main>
+
+<!-- Actions stay in reach while scrolling the form -->
+<div class="save-bar fixed inset-x-0 z-30 border-t border-default bg-surface/95 backdrop-blur">
+  <div class="container flex max-w-3xl items-center justify-end gap-2 py-3">
+    @if (submitted() && form.invalid) {
+      <p class="mr-auto text-sm text-danger" role="alert">Fix the highlighted fields to save.</p>
+    }
+    <a csButton variant="ghost" routerLink="/user/profile">Cancel</a>
+    <button csButton type="submit" form="profile-form" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Save changes' }}</button>
+  </div>
+</div>

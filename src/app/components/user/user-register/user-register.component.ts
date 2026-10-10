@@ -1,158 +1,140 @@
-/* eslint-disable @typescript-eslint/space-before-function-paren */
-/* eslint-disable @typescript-eslint/semi */
-import { HttpClient } from '@angular/common/http';
-import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
-import { FormBuilder, type FormGroup, type AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import {
-  MAX_OTP_LIMIT,
-  OTP_RESEND_MAX_TIME,
-  OTP_TIMER
-} from 'src/app/shared/constants';
-import Swal from 'sweetalert2';
-import { SocialAuthService } from '@abacritt/angularx-social-login';
-import { saveUserOnStore } from 'src/app/states/user/user.actions';
-import { Store } from '@ngrx/store';
-import { formatTime } from 'src/app/helpers/timer';
-import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
-import { emailValidators, nameValidators, otpValidators, passwordValidators } from 'src/app/shared/valiators';
-import { type IUserSocialAuth, type IUserRes, type IApiUserAuthRes } from 'src/app/models/users'
-import { NameValidationComponent } from '../../common/validation/name-validation/name-validation.component';
-import { EmailValidationComponent } from '../../common/validation/email-validation/email-validation.component';
-import { PasswordValidationComponent } from '../../common/validation/password-validation/password-validation.component';
-import { RepeatPassValidationComponent } from '../../common/validation/repeat-pass-validation/repeat-pass-validation.component';
-import { OtpValidationComponent } from '../../common/validation/otp-validation/otp-validation.component';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core'
+import { HttpClient } from '@angular/common/http'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { RouterLink } from '@angular/router'
+import { type Subscription, map, take, timer } from 'rxjs'
+import { formatTime } from 'src/app/helpers/timer'
+import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations'
+import { type IApiUserAuthRes } from 'src/app/models/users'
+import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants'
+import { emailValidators, nameValidators, otpValidators, passwordValidators } from 'src/app/shared/valiators'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
+import { AuthShellComponent } from '../auth/auth-shell.component'
+import { GoogleButtonComponent } from '../auth/google-button.component'
+import { connectGoogleSignIn, injectStartSession } from '../auth/user-session'
 
+type Step = 'details' | 'verify'
+
+/** Sign-up in two steps: account details, then the 4-digit code the backend emails. */
 @Component({
-    selector: 'app-user-register',
-    templateUrl: './user-register.component.html',
-    styleUrls: ['./user-register.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, NameValidationComponent, EmailValidationComponent, PasswordValidationComponent, RepeatPassValidationComponent, OtpValidationComponent, RouterLink]
+  selector: 'app-user-register',
+  templateUrl: './user-register.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager, // reactive-form validity is read straight from the controls
+  imports: [ReactiveFormsModule, RouterLink, ButtonDirective, FieldErrorComponent, AuthShellComponent, GoogleButtonComponent]
 })
-export class UserRegisterComponent implements OnInit {
-  private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
-  private readonly formBuilder = inject(FormBuilder);
-  private readonly authService = inject(SocialAuthService);
-  private readonly store = inject(Store);
+export class UserRegisterComponent {
+  private readonly http = inject(HttpClient)
+  private readonly startSession = injectStartSession()
 
-  form!: FormGroup;
-  isSubmitted = false
-  showOtpField = false
-  remainingTime = 0
-  formattedTime: string = '03:00'
-  otpResendCount: number = 0
-  showOTPResend: boolean = true
+  protected readonly step = signal<Step>('details')
+  protected readonly busy = signal(false)
+  protected readonly googleFailed = signal(false)
+  protected readonly showPassword = signal(false)
 
-  ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      name: ['', [validateByTrimming(nameValidators)]],
-      email: ['', [validateByTrimming(emailValidators)]],
-      password: ['', [validateByTrimming(passwordValidators)]],
-      repeatPassword: [''],
-      otp: [{ value: '', disabled: true }, [validateByTrimming(otpValidators)]]
-    }, {
-      validators: passwordMatchValidator
+  // Step 1: details -------------------------------------------------------------
+
+  protected readonly details = new FormGroup({
+    name: new FormControl('', { nonNullable: true, validators: [validateByTrimming(nameValidators)] }),
+    email: new FormControl('', { nonNullable: true, validators: [validateByTrimming(emailValidators)] }),
+    password: new FormControl('', { nonNullable: true, validators: [validateByTrimming(passwordValidators)] }),
+    repeatPassword: new FormControl('', { nonNullable: true })
+  }, { validators: passwordMatchValidator })
+
+  protected readonly detailsSubmitted = signal(false)
+
+  protected readonly messages = {
+    name: {
+      required: 'Enter your name',
+      minlength: `Use at least ${userNameMinLength} letters`,
+      maxlength: `Use at most ${userNameMaxLength} letters`,
+      pattern: 'Use letters and spaces only'
+    },
+    email: { required: 'Enter your email', pattern: 'Enter a valid email address' },
+    password: {
+      required: 'Choose a password',
+      minlength: `Use at least ${passwordMinLength} characters`,
+      pattern: 'Include an uppercase letter, a lowercase letter and a number'
+    },
+    repeatPassword: { required: 'Type the password again', passwordMismatch: "The passwords don't match" },
+    otp: { required: 'Enter the 4-digit code', pattern: 'The code is 4 digits' }
+  }
+
+  // Step 2: email code -------------------------------------------------------------
+
+  protected readonly otp = new FormControl('', { nonNullable: true, validators: [validateByTrimming(otpValidators)] })
+  protected readonly otpSubmitted = signal(false)
+
+  // Seconds until the current code expires
+  protected readonly secondsLeft = signal(0)
+  protected readonly countdown = computed(() => formatTime(this.secondsLeft()))
+  protected readonly expired = computed(() => this.step() === 'verify' && this.secondsLeft() === 0)
+
+  // Resending is allowed a few times, and only within a window after sign-up starts
+  protected readonly resendsUsed = signal(0)
+  protected readonly resendWindowOpen = signal(true)
+  protected readonly canResend = computed(() => this.resendWindowOpen() && this.resendsUsed() < MAX_OTP_LIMIT)
+  protected readonly resendNote = signal<string | null>(null)
+
+  private countdownSub?: Subscription
+
+  constructor () {
+    connectGoogleSignIn(() => { this.googleFailed.set(true) })
+    inject(DestroyRef).onDestroy(() => this.countdownSub?.unsubscribe())
+  }
+
+  protected sendCode (): void {
+    this.detailsSubmitted.set(true)
+    if (this.details.invalid) return
+    const { name, email, password, repeatPassword } = this.details.getRawValue()
+    this.busy.set(true)
+    this.http.post<{ token: string }>('user/register', { name: name.trim(), email: email.trim(), password, repeatPassword }).subscribe({
+      next: res => {
+        localStorage.setItem('userAuthToken', res.token) // identifies this sign-up when verifying and resending the code
+        this.busy.set(false)
+        this.step.set('verify')
+        this.startCountdown()
+        timer(OTP_RESEND_MAX_TIME).pipe(take(1)).subscribe(() => { this.resendWindowOpen.set(false) })
+      },
+      error: () => { this.busy.set(false) }
     })
-
-    this.authService.authState.subscribe((user) => {
-      if (user?.name === undefined || user.email === undefined) return
-      const userData: IUserSocialAuth = {
-        name: user.name,
-        email: user.email,
-        profilePic: user.photoUrl
-      }
-
-      console.log(user, 'user from auth service');
-      this.http.post<IApiUserAuthRes>('user/auth/google', userData).subscribe({
-        next: (res: IApiUserAuthRes) => {
-          localStorage.setItem('userAccessToken', res.accessToken)
-          localStorage.setItem('userRefreshToken', res.refreshToken)
-          this.store.dispatch(saveUserOnStore({ userDetails: res.data as IUserRes }))
-          void this.router.navigate(['/'])
-        }
-      })
-    });
   }
 
-  // registerWithGoogle(): void {
-  //   console.log('registering with google');
-  //   void this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
-  // }
-
-  startTimer(): void {
-    this.remainingTime = OTP_TIMER;
-
-    const timer = setInterval(() => {
-      this.remainingTime--;
-
-      if (this.remainingTime <= 0) {
-        clearInterval(timer);
-        // Handle expiration logic here
-        console.log('OTP expired');
-      }
-      this.formattedTime = formatTime(this.remainingTime)
-    }, 1000); // Update every second
+  protected verify (): void {
+    this.otpSubmitted.set(true)
+    if (this.otp.invalid || this.expired()) return
+    this.busy.set(true)
+    this.http.post<IApiUserAuthRes>('user/validateOtp', { otp: this.otp.value.trim() }).subscribe({
+      next: res => { this.startSession(res) },
+      error: () => { this.busy.set(false) }
+    })
   }
 
-  resendOTP(): void {
-    if (this.otpResendCount < MAX_OTP_LIMIT) {
-      this.http.get('user/resendOtp').subscribe({
-        next: () => {
-          console.log('otp successfully resent');
-          void Swal.fire('OTP sent', 'Check your mail for OTP', 'success');
-          this.startTimer();
-          this.otpResendCount++;
-        }
-      });
-    } else {
-      void Swal.fire('Oops!', 'Maximum resend attempts reached', 'warning');
-    }
+  protected resendCode (): void {
+    if (!this.canResend()) return
+    this.http.get('user/resendOtp').subscribe(() => {
+      this.resendsUsed.update(count => count + 1)
+      this.resendNote.set(`We sent a new code to ${this.details.controls.email.value}.`)
+      this.otp.reset()
+      this.otpSubmitted.set(false)
+      this.startCountdown()
+    })
   }
 
-  /// { [key: string]: AbstractControl }
-  get f(): Record<string, AbstractControl> {
-    return this.form.controls;
+  protected changeDetails (): void {
+    this.countdownSub?.unsubscribe()
+    this.step.set('details')
+    this.resendNote.set(null)
+    this.otp.reset()
+    this.otpSubmitted.set(false)
   }
 
-  onSubmit (): void {
-    this.isSubmitted = true
-    console.log(this.form.invalid, this.form.get('repeatPassword'), this.form.get('name'))
-    if (!this.form.invalid && !this.showOtpField) {
-      const user = this.form.getRawValue()
-      this.http.post('user/register', user).subscribe({
-        next: (res: any) => {
-          localStorage.setItem('userAuthToken', res.token)
-          this.showOtpField = true
-          this.form.get('name')?.disable()
-          this.form.get('email')?.disable()
-          this.form.get('password')?.disable()
-          this.form.get('repeatPassword')?.disable()
-          this.form.get('otp')?.enable();
-          this.startTimer()
-          setTimeout(() => {
-            this.showOTPResend = false
-          }, OTP_RESEND_MAX_TIME)
-        }
-      })
-    } else if (!this.form.invalid && this.showOtpField) {
-      // const otp: number = this.form.get('otp').value;
-      const user = this.form.getRawValue()
-      console.log(user);
-      console.log(user.otp);
-      const otp = user.otp
-      this.http.post<IApiUserAuthRes>('user/validateOtp', { otp }).subscribe({
-        next: (res: IApiUserAuthRes) => {
-          localStorage.setItem('userAccessToken', res.accessToken)
-          localStorage.setItem('userRefreshToken', res.refreshToken)
-          localStorage.removeItem('userAuthToken')
-          this.store.dispatch(saveUserOnStore({ userDetails: res.data as IUserRes }))
-          void this.router.navigate(['/'])
-        }
-      })
-    } else {
-      console.log('error', this.form.errors)
-    }
+  private startCountdown (): void {
+    this.countdownSub?.unsubscribe()
+    this.secondsLeft.set(OTP_TIMER)
+    this.countdownSub = timer(1000, 1000).pipe(
+      take(OTP_TIMER),
+      map(tick => OTP_TIMER - tick - 1)
+    ).subscribe(left => { this.secondsLeft.set(left) })
   }
 }

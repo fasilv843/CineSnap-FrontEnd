@@ -1,71 +1,106 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable @typescript-eslint/semi */
-import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { ITheaterRes } from 'src/app/models/theater';
-import { TheaterService } from 'src/app/services/theater.service';
-import { imagesFolderPath } from 'src/app/shared/constants';
-import { saveCoords } from 'src/app/states/coords/coords.actions';
-import { selectCoords } from 'src/app/states/coords/coords.selector';
-import { selectUserDetails } from 'src/app/states/user/user.selector';
-import { UserNavComponent } from '../user-nav/user-nav.component';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal } from '@angular/core'
+import { rxResource, takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop'
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'
+import { Store } from '@ngrx/store'
+import { debounceTime, distinctUntilChanged, map } from 'rxjs'
+import { distanceKm, formatDistance } from 'src/app/helpers/distance'
+import { type ITheaterRes } from 'src/app/models/theater'
+import { LocationService } from 'src/app/services/location.service'
+import { TheaterService } from 'src/app/services/theater.service'
+import { imagesFolderPath } from 'src/app/shared/constants'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { selectCoords } from 'src/app/states/coords/coords.selector'
+import { UserNavComponent } from '../user-nav/user-nav.component'
+
+// Used when the browser can't share a location: Ramanattukara
+const FALLBACK = { name: 'Ramanattukara', coordinates: [75.869032, 11.178324] }
+const SEARCH_DEBOUNCE_MS = 250
+
+interface TheaterCard {
+  id: string
+  name: string
+  place: string
+  image: string | null
+  distance: string
+  directions: string
+  searchText: string
+}
+
+function toTheaterCard (theater: ITheaterRes, from: number[]): TheaterCard {
+  const [lon, lat] = theater.coords.coordinates
+  const place = [theater.address.landmark, theater.address.city].filter(Boolean).join(', ')
+  return {
+    id: theater._id,
+    name: theater.name,
+    place,
+    image: theater.profilePic !== undefined && theater.profilePic !== '' ? imagesFolderPath + theater.profilePic : null,
+    distance: formatDistance(distanceKm(from, theater.coords.coordinates)),
+    directions: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`,
+    searchText: [theater.name, place, theater.address.district].join(' ').toLowerCase()
+  }
+}
 
 @Component({
-    selector: 'app-user-theaters',
-    templateUrl: './user-theaters.component.html',
-    styleUrls: ['./user-theaters.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [UserNavComponent, RouterLink]
+  selector: 'app-user-theaters',
+  templateUrl: './user-theaters.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [UserNavComponent, RouterLink, ButtonDirective]
 })
-export class UserTheatersComponent implements OnInit {
-  private readonly store = inject(Store);
-  private readonly theaterService = inject(TheaterService);
+export class UserTheatersComponent {
+  private readonly store = inject(Store)
+  private readonly theaterService = inject(TheaterService)
+  private readonly router = inject(Router)
+  private readonly route = inject(ActivatedRoute)
+  protected readonly location = inject(LocationService)
 
-  coords = this.store.selectSignal(selectCoords)
-  userData = this.store.selectSignal(selectUserDetails)
-  theaters: ITheaterRes[] = []
-  folderPath = imagesFolderPath
+  // Where distances are measured from --------------------------------------
+
+  private readonly coords = this.store.selectSignal(selectCoords)
+  protected readonly usingFallback = computed(() => this.coords() === null && ['denied', 'unsupported'].includes(this.location.status()))
+
+  // Compared by value so a repeated GPS reading doesn't refetch
+  private readonly origin = computed(() => {
+    const coords = this.coords()?.coordinates
+    if (coords !== undefined) return coords
+    return this.usingFallback() ? FALLBACK.coordinates : undefined
+  }, { equal: (a, b) => a?.[0] === b?.[0] && a?.[1] === b?.[1] })
+
+  protected readonly fallbackName = FALLBACK.name
+
+  // Theaters, nearest first (the API sorts by distance) --------------------
+
+  protected readonly theaters = rxResource({
+    params: () => this.origin(),
+    stream: ({ params: origin }) => this.theaterService.getNearestTheaters(origin[0], origin[1]).pipe(
+      map(res => res.data.map(theater => toTheaterCard(theater, origin)))
+    )
+  })
+
+  // Search: typed text follows ?q= (e.g. on back) and filters after a short pause
+
+  private readonly queryText = toSignal(this.route.queryParamMap.pipe(map(params => params.get('q') ?? '')), { requireSync: true })
+  protected readonly searchText = linkedSignal(() => this.queryText())
+  // Trimmed search text, as typed, once typing pauses
+  protected readonly search = toSignal(
+    toObservable(this.searchText).pipe(debounceTime(SEARCH_DEBOUNCE_MS), map(text => text.trim()), distinctUntilChanged()),
+    { initialValue: this.queryText().trim() }
+  )
+
+  protected readonly visibleTheaters = computed(() => {
+    const term = this.search().toLowerCase()
+    const list = this.theaters.value() ?? []
+    return term === '' ? list : list.filter(theater => theater.searchText.includes(term))
+  })
+
+  protected readonly skeletons = [0, 1, 2, 3, 4, 5]
 
   constructor () {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const lon = position.coords.longitude;
-        const lat = position.coords.latitude;
-        this.store.dispatch(saveCoords({ coords: { coordinates: [lon, lat] } }))
-      });
-    } else {
-      console.log('No support for geolocation')
-    }
+    toObservable(this.search).pipe(takeUntilDestroyed()).subscribe(term => {
+      void this.router.navigate([], { relativeTo: this.route, queryParams: { q: term !== '' ? term : null }, replaceUrl: true })
+    })
   }
 
-  ngOnInit (): void {
-    // Longitude and Latitude of Ramanattukara as default
-    let lon = 75.869032
-    let lat = 11.178324
-    const coords = this.coords()
-    if (coords !== null) {
-      console.log('coords from ngOnInit', coords);
-      lon = coords.coordinates[0]
-      lat = coords.coordinates[1]
-    } else {
-      console.log('curr coords not available')
-    }
-
-    const user = this.userData()
-    // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/strict-boolean-expressions
-    if (user && user.coords && user.coords.coordinates[0] && user.coords.coordinates[1]) {
-      console.log(user.coords, 'user.coords from ngOnInit');
-      lon = user.coords.coordinates[0]
-      lat = user.coords.coordinates[1]
-    }
-
-    this.theaterService.getNearestTheaters(lon, lat).subscribe({
-      next: (res) => {
-        console.log(res, 'nearest theater response');
-        this.theaters = res.data
-      }
-    })
+  protected clearSearch (): void {
+    this.searchText.set('')
   }
 }

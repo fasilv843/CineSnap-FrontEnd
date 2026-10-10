@@ -1,39 +1,42 @@
-<section class="min-h-screen bg-cover bg-center"
-  style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
-  <div class="flex min-h-screen items-center">
-    <div class="container">
-      <div class="py-8 flex justify-center items-center">
-        <div class="w-full md:w-9/12 lg:w-7/12 xl:w-6/12">
-          <div class="bg-white shadow-lg" style="border-radius: 15px;">
-            <div class="p-6 sm:p-12">
-              <h2 class="uppercase text-2xl font-semibold text-center mb-12">Log In</h2>
+<cs-auth-shell heading="Welcome back" subheading="Sign in to book seats, see your tickets and use your wallet.">
+  <cs-google-button text="signin_with" />
+  @if (googleFailed()) {
+    <p class="mt-2 text-center text-sm text-danger" role="alert">Google sign-in didn't go through. Try again, or use your email.</p>
+  }
 
-              <form [formGroup]="form" (submit)="onSubmit()">
-
-                <div class="mb-3">
-                  <input type="email"  formControlName="email" id="form3Example3cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Email" />
-                  <app-email-validation [emailControl]="form.get('email')" [isSubmitted]="isSubmitted"></app-email-validation>
-                </div>
-
-                <div class="mb-3">
-                    <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
-                    <app-password-validation [passwordControl]="form.get('password')" [isSubmitted]="isSubmitted"></app-password-validation>
-                </div>
-                  
-                <div class="flex justify-center">
-                  <button type="submit"
-                    class="w-full rounded-md bg-amber-400 hover:bg-amber-500 disabled:opacity-60 px-6 py-2 text-lg font-semibold text-gray-900">Login</button>
-                </div>
-
-                <p class="text-center text-gray-500 mt-3 mb-0">Not a member yet? 
-                    <a routerLink="/user/register" class="font-bold text-gray-900"><u>Register here</u></a>
-                </p>
-
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="my-6 flex items-center gap-3 text-sm text-subtle" role="separator">
+    <span class="flex-1 border-t border-default"></span>
+    or sign in with email
+    <span class="flex-1 border-t border-default"></span>
   </div>
-</section>
+
+  <form [formGroup]="form" (ngSubmit)="signIn()" novalidate class="space-y-4">
+    <div>
+      <label for="email" class="mb-1.5 block text-sm font-semibold">Email</label>
+      <input id="email" type="email" class="input" formControlName="email" autocomplete="email" placeholder="you@example.com" />
+      <cs-field-error [control]="form.controls.email" [submitted]="submitted()" [messages]="messages.email" />
+    </div>
+
+    <div>
+      <label for="password" class="mb-1.5 block text-sm font-semibold">Password</label>
+      <div class="relative">
+        <input id="password" class="input pr-16" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
+        <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-control px-2 py-1 text-sm font-semibold text-muted hover:text-default"
+          [attr.aria-pressed]="showPassword()" (click)="showPassword.set(!showPassword())">
+          {{ showPassword() ? 'Hide' : 'Show' }}<span class="sr-only"> password</span>
+        </button>
+      </div>
+      <cs-field-error [control]="form.controls.password" [submitted]="submitted()" [messages]="messages.password" />
+    </div>
+
+    <button csButton size="lg" type="submit" class="w-full" [disabled]="signingIn()">{{ signingIn() ? 'Signing in…' : 'Sign in' }}</button>
+  </form>
+
+  <p class="mt-6 text-center text-muted">
+    New to CineSnap?
+    <a routerLink="/user/register" class="font-semibold text-default underline decoration-accent underline-offset-4">Create an account</a>
+  </p>
+  <p class="mt-8 border-t border-default pt-4 text-center text-sm text-subtle">
+    Run a theater? <a routerLink="/theater/login" class="font-semibold text-muted hover:text-default">Theater login</a>
+  </p>
+</cs-auth-shell>

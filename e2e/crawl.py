@@ -56,6 +56,9 @@ def run():
         browser = p.chromium.launch()
 
         def new_page():
+            # Close the previous role's context so memory doesn't pile up across sections
+            for old in browser.contexts:
+                old.close()
             ctx = browser.new_context()
             page = ctx.new_page()
             errors = []
@@ -67,12 +70,23 @@ def run():
         print('--- logged out')
         page, errors = new_page()
         for path, expect in [
-            ('/', '/user/home'), ('/user/login', '/user/login'), ('/user/register', '/user/register'),
+            ('/', '/'), ('/user/login', '/user/login'), ('/user/register', '/user/register'),
             ('/theater/home', '/theater/login'), ('/theater/register', '/theater/register'),
             ('/admin/home', '/admin/login'), ('/admin/login', '/admin/login'),
             ('/user/profile', None), ('/does-not-exist', '/does-not-exist'),
         ]:
             failures += not visit(page, path, errors, expect)
+        page.goto(f'{BASE}/')
+        page.wait_for_load_state('load')
+        for href in ['/user/register', '/user/login', '/theater/login', '/theater/register', '/admin/login']:
+            found = page.locator(f'a[href="{href}"]').count() > 0
+            print(f'{"OK " if found else "ERR"} landing link {href}: {found}')
+            failures += not found
+        page.locator('main a[href="/user/login"]').click()
+        page.wait_for_url(f'{BASE}/user/login', timeout=10000)
+        print('OK  landing "Log in" opens /user/login')
+        errors.clear()
+
         page.goto(f'{BASE}/user/profile')
         page.wait_for_timeout(1000)
         prompt = page.locator('.swal2-title', has_text='You are not logged in').count() > 0

@@ -105,16 +105,19 @@ export const USER_ROUTES: Routes = [
       },
       {
         path: 'bookings/:userId',
+        title: 'CineSnap | Bookings',
         loadComponent: async () => await import('./user-bookings/user-bookings.component').then(m => m.UserBookingsComponent),
         canActivate: [authGuard]
       },
       {
         path: 'messages',
+        title: 'CineSnap | Messages',
         loadComponent: async () => await import('./user-message/user-message.component').then(m => m.UserMessageComponent),
         canActivate: [authGuard]
       },
       {
         path: 'messages/:id',
+        title: 'CineSnap | Messages',
         loadComponent: async () => await import('./user-message/user-message.component').then(m => m.UserMessageComponent),
         canActivate: [authGuard]
       },

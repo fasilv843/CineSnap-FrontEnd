@@ -1,91 +1,295 @@
-/* You can add global styles to this file, and also import other style files */
 @import '@angular/cdk/overlay-prebuilt.css' layer(base);
 
 @import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  CineSnap theme tokens. Colors are named by role only, so templates never change when the palette does.
+
+    Backgrounds  bg-page  bg-surface  bg-raised  bg-muted
+    Text         text-default  text-muted  text-subtle  text-inverse  text-on-media(-muted)
+    Media        bg-scrim (overlay behind text on photos)
+    Borders      border-default  border-strong  border-input   (focus: ring-focus)
+    Roles        primary  secondary  accent              (+ -hover, -foreground)
+    Status       success  warning  danger  info          (+ -foreground)
+
+  @theme holds the light values as the fallback. .light and .dark on <html> (set by ThemeService) redefine them.
+*/
+@theme {
+  --background-color-page: #f6f4f7;
+  --background-color-surface: #ffffff;
+  --background-color-raised: #ffffff;
+  --background-color-muted: #ece6ee;
+
+  --text-color-default: #1c1220;
+  --text-color-muted: #6f6475;
+  --text-color-subtle: #9a8fa0;
+  --text-color-inverse: #ffffff;
+  /* Text and scrims laid over photos (movie backdrops) stay light in both themes */
+  --text-color-on-media: #ffffff;
+  --text-color-on-media-muted: #e4dde6;
+  --color-scrim: #140c17;
+
+  --border-color-default: #ddd6e0;
+  --border-color-strong: #cfc6d3;
+  --border-color-input: #cfc6d3;
+  --ring-color-focus: #e0a93b;
+
+  --color-primary: #6d4ae0;
+  --color-primary-hover: #5634c4;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #ece6ee;
+  --color-secondary-hover: #ddd6e0;
+  --color-secondary-foreground: #2b1c30;
+  --color-accent: #b9862a;
+  --color-accent-hover: #e0a93b;
+  --color-accent-foreground: #1c1220;
+
+  --color-success: #2f9e6b;
+  --color-success-foreground: #ffffff;
+  --color-warning: #c77c0e;
+  --color-warning-foreground: #ffffff;
+  --color-danger: #d93a40;
+  --color-danger-foreground: #ffffff;
+  --color-info: #3e6fd8;
+  --color-info-foreground: #ffffff;
+
+  --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Big Shoulders Display', 'Figtree', ui-sans-serif, sans-serif;
+
+  /* Radii by hierarchy: controls < cards; seats and chips use rounded-full */
+  --radius-control: 0.5rem;
+  --radius-card: 0.875rem;
+
+  --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px -12px rgb(0 0 0 / 0.2);
+  --shadow-glow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 50%, transparent),
+    0 0 18px color-mix(in srgb, var(--color-accent) 35%, transparent);
+
+  --animate-bulb: bulb 2.4s ease-in-out infinite;
+
+  @keyframes bulb {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+}
+
+.light {
+  color-scheme: light;
+
+  --background-color-page: #f6f4f7;
+  --background-color-surface: #ffffff;
+  --background-color-raised: #ffffff;
+  --background-color-muted: #ece6ee;
+
+  --text-color-default: #1c1220;
+  --text-color-muted: #6f6475;
+  --text-color-subtle: #9a8fa0;
+  --text-color-inverse: #ffffff;
+
+  --border-color-default: #ddd6e0;
+  --border-color-strong: #cfc6d3;
+  --border-color-input: #cfc6d3;
+  --ring-color-focus: #e0a93b;
+
+  --color-primary: #6d4ae0;
+  --color-primary-hover: #5634c4;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #ece6ee;
+  --color-secondary-hover: #ddd6e0;
+  --color-secondary-foreground: #2b1c30;
+  --color-accent: #b9862a;
+  --color-accent-hover: #e0a93b;
+  --color-accent-foreground: #1c1220;
+
+  --color-success: #2f9e6b;
+  --color-success-foreground: #ffffff;
+  --color-warning: #c77c0e;
+  --color-warning-foreground: #ffffff;
+  --color-danger: #d93a40;
+  --color-danger-foreground: #ffffff;
+  --color-info: #3e6fd8;
+  --color-info-foreground: #ffffff;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background-color-page: #1c1220;
+  --background-color-surface: #2b1c30;
+  --background-color-raised: #3d2b43;
+  --background-color-muted: #241729;
+
+  --text-color-default: #eef0f5;
+  --text-color-muted: #b3a8b8;
+  --text-color-subtle: #8a7f90;
+  --text-color-inverse: #1c1220;
+
+  --border-color-default: #3d2b43;
+  --border-color-strong: #4a4050;
+  --border-color-input: #4a4050;
+  --ring-color-focus: #e0a93b;
+
+  --color-primary: #8f72ff;
+  --color-primary-hover: #a48cff;
+  --color-primary-foreground: #140c17;
+  --color-secondary: #3d2b43;
+  --color-secondary-hover: #4a4050;
+  --color-secondary-foreground: #eef0f5;
+  --color-accent: #e0a93b;
+  --color-accent-hover: #f0c870;
+  --color-accent-foreground: #1c1220;
+
+  --color-success: #3fb57f;
+  --color-success-foreground: #1c1220;
+  --color-warning: #e0a93b;
+  --color-warning-foreground: #1c1220;
+  --color-danger: #e5484d;
+  --color-danger-foreground: #ffffff;
+  --color-info: #6b93f0;
+  --color-info-foreground: #1c1220;
+}
 
 @utility container {
   margin-inline: auto;
   padding-inline: 1rem;
 }
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
+@utility card {
+  background-color: var(--background-color-surface);
+  color: var(--text-color-default);
+  border: 1px solid var(--border-color-default);
+  border-radius: var(--radius-card);
+}
 
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
+@utility input {
+  width: 100%;
+  height: 2.75rem;
+  padding-inline: 0.875rem;
+  background-color: var(--background-color-surface);
+  color: var(--text-color-default);
+  border: 1px solid var(--border-color-input);
+  border-radius: var(--radius-control);
+
+  &::placeholder {
+    color: var(--text-color-subtle);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--ring-color-focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring-color-focus) 35%, transparent);
+  }
+}
+
+@utility badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: var(--color-secondary);
+  color: var(--color-secondary-foreground);
+}
+
 @layer base {
+  /* Tailwind v4 defaults borders to currentcolor; keep the v3 look with the theme border */
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
+    border-color: var(--border-color-default, currentcolor);
   }
-}
 
-@layer base {
   html,
   body {
     height: 100%;
   }
+
   body {
     margin: 0;
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
     overflow-x: hidden;
+    font-family: var(--font-sans);
+    background-color: var(--background-color-page);
+    color: var(--text-color-default);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+
+  /* Keep page content clear of the user area's mobile tab bar */
+  @media (width < 40rem) {
+    body:has(.tab-bar) {
+      padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring-color-focus);
+    outline-offset: 2px;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
 html {
   scrollbar-width: thin;
-  scrollbar-color: #d3d3d3 #f5f5f5;
+  scrollbar-color: var(--border-color-strong) transparent;
 }
 
-/* For Chrome, Edge, and Safari */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #d3d3d3;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #938d8d;
+  background-color: var(--border-color-strong);
+  border-radius: 9999px;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* input[type=number] {
-    -moz-appearance: textfield;
-} */
-
-
-/* styles.css */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: rgb(0 0 0 / 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/*
+  Razorpay checkout is a full-screen transparent iframe. If it inherits color-scheme: dark from <html> while its own
+  document is light, the browser paints it opaque white and the page behind disappears.
+*/
+iframe.razorpay-checkout-frame {
+  color-scheme: normal;
+}
 
 /* ModalService (CDK dialog) */
 .app-modal-backdrop {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgb(0 0 0 / 0.55);
 }
 
 .app-modal-panel {
@@ -95,8 +299,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .app-offcanvas-panel {
   width: 20rem;
   max-width: 85vw;
-  background: #fff;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  background: var(--background-color-surface);
+  color: var(--text-color-default);
+  box-shadow: var(--shadow-raised);
   overflow-y: auto;
   animation: offcanvas-slide-in 200ms ease-out;
 }
@@ -104,4 +309,104 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 @keyframes offcanvas-slide-in {
   from { transform: translateX(-100%); }
   to { transform: translateX(0); }
+}
+
+/*
+  Data tables (rendered from TanStack Table instances).
+  <table class="data-table"> with <td data-label="Column name">: on phones each row becomes a stacked card.
+*/
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.9375rem;
+}
+
+.data-table th {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color-default);
+  color: var(--text-color-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.data-table th.text-right {
+  text-align: right;
+}
+
+.data-table td {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--border-color-default);
+  vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr:hover td {
+  background-color: color-mix(in srgb, var(--background-color-muted) 60%, transparent);
+}
+
+.data-table .sort-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font: inherit;
+  color: inherit;
+}
+
+.data-table .sort-button:hover {
+  color: var(--text-color-default);
+}
+
+@media (width < 48rem) {
+  .data-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .data-table,
+  .data-table tbody,
+  .data-table tr,
+  .data-table td {
+    display: block;
+  }
+
+  .data-table tr {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color-default);
+  }
+
+  .data-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .data-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.375rem 0;
+    border: none;
+    text-align: right;
+  }
+
+  .data-table td[data-label]::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    color: var(--text-color-muted);
+    font-size: 0.8125rem;
+    text-align: left;
+  }
+
+  /* A cell without a label (e.g. the movie heading) spans the card width */
+  .data-table td:not([data-label]) {
+    display: block;
+    text-align: left;
+  }
 }

@@ -1,137 +1,116 @@
-import { Component, type OnDestroy, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
+import { ChangeDetectionStrategy, Component, DestroyRef, type ElementRef, computed, effect, inject, linkedSignal, signal, viewChild } from '@angular/core'
+import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop'
+import { DatePipe } from '@angular/common'
+import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { type IChatReqs, type IChatMessage, type IApiChatRes } from 'src/app/models/chat'
+import { forkJoin, map } from 'rxjs'
+import { type IApiChatRes, type IChatMessage, type IChatReqs } from 'src/app/models/chat'
 import { type ITheaterRes } from 'src/app/models/theater'
 import { TheaterService } from 'src/app/services/theater.service'
 import { UserService } from 'src/app/services/user.service'
 import { WebSocketService } from 'src/app/services/web-socket.service'
 import { imagesFolderPath } from 'src/app/shared/constants'
+import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
-import { UserNavComponent } from '../user-nav/user-nav.component';
-import { FormsModule } from '@angular/forms';
-import { UpperCasePipe, SlicePipe, DatePipe } from '@angular/common';
-// import { NgxIntersectionObserverDirective } from 'ngx-intersection-observer'
+import { UserNavComponent } from '../user-nav/user-nav.component'
+
+interface Contact { id: string, name: string, image: string | null }
+interface DayGroup { day: Date, messages: IChatMessage[] }
+
+function toContact (theater: ITheaterRes): Contact {
+  return {
+    id: theater._id,
+    name: theater.name,
+    image: theater.profilePic !== undefined && theater.profilePic !== '' ? imagesFolderPath + theater.profilePic : null
+  }
+}
+
+function startOfDay (date: Date | string): Date {
+  const day = new Date(date)
+  day.setHours(0, 0, 0, 0)
+  return day
+}
 
 @Component({
-    selector: 'app-user-message',
-    templateUrl: './user-message.component.html',
-    styleUrls: ['./user-message.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [UserNavComponent, FormsModule, UpperCasePipe, SlicePipe, DatePipe]
+  selector: 'app-user-message',
+  templateUrl: './user-message.component.html',
+  styleUrl: './user-message.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [UserNavComponent, RouterLink, RouterLinkActive, ButtonDirective, AvatarComponent, DatePipe]
 })
-export class UserMessageComponent implements OnInit, OnDestroy {
-  private readonly socketService = inject(WebSocketService)
+export class UserMessageComponent {
+  private readonly socket = inject(WebSocketService)
   private readonly theaterService = inject(TheaterService)
   private readonly userService = inject(UserService)
   private readonly route = inject(ActivatedRoute)
   private readonly store = inject(Store)
 
-  // @ViewChild('messageContainer') messageContainer: ElementRef
-  // @ViewChild(NgxIntersectionObserverDirective) observer: NgxIntersectionObserverDirective
+  private readonly userId = this.store.selectSignal(selectUserDetails)()?._id ?? ''
 
-  message: string = ''
-  // feedback: string = ''
-  chats: IChatMessage[] = []
-  userDetails = this.store.selectSignal(selectUserDetails)
-  theaterId: string = ''
-  userId = ''
-  userName = 'User'
-  theaters: ITheaterRes[] = []
-  currTheater!: ITheaterRes
-  imageFolderPath = imagesFolderPath
+  // Conversation list ------------------------------------------------------
+
+  protected readonly contacts = rxResource({
+    stream: () => this.theaterService.getTheatersChattedWith(this.userId).pipe(map(res => res.data.map(toContact)))
+  })
+
+  // Open conversation: /user/messages/:id ------------------------------------
+
+  protected readonly theaterId = toSignal(this.route.paramMap.pipe(map(params => params.get('id'))), { requireSync: true })
+
+  private readonly conversation = rxResource({
+    params: () => this.theaterId() ?? undefined,
+    stream: ({ params: theaterId }) => forkJoin({
+      theater: this.theaterService.getTheaterData(theaterId).pipe(map(res => toContact(res.data))),
+      messages: this.userService.getChatHistory(theaterId, this.userId).pipe(map(res => res.data?.messages ?? []))
+    })
+  })
+
+  protected readonly partner = computed(() => this.conversation.value()?.theater ?? null)
+  protected readonly isLoadingChat = this.conversation.isLoading
+
+  // Starts from the loaded history; sent and received messages are added locally
+  protected readonly messages = linkedSignal<IChatMessage[]>(() => this.conversation.value()?.messages ?? [])
+
+  protected readonly days = computed<DayGroup[]>(() => {
+    const groups: DayGroup[] = []
+    for (const message of this.messages()) {
+      const day = startOfDay(message.time)
+      const last = groups.at(-1)
+      if (last !== undefined && last.day.getTime() === day.getTime()) last.messages.push(message)
+      else groups.push({ day, messages: [message] })
+    }
+    return groups
+  })
+
+  protected readonly today = startOfDay(new Date())
+  protected readonly draft = signal('')
+
+  private readonly scroller = viewChild<ElementRef<HTMLElement>>('scroller')
 
   constructor () {
-    const socketService = this.socketService;
+    this.socket.connectSocket(this.userId)
+    inject(DestroyRef).onDestroy(() => { this.socket.disconnectSocket() })
 
-    const user = this.userDetails()
-    if (user !== null) {
-      this.userId = user._id
-      this.userName = user.name
-    }
-
-    socketService.connectSocket(this.userId)
-  }
-
-  ngOnInit (): void {
-    this.theaterService.getTheatersChattedWith(this.userId).subscribe({
-      next: (res) => {
-        this.theaters = res.data
-        // this.currTheater = this.theaters[0]
-      }
+    this.socket.listen('recieve-message').pipe(takeUntilDestroyed()).subscribe((res: IApiChatRes) => {
+      if (res.data !== null && res.data.theaterId === this.theaterId()) this.messages.set(res.data.messages)
     })
 
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id')
-      console.log(id, 'id from route snapshot')
-      if (id !== null) {
-        this.theaterService.getTheaterData(id).subscribe({
-          next: (res) => {
-            this.currTheater = res.data
-          }
-        })
-      }
-    })
-
-    // this.socketService.listen('typing').subscribe((data) => { this.updateFeedback(data) })
-    this.socketService.listen('recieve-message').subscribe((data) => { this.updateMessage(data) })
-  }
-
-  ngOnDestroy (): void {
-    this.socketService.disconnectSocket()
-  }
-
-  onSelectTheater (theater: ITheaterRes): void {
-    this.currTheater = theater
-    this.userService.getChatHistory(theater._id, this.userId).subscribe({
-      next: (res) => {
-        if (res.data !== null) {
-          this.chats = res.data.messages
-        }
-      }
+    // Keep the newest message in view
+    effect(() => {
+      const count = this.messages().length
+      const element = this.scroller()?.nativeElement
+      if (element !== undefined && count >= 0) element.scrollTop = element.scrollHeight
     })
   }
 
-  updateMessage (res: IApiChatRes): void {
-    // this.feedback = ''
-    if (res.data == null) return
-    console.log(res.data.messages, 'data from update message')
-    this.chats = res.data.messages
-  }
-
-  // updateFeedback (data: { name: string, sender: string, reciever: string }): void {
-  //   console.log(data, 'data from updateFeedback, typing message')
-  //   this.feedback = `${data.name} is typing a message`
-  //   // eslint-disable-next-line no-return-assign
-  //   debounce(() => this.feedback = '')
-  // }
-
-  // messageTyping (): void {
-  //   console.log('user is typing')
-  //   this.socketService.emit('typing', {
-  //     name: this.userName,
-  //     sender: this.userId,
-  //     reciever: this.currTheater._id
-  //   })
-  // }
-
-  sendMessage (): void {
-    if (this.message !== '') {
-      const msgData: IChatReqs = {
-        userId: this.userId,
-        theaterId: this.currTheater._id,
-        sender: 'User',
-        message: this.message
-      }
-      console.log('sending message', msgData)
-      this.chats.push({
-        sender: 'User',
-        message: this.message,
-        time: new Date(),
-        isRead: false
-      })
-      this.socketService.emit('send-message', msgData)
-      this.message = ''
-    }
+  protected send (): void {
+    const text = this.draft().trim()
+    const theaterId = this.theaterId()
+    if (text === '' || theaterId === null) return
+    const request: IChatReqs = { userId: this.userId, theaterId, sender: 'User', message: text }
+    this.socket.emit('send-message', request)
+    this.messages.update(list => [...list, { sender: 'User', message: text, time: new Date(), isRead: false }])
+    this.draft.set('')
   }
 }

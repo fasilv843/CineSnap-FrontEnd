@@ -1,0 +1,75 @@
+/* Letterboard with a row of marquee bulbs above and below */
+.marquee {
+  position: relative;
+  padding: 2rem 1.5rem;
+  border: 1px solid var(--border-color-default);
+  border-radius: var(--radius-card);
+  background-color: var(--background-color-muted);
+  box-shadow: var(--shadow-raised);
+}
+
+@media (min-width: 640px) {
+  .marquee {
+    padding: 2.5rem 2.25rem;
+  }
+}
+
+.marquee::before,
+.marquee::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0.5rem;
+  height: 14px;
+  background: radial-gradient(circle, var(--color-accent) 0 2.5px, transparent 3.5px) 11px 0 / 22px 14px repeat-x;
+  animation: var(--animate-bulb);
+  pointer-events: none;
+}
+
+.marquee::before { top: 2px; }
+.marquee::after { bottom: 2px; animation-delay: 1.2s; }
+
+/* Seat map: the screen glows from above, a few seats light up once on load */
+.auditorium {
+  margin: 0;
+  padding: 1.5rem 1rem 2rem;
+}
+
+.screen {
+  height: 2.5rem;
+  margin-inline: 8%;
+  border-top: 3px solid var(--text-color-default);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--text-color-default) 14%, transparent), transparent);
+}
+
+.seat {
+  width: clamp(0.9rem, 2.6vw, 1.5rem);
+  aspect-ratio: 1 / 0.9;
+  border-radius: 0.375rem 0.375rem 0.2rem 0.2rem;
+  background: var(--border-color-strong);
+}
+
+.seat.aisle {
+  margin-right: clamp(0.4rem, 1.5vw, 1rem);
+}
+
+.seat-lit {
+  animation: seat-on 500ms ease-out both;
+}
+
+@keyframes seat-on {
+  from { background: var(--border-color-strong); box-shadow: none; }
+  to { background: var(--color-accent); box-shadow: var(--shadow-glow); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee::before,
+  .marquee::after {
+    animation: none;
+  }
+
+  .seat-lit {
+    animation: none;
+    background: var(--color-accent);
+  }
+}

@@ -1,172 +1,173 @@
-import { Component, type OnInit, ChangeDetectionStrategy, inject, effect, Injector } from '@angular/core'
-import { FormBuilder, type FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { dateToString } from 'src/app/helpers/date'
 import { getLocation } from 'src/app/helpers/location'
 import { validateByTrimming, validateDOB } from 'src/app/helpers/validations'
-import { type ICoords, type IUserAddress } from 'src/app/models/common'
-import { type IUserUpdate, type IUserRes } from 'src/app/models/users'
+import { type ICoords } from 'src/app/models/common'
+import { type IUserUpdate } from 'src/app/models/users'
 import { GeoLocationService } from 'src/app/services/geo-location.service'
 import { UserService } from 'src/app/services/user.service'
+import { MinAge, imagesFolderPath, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants'
 import { mobileValidators, nameValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
+import { selectCoords } from 'src/app/states/coords/coords.selector'
 import { saveUserOnStore } from 'src/app/states/user/user.actions'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
-import { environments } from 'src/environments/environment'
-import { UserNavComponent } from '../user-nav/user-nav.component';
-import { ProfileDpComponent } from '../../common/profile-dp/profile-dp.component';
-import { NameValidationComponent } from '../../common/validation/name-validation/name-validation.component';
-import { MobileValidationComponent } from '../../common/validation/mobile-validation/mobile-validation.component';
-import { DobValidationComponent } from '../../common/validation/dob-validation/dob-validation.component';
-import { CityValidationComponent } from '../../common/validation/city-validation/city-validation.component';
-import { DistrictValidationComponent } from '../../common/validation/district-validation/district-validation.component';
-import { StateValidationComponent } from '../../common/validation/state-validation/state-validation.component';
-import { CountryValidationComponent } from '../../common/validation/country-validation/country-validation.component';
-import { ZipValidationComponent } from '../../common/validation/zip-validation/zip-validation.component';
+import { ProfileDpComponent } from '../../common/profile-dp/profile-dp.component'
+import { UserNavComponent } from '../user-nav/user-nav.component'
+
+function text (validators = requiredValidator): FormControl<string> {
+  return new FormControl('', { nonNullable: true, validators: [validateByTrimming(validators)] })
+}
 
 @Component({
-    selector: 'app-edit-user-profile',
-    templateUrl: './edit-user-profile.component.html',
-    styleUrls: ['./edit-user-profile.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [UserNavComponent, ProfileDpComponent, FormsModule, ReactiveFormsModule, NameValidationComponent, MobileValidationComponent, DobValidationComponent, CityValidationComponent, DistrictValidationComponent, StateValidationComponent, CountryValidationComponent, ZipValidationComponent, RouterLink]
+  selector: 'app-edit-user-profile',
+  templateUrl: './edit-user-profile.component.html',
+  styleUrl: './edit-user-profile.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager, // reactive-form validity is read straight from the controls
+  imports: [UserNavComponent, ProfileDpComponent, ReactiveFormsModule, RouterLink, ButtonDirective, FieldErrorComponent]
 })
-export class EditUserProfileComponent implements OnInit {
-  private readonly formBuilder = inject(FormBuilder)
-  private readonly injector = inject(Injector)
+export class EditUserProfileComponent {
   private readonly userService = inject(UserService)
+  private readonly geoLocation = inject(GeoLocationService)
   private readonly store = inject(Store)
   private readonly router = inject(Router)
-  private readonly locationService = inject(GeoLocationService)
 
-  userDetails = this.store.selectSignal(selectUserDetails)
-  user: IUserRes | null = null
-  userId = ''
-  profileForm!: FormGroup
-  isSubmitted = false
-  addressUpdateMode = true
-  city = ''
-  district = ''
-  state = ''
-  country = ''
-  zip = ''
-  longitude!: number
-  latitude!: number
-  selectedFile!: File
-  dpUrl = ''
+  protected readonly user = this.store.selectSignal(selectUserDetails)
+  private readonly browserCoords = this.store.selectSignal(selectCoords)
 
-  ngOnInit (): void {
-    this.profileForm = this.formBuilder.group({
-      name: ['', [validateByTrimming(nameValidators)]],
-      mobile: ['', [validateByTrimming(mobileValidators)]],
-      dob: [''],
-      city: ['', [validateByTrimming(requiredValidator)]],
-      district: ['', [validateByTrimming(requiredValidator)]],
-      state: ['', [validateByTrimming(requiredValidator)]],
-      country: ['', [validateByTrimming(requiredValidator)]],
-      zip: ['', [validateByTrimming(zipValidators)]]
-    }, {
-      validators: validateDOB
-    })
+  protected readonly form = new FormGroup({
+    name: text(nameValidators),
+    mobile: new FormControl('', { nonNullable: true, validators: [validateByTrimming(mobileValidators)] }),
+    dob: new FormControl('', { nonNullable: true }),
+    city: text(),
+    district: text(),
+    state: text(),
+    country: text(),
+    zip: text(zipValidators)
+  }, { validators: validateDOB })
 
+  protected readonly messages = {
+    name: {
+      required: 'Enter your name',
+      minlength: `Use at least ${userNameMinLength} letters`,
+      maxlength: `Use at most ${userNameMaxLength} letters`,
+      pattern: 'Use letters and spaces only'
+    },
+    mobile: { pattern: 'Enter a 10-digit mobile number' },
+    dob: { minAge: `You need to be at least ${MinAge} years old`, minDate: 'Choose a date after 1960' },
+    zip: { required: 'Enter your PIN code', pattern: 'Enter a 6-digit PIN code' },
+    required: { required: 'This field is required' }
+  }
+
+  protected readonly submitted = signal(false)
+  protected readonly saving = signal(false)
+  protected readonly locating = signal<'idle' | 'busy' | 'failed'>('idle')
+
+  // Coordinates saved with the address: the profile's own, replaced when "Use my current location" runs
+  private readonly pickedCoords = signal<ICoords | null>(null)
+  private readonly coords = computed(() => this.pickedCoords() ?? this.user()?.coords ?? this.browserCoords() ?? undefined)
+
+  protected readonly photoUrl = computed(() => {
+    const pic = this.user()?.profilePic
+    return pic !== undefined && pic !== '' ? imagesFolderPath + pic : ''
+  })
+
+  constructor () {
+    // Fill the form once, when the user is first available, so later store updates (e.g. a new photo) don't wipe edits
+    let filled = false
     effect(() => {
-      const user = this.userDetails()
-      this.user = user ?? this.user
-      if (this.user !== null && this.user !== undefined) {
-        this.userId = this.user._id
-        this.profileForm.get('name')?.setValue(this.user.name)
-        this.profileForm.get('mobile')?.setValue((this.user.mobile != null) ? String(this.user.mobile) : '')
-        this.profileForm.get('dob')?.patchValue(dateToString(new Date(this.user.dob)))
-        if (this.user.profilePic !== undefined) this.dpUrl = environments.backendUrl + `/images/${this.user.profilePic}`
-        console.log(this.dpUrl, 'image url')
-        if (this.user.address != null) {
-          this.city = this.user.address.city
-          this.district = this.user.address.district
-          this.state = this.user.address.state
-          this.country = this.user.address.country
-          this.zip = String(this.user.address.zip)
-        }
-      }
-      console.log(this.dpUrl, 'dpUrl from edit profile')
-    }, { injector: this.injector })
-  }
-
-  onSubmit (): void {
-    this.isSubmitted = true
-    if (this.profileForm.valid) {
-      const userData = this.profileForm.getRawValue()
-      const coords: ICoords = { coordinates: [this.longitude, this.latitude] }
-      const address: IUserAddress = {
-        city: userData.city,
-        district: userData.district,
-        state: userData.state,
-        country: userData.country,
-        zip: userData.zip
-      }
-      const user: IUserUpdate = {
-        name: userData.name,
-        mobile: userData.mobile,
-        dob: userData.dob,
-        coords,
-        address
-      }
-      user.coords = coords
-      this.userService.updateUserDetails(this.userId, user).subscribe({
-        next: (res) => {
-          void this.router.navigate(['/user/profile'])
-          if (res.data != null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
-        }
+      const user = this.user()
+      if (user === null || filled) return
+      filled = true
+      untracked(() => {
+        this.form.patchValue({
+          name: user.name,
+          mobile: user.mobile !== undefined && user.mobile !== null ? String(user.mobile) : '',
+          dob: user.dob !== undefined ? dateToString(new Date(user.dob)) : '',
+          city: user.address?.city ?? '',
+          district: user.address?.district ?? '',
+          state: user.address?.state ?? '',
+          country: user.address?.country ?? '',
+          zip: user.address?.zip !== undefined ? String(user.address.zip) : ''
+        })
       })
-    }
+    })
   }
 
-  imageReady (blob: Blob): void {
-    console.log(blob, 'image ready event in edit user profile')
-
-    const formData = new FormData()
-    formData.append('image', blob, this.user?.name + '.jpg')
-
-    this.userService.updateUserProfile(this.userId, formData).subscribe({
-      next: (res) => {
-        console.log('image upload complete')
-        if (res.data != null) {
-          this.dpUrl = environments.backendUrl + `/images/${res.data.profilePic}`
-          this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
-        }
+  protected async useCurrentLocation (): Promise<void> {
+    this.locating.set('busy')
+    const position = await getLocation()
+    if (position === null) {
+      this.locating.set('failed')
+      return
+    }
+    this.pickedCoords.set({ coordinates: [position.lon, position.lat] })
+    this.geoLocation.getAddress(position.lat, position.lon).subscribe({
+      next: address => {
+        this.form.patchValue({
+          city: address.city ?? '',
+          district: address.district ?? '',
+          state: address.state ?? '',
+          country: address.country ?? '',
+          zip: address.zip !== undefined ? String(address.zip) : ''
+        })
+        this.locating.set('idle')
       },
-      error: () => {
-        this.dpUrl = ''
-      }
+      error: () => { this.locating.set('failed') }
     })
   }
 
-  deleteProfilePic (): void {
-    console.warn('deleting dp')
-    this.userService.deleteUserProfile(this.userId).subscribe({
-      next: (res) => {
-        this.dpUrl = ''
-        console.warn('profile deleted successfully', res.data.profilePic, 'see, its undefined')
-        if (res.data != null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
-      }
-    })
-  }
+  protected save (): void {
+    this.submitted.set(true)
+    const user = this.user()
+    if (this.form.invalid || user === null) return
 
-  async autoFillAddress (): Promise<void> {
-    const coords = await getLocation()
-    if (coords !== null) {
-      this.longitude = coords.lon
-      this.latitude = coords.lat
-      console.log(coords, 'coords from getLocation')
-      this.locationService.getAddress(coords.lat, coords.lon).subscribe({
-        next: (res) => {
-          console.log(res, 'res from getAddress')
-          this.country = res.country
-          this.state = res.state
-          this.district = res.district
-          this.city = res.city
-          this.zip = String(res.zip)
-        }
-      })
+    const value = this.form.getRawValue()
+    const update: IUserUpdate = {
+      name: value.name.trim(),
+      mobile: value.mobile.trim() !== '' ? Number(value.mobile) : undefined,
+      dob: new Date(value.dob),
+      coords: this.coords(),
+      address: {
+        city: value.city.trim(),
+        district: value.district.trim(),
+        state: value.state.trim(),
+        country: value.country.trim(),
+        zip: Number(value.zip)
+      }
     }
+
+    this.saving.set(true)
+    this.userService.updateUserDetails(user._id, update).subscribe({
+      next: res => {
+        if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+        void this.router.navigate(['/user/profile'])
+      },
+      error: () => { this.saving.set(false) }
+    })
+  }
+
+  // Photo ----------------------------------------------------------------------
+
+  protected uploadPhoto (image: Blob): void {
+    const user = this.user()
+    if (user === null) return
+    const formData = new FormData()
+    formData.append('image', image, `${user.name}.jpg`)
+    this.userService.updateUserProfile(user._id, formData).subscribe(res => {
+      if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+    })
+  }
+
+  protected removePhoto (): void {
+    const user = this.user()
+    if (user === null) return
+    this.userService.deleteUserProfile(user._id).subscribe(res => {
+      if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+    })
   }
 }

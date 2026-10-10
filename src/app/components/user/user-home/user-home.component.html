@@ -1,58 +1,168 @@
-<app-user-nav></app-user-nav>
+<app-user-nav />
 
-<!-- <div *ngIf="bannerMovies?.length" class="mx-auto px-4 mt-8">
-    <div id="" class="relative flex gap-2 justify-center overflow-hidden rounded-lg">
+<main class="container max-w-6xl space-y-12 pb-16 pt-6 sm:pt-8">
 
-        <div class="flex flex-col justify-center w-1/12">
-            <button *ngIf="active > 0" (click)="setActive(active - 1)"
-                class="p-4 bg-gray-200 rounded-full hover:bg-gray-300 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <- </button>
+  <!-- Featured movie -->
+  <section aria-label="Featured movies" (mouseenter)="pauseHero(true)" (mouseleave)="pauseHero(false)"
+    (focusin)="pauseHero(true)" (focusout)="pauseHero(false)">
+    @if (hero(); as movie) {
+      <div class="hero relative isolate overflow-hidden rounded-card bg-muted">
+        @for (item of featured.value(); track item.id; let i = $index) {
+          <img [src]="item.backdrop" alt="" class="hero-image absolute inset-0 -z-10 size-full object-cover"
+            [class.is-active]="item.id === movie.id" [attr.fetchpriority]="i === 0 ? 'high' : null" />
+        }
+        <div class="hero-scrim absolute inset-0 -z-10"></div>
+
+        <div class="flex h-full flex-col justify-end gap-4 p-5 pb-10 sm:p-8 lg:max-w-[60%] lg:p-10">
+          <h1 class="font-display text-4xl font-extrabold leading-none tracking-tight text-on-media sm:text-6xl">{{ movie.title }}</h1>
+          <p class="text-on-media-muted">{{ movie.meta }}</p>
+          <div class="flex flex-wrap gap-3">
+            <a csButton routerLink="/user/theaters">Find a show near you</a>
+            <a csButton variant="ghost" routerLink="/user/movies" class="hero-ghost">All movies</a>
+          </div>
         </div>
 
-        <div class="relative w-8/12 overflow-hidden rounded-lg">
-            <div class="relative" style="height: 350px;">
-                <div class="carousel-item absolute inset-0 w-full h-full transform transition-transform duration-300 ease-in-out"
-                    *ngFor="let movie of bannerMovies; let i = index" [class.active]="active === i">
-                    <img src="https://image.tmdb.org/t/p/original/{{ movie.backdrop_path }}"
-                        class="w-full h-full object-cover" [alt]="movie.title + 'Poster'">
-                    <div class="absolute inset-0 bg-linear-to-b from-transparent to-black bg-opacity-50 flex items-center justify-center"
-                        style="height: 100%;">
-                        <h2 class="text-white text-3xl font-bold tracking-wider">{{ movie.title }}</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-                <div class="flex items-center justify-center">
-                    <button *ngFor="let movie of bannerMovies; let i = index" (click)="setActive(i)"
-                        class="rounded-full w-4 h-4 bg-gray-200 mx-2" [class.bg-indigo-500]="active === i"></button>
-                </div>
-            </div>
-        </div>
+        @if ((featured.value()?.length ?? 0) > 1) {
+          <div class="absolute bottom-5 right-5 hidden gap-2 lg:flex" role="group" aria-label="Choose featured movie">
+            @for (item of featured.value(); track item.id; let i = $index) {
+              <button type="button" (click)="heroIndex.set(i)" [attr.aria-pressed]="item.id === movie.id" [attr.aria-label]="item.title"
+                class="hero-thumb overflow-hidden rounded-control">
+                <img [src]="item.backdrop" alt="" class="h-12 w-20 object-cover" loading="lazy" />
+              </button>
+            }
+          </div>
+          <div class="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5 lg:hidden" role="group" aria-label="Choose featured movie">
+            @for (item of featured.value(); track item.id; let i = $index) {
+              <button type="button" (click)="heroIndex.set(i)" [attr.aria-pressed]="item.id === movie.id" [attr.aria-label]="item.title"
+                class="hero-dot size-2 rounded-full"></button>
+            }
+          </div>
+        }
+      </div>
+    } @else if (featured.isLoading()) {
+      <div class="hero animate-pulse rounded-card bg-muted"></div>
+    }
+  </section>
 
-        <div class="flex flex-col justify-center w-1/12">
-            <button *ngIf="active < bannerMovies.length - 1" (click)="setActive(active + 1)"
-                class="p-4 bg-gray-200 rounded-full cursor-pointer float-right hover:bg-gray-300 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                ->
-            </button>
-        </div>
+  <!-- Shortcuts for signed-in users -->
+  @if (user(); as user) {
+    <section aria-label="Your account" class="flex flex-wrap items-center gap-x-6 gap-y-3">
+      <p class="text-lg">Welcome back, <span class="font-semibold">{{ user.name }}</span></p>
+      <div class="flex flex-wrap gap-2">
+        <a [routerLink]="['/user/bookings', user._id]" class="shortcut">My bookings</a>
+        <a routerLink="/user/profile/wallet-history" class="shortcut">Wallet <span class="font-semibold text-default">₹{{ user.wallet }}</span></a>
+        <a routerLink="/user/messages" class="shortcut">Messages</a>
+      </div>
+    </section>
+  }
 
+  <!-- Theaters near the user: the fastest way to a booking -->
+  <section aria-labelledby="near-heading">
+    <div class="mb-4 flex items-end justify-between gap-4">
+      <div>
+        <h2 id="near-heading" class="font-display text-3xl font-extrabold tracking-tight">Theaters near you</h2>
+        <p class="text-muted">Pick a theater to see today's shows and book seats.</p>
+      </div>
+      <a csButton variant="link" routerLink="/user/theaters" class="shrink-0">See all</a>
     </div>
-</div> -->
 
-<app-carousel
-    [images]="bannerMovies"
-></app-carousel>
+    @if (locationBlocked()) {
+      <div class="card flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-muted">Allow location access to see theaters near you, or browse the full list.</p>
+        <div class="flex shrink-0 gap-2">
+          <button csButton variant="secondary" size="sm" type="button" (click)="location.request()">Use my location</button>
+          <a csButton size="sm" routerLink="/user/theaters">Browse theaters</a>
+        </div>
+      </div>
+    } @else {
+      @if (theaters.value(); as list) {
+        @if (list.length > 0) {
+          <ul class="rail" role="list">
+            @for (theater of list; track theater.id) {
+              <li>
+                <a [routerLink]="['/user/theater', theater.id]" class="theater-card card flex h-full gap-4 p-4">
+                  @if (theater.image) {
+                    <img [src]="theater.image" alt="" class="size-16 shrink-0 rounded-control object-cover" loading="lazy" />
+                  } @else {
+                    <span class="flex size-16 shrink-0 items-center justify-center rounded-control bg-muted font-display text-3xl font-extrabold text-accent">{{ theater.name.charAt(0) }}</span>
+                  }
+                  <span class="flex min-w-0 flex-col">
+                    <span class="truncate font-semibold">{{ theater.name }}</span>
+                    <span class="truncate text-sm text-muted">{{ theater.place }}</span>
+                    <span class="mt-auto pt-2 text-sm"><span class="badge">{{ theater.distance }}</span></span>
+                  </span>
+                </a>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="card p-5 text-muted">No theaters are listed near you yet. <a routerLink="/user/theaters" class="font-semibold text-default underline decoration-accent underline-offset-4">Browse all theaters</a></p>
+        }
+      } @else {
+        <ul class="rail" role="list" aria-label="Loading theaters">
+          @for (i of skeletons.slice(0, 3); track i) {
+            <li class="card h-24 animate-pulse bg-muted"></li>
+          }
+        </ul>
+      }
+    }
+  </section>
 
-<hr class="mt-4">
+  <!-- Movies currently playing -->
+  <section aria-labelledby="showing-heading">
+    <div class="mb-4 flex items-end justify-between gap-4">
+      <h2 id="showing-heading" class="font-display text-3xl font-extrabold tracking-tight">Now showing</h2>
+      <a csButton variant="link" routerLink="/user/movies" class="shrink-0">See all movies</a>
+    </div>
 
-<app-scroll-h-tabs [labels]="genres" [labelTitle]="'Genres'" (labelClick)="onClickGenre($event)"></app-scroll-h-tabs>
+    @if (nowShowing.error()) {
+      <div class="card flex items-center justify-between gap-3 p-5">
+        <p class="text-muted">Movies couldn't be loaded.</p>
+        <button csButton variant="secondary" size="sm" type="button" (click)="nowShowing.reload()">Try again</button>
+      </div>
+    } @else {
+      <ul class="poster-rail" role="list">
+        @if (nowShowing.value(); as movies) {
+          @for (movie of movies; track movie.id) {
+            <li>
+              <figure>
+                <img [src]="movie.poster" [alt]="movie.title + ' poster'" class="aspect-[2/3] w-full rounded-card bg-muted object-cover" loading="lazy" />
+                <figcaption class="mt-2">
+                  <span class="line-clamp-1 font-semibold">{{ movie.title }}</span>
+                  <span class="line-clamp-1 text-sm text-muted">{{ movie.meta }}</span>
+                </figcaption>
+              </figure>
+            </li>
+          }
+        } @else {
+          @for (i of skeletons; track i) {
+            <li class="aspect-[2/3] animate-pulse rounded-card bg-muted"></li>
+          }
+        }
+      </ul>
+    }
+  </section>
 
-<hr>
-
-<app-scroll-h-tabs [labels]="languages" [labelTitle]="'Languages'" (labelClick)="onClickLanguage($event)"></app-scroll-h-tabs>
-
-<hr>
-
-<app-scroll-h-tabs [labels]="theaterNames" [labelTitle]="'Nearby Theaters'" (labelClick)="onClickTheaterName($event)"></app-scroll-h-tabs>
-
-<hr>
+  <!-- Shortcuts into the filtered movie list -->
+  @if (filters.value(); as browse) {
+    <section aria-labelledby="browse-heading" class="grid gap-8 md:grid-cols-2">
+      <h2 id="browse-heading" class="sr-only">Browse movies</h2>
+      <div>
+        <h3 class="mb-3 text-lg font-semibold">By genre</h3>
+        <div class="flex flex-wrap gap-2">
+          @for (genre of browse.genres; track genre.value) {
+            <a routerLink="/user/movies" [queryParams]="{ genre: genre.value }" class="chip">{{ genre.label }}</a>
+          }
+        </div>
+      </div>
+      <div>
+        <h3 class="mb-3 text-lg font-semibold">By language</h3>
+        <div class="flex flex-wrap gap-2">
+          @for (language of browse.languages; track language.value) {
+            <a routerLink="/user/movies" [queryParams]="{ lang: language.value }" class="chip">{{ language.label }}</a>
+          }
+        </div>
+      </div>
+    </section>
+  }
+</main>

@@ -1,5 +1,6 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
+import { ThemeService } from './services/theme.service'
 
 @Component({
     selector: 'app-root',
@@ -10,4 +11,6 @@ import { RouterOutlet } from '@angular/router'
 })
 export class AppComponent {
   title = 'CineSnap'
+  // Created at boot so the theme class stays on <html> for every page
+  private readonly theme = inject(ThemeService)
 }

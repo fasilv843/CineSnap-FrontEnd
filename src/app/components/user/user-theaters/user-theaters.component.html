@@ -1,29 +1,74 @@
-<app-user-nav></app-user-nav>
+<app-user-nav />
 
-<div class="container mx-auto pt-4 pb-10">
-  <h2 class="text-3xl font-bold my-3">Cinema Halls Near You</h2>
+<main class="container max-w-6xl pb-16 pt-6 sm:pt-8">
+  <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <h1 class="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">Theaters near you</h1>
+      <p class="text-muted">
+        @if (usingFallback()) {
+          Sorted by distance from {{ fallbackName }}, because your location isn't shared.
+          <button type="button" (click)="location.request()" class="font-semibold text-default underline decoration-accent underline-offset-4">Use my location</button>
+        } @else {
+          Sorted by distance from your location.
+        }
+      </p>
+    </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-5">
-    <!-- Theaters -->
-    @for (thr of theaters; track thr) {
-      <div >
-        <div  class="flex gap-5 border p-4 rounded-md">
-          <div class="flex items-center gap-3">
-            <img src="{{ thr.profilePic !== undefined ? folderPath + thr.profilePic : 'https://placehold.it/150x150' }}" alt="{{ thr.name }} image" class="w-32 h-32 rounded-md">
-          </div>
-          <div class="flex flex-col justify-between gap-3">
-            <div>
-              <h3 class="font-bold text-xl">{{ thr.name }}</h3>
-              <p class="text-gray-500 text-sm">{{ thr.address.landmark }} {{ thr.address.city }}</p>
-            </div>
-            <div class="flex gap-2">
-              <a target="_blank" href="http://maps.google.co.uk/maps?q={{ thr.coords.coordinates[1] }},{{ thr.coords.coordinates[0] }}" class="inline-block rounded-md border px-3 py-1.5 border-transparent bg-blue-600 hover:bg-blue-700 text-white">Direction</a>
-              <a [routerLink]="['/user/theater', thr._id]" class="inline-block rounded-md border px-3 py-1.5 border-transparent bg-gray-500 hover:bg-gray-600 text-white">View</a>
-            </div>
-          </div>
-        </div>
+    <label class="relative block w-full sm:w-80">
+      <span class="sr-only">Search theaters by name or place</span>
+      <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-subtle" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
+      </svg>
+      <input type="search" class="input pl-10" placeholder="Search by name or place" autocomplete="off"
+        [value]="searchText()" (input)="searchText.set($any($event.target).value)" />
+    </label>
+  </header>
+
+  <section aria-label="Theaters" class="mt-8" [attr.aria-busy]="theaters.isLoading()">
+    @if (theaters.error()) {
+      <div class="card flex items-center justify-between gap-3 p-5" role="alert">
+        <p class="text-muted">Theaters couldn't be loaded.</p>
+        <button csButton variant="secondary" size="sm" type="button" (click)="theaters.reload()">Try again</button>
       </div>
+    } @else if (theaters.value() === undefined) {
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list" aria-label="Loading theaters">
+        @for (i of skeletons; track i) {
+          <li class="card h-44 animate-pulse bg-muted"></li>
+        }
+      </ul>
+    } @else if (visibleTheaters().length > 0) {
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        @for (theater of visibleTheaters(); track theater.id) {
+          <li class="card flex flex-col gap-4 p-4">
+            <div class="flex gap-4">
+              @if (theater.image) {
+                <img [src]="theater.image" alt="" class="size-20 shrink-0 rounded-control object-cover" loading="lazy" />
+              } @else {
+                <span class="flex size-20 shrink-0 items-center justify-center rounded-control bg-muted font-display text-4xl font-extrabold text-accent" aria-hidden="true">{{ theater.name.charAt(0) }}</span>
+              }
+              <div class="min-w-0">
+                <h2 class="truncate text-lg font-semibold">{{ theater.name }}</h2>
+                <p class="line-clamp-2 text-sm text-muted">{{ theater.place }}</p>
+                <span class="badge mt-2">{{ theater.distance }} away</span>
+              </div>
+            </div>
+            <div class="mt-auto flex gap-2">
+              <a csButton size="sm" [routerLink]="['/user/theater', theater.id]" class="flex-1">See shows</a>
+              <a csButton variant="secondary" size="sm" [href]="theater.directions" target="_blank" rel="noopener" class="flex-1">
+                Directions<span class="sr-only"> to {{ theater.name }} (opens Google Maps)</span>
+              </a>
+            </div>
+          </li>
+        }
+      </ul>
+    } @else if (search() !== '') {
+      <div class="card flex flex-col items-start gap-3 p-6">
+        <p class="font-semibold">No theaters match “{{ searchText().trim() }}”</p>
+        <p class="text-muted">Try a theater name or a town nearby.</p>
+        <button csButton variant="secondary" size="sm" type="button" (click)="clearSearch()">Clear search</button>
+      </div>
+    } @else {
+      <p class="card p-6 text-muted">No theaters are listed in your area yet.</p>
     }
-
-  </div>
-</div>
+  </section>
+</main>

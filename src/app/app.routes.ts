@@ -6,8 +6,9 @@ export const routes: Routes = [
   { path: 'theater', title: 'Theater', loadChildren: async () => await import('./components/theater/theater.routes').then(m => m.THEATER_ROUTES) },
   {
     path: '',
-    redirectTo: 'user',
-    pathMatch: 'full'
+    pathMatch: 'full',
+    title: 'CineSnap | Book movie tickets',
+    loadComponent: async () => await import('./components/landing/landing.component').then(m => m.LandingComponent)
   },
   {
     path: '**',
