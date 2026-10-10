@@ -1,6 +1,6 @@
 import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
-import { FormBuilder, type FormGroup } from '@angular/forms'
-import { Router } from '@angular/router'
+import { FormBuilder, type FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { Router, RouterLink } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { dateToString } from 'src/app/helpers/date'
 import { getLocation } from 'src/app/helpers/location'
@@ -13,13 +13,23 @@ import { mobileValidators, nameValidators, requiredValidator, zipValidators } fr
 import { saveUserOnStore } from 'src/app/states/user/user.actions'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 import { environments } from 'src/environments/environment'
+import { UserNavComponent } from '../user-nav/user-nav.component';
+import { ProfileDpComponent } from '../../common/profile-dp/profile-dp.component';
+import { NameValidationComponent } from '../../common/validation/name-validation/name-validation.component';
+import { MobileValidationComponent } from '../../common/validation/mobile-validation/mobile-validation.component';
+import { DobValidationComponent } from '../../common/validation/dob-validation/dob-validation.component';
+import { CityValidationComponent } from '../../common/validation/city-validation/city-validation.component';
+import { DistrictValidationComponent } from '../../common/validation/district-validation/district-validation.component';
+import { StateValidationComponent } from '../../common/validation/state-validation/state-validation.component';
+import { CountryValidationComponent } from '../../common/validation/country-validation/country-validation.component';
+import { ZipValidationComponent } from '../../common/validation/zip-validation/zip-validation.component';
 
 @Component({
     selector: 'app-edit-user-profile',
     templateUrl: './edit-user-profile.component.html',
     styleUrls: ['./edit-user-profile.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [UserNavComponent, ProfileDpComponent, FormsModule, ReactiveFormsModule, NameValidationComponent, MobileValidationComponent, DobValidationComponent, CityValidationComponent, DistrictValidationComponent, StateValidationComponent, CountryValidationComponent, ZipValidationComponent, RouterLink]
 })
 export class EditUserProfileComponent implements OnInit {
   userDetails$ = this.store.pipe(select(selectUserDetails))

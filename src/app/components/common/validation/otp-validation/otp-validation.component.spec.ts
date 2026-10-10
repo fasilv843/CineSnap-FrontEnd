@@ -8,8 +8,8 @@ describe('OtpValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [OtpValidationComponent]
-    });
+    imports: [OtpValidationComponent]
+});
     fixture = TestBed.createComponent(OtpValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

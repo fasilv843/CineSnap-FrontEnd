@@ -2,13 +2,16 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core'
 import { type ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
+import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { TableFilterComponent } from '../../common/table-filter/table-filter.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-admin-tickets',
     templateUrl: './admin-tickets.component.html',
     styleUrls: ['./admin-tickets.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [AdminNavComponent, TableFilterComponent, DatePipe]
 })
 export class AdminTicketsComponent {
   tickets: ITicketRes[] = []

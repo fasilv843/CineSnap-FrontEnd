@@ -1,21 +1,23 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, type FormGroup, type AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { validateByTrimming } from 'src/app/helpers/validations';
 import { type IApiTheaterAuthRes } from 'src/app/models/theater';
 
 import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
 import { saveTheaterOnStore } from 'src/app/states/theater/theater.action';
+import { EmailValidationComponent } from '../../common/validation/email-validation/email-validation.component';
+import { PasswordValidationComponent } from '../../common/validation/password-validation/password-validation.component';
 
 @Component({
     selector: 'app-thr-login',
     templateUrl: './thr-login.component.html',
     styleUrls: ['./thr-login.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, EmailValidationComponent, PasswordValidationComponent, RouterLink]
 })
 export class ThrLoginComponent {
   isSubmitted = false

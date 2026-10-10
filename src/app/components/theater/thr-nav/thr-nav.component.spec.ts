@@ -8,8 +8,8 @@ describe('ThrNavComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ThrNavComponent]
-    });
+    imports: [ThrNavComponent]
+});
     fixture = TestBed.createComponent(ThrNavComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

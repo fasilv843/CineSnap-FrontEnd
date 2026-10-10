@@ -8,6 +8,9 @@ import { UserService } from 'src/app/services/user.service'
 import { WebSocketService } from 'src/app/services/web-socket.service'
 import { imagesFolderPath } from 'src/app/shared/constants'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
+import { UserNavComponent } from '../user-nav/user-nav.component';
+import { FormsModule } from '@angular/forms';
+import { UpperCasePipe, SlicePipe, DatePipe } from '@angular/common';
 // import { NgxIntersectionObserverDirective } from 'ngx-intersection-observer'
 
 @Component({
@@ -15,7 +18,7 @@ import { selectUserDetails } from 'src/app/states/user/user.selector'
     templateUrl: './user-message.component.html',
     styleUrls: ['./user-message.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [UserNavComponent, FormsModule, UpperCasePipe, SlicePipe, DatePipe]
 })
 export class UserMessageComponent implements OnInit, OnDestroy {
   // @ViewChild('messageContainer') messageContainer: ElementRef

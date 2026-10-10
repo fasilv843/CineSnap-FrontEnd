@@ -10,14 +10,16 @@ import { MovieService } from 'src/app/services/movie.service'
 import { TheaterService } from 'src/app/services/theater.service'
 import { saveCoords } from 'src/app/states/coords/coords.actions'
 import { selectCoords } from 'src/app/states/coords/coords.selector'
-import { ICarouselData } from './carousel/carousel.component'
+import { ICarouselData, CarouselComponent } from './carousel/carousel.component'
+import { UserNavComponent } from '../user-nav/user-nav.component';
+import { ScrollHTabsComponent } from '../../common/scroll-h-tabs/scroll-h-tabs.component';
 
 @Component({
     selector: 'app-user-home',
     templateUrl: './user-home.component.html',
     styleUrls: ['./user-home.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [UserNavComponent, CarouselComponent, ScrollHTabsComponent]
 })
 export class UserHomeComponent implements OnInit {
   coords$ = this.store.pipe(select(selectCoords))

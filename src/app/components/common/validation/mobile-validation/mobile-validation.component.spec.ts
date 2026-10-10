@@ -8,8 +8,8 @@ describe('MobileValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MobileValidationComponent]
-    });
+    imports: [MobileValidationComponent]
+});
     fixture = TestBed.createComponent(MobileValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -8,8 +8,8 @@ describe('RepeatPassValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [RepeatPassValidationComponent]
-    });
+    imports: [RepeatPassValidationComponent]
+});
     fixture = TestBed.createComponent(RepeatPassValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

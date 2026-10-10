@@ -8,8 +8,8 @@ describe('ZipValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ZipValidationComponent]
-    });
+    imports: [ZipValidationComponent]
+});
     fixture = TestBed.createComponent(ZipValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

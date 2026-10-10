@@ -1,23 +1,16 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Injectable } from '@angular/core'
-import { ActivatedRouteSnapshot, Router, type CanActivate } from '@angular/router'
+import { inject } from '@angular/core'
+import { type CanActivateFn, Router } from '@angular/router'
 import { isTokenExpired } from '../helpers/jwt-token'
 
-@Injectable({
-  providedIn: 'root'
-})
-export class LoginGuard implements CanActivate {
-  constructor (private readonly router: Router) {}
+export const loginGuard: CanActivateFn = (route) => {
+  const router = inject(Router)
+  // Top-level segment ('user' | 'theater' | 'admin'), independent of nesting depth
+  const role = route.pathFromRoot[1]?.routeConfig?.path
+  const token = localStorage.getItem(`${role}RefreshToken`)
 
-  canActivate (route: ActivatedRouteSnapshot): boolean {
-    const role = route.parent?.routeConfig?.path
-    const token = localStorage.getItem(`${role}RefreshToken`)
-
-    if (token === null || isTokenExpired(token)) {
-      return true
-    } else {
-      void this.router.navigate([`/${role}/home`])
-      return false
-    }
+  if (token === null || isTokenExpired(token)) {
+    return true
   }
+  void router.navigate([`/${role}/home`])
+  return false
 }

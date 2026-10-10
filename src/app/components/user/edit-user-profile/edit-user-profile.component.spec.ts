@@ -8,8 +8,8 @@ describe('EditUserProfileComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [EditUserProfileComponent]
-    });
+    imports: [EditUserProfileComponent]
+});
     fixture = TestBed.createComponent(EditUserProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

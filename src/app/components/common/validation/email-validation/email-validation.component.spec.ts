@@ -8,8 +8,8 @@ describe('EmailValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [EmailValidationComponent]
-    });
+    imports: [EmailValidationComponent]
+});
     fixture = TestBed.createComponent(EmailValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

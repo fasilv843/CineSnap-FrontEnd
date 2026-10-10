@@ -8,8 +8,8 @@ describe('DefPriceValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [DefPriceValidationComponent]
-    });
+    imports: [DefPriceValidationComponent]
+});
     fixture = TestBed.createComponent(DefPriceValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -5,13 +5,14 @@ import { type ICouponRes, type ICouponReqs } from 'src/app/models/coupon'
 import { CouponService } from 'src/app/services/coupon.service'
 import { Store, select } from '@ngrx/store'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import { ThrNavComponent } from '../thr-nav/thr-nav.component';
 
 @Component({
     selector: 'app-thr-coupon',
     templateUrl: './thr-coupon.component.html',
     styleUrls: ['./thr-coupon.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ThrNavComponent]
 })
 export class ThrCouponComponent implements OnInit {
   theaterData$ = this.store.pipe(select(selectTheaterDetails))

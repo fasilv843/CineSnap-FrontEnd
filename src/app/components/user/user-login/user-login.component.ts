@@ -1,21 +1,23 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
-import { type FormGroup, FormBuilder, type AbstractControl } from '@angular/forms'
+import { Router, RouterLink } from '@angular/router';
+import { type FormGroup, FormBuilder, type AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { Store } from '@ngrx/store';
 import { saveUserOnStore } from 'src/app/states/user/user.actions';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { validateByTrimming } from 'src/app/helpers/validations';
 import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
 import { type IApiUserAuthRes } from 'src/app/models/users';
+import { EmailValidationComponent } from '../../common/validation/email-validation/email-validation.component';
+import { PasswordValidationComponent } from '../../common/validation/password-validation/password-validation.component';
 
 @Component({
     selector: 'app-user-login',
     templateUrl: './user-login.component.html',
     styleUrls: ['./user-login.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, EmailValidationComponent, PasswordValidationComponent, RouterLink]
 })
 export class UserLoginComponent implements OnInit {
   isSubmitted = false

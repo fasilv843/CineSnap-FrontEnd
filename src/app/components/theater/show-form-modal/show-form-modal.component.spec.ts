@@ -8,8 +8,8 @@ describe('ShowFormModalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ShowFormModalComponent]
-    })
+    imports: [ShowFormModalComponent]
+})
     fixture = TestBed.createComponent(ShowFormModalComponent)
     component = fixture.componentInstance
     fixture.detectChanges()

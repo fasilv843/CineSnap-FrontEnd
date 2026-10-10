@@ -5,13 +5,15 @@ import { getRandomColor } from 'src/app/helpers/generateColors'
 import { type ILineGraphData } from 'src/app/models/charts'
 import { TheaterService } from 'src/app/services/theater.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import { ThrNavComponent } from '../thr-nav/thr-nav.component';
+import { LineGraphComponent } from '../../common/line-graph/line-graph.component';
 
 @Component({
     selector: 'app-thr-home',
     templateUrl: './thr-home.component.html',
     styleUrls: ['./thr-home.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ThrNavComponent, LineGraphComponent]
 })
 export class ThrHomeComponent implements OnInit {
   theaterData$ = this.store.pipe(select(selectTheaterDetails))

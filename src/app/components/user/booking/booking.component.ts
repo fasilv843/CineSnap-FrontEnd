@@ -23,6 +23,9 @@ import { ICouponRes } from 'src/app/models/coupon';
 import { ModalService } from 'src/app/services/modal.service'
 import { CouponModalComponent } from '../coupon-modal/coupon-modal.component';
 import { fetchUserData } from 'src/app/states/user/user.actions';
+import { UserNavComponent } from '../user-nav/user-nav.component';
+import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 // declare var Razorpay: any;
 @Component({
@@ -30,7 +33,7 @@ import { fetchUserData } from 'src/app/states/user/user.actions';
     templateUrl: './booking.component.html',
     styleUrls: ['./booking.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [UserNavComponent, FormsModule, DatePipe]
 })
 export class BookingComponent implements OnInit, OnDestroy {
   userDetails$ = this.store.pipe(select(selectUserDetails))

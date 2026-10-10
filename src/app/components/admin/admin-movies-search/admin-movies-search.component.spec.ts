@@ -8,8 +8,8 @@ describe('AdminMoviesSearchComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AdminMoviesSearchComponent]
-    });
+    imports: [AdminMoviesSearchComponent]
+});
     fixture = TestBed.createComponent(AdminMoviesSearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

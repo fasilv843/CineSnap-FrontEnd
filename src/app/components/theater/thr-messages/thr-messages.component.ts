@@ -7,13 +7,16 @@ import { UserService } from 'src/app/services/user.service'
 import { WebSocketService } from 'src/app/services/web-socket.service'
 import { imagesFolderPath } from 'src/app/shared/constants'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import { ThrNavComponent } from '../thr-nav/thr-nav.component';
+import { FormsModule } from '@angular/forms';
+import { UpperCasePipe, SlicePipe, DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-thr-messages',
     templateUrl: './thr-messages.component.html',
     styleUrls: ['./thr-messages.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ThrNavComponent, FormsModule, UpperCasePipe, SlicePipe, DatePipe]
 })
 export class ThrMessagesComponent implements OnInit, OnDestroy {
   message: string = ''

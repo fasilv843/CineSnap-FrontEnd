@@ -6,13 +6,15 @@ import { Movie } from 'src/app/models/movie'
 import { MovieService } from 'src/app/services/movie.service'
 import { TMDBService } from 'src/app/services/tmdb.service'
 import Swal from 'sweetalert2'
+import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-admin-movies-explore',
     templateUrl: './admin-movies-explore.component.html',
     styleUrls: ['./admin-movies-explore.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [AdminNavComponent, DatePipe]
 })
 export class AdminMoviesExploreComponent implements OnInit {
   routeParam: string = ''

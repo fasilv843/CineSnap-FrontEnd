@@ -8,8 +8,8 @@ describe('RowValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [RowValidationComponent]
-    });
+    imports: [RowValidationComponent]
+});
     fixture = TestBed.createComponent(RowValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

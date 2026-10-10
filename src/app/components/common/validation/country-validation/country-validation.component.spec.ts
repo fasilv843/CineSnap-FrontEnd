@@ -8,8 +8,8 @@ describe('CountryValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CountryValidationComponent]
-    });
+    imports: [CountryValidationComponent]
+});
     fixture = TestBed.createComponent(CountryValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

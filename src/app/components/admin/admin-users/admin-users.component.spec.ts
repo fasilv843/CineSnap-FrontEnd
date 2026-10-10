@@ -8,8 +8,8 @@ describe('AdminUsersComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AdminUsersComponent]
-    });
+    imports: [AdminUsersComponent]
+});
     fixture = TestBed.createComponent(AdminUsersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

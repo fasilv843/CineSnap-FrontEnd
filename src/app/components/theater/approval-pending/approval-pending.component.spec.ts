@@ -8,8 +8,8 @@ describe('ApprovalPendingComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ApprovalPendingComponent]
-    });
+    imports: [ApprovalPendingComponent]
+});
     fixture = TestBed.createComponent(ApprovalPendingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

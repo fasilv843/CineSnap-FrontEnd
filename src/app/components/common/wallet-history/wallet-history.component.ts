@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core'
-import { CommonModule } from '@angular/common'
+import { DatePipe } from '@angular/common'
 import { type IWalletHistory } from 'src/app/models/common'
 import { TableFilterComponent } from '../table-filter/table-filter.component'
 
 @Component({
     selector: 'app-wallet-history',
     imports: [
-        CommonModule,
-        TableFilterComponent
-    ],
+    TableFilterComponent,
+    DatePipe
+],
     templateUrl: './wallet-history.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./wallet-history.component.css']

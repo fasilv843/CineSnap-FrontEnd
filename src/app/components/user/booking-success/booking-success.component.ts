@@ -5,13 +5,15 @@ import { getLanguage } from 'src/app/helpers/movie'
 import { ITicketRes, ITicketSeat } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
 import Swal from 'sweetalert2'
+import { UserNavComponent } from '../user-nav/user-nav.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-booking-success',
     templateUrl: './booking-success.component.html',
     styleUrls: ['./booking-success.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [UserNavComponent, DatePipe]
 })
 export class BookingSuccessComponent implements OnInit {
   ticketId = ''

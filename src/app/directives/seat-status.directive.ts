@@ -4,10 +4,7 @@ import { Directive, ElementRef, Input, Renderer2, type OnInit } from '@angular/c
 import { type ISelectedSeat } from '../models/ticket'
 import { IShowSeat } from '../models/show'
 
-@Directive({
-    selector: '[appSeatStatus]',
-    standalone: false
-})
+@Directive({ selector: '[appSeatStatus]' })
 export class SeatStatusDirective implements OnInit {
   @Input() row = ''
   @Input() col!: IShowSeat

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/semi */
 import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ModalService } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store';
 import { imagesFolderPath } from 'src/app/shared/constants';
@@ -9,13 +9,14 @@ import { selectCoords } from 'src/app/states/coords/coords.selector';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
 import { UserOffcanvasComponent } from './user-offcanvas/user-offcanvas.component';
 import { deleteUserFromStore } from 'src/app/states/user/user.actions';
+import { NgIf, AsyncPipe, UpperCasePipe, SlicePipe } from '@angular/common';
 
 @Component({
     selector: 'app-user-nav',
     templateUrl: './user-nav.component.html',
     styleUrls: ['./user-nav.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [RouterLink, NgIf, AsyncPipe, UpperCasePipe, SlicePipe]
 })
 export class UserNavComponent implements OnInit {
   isLoggedIn: boolean = false

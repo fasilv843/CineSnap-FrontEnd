@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { CommonModule } from '@angular/common'
+import { DatePipe } from '@angular/common'
 import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ActiveModal } from 'src/app/services/modal.service'
@@ -21,15 +21,15 @@ import { StartTimeValidationComponent } from './validation/start-time-validation
 
 @Component({
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        // ? Validation Error Message Components
-        MovieSelectValidationComponent,
-        ScreenSelectValidationComponent,
-        ShowDateValidationComponent,
-        StartTimeValidationComponent,
-        DefPriceValidationComponent
-    ],
+    ReactiveFormsModule,
+    // ? Validation Error Message Components
+    MovieSelectValidationComponent,
+    ScreenSelectValidationComponent,
+    ShowDateValidationComponent,
+    StartTimeValidationComponent,
+    DefPriceValidationComponent,
+    DatePipe
+],
     selector: 'app-show-form-modal',
     templateUrl: './show-form-modal.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,

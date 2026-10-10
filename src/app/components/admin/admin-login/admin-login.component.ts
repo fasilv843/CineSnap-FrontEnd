@@ -1,18 +1,20 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { type AbstractControl, FormBuilder, type FormGroup } from '@angular/forms';
+import { type AbstractControl, FormBuilder, type FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { validateByTrimming } from 'src/app/helpers/validations';
 import { type IApiAdminAuthRes } from 'src/app/models/admin';
 import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
+import { EmailValidationComponent } from '../../common/validation/email-validation/email-validation.component';
+import { PasswordValidationComponent } from '../../common/validation/password-validation/password-validation.component';
 
 @Component({
     selector: 'app-admin-login',
     templateUrl: './admin-login.component.html',
     styleUrls: ['./admin-login.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, EmailValidationComponent, PasswordValidationComponent]
 })
 export class AdminLoginComponent implements OnInit {
   isSubmitted = false

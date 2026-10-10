@@ -6,8 +6,7 @@ import { Router } from '@angular/router'
     selector: 'app-approval-pending',
     templateUrl: './approval-pending.component.html',
     styleUrls: ['./approval-pending.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ApprovalPendingComponent {
   constructor (

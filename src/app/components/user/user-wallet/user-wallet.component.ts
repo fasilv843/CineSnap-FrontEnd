@@ -4,13 +4,15 @@ import { Store, select } from '@ngrx/store'
 import { IWalletHistory } from 'src/app/models/common'
 import { UserService } from 'src/app/services/user.service'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
+import { UserNavComponent } from '../user-nav/user-nav.component';
+import { WalletHistoryComponent } from '../../common/wallet-history/wallet-history.component';
 
 @Component({
     selector: 'app-user-wallet',
     templateUrl: './user-wallet.component.html',
     styleUrls: ['./user-wallet.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [UserNavComponent, WalletHistoryComponent]
 })
 export class UserWalletComponent implements OnInit {
   userData$ = this.store.pipe(select(selectUserDetails))

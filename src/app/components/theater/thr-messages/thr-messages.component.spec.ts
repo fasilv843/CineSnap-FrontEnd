@@ -8,8 +8,8 @@ describe('ThrMessagesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ThrMessagesComponent]
-    });
+    imports: [ThrMessagesComponent]
+});
     fixture = TestBed.createComponent(ThrMessagesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

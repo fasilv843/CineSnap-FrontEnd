@@ -8,8 +8,8 @@ describe('AdminWalletComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AdminWalletComponent]
-    });
+    imports: [AdminWalletComponent]
+});
     fixture = TestBed.createComponent(AdminWalletComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

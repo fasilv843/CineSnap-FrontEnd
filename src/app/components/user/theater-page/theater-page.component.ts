@@ -1,18 +1,22 @@
 import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { getGenre, getLanguage } from 'src/app/helpers/movie'
 import { type IShow, type IShowsOnAScreen } from 'src/app/models/show'
 import { type IApiTheaterRes, type ITheaterRes } from 'src/app/models/theater'
 import { ShowService } from 'src/app/services/show.service'
 import { TheaterService } from 'src/app/services/theater.service'
 import { imagesFolderPath } from 'src/app/shared/constants'
+import { UserNavComponent } from '../user-nav/user-nav.component';
+import { DateComponent } from '../../common/date/date.component';
+import { NgClass, DatePipe } from '@angular/common';
+import { SpinnerComponent } from '../../common/spinner/spinner.component';
 
 @Component({
     selector: 'app-theater-page',
     templateUrl: './theater-page.component.html',
     styleUrls: ['./theater-page.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [UserNavComponent, RouterLink, DateComponent, NgClass, SpinnerComponent, DatePipe]
 })
 export class TheaterPageComponent implements OnInit {
   theaterId = ''

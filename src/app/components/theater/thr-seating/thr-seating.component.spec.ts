@@ -8,8 +8,8 @@ describe('ThrSeatingComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ThrSeatingComponent]
-    })
+    imports: [ThrSeatingComponent]
+})
     fixture = TestBed.createComponent(ThrSeatingComponent)
     component = fixture.componentInstance
     fixture.detectChanges()

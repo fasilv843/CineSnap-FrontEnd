@@ -1,19 +1,20 @@
 /* eslint-disable @typescript-eslint/semi */
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { imagesFolderPath } from 'src/app/shared/constants';
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector';
 import { ThrOffcanvasComponent } from './thr-offcanvas/thr-offcanvas.component';
 import { ModalService } from 'src/app/services/modal.service'
 import { deleteTheaterFromStore } from 'src/app/states/theater/theater.action';
+import { AsyncPipe, UpperCasePipe, SlicePipe } from '@angular/common';
 
 @Component({
     selector: 'app-thr-nav',
     templateUrl: './thr-nav.component.html',
     styleUrls: ['./thr-nav.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [RouterLink, AsyncPipe, UpperCasePipe, SlicePipe]
 })
 export class ThrNavComponent {
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))

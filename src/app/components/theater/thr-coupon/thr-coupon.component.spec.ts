@@ -8,8 +8,8 @@ describe('ThrCouponComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ThrCouponComponent]
-    })
+    imports: [ThrCouponComponent]
+})
     fixture = TestBed.createComponent(ThrCouponComponent)
     component = fixture.componentInstance
     fixture.detectChanges()

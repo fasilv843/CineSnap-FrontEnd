@@ -8,8 +8,8 @@ describe('CropperDialogueComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CropperDialogueComponent]
-    });
+    imports: [CropperDialogueComponent]
+});
     fixture = TestBed.createComponent(CropperDialogueComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

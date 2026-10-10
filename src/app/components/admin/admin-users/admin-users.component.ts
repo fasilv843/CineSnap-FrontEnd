@@ -3,13 +3,16 @@ import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { type IUserRes } from 'src/app/models/users'
 import { UserService } from 'src/app/services/user.service'
 import Swal from 'sweetalert2'
+import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { TableFilterComponent } from '../../common/table-filter/table-filter.component';
+import { NgClass, DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-admin-users',
     templateUrl: './admin-users.component.html',
     styleUrls: ['./admin-users.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [AdminNavComponent, TableFilterComponent, NgClass, DatePipe]
 })
 export class AdminUsersComponent implements OnInit {
   users: IUserRes[] = []

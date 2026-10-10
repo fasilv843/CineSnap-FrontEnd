@@ -3,13 +3,15 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { getRandomColor } from 'src/app/helpers/generateColors';
 import { ILineGraphData } from 'src/app/models/charts';
 import { AdminService } from 'src/app/services/admin.service';
+import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { LineGraphComponent } from '../../common/line-graph/line-graph.component';
 
 @Component({
     selector: 'app-admin-home',
     templateUrl: './admin-home.component.html',
     styleUrls: ['./admin-home.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [AdminNavComponent, LineGraphComponent]
 })
 export class AdminHomeComponent implements OnInit {
   data!: ILineGraphData

@@ -8,8 +8,8 @@ describe('UserNavComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [UserNavComponent]
-    });
+    imports: [UserNavComponent]
+});
     fixture = TestBed.createComponent(UserNavComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

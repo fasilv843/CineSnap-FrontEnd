@@ -8,8 +8,8 @@ describe('ThrScreensComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ThrScreensComponent]
-    });
+    imports: [ThrScreensComponent]
+});
     fixture = TestBed.createComponent(ThrScreensComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

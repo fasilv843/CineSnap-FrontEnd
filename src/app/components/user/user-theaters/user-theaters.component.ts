@@ -9,13 +9,15 @@ import { imagesFolderPath } from 'src/app/shared/constants';
 import { saveCoords } from 'src/app/states/coords/coords.actions';
 import { selectCoords } from 'src/app/states/coords/coords.selector';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
+import { UserNavComponent } from '../user-nav/user-nav.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-user-theaters',
     templateUrl: './user-theaters.component.html',
     styleUrls: ['./user-theaters.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [UserNavComponent, RouterLink]
 })
 export class UserTheatersComponent implements OnInit, OnDestroy {
   coords$ = this.store.pipe(select(selectCoords))

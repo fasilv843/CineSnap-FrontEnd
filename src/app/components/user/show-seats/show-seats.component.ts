@@ -10,6 +10,8 @@ import { ShowService } from 'src/app/services/show.service'
 import { TicketService } from 'src/app/services/ticket.service'
 import { ChargePerDiamondTicket, ChargePerGoldTicket, ChargePerSilverTicket } from 'src/app/shared/constants'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
+import { UserNavComponent } from '../user-nav/user-nav.component';
+import { SeatStatusDirective } from '../../../directives/seat-status.directive';
 
 interface IShowWithMovie extends Omit<IShow, 'movieId'> {
   movieId: ICSMovieRes
@@ -20,7 +22,7 @@ interface IShowWithMovie extends Omit<IShow, 'movieId'> {
     templateUrl: './show-seats.component.html',
     styleUrls: ['./show-seats.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [UserNavComponent, SeatStatusDirective]
 })
 export class ShowSeatsComponent implements OnInit {
   userDetails$ = this.store.pipe(select(selectUserDetails))

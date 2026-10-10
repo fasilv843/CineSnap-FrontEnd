@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/semi */
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-admin-nav',
     templateUrl: './admin-nav.component.html',
     styleUrls: ['./admin-nav.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [RouterLink]
 })
 export class AdminNavComponent {
   showSidebar = false

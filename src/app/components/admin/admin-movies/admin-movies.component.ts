@@ -8,13 +8,16 @@ import { MovieService } from 'src/app/services/movie.service';
 import { TMDBService } from 'src/app/services/tmdb.service';
 import { Language } from 'src/app/shared/langAbbreviation';
 import Swal from 'sweetalert2';
+import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { AdminMoviesSearchComponent } from '../admin-movies-search/admin-movies-search.component';
+import { MovieRowComponent } from '../../common/movie-row/movie-row.component';
 
 @Component({
     selector: 'app-admin-movies',
     templateUrl: './admin-movies.component.html',
     styleUrls: ['./admin-movies.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [AdminNavComponent, AdminMoviesSearchComponent, MovieRowComponent]
 })
 export class AdminMoviesComponent implements OnInit {
   constructor (

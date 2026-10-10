@@ -8,8 +8,8 @@ describe('BookingSuccessComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [BookingSuccessComponent]
-    });
+    imports: [BookingSuccessComponent]
+});
     fixture = TestBed.createComponent(BookingSuccessComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

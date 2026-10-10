@@ -6,13 +6,15 @@ import { TicketService } from 'src/app/services/ticket.service'
 import { fetchUserData } from 'src/app/states/user/user.actions'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 import Swal from 'sweetalert2'
+import { UserNavComponent } from '../user-nav/user-nav.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-user-bookings',
     templateUrl: './user-bookings.component.html',
     styleUrls: ['./user-bookings.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [UserNavComponent, DatePipe]
 })
 export class UserBookingsComponent implements OnInit {
   userDetails$ = this.store.pipe(select(selectUserDetails))

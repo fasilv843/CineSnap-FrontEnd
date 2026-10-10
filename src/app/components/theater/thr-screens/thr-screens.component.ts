@@ -7,13 +7,14 @@ import { ScreenService } from 'src/app/services/screen.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import Swal from 'sweetalert2'
 import { ScreenFormModalComponent } from '../screen-form-modal/screen-form-modal.component'
+import { ThrNavComponent } from '../thr-nav/thr-nav.component';
 
 @Component({
     selector: 'app-thr-screens',
     templateUrl: './thr-screens.component.html',
     styleUrls: ['./thr-screens.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ThrNavComponent]
 })
 export class ThrScreensComponent implements OnInit {
   screens: IScreen[] = []

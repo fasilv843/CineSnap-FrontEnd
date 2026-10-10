@@ -8,8 +8,8 @@ describe('TableFilterComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TableFilterComponent]
-    });
+    imports: [TableFilterComponent]
+});
     fixture = TestBed.createComponent(TableFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

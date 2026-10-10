@@ -8,8 +8,8 @@ describe('NameValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [NameValidationComponent]
-    })
+    imports: [NameValidationComponent]
+})
     fixture = TestBed.createComponent(NameValidationComponent)
     component = fixture.componentInstance
     fixture.detectChanges()

@@ -8,8 +8,8 @@ describe('ColValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ColValidationComponent]
-    });
+    imports: [ColValidationComponent]
+});
     fixture = TestBed.createComponent(ColValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

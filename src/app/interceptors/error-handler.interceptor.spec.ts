@@ -1,16 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { type HttpInterceptorFn } from '@angular/common/http';
 
-import { ErrorHandlerInterceptor } from './error-handler.interceptor';
+import { errorHandlerInterceptor } from './error-handler.interceptor';
 
-describe('ErrorHandlerInterceptor', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    providers: [
-      ErrorHandlerInterceptor
-      ]
-  }));
+describe('errorHandlerInterceptor', () => {
+  const interceptor: HttpInterceptorFn = (req, next) =>
+    TestBed.runInInjectionContext(() => errorHandlerInterceptor(req, next));
+
+  beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const interceptor: ErrorHandlerInterceptor = TestBed.inject(ErrorHandlerInterceptor);
     expect(interceptor).toBeTruthy();
   });
 });

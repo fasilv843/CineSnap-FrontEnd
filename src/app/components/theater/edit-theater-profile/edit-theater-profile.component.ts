@@ -1,6 +1,6 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core'
-import { FormBuilder, type FormGroup } from '@angular/forms'
-import { ActivatedRoute, Router } from '@angular/router'
+import { FormBuilder, type FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { getLocation } from 'src/app/helpers/location'
 import { validateByTrimming } from 'src/app/helpers/validations'
@@ -12,13 +12,22 @@ import { nameValidators, mobileValidators, requiredValidator, zipValidators } fr
 import { saveTheaterOnStore } from 'src/app/states/theater/theater.action'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import { environments } from 'src/environments/environment'
+import { ThrNavComponent } from '../thr-nav/thr-nav.component';
+import { ProfileDpComponent } from '../../common/profile-dp/profile-dp.component';
+import { NameValidationComponent } from '../../common/validation/name-validation/name-validation.component';
+import { MobileValidationComponent } from '../../common/validation/mobile-validation/mobile-validation.component';
+import { CityValidationComponent } from '../../common/validation/city-validation/city-validation.component';
+import { DistrictValidationComponent } from '../../common/validation/district-validation/district-validation.component';
+import { StateValidationComponent } from '../../common/validation/state-validation/state-validation.component';
+import { CountryValidationComponent } from '../../common/validation/country-validation/country-validation.component';
+import { ZipValidationComponent } from '../../common/validation/zip-validation/zip-validation.component';
 
 @Component({
     selector: 'app-edit-theater-profile',
     templateUrl: './edit-theater-profile.component.html',
     styleUrls: ['./edit-theater-profile.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ThrNavComponent, ProfileDpComponent, FormsModule, ReactiveFormsModule, NameValidationComponent, MobileValidationComponent, CityValidationComponent, DistrictValidationComponent, StateValidationComponent, CountryValidationComponent, ZipValidationComponent, RouterLink]
 })
 export class EditTheaterProfileComponent {
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))

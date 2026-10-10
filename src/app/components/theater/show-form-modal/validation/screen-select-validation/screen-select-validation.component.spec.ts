@@ -8,8 +8,8 @@ describe('ScreenSelectValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ScreenSelectValidationComponent]
-    });
+    imports: [ScreenSelectValidationComponent]
+});
     fixture = TestBed.createComponent(ScreenSelectValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

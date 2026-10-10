@@ -8,13 +8,17 @@ import { type IShowsOnAScreen } from 'src/app/models/show'
 import { getGenre, getLanguage } from 'src/app/helpers/movie'
 import { MovieService } from 'src/app/services/movie.service'
 import { isSameDay } from 'src/app/helpers/date'
+import { ThrNavComponent } from '../thr-nav/thr-nav.component';
+import { DateComponent } from '../../common/date/date.component';
+import { SpinnerComponent } from '../../common/spinner/spinner.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-thr-shows',
     templateUrl: './thr-shows.component.html',
     styleUrls: ['./thr-shows.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ThrNavComponent, DateComponent, SpinnerComponent, DatePipe]
 })
 export class ThrShowsComponent implements OnInit {
   theaterData$ = this.store.pipe(select(selectTheaterDetails))

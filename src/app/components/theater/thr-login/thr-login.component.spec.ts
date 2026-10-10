@@ -8,8 +8,8 @@ describe('ThrLoginComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ThrLoginComponent]
-    });
+    imports: [ThrLoginComponent]
+});
     fixture = TestBed.createComponent(ThrLoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -8,8 +8,8 @@ describe('ScrollHTabsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ScrollHTabsComponent]
-    });
+    imports: [ScrollHTabsComponent]
+});
     fixture = TestBed.createComponent(ScrollHTabsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

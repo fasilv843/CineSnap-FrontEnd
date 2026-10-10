@@ -3,13 +3,16 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
+import { ThrNavComponent } from '../thr-nav/thr-nav.component';
+import { TableFilterComponent } from '../../common/table-filter/table-filter.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-thr-tickets',
     templateUrl: './thr-tickets.component.html',
     styleUrls: ['./thr-tickets.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ThrNavComponent, TableFilterComponent, DatePipe]
 })
 export class ThrTicketsComponent implements OnInit {
   theaterId = ''

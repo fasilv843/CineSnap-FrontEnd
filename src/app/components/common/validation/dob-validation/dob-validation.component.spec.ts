@@ -8,8 +8,8 @@ describe('DobValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [DobValidationComponent]
-    });
+    imports: [DobValidationComponent]
+});
     fixture = TestBed.createComponent(DobValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

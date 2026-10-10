@@ -12,13 +12,15 @@ import { UserService } from 'src/app/services/user.service';
 import { RazorpayService } from 'src/app/services/razorpay.service';
 import { type Subscription } from 'rxjs';
 import { type IRazorpayRes } from 'src/app/models/common';
+import { UserNavComponent } from '../user-nav/user-nav.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-user-profile',
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [UserNavComponent, DatePipe]
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
   userDetails$ = this.store.pipe(select(selectUserDetails))

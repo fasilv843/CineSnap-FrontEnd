@@ -7,8 +7,7 @@ import { environments } from 'src/environments/environment'
     selector: 'app-approval-rejected',
     templateUrl: './approval-rejected.component.html',
     styleUrls: ['./approval-rejected.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ApprovalRejectedComponent implements OnInit {
   @Input() reason = 'Block'

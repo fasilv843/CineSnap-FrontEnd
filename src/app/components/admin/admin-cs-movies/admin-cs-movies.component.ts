@@ -4,6 +4,8 @@ import { Component, ChangeDetectionStrategy } from '@angular/core'
 import { DataServiceService } from 'src/app/services/data-service.service'
 import { MovieService } from 'src/app/services/movie.service'
 import Swal from 'sweetalert2'
+import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { CsMoviesComponent } from '../../common/cs-movies/cs-movies.component';
 
 @Component({
     selector: 'app-admin-cs-movies',
@@ -11,7 +13,7 @@ import Swal from 'sweetalert2'
     styleUrls: ['./admin-cs-movies.component.css'],
     providers: [DataServiceService],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [AdminNavComponent, CsMoviesComponent]
 })
 export class AdminCsMoviesComponent {
   constructor (

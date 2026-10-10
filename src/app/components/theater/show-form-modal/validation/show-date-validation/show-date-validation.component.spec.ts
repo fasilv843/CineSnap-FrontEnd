@@ -8,8 +8,8 @@ describe('ShowDateValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ShowDateValidationComponent]
-    });
+    imports: [ShowDateValidationComponent]
+});
     fixture = TestBed.createComponent(ShowDateValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

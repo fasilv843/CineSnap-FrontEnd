@@ -8,8 +8,8 @@ describe('MovieSelectValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MovieSelectValidationComponent]
-    });
+    imports: [MovieSelectValidationComponent]
+});
     fixture = TestBed.createComponent(MovieSelectValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

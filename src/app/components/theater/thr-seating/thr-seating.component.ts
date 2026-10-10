@@ -5,6 +5,8 @@ import { ActivatedRoute } from '@angular/router'
 import { ColNumType } from 'src/app/models/common'
 import { IScreenSeatCategoryRes, IScreenSeatRes } from 'src/app/models/screenSeat'
 import { ScreenSeatService } from 'src/app/services/screen-seat.service'
+import { ThrNavComponent } from '../thr-nav/thr-nav.component';
+import { FormsModule } from '@angular/forms';
 // import { ScreenService } from 'src/app/services/screen.service'
 
 type SeatCategory = 'Diamond' | 'Gold' | 'Silver'
@@ -14,7 +16,7 @@ type SeatCategory = 'Diamond' | 'Gold' | 'Silver'
     templateUrl: './thr-seating.component.html',
     styleUrls: ['./thr-seating.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ThrNavComponent, FormsModule]
 })
 export class ThrSeatingComponent implements OnInit {
   seatId = ''

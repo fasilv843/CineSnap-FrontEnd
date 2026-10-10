@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
-import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, type FormGroup, type AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import {
   MAX_OTP_LIMIT,
   OTP_RESEND_MAX_TIME,
@@ -17,13 +17,18 @@ import { formatTime } from 'src/app/helpers/timer';
 import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
 import { emailValidators, nameValidators, otpValidators, passwordValidators } from 'src/app/shared/valiators';
 import { type IUserSocialAuth, type IUserRes, type IApiUserAuthRes } from 'src/app/models/users'
+import { NameValidationComponent } from '../../common/validation/name-validation/name-validation.component';
+import { EmailValidationComponent } from '../../common/validation/email-validation/email-validation.component';
+import { PasswordValidationComponent } from '../../common/validation/password-validation/password-validation.component';
+import { RepeatPassValidationComponent } from '../../common/validation/repeat-pass-validation/repeat-pass-validation.component';
+import { OtpValidationComponent } from '../../common/validation/otp-validation/otp-validation.component';
 
 @Component({
     selector: 'app-user-register',
     templateUrl: './user-register.component.html',
     styleUrls: ['./user-register.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [FormsModule, ReactiveFormsModule, NameValidationComponent, EmailValidationComponent, PasswordValidationComponent, RepeatPassValidationComponent, OtpValidationComponent, RouterLink]
 })
 export class UserRegisterComponent implements OnInit {
   form!: FormGroup;

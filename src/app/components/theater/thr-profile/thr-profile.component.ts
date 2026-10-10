@@ -11,13 +11,14 @@ import { RazorpayService } from 'src/app/services/razorpay.service'
 import { type Subscription } from 'rxjs'
 import { type IRazorpayRes } from 'src/app/models/common'
 import { TheaterService } from 'src/app/services/theater.service'
+import { ThrNavComponent } from '../thr-nav/thr-nav.component';
 
 @Component({
     selector: 'app-thr-profile',
     templateUrl: './thr-profile.component.html',
     styleUrls: ['./thr-profile.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ThrNavComponent]
 })
 export class ThrProfileComponent implements OnInit, OnDestroy {
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))

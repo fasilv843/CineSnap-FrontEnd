@@ -8,8 +8,8 @@ describe('StartTimeValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [StartTimeValidationComponent]
-    });
+    imports: [StartTimeValidationComponent]
+});
     fixture = TestBed.createComponent(StartTimeValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -8,8 +8,8 @@ describe('CityValidationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CityValidationComponent]
-    });
+    imports: [CityValidationComponent]
+});
     fixture = TestBed.createComponent(CityValidationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

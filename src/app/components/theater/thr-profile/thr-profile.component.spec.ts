@@ -8,8 +8,8 @@ describe('ThrProfileComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ThrProfileComponent]
-    });
+    imports: [ThrProfileComponent]
+});
     fixture = TestBed.createComponent(ThrProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

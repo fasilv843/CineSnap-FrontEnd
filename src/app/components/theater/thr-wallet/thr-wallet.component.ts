@@ -4,13 +4,15 @@ import { select, Store } from '@ngrx/store'
 import { IWalletHistory } from 'src/app/models/common'
 import { TheaterService } from 'src/app/services/theater.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import { ThrNavComponent } from '../thr-nav/thr-nav.component';
+import { WalletHistoryComponent } from '../../common/wallet-history/wallet-history.component';
 
 @Component({
     selector: 'app-thr-wallet',
     templateUrl: './thr-wallet.component.html',
     styleUrls: ['./thr-wallet.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    standalone: false
+    imports: [ThrNavComponent, WalletHistoryComponent]
 })
 export class ThrWalletComponent {
   theaterData$ = this.store.pipe(select(selectTheaterDetails))

@@ -8,8 +8,8 @@ describe('UserMessageComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [UserMessageComponent]
-    });
+    imports: [UserMessageComponent]
+});
     fixture = TestBed.createComponent(UserMessageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

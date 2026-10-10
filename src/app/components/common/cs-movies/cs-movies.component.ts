@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core'
-import { CommonModule } from '@angular/common'
+import { NgClass, DatePipe } from '@angular/common'
 import { FilterComponent } from '../filter/filter.component'
 import { SearchComponent } from '../search/search.component'
 import { langType, type IFilterEvent } from 'src/app/models/filter'
@@ -14,12 +14,13 @@ import { Subscription } from 'rxjs'
 @Component({
     selector: 'app-cs-movies',
     imports: [
-        CommonModule,
-        FilterComponent,
-        SearchComponent,
-        SpinnerComponent,
-        AdminMoviesSearchComponent
-    ],
+    FilterComponent,
+    SearchComponent,
+    SpinnerComponent,
+    AdminMoviesSearchComponent,
+    DatePipe,
+    NgClass
+],
     templateUrl: './cs-movies.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./cs-movies.component.css']
