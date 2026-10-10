@@ -1,4 +1,4 @@
-import { Component, Inject, type OnInit } from '@angular/core'
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ModalService } from 'src/app/services/modal.service'
 import { CouponFormComponent } from '../coupon-form/coupon-form.component'
 import { type ICouponRes, type ICouponReqs } from 'src/app/models/coupon'
@@ -10,6 +10,7 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
     selector: 'app-thr-coupon',
     templateUrl: './thr-coupon.component.html',
     styleUrls: ['./thr-coupon.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ThrCouponComponent implements OnInit {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { CommonModule } from '@angular/common'
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ActiveModal } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store'
@@ -32,6 +32,7 @@ import { StartTimeValidationComponent } from './validation/start-time-validation
     ],
     selector: 'app-show-form-modal',
     templateUrl: './show-form-modal.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./show-form-modal.component.css']
 })
 export class ShowFormModalComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { type AfterViewInit, Component, type ElementRef, Input, type OnChanges, type OnDestroy, ViewChild } from '@angular/core'
+import { type AfterViewInit, Component, type ElementRef, Input, type OnChanges, type OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core'
 
 import {
   CategoryScale,
@@ -24,6 +24,7 @@ const surfaceBorder = '#e5e7eb' // gray-200
     selector: 'app-line-graph',
     imports: [],
     templateUrl: './line-graph.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./line-graph.component.css']
 })
 export class LineGraphComponent implements AfterViewInit, OnChanges, OnDestroy {

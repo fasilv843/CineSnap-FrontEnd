@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core'
+import { Component, ChangeDetectionStrategy } from '@angular/core'
 
 @Component({
     selector: 'app-spinner',
@@ -32,6 +32,7 @@ import { Component } from '@angular/core'
       }
     }
   `],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: []
 })
 export class SpinnerComponent {}

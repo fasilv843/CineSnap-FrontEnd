@@ -1,6 +1,6 @@
 /* eslint-disable no-void */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component } from '@angular/core'
+import { Component, ChangeDetectionStrategy } from '@angular/core'
 import { DataServiceService } from 'src/app/services/data-service.service'
 import { MovieService } from 'src/app/services/movie.service'
 import Swal from 'sweetalert2'
@@ -10,6 +10,7 @@ import Swal from 'sweetalert2'
     templateUrl: './admin-cs-movies.component.html',
     styleUrls: ['./admin-cs-movies.component.css'],
     providers: [DataServiceService],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdminCsMoviesComponent {

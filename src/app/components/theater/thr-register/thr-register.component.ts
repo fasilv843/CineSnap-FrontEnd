@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -17,6 +17,7 @@ import Swal from 'sweetalert2';
     selector: 'app-thr-register',
     templateUrl: './thr-register.component.html',
     styleUrls: ['./thr-register.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ThrRegisterComponent {

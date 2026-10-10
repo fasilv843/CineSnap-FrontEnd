@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core'
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core'
 import { FormBuilder, type FormGroup } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Store, select } from '@ngrx/store'
@@ -17,6 +17,7 @@ import { environments } from 'src/environments/environment'
     selector: 'app-edit-theater-profile',
     templateUrl: './edit-theater-profile.component.html',
     styleUrls: ['./edit-theater-profile.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditTheaterProfileComponent {

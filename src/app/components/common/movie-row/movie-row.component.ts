@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core'
 
 import { Language, LanguageAbbreviation } from 'src/app/shared/langAbbreviation'
 import { type Movie } from 'src/app/models/movie'
@@ -7,6 +7,7 @@ import { type Movie } from 'src/app/models/movie'
     selector: 'app-movie-row',
     imports: [],
     templateUrl: './movie-row.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./movie-row.component.css']
 })
 export class MovieRowComponent {

@@ -1,6 +1,6 @@
 
-import { Component, type OnInit, inject, signal } from '@angular/core'
-import { ImageCropperModule, type ImageCroppedEvent } from 'ngx-image-cropper'
+import { Component, type OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core'
+import { ImageCropperComponent, type ImageCroppedEvent } from 'ngx-image-cropper'
 import { ActiveModal } from 'src/app/services/modal.service'
 
 export interface CropperDialogueData {
@@ -16,10 +16,11 @@ export interface CropperDialogueResult {
 
 @Component({
     imports: [
-    ImageCropperModule
+    ImageCropperComponent
 ],
     selector: 'app-cropper-dialogue',
     templateUrl: './cropper-dialogue.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./cropper-dialogue.component.css']
 })
 export class CropperDialogueComponent implements OnInit {

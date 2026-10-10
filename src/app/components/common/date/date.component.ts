@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common'
-import { Component, type OnInit, EventEmitter, Output, Input } from '@angular/core'
+import { Component, type OnInit, EventEmitter, Output, Input, ChangeDetectionStrategy } from '@angular/core'
 import { getDatesArray } from 'src/app/helpers/date'
 
 @Component({
     imports: [CommonModule],
     selector: 'app-date',
     templateUrl: './date.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./date.component.css']
 })
 export class DateComponent implements OnInit {

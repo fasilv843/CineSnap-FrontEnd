@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, type OnInit } from '@angular/core';
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { type AbstractControl, FormBuilder, type FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { validateByTrimming } from 'src/app/helpers/validations';
@@ -11,6 +11,7 @@ import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
     selector: 'app-admin-login',
     templateUrl: './admin-login.component.html',
     styleUrls: ['./admin-login.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdminLoginComponent implements OnInit {

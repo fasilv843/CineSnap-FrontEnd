@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component } from '@angular/core'
+import { Component, ChangeDetectionStrategy } from '@angular/core'
 
 // import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import { ActiveModal } from 'src/app/services/modal.service'
@@ -9,6 +9,7 @@ import { ActiveModal } from 'src/app/services/modal.service'
     selector: 'app-thr-offcanvas',
     imports: [],
     templateUrl: './thr-offcanvas.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./thr-offcanvas.component.css']
 })
 export class ThrOffcanvasComponent {

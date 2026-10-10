@@ -1,4 +1,4 @@
-import { Component, Inject, type OnInit } from '@angular/core'
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 
 import { ActiveModal } from 'src/app/services/modal.service'
 import { FormBuilder, type FormGroup, ReactiveFormsModule } from '@angular/forms'
@@ -13,6 +13,7 @@ import { WalletAmountValidationComponent } from './validation/wallet-amount-vali
     WalletAmountValidationComponent
 ],
     templateUrl: './add-to-wallet-modal.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./add-to-wallet-modal.component.css']
 })
 export class AddToWalletModalComponent implements OnInit {

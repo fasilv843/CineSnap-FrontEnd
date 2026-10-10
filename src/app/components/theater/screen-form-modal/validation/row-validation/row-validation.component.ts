@@ -1,11 +1,12 @@
 
-import { Component, Input } from '@angular/core'
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
     selector: 'app-row-validation',
     imports: [],
     templateUrl: './row-validation.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./row-validation.component.css']
 })
 export class RowValidationComponent {

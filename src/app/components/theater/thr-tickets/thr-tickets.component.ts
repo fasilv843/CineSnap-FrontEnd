@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
@@ -8,6 +8,7 @@ import { TicketService } from 'src/app/services/ticket.service'
     selector: 'app-thr-tickets',
     templateUrl: './thr-tickets.component.html',
     styleUrls: ['./thr-tickets.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ThrTicketsComponent implements OnInit {

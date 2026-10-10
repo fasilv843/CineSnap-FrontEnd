@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 
-import {  AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core'
 
 @Component({
     imports: [],
     selector: 'app-scroll-h-tabs',
     templateUrl: './scroll-h-tabs.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./scroll-h-tabs.component.css']
 })
 export class ScrollHTabsComponent {

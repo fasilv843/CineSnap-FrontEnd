@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
-import { Component, Inject, OnDestroy, type OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
 import { ITheaterRes } from 'src/app/models/theater';
@@ -14,6 +14,7 @@ import { selectUserDetails } from 'src/app/states/user/user.selector';
     selector: 'app-user-theaters',
     templateUrl: './user-theaters.component.html',
     styleUrls: ['./user-theaters.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class UserTheatersComponent implements OnInit, OnDestroy {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, type OnInit } from '@angular/core';
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { type FormGroup, FormBuilder, type AbstractControl } from '@angular/forms'
 import { Store } from '@ngrx/store';
@@ -14,6 +14,7 @@ import { type IApiUserAuthRes } from 'src/app/models/users';
     selector: 'app-user-login',
     templateUrl: './user-login.component.html',
     styleUrls: ['./user-login.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class UserLoginComponent implements OnInit {

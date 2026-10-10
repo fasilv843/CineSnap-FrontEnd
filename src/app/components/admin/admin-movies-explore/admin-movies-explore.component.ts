@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, type OnInit } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { Movie } from 'src/app/models/movie'
 import { MovieService } from 'src/app/services/movie.service'
@@ -11,6 +11,7 @@ import Swal from 'sweetalert2'
     selector: 'app-admin-movies-explore',
     templateUrl: './admin-movies-explore.component.html',
     styleUrls: ['./admin-movies-explore.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdminMoviesExploreComponent implements OnInit {

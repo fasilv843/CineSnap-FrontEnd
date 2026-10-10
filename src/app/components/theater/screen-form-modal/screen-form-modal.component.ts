@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActiveModal } from 'src/app/services/modal.service'
@@ -21,6 +21,7 @@ import { ColValidationComponent } from './validation/col-validation/col-validati
     ColValidationComponent
 ],
     templateUrl: './screen-form-modal.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./screen-form-modal.component.css']
 })
 export class ScreenFormModalComponent implements OnInit {

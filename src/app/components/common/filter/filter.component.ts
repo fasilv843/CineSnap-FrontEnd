@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, Inject, Output, type OnInit, Input } from '@angular/core'
+import { Component, EventEmitter, Inject, Output, type OnInit, Input, ChangeDetectionStrategy } from '@angular/core'
 import { getGenre, getLanguage, isGenreType, isLangType } from 'src/app/helpers/movie'
 import { type IFilterEvent, type langType, type genreType, type valueType } from 'src/app/models/filter'
 import { MovieService } from 'src/app/services/movie.service'
@@ -8,6 +8,7 @@ import { MovieService } from 'src/app/services/movie.service'
     imports: [],
     selector: 'app-filter',
     templateUrl: './filter.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./filter.component.css']
 })
 export class FilterComponent implements OnInit {

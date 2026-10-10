@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 
-import { Component, EventEmitter, type OnInit, Output, Input } from '@angular/core'
+import { Component, EventEmitter, type OnInit, Output, Input, ChangeDetectionStrategy } from '@angular/core'
 import { type FormGroup, FormBuilder, ReactiveFormsModule, FormsModule } from '@angular/forms'
 
 @Component({
@@ -10,6 +10,7 @@ import { type FormGroup, FormBuilder, ReactiveFormsModule, FormsModule } from '@
     FormsModule
 ],
     templateUrl: './table-filter.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./table-filter.component.css']
 })
 export class TableFilterComponent implements OnInit {

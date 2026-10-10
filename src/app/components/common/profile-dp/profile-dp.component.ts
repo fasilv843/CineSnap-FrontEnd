@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, computed, effect, inject, signal } from '@angular/core'
+import { Component, EventEmitter, Input, Output, computed, effect, inject, signal, ChangeDetectionStrategy } from '@angular/core'
 import { CropperDialogueComponent, type CropperDialogueResult } from '../cropper-dialogue/cropper-dialogue.component'
 import { ModalService } from 'src/app/services/modal.service'
 
@@ -7,6 +7,7 @@ import { ModalService } from 'src/app/services/modal.service'
     selector: 'app-profile-dp',
     imports: [],
     templateUrl: './profile-dp.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./profile-dp.component.css']
 })
 export class ProfileDpComponent {

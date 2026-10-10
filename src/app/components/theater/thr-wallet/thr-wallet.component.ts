@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component } from '@angular/core'
+import { Component, ChangeDetectionStrategy } from '@angular/core'
 import { select, Store } from '@ngrx/store'
 import { IWalletHistory } from 'src/app/models/common'
 import { TheaterService } from 'src/app/services/theater.service'
@@ -9,6 +9,7 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
     selector: 'app-thr-wallet',
     templateUrl: './thr-wallet.component.html',
     styleUrls: ['./thr-wallet.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ThrWalletComponent {

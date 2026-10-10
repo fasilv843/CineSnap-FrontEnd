@@ -1,4 +1,4 @@
-import { Component, Inject, type OnInit } from '@angular/core'
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { Store, select } from '@ngrx/store'
 import { getLanguage } from 'src/app/helpers/movie'
 import { type ITicketSeat, type ITicketRes } from 'src/app/models/ticket'
@@ -11,6 +11,7 @@ import Swal from 'sweetalert2'
     selector: 'app-user-bookings',
     templateUrl: './user-bookings.component.html',
     styleUrls: ['./user-bookings.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class UserBookingsComponent implements OnInit {

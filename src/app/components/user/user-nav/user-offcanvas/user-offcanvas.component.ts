@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 
 import { ActiveModal } from 'src/app/services/modal.service'
 import { Store } from '@ngrx/store'
@@ -9,6 +9,7 @@ import { selectUserDetails } from 'src/app/states/user/user.selector'
     selector: 'app-user-offcanvas',
     imports: [],
     templateUrl: './user-offcanvas.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./user-offcanvas.component.css']
 })
 export class UserOffcanvasComponent implements OnInit {

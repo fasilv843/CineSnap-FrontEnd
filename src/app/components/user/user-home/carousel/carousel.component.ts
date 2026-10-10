@@ -1,4 +1,4 @@
-import { Component, Input, type OnDestroy, type OnInit, signal } from '@angular/core'
+import { Component, Input, type OnDestroy, type OnInit, signal, ChangeDetectionStrategy } from '@angular/core'
 
 
 export interface ICarouselData {
@@ -12,6 +12,7 @@ const SLIDE_INTERVAL = 3000
     selector: 'app-carousel',
     imports: [],
     templateUrl: './carousel.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./carousel.component.css']
 })
 export class CarouselComponent implements OnInit, OnDestroy {

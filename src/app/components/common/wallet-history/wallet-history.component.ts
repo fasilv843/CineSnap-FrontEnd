@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { type IWalletHistory } from 'src/app/models/common'
 import { TableFilterComponent } from '../table-filter/table-filter.component'
@@ -10,6 +10,7 @@ import { TableFilterComponent } from '../table-filter/table-filter.component'
         TableFilterComponent
     ],
     templateUrl: './wallet-history.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./wallet-history.component.css']
 })
 export class WalletHistoryComponent {

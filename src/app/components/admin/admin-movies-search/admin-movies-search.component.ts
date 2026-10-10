@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
 
-import { Component, EventEmitter, Output } from '@angular/core'
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core'
 import { SearchComponent } from '../../common/search/search.component';
 import { Router } from '@angular/router';
 
@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 ],
     selector: 'app-admin-movies-search',
     templateUrl: './admin-movies-search.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./admin-movies-search.component.css']
 })
 export class AdminMoviesSearchComponent {

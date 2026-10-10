@@ -1,6 +1,6 @@
 /* eslint-disable quote-props */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, Inject, type OnInit } from '@angular/core'
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { ColNumType } from 'src/app/models/common'
 import { IScreenSeatCategoryRes, IScreenSeatRes } from 'src/app/models/screenSeat'
@@ -13,6 +13,7 @@ type SeatCategory = 'Diamond' | 'Gold' | 'Silver'
     selector: 'app-thr-seating',
     templateUrl: './thr-seating.component.html',
     styleUrls: ['./thr-seating.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ThrSeatingComponent implements OnInit {

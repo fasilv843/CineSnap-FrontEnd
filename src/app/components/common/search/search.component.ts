@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core'
 
 import { Subject, debounceTime } from 'rxjs'
 
@@ -7,6 +7,7 @@ import { Subject, debounceTime } from 'rxjs'
     selector: 'app-search',
     imports: [],
     templateUrl: './search.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit, OnDestroy {

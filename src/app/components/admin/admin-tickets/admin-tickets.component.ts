@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component } from '@angular/core'
+import { Component, ChangeDetectionStrategy } from '@angular/core'
 import { type ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
 
@@ -7,6 +7,7 @@ import { TicketService } from 'src/app/services/ticket.service'
     selector: 'app-admin-tickets',
     templateUrl: './admin-tickets.component.html',
     styleUrls: ['./admin-tickets.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdminTicketsComponent {

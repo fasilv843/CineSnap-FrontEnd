@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { environments } from 'src/environments/environment'
 
@@ -7,6 +7,7 @@ import { environments } from 'src/environments/environment'
     selector: 'app-approval-rejected',
     templateUrl: './approval-rejected.component.html',
     styleUrls: ['./approval-rejected.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ApprovalRejectedComponent implements OnInit {

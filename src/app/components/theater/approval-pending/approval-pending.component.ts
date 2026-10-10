@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component } from '@angular/core'
+import { Component, ChangeDetectionStrategy } from '@angular/core'
 import { Router } from '@angular/router'
 
 @Component({
     selector: 'app-approval-pending',
     templateUrl: './approval-pending.component.html',
     styleUrls: ['./approval-pending.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ApprovalPendingComponent {

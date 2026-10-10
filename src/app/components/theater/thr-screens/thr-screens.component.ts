@@ -1,4 +1,4 @@
-import { Component, Inject, type OnInit } from '@angular/core'
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { Router } from '@angular/router'
 import { ModalService } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store'
@@ -12,6 +12,7 @@ import { ScreenFormModalComponent } from '../screen-form-modal/screen-form-modal
     selector: 'app-thr-screens',
     templateUrl: './thr-screens.component.html',
     styleUrls: ['./thr-screens.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ThrScreensComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router';
 import { langType } from 'src/app/models/filter';
 import { DataServiceService } from 'src/app/services/data-service.service';
@@ -8,6 +8,7 @@ import { DataServiceService } from 'src/app/services/data-service.service';
     templateUrl: './user-movies.component.html',
     styleUrls: ['./user-movies.component.css'],
     providers: [DataServiceService],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class UserMoviesComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, Inject, type OnInit } from '@angular/core'
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ModalService } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store'
 import { ShowService } from 'src/app/services/show.service'
@@ -13,6 +13,7 @@ import { isSameDay } from 'src/app/helpers/date'
     selector: 'app-thr-shows',
     templateUrl: './thr-shows.component.html',
     styleUrls: ['./thr-shows.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ThrShowsComponent implements OnInit {

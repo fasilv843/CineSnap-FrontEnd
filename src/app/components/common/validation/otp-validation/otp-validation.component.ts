@@ -1,11 +1,12 @@
 
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
     selector: 'app-otp-validation',
     imports: [],
     templateUrl: './otp-validation.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./otp-validation.component.css']
 })
 export class OtpValidationComponent {

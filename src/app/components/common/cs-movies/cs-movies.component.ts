@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core'
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FilterComponent } from '../filter/filter.component'
 import { SearchComponent } from '../search/search.component'
@@ -21,6 +21,7 @@ import { Subscription } from 'rxjs'
         AdminMoviesSearchComponent
     ],
     templateUrl: './cs-movies.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./cs-movies.component.css']
 })
 export class CsMoviesComponent implements OnInit, OnDestroy {

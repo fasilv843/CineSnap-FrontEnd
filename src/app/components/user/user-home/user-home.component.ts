@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, Inject, type OnInit } from '@angular/core'
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { Router } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { Subject, takeUntil } from 'rxjs'
@@ -16,6 +16,7 @@ import { ICarouselData } from './carousel/carousel.component'
     selector: 'app-user-home',
     templateUrl: './user-home.component.html',
     styleUrls: ['./user-home.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class UserHomeComponent implements OnInit {

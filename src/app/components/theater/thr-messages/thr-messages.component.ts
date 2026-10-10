@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, Inject, type OnInit, type OnDestroy } from '@angular/core'
+import { Component, Inject, type OnInit, type OnDestroy, ChangeDetectionStrategy } from '@angular/core'
 import { select, Store } from '@ngrx/store'
 import { type IApiChatRes, type IChatReqs, type IChatRes, type IUsersListForChats, IChatMessageRes } from 'src/app/models/chat'
 import { TheaterService } from 'src/app/services/theater.service'
@@ -12,6 +12,7 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
     selector: 'app-thr-messages',
     templateUrl: './thr-messages.component.html',
     styleUrls: ['./thr-messages.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ThrMessagesComponent implements OnInit, OnDestroy {

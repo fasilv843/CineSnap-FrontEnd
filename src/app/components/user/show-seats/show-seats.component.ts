@@ -1,4 +1,4 @@
-import { Component, Inject, type OnInit } from '@angular/core'
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { type ICSMovieRes } from 'src/app/models/movie'
@@ -19,6 +19,7 @@ interface IShowWithMovie extends Omit<IShow, 'movieId'> {
     selector: 'app-show-seats',
     templateUrl: './show-seats.component.html',
     styleUrls: ['./show-seats.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ShowSeatsComponent implements OnInit {

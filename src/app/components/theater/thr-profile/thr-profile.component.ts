@@ -1,4 +1,4 @@
-import { Component, Inject, type OnDestroy, type OnInit } from '@angular/core'
+import { Component, Inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { Router } from '@angular/router'
 import { ModalService } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store'
@@ -16,6 +16,7 @@ import { TheaterService } from 'src/app/services/theater.service'
     selector: 'app-thr-profile',
     templateUrl: './thr-profile.component.html',
     styleUrls: ['./thr-profile.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ThrProfileComponent implements OnInit, OnDestroy {

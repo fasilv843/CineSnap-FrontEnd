@@ -1,4 +1,4 @@
-import { Component, Inject, type OnDestroy, type OnInit } from '@angular/core'
+import { Component, Inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { Store, select } from '@ngrx/store'
 import { type IChatReqs, type IChatMessage, type IApiChatRes } from 'src/app/models/chat'
@@ -14,6 +14,7 @@ import { selectUserDetails } from 'src/app/states/user/user.selector'
     selector: 'app-user-message',
     templateUrl: './user-message.component.html',
     styleUrls: ['./user-message.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class UserMessageComponent implements OnInit, OnDestroy {

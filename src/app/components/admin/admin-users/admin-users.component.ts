@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, type OnInit } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { type IUserRes } from 'src/app/models/users'
 import { UserService } from 'src/app/services/user.service'
 import Swal from 'sweetalert2'
@@ -8,6 +8,7 @@ import Swal from 'sweetalert2'
     selector: 'app-admin-users',
     templateUrl: './admin-users.component.html',
     styleUrls: ['./admin-users.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdminUsersComponent implements OnInit {

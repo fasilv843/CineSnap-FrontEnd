@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core'
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core'
 
 import { FormBuilder, type FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ActiveModal } from 'src/app/services/modal.service'
@@ -33,6 +33,7 @@ import { CouponCountValidationComponent } from './validation/coupon-count-valida
     CouponCountValidationComponent
 ],
     templateUrl: './coupon-form.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./coupon-form.component.css']
 })
 export class CouponFormComponent {

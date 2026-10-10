@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/semi */
-import { Component, Inject, type OnInit } from '@angular/core';
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalService } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store';
@@ -14,6 +14,7 @@ import { deleteUserFromStore } from 'src/app/states/user/user.actions';
     selector: 'app-user-nav',
     templateUrl: './user-nav.component.html',
     styleUrls: ['./user-nav.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class UserNavComponent implements OnInit {

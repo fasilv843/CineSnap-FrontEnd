@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { Store, select } from '@ngrx/store'
 import { IWalletHistory } from 'src/app/models/common'
 import { UserService } from 'src/app/services/user.service'
@@ -9,6 +9,7 @@ import { selectUserDetails } from 'src/app/states/user/user.selector'
     selector: 'app-user-wallet',
     templateUrl: './user-wallet.component.html',
     styleUrls: ['./user-wallet.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class UserWalletComponent implements OnInit {

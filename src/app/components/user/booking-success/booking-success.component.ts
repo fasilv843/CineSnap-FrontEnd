@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, type OnInit } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { getLanguage } from 'src/app/helpers/movie'
 import { ITicketRes, ITicketSeat } from 'src/app/models/ticket'
@@ -10,6 +10,7 @@ import Swal from 'sweetalert2'
     selector: 'app-booking-success',
     templateUrl: './booking-success.component.html',
     styleUrls: ['./booking-success.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class BookingSuccessComponent implements OnInit {

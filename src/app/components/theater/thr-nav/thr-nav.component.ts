@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/semi */
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { imagesFolderPath } from 'src/app/shared/constants';
@@ -12,6 +12,7 @@ import { deleteTheaterFromStore } from 'src/app/states/theater/theater.action';
     selector: 'app-thr-nav',
     templateUrl: './thr-nav.component.html',
     styleUrls: ['./thr-nav.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ThrNavComponent {

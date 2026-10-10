@@ -1,4 +1,4 @@
-import { Component, Inject, type OnInit } from '@angular/core'
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { getGenre, getLanguage } from 'src/app/helpers/movie'
 import { type IShow, type IShowsOnAScreen } from 'src/app/models/show'
@@ -11,6 +11,7 @@ import { imagesFolderPath } from 'src/app/shared/constants'
     selector: 'app-theater-page',
     templateUrl: './theater-page.component.html',
     styleUrls: ['./theater-page.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class TheaterPageComponent implements OnInit {

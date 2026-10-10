@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { Store, select } from '@ngrx/store'
 import { getRandomColor } from 'src/app/helpers/generateColors'
 import { type ILineGraphData } from 'src/app/models/charts'
@@ -10,6 +10,7 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
     selector: 'app-thr-home',
     templateUrl: './thr-home.component.html',
     styleUrls: ['./thr-home.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ThrHomeComponent implements OnInit {

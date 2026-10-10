@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/quotes */
 /* eslint-disable @typescript-eslint/semi */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnDestroy, OnInit } from '@angular/core'
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { getLanguage } from 'src/app/helpers/movie';
@@ -29,6 +29,7 @@ import { fetchUserData } from 'src/app/states/user/user.actions';
     selector: 'app-booking',
     templateUrl: './booking.component.html',
     styleUrls: ['./booking.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class BookingComponent implements OnInit, OnDestroy {

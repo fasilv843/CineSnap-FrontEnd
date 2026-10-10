@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core'
 
 import { type AbstractControl } from '@angular/forms'
 
@@ -6,6 +6,7 @@ import { type AbstractControl } from '@angular/forms'
     selector: 'app-wallet-amount-validation',
     imports: [],
     templateUrl: './wallet-amount-validation.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./wallet-amount-validation.component.css']
 })
 export class WalletAmountValidationComponent {

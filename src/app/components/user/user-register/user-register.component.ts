@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/space-before-function-paren */
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, type OnInit } from '@angular/core'
+import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { FormBuilder, type FormGroup, type AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -22,6 +22,7 @@ import { type IUserSocialAuth, type IUserRes, type IApiUserAuthRes } from 'src/a
     selector: 'app-user-register',
     templateUrl: './user-register.component.html',
     styleUrls: ['./user-register.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class UserRegisterComponent implements OnInit {

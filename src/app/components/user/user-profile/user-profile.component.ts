@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/semi */
-import { Component, Inject, type OnDestroy, type OnInit } from '@angular/core';
+import { Component, Inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalService } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store';
@@ -17,6 +17,7 @@ import { type IRazorpayRes } from 'src/app/models/common';
     selector: 'app-user-profile',
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class UserProfileComponent implements OnInit, OnDestroy {

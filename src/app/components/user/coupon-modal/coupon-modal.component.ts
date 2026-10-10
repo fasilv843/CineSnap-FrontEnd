@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core'
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core'
 
 import { type ICouponRes } from 'src/app/models/coupon'
 import { ActiveModal } from 'src/app/services/modal.service'
@@ -7,6 +7,7 @@ import { ActiveModal } from 'src/app/services/modal.service'
     selector: 'app-coupon-modal',
     imports: [],
     templateUrl: './coupon-modal.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./coupon-modal.component.css']
 })
 export class CouponModalComponent {

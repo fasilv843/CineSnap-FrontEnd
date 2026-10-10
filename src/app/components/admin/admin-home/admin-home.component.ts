@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
 import { getRandomColor } from 'src/app/helpers/generateColors';
 import { ILineGraphData } from 'src/app/models/charts';
 import { AdminService } from 'src/app/services/admin.service';
@@ -8,6 +8,7 @@ import { AdminService } from 'src/app/services/admin.service';
     selector: 'app-admin-home',
     templateUrl: './admin-home.component.html',
     styleUrls: ['./admin-home.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AdminHomeComponent implements OnInit {
