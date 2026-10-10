@@ -6,8 +6,7 @@ import { CommonModule } from '@angular/common'
 @Component({
     selector: 'app-profile-dp',
     imports: [
-        CommonModule,
-        CropperDialogueComponent
+        CommonModule
     ],
     templateUrl: './profile-dp.component.html',
     styleUrls: ['./profile-dp.component.css']

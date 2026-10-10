@@ -53,6 +53,7 @@ export class UserRegisterComponent implements OnInit {
     })
 
     this.authService.authState.subscribe((user) => {
+      if (user?.name === undefined || user.email === undefined) return
       const userData: IUserSocialAuth = {
         name: user.name,
         email: user.email,

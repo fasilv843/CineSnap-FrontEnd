@@ -11,11 +11,14 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@ngx-env/builder:browser",
+          "builder": "@ngx-env/builder:application",
           "options": {
-            "outputPath": "dist/front-end",
+            "outputPath": {
+              "base": "dist/front-end",
+              "browser": ""
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
             "allowedCommonJsDependencies": [
               "sweetalert2",
               "moment",
@@ -65,9 +68,7 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -112,6 +113,32 @@
           }
         }
       }
+    }
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "type": "component"
+    },
+    "@schematics/angular:directive": {
+      "type": "directive"
+    },
+    "@schematics/angular:service": {
+      "type": "service"
+    },
+    "@schematics/angular:guard": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:interceptor": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:module": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:pipe": {
+      "typeSeparator": "."
+    },
+    "@schematics/angular:resolver": {
+      "typeSeparator": "."
     }
   }
 }

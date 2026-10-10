@@ -15,7 +15,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { EditUserProfileComponent } from './edit-user-profile/edit-user-profile.component';
 import { ActionReducer, StoreModule } from '@ngrx/store';
 import { userReducer } from 'src/app/states/user/user.reducer';
-import { SocialLoginModule, GoogleLoginProvider } from '@abacritt/angularx-social-login';
+import { SocialLoginModule, GoogleLoginProvider, SOCIAL_AUTH_CONFIG, type SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
 
 import { environments } from 'src/environments/environment';
 import { coordsReducer } from 'src/app/states/coords/coords.reducer';
@@ -107,7 +107,7 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
   ],
   providers: [
     {
-      provide: 'SocialAuthServiceConfig',
+      provide: SOCIAL_AUTH_CONFIG,
       useValue: {
         autoLogin: false,
         providers: [
@@ -116,7 +116,7 @@ export function localStorageSyncReducer (reducer: ActionReducer<any>): ActionRed
             provider: new GoogleLoginProvider(environments.google_client_id)
           }
         ]
-      } // as SocialAuthServiceConfig,
+      } satisfies SocialAuthServiceConfig
     }
   ]
 })
