@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/semi */
 import { Component, Inject, type OnDestroy, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalService } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store';
 import { type IUserRes } from 'src/app/models/users';
 import { deleteUserFromStore, saveUserOnStore } from 'src/app/states/user/user.actions';
@@ -29,7 +29,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   constructor (
     @Inject(Store) private readonly store: Store,
     @Inject(Router) private readonly router: Router,
-    @Inject(NgbModal) private readonly ngbModal: NgbModal,
+    @Inject(ModalService) private readonly modalService: ModalService,
     @Inject(UserService) private readonly userService: UserService,
     @Inject(RazorpayService) private readonly razorpayService: RazorpayService
   ) {
@@ -70,7 +70,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   addToWallet (): void {
-    const modalRef = this.ngbModal.open(AddToWalletModalComponent, { backdrop: 'static', centered: true })
+    const modalRef = this.modalService.open(AddToWalletModalComponent, { static: true })
 
     void modalRef.result.then(
       (result: { amount: number }) => {

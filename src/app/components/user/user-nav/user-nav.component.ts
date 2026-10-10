@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/semi */
 import { Component, Inject, type OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { ModalService } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store';
 import { imagesFolderPath } from 'src/app/shared/constants';
 import { saveCoords } from 'src/app/states/coords/coords.actions';
@@ -26,7 +26,7 @@ export class UserNavComponent implements OnInit {
   constructor (
     @Inject(Router) private readonly router: Router,
     @Inject(Store) private readonly store: Store,
-    @Inject(NgbOffcanvas) private readonly ngbOffcanvas: NgbOffcanvas
+    @Inject(ModalService) private readonly modalService: ModalService
   ) {}
 
   ngOnInit (): void {
@@ -48,7 +48,7 @@ export class UserNavComponent implements OnInit {
   }
 
   openOffcanvas (): void {
-    this.ngbOffcanvas.open(UserOffcanvasComponent, { backdrop: true }).result.then(
+    this.modalService.open(UserOffcanvasComponent, { variant: 'offcanvas' }).result.then(
       (result) => {
         console.log(result, 'result of canvas')
         if (result === 'logout') {

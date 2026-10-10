@@ -1,5 +1,5 @@
 import { Component, Inject, type OnInit } from '@angular/core'
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
+import { ModalService } from 'src/app/services/modal.service'
 import { CouponFormComponent } from '../coupon-form/coupon-form.component'
 import { type ICouponRes, type ICouponReqs } from 'src/app/models/coupon'
 import { CouponService } from 'src/app/services/coupon.service'
@@ -17,7 +17,7 @@ export class ThrCouponComponent implements OnInit {
   coupons: ICouponRes[] = []
 
   constructor (
-    @Inject(NgbModal) private readonly ngbModal: NgbModal,
+    @Inject(ModalService) private readonly modalService: ModalService,
     @Inject(CouponService) private readonly couponService: CouponService,
     @Inject(Store) private readonly store: Store
   ) {}
@@ -38,7 +38,7 @@ export class ThrCouponComponent implements OnInit {
 
   addNewCoupon (): void {
     console.log('adding new coupon')
-    const modalRef = this.ngbModal.open(CouponFormComponent, { backdrop: 'static', centered: true })
+    const modalRef = this.modalService.open(CouponFormComponent, { static: true })
 
     modalRef.componentInstance.modalTitle = 'Add Coupon'
     modalRef.componentInstance.submitBtn = 'Add'

@@ -44,8 +44,8 @@
         </div>
   
         <div *ngIf="editMode" class="flex justify-center">
-            <button class="btn" (click)="addRow('Diamond')">Add Row</button>
-            <button class="btn" (click)="deleteRow('Diamond')">Delete Row</button>
+            <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="addRow('Diamond')">Add Row</button>
+            <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="deleteRow('Diamond')">Delete Row</button>
         </div>
     </div>
 
@@ -90,8 +90,8 @@
         </div>
   
         <div *ngIf="editMode" class="flex justify-center">
-            <button class="btn" (click)="addRow('Gold')">Add Row</button>
-            <button class="btn" (click)="deleteRow('Gold')">Delete Row</button>
+            <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="addRow('Gold')">Add Row</button>
+            <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="deleteRow('Gold')">Delete Row</button>
         </div>
     </div>
 
@@ -136,14 +136,14 @@
         </div>
   
         <div *ngIf="editMode" class="flex justify-center">
-            <button class="btn" (click)="addRow('Silver')">Add Row</button>
-            <button class="btn" (click)="deleteRow('Silver')">Delete Row</button>
+            <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="addRow('Silver')">Add Row</button>
+            <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="deleteRow('Silver')">Delete Row</button>
         </div>
     </div>
   
     <div class="fixed flex py-4 w-full bottom-0">
       <img src="../../../../assets/screen-icon.svg" alt="Screen SVG" class="w-full h-12">
-      <button (click)="editScreenSeats()" class="btn items-end text-gray-900 m-4 justify-center bg-amber-500 hover:bg-amber-600">{{ editMode ? 'Update' : 'Edit' }}</button>
+      <button (click)="editScreenSeats()" class="inline-block rounded-md border px-3 py-1.5 border-transparent items-end text-gray-900 m-4 justify-center bg-amber-500 hover:bg-amber-600">{{ editMode ? 'Update' : 'Edit' }}</button>
     </div>
   </div>
   

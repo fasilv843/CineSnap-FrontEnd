@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import '@angular/cdk/overlay-prebuilt.css';
 
 html,
 body {
@@ -58,3 +59,26 @@ input::-webkit-inner-spin-button {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* ModalService (CDK dialog) */
+.app-modal-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.app-modal-panel {
+  padding: 1rem;
+}
+
+.app-offcanvas-panel {
+  width: 20rem;
+  max-width: 85vw;
+  background: #fff;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  animation: offcanvas-slide-in 200ms ease-out;
+}
+
+@keyframes offcanvas-slide-in {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}

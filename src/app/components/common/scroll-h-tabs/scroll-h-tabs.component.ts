@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { CommonModule } from '@angular/common'
 import {  AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core'
-import { MatIconModule } from '@angular/material/icon'
 
 @Component({
   standalone: true,
   imports: [
-    CommonModule,
-    MatIconModule
+    CommonModule
   ],
   selector: 'app-scroll-h-tabs',
   templateUrl: './scroll-h-tabs.component.html',

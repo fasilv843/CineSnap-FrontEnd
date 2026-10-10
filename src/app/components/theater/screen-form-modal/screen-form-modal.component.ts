@@ -3,7 +3,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { ActiveModal } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store';
 import { validateByTrimming } from 'src/app/helpers/validations';
 import { colValidators, rowValidators, screenNameValidators } from 'src/app/shared/valiators';
@@ -17,7 +17,6 @@ import { ColValidationComponent } from './validation/col-validation/col-validati
   standalone: true,
   imports: [
     CommonModule,
-    NgbModalModule,
     ReactiveFormsModule,
 
     // ? Validation Error Message Components
@@ -39,7 +38,7 @@ export class ScreenFormModalComponent implements OnInit {
 
   constructor (
     @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
-    @Inject(NgbActiveModal) public activeModal: NgbActiveModal,
+    @Inject(ActiveModal) public activeModal: ActiveModal,
     @Inject(Store) private readonly store: Store
   ) {}
 

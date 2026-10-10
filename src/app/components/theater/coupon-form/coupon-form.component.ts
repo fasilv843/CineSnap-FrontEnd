@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormBuilder, type FormGroup, ReactiveFormsModule } from '@angular/forms'
-import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap'
+import { ActiveModal } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import { validateByTrimming } from 'src/app/helpers/validations'
@@ -22,7 +22,6 @@ import { CouponCountValidationComponent } from './validation/coupon-count-valida
   standalone: true,
   imports: [
     CommonModule,
-    NgbModalModule,
     ReactiveFormsModule,
     CodeValidationComponent,
     DescriptionValidationComponent,
@@ -49,7 +48,7 @@ export class CouponFormComponent {
 
   constructor (
     @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
-    @Inject(NgbActiveModal) public activeModal: NgbActiveModal,
+    @Inject(ActiveModal) public activeModal: ActiveModal,
     @Inject(Store) private readonly store: Store
   ) {}
 

@@ -1,12 +1,11 @@
 <div>
-	<div class="offcanvas-header max-w-full px-3">
-		<h4 class="offcanvas-title text-lg " >Pages</h4>
-		<button type="button" class="btn-close" aria-label="Close" (click)="onDismiss('Cross Click')"> &#10006; </button>
+	<div class="flex items-center justify-between max-w-full p-4">
+		<h4 class="text-lg font-medium">Pages</h4>
+		<button type="button" class="px-2 text-gray-500 hover:text-gray-900" aria-label="Close" (click)="onDismiss('Cross Click')"> &#10006; </button>
 	</div>
-	<div class="offcanvas-body">
+	<div class="p-4">
         <div >
 
-            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet" />
             <div class="w-60 px-2  text-left capitalize font-medium">
           
               <a (click)="onClose('home')" class="w-full">

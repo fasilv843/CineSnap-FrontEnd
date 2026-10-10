@@ -1,6 +1,6 @@
 import { Component, Inject, type OnDestroy, type OnInit } from '@angular/core'
 import { Router } from '@angular/router'
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
+import { ModalService } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store'
 import { type ITheaterRes } from 'src/app/models/theater'
 import { deleteTheaterFromStore, saveTheaterOnStore } from 'src/app/states/theater/theater.action'
@@ -28,7 +28,7 @@ export class ThrProfileComponent implements OnInit, OnDestroy {
   constructor (
     @Inject(Store) private readonly store: Store,
     @Inject(Router) private readonly router: Router,
-    @Inject(NgbModal) private readonly ngbModal: NgbModal,
+    @Inject(ModalService) private readonly modalService: ModalService,
     @Inject(RazorpayService) private readonly razorpayService: RazorpayService,
     @Inject(TheaterService) private readonly theaterService: TheaterService
   ) {
@@ -65,7 +65,7 @@ export class ThrProfileComponent implements OnInit, OnDestroy {
   }
 
   addToWallet (): void {
-    const modalRef = this.ngbModal.open(AddToWalletModalComponent, { backdrop: 'static', centered: true })
+    const modalRef = this.modalService.open(AddToWalletModalComponent, { static: true })
 
     void modalRef.result.then(
       (result: { amount: number }) => {

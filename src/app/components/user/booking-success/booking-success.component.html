@@ -12,7 +12,7 @@
   
 
 <div *ngIf="ticket" id="invoice-container" class="flex flex-col md:flex-row w-full justify-around h-fit border p-4 my-4 bg-white shadow-lg rounded-lg overflow-hidden">
-    <div class="flex flex-col md:flex-row border-1 p-4">
+    <div class="flex flex-col md:flex-row border p-4">
         <div class="mb-4 md:mr-4">
             <img src="https://image.tmdb.org/t/p/original/{{ ticket.movieId.poster_path }}" alt="{{ ticket.movieId.title }} Poster" class=" h-80 object-cover rounded-lg shadow-md">
         </div>

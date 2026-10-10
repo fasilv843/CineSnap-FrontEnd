@@ -5,7 +5,7 @@ import { Store, select } from '@ngrx/store';
 import { imagesFolderPath } from 'src/app/shared/constants';
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector';
 import { ThrOffcanvasComponent } from './thr-offcanvas/thr-offcanvas.component';
-import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { ModalService } from 'src/app/services/modal.service'
 import { deleteTheaterFromStore } from 'src/app/states/theater/theater.action';
 
 @Component({
@@ -20,11 +20,11 @@ export class ThrNavComponent {
   constructor (
     @Inject(Router) private readonly router: Router,
     @Inject(Store) private readonly store: Store,
-    @Inject(NgbOffcanvas) private readonly ngbOffcanvas: NgbOffcanvas
+    @Inject(ModalService) private readonly modalService: ModalService
   ) {}
 
   openOffcanvas (): void {
-    this.ngbOffcanvas.open(ThrOffcanvasComponent, { backdrop: true }).result.then(
+    this.modalService.open(ThrOffcanvasComponent, { variant: 'offcanvas' }).result.then(
       (result) => {
         console.log(result, 'result of canvas')
         if (result === 'logout') {

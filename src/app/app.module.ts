@@ -8,11 +8,10 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 import { TransformUrlInterceptor } from './interceptors/transform-url.interceptor'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { StoreModule, type MetaReducer } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { DialogModule } from '@angular/cdk/dialog';
 import { ErrorHandlerInterceptor } from './interceptors/error-handler.interceptor';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { hydrationMetaReducer } from './states/hydration.reducer'
 import { reducers } from './states/app.state';
@@ -27,10 +26,9 @@ export const metaReducers: MetaReducer[] = [hydrationMetaReducer];
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    BrowserAnimationsModule,
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
-    NgbModule
+    DialogModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

@@ -20,7 +20,7 @@ import { RazorpayService } from 'src/app/services/razorpay.service';
 import { Subscription } from 'rxjs';
 import { CouponService } from 'src/app/services/coupon.service';
 import { ICouponRes } from 'src/app/models/coupon';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalService } from 'src/app/services/modal.service'
 import { CouponModalComponent } from '../coupon-modal/coupon-modal.component';
 import { fetchUserData } from 'src/app/states/user/user.actions';
 
@@ -62,7 +62,7 @@ export class BookingComponent implements OnInit, OnDestroy {
     private readonly store: Store,
     private readonly razorpayService: RazorpayService,
     private readonly couponService: CouponService,
-    private readonly ngbModal: NgbModal
+    private readonly modalService: ModalService
   ) {
     this.paymentResultSubscription = this.razorpayService
       .getPaymentResultObservable()
@@ -147,7 +147,7 @@ export class BookingComponent implements OnInit, OnDestroy {
 
   showCouponsModal (): void {
     console.warn('show more button clicked, but didnt implemented');
-    const modalRef = this.ngbModal.open(CouponModalComponent, { backdrop: 'static', centered: true })
+    const modalRef = this.modalService.open(CouponModalComponent, { static: true })
     modalRef.componentInstance.coupons = this.coupons
     modalRef.componentInstance.appliedCouponId = this.appliedCouponId
 

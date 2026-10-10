@@ -8,7 +8,15 @@
               {{ label }}
             </a>
           </div>
-          <mat-icon *ngIf="showLeftArrow" (click)="scrollLeft()" class="scroll-button left-0" aria-label="Scroll Left">arrow_left</mat-icon>
-          <mat-icon *ngIf="showRightArrow" (click)="scrollRight()" class="scroll-button right-0" aria-label="Scroll Right">arrow_right</mat-icon>
+          <button type="button" *ngIf="showLeftArrow" (click)="scrollLeft()" class="scroll-button left-0" aria-label="Scroll Left">
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <button type="button" *ngIf="showRightArrow" (click)="scrollRight()" class="scroll-button right-0" aria-label="Scroll Right">
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </button>
     </div>
 </div>

@@ -1,6 +1,6 @@
 import { Component, Inject, type OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap'
+import { ActiveModal } from 'src/app/services/modal.service'
 import { FormBuilder, type FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { validateByTrimming } from 'src/app/helpers/validations'
 import { walletAmountValidators } from 'src/app/shared/valiators'
@@ -11,7 +11,6 @@ import { WalletAmountValidationComponent } from './validation/wallet-amount-vali
   standalone: true,
   imports: [
     CommonModule,
-    NgbModalModule,
     ReactiveFormsModule,
     WalletAmountValidationComponent
   ],
@@ -24,7 +23,7 @@ export class AddToWalletModalComponent implements OnInit {
   form!: FormGroup
 
   constructor (
-    @Inject(NgbActiveModal) public activeModal: NgbActiveModal,
+    @Inject(ActiveModal) public activeModal: ActiveModal,
     @Inject(FormBuilder) private readonly formBuilder: FormBuilder
   ) { }
 

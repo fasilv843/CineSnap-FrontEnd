@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output, computed, effect, inject, signal } from '@angular/core'
-import { MatDialog, MatDialogModule } from '@angular/material/dialog'
 import { CropperDialogueComponent, type CropperDialogueResult } from '../cropper-dialogue/cropper-dialogue.component'
-import { filter } from 'rxjs'
+import { ModalService } from 'src/app/services/modal.service'
 import { CommonModule } from '@angular/common'
 
 @Component({
@@ -9,8 +8,7 @@ import { CommonModule } from '@angular/common'
   standalone: true,
   imports: [
     CommonModule,
-    CropperDialogueComponent,
-    MatDialogModule
+    CropperDialogueComponent
   ],
   templateUrl: './profile-dp.component.html',
   styleUrls: ['./profile-dp.component.css']
@@ -38,21 +36,21 @@ export class ProfileDpComponent {
   })
 
   croppedImage = signal<CropperDialogueResult | undefined>(undefined)
-  dialog = inject(MatDialog)
+  modalService = inject(ModalService)
 
   fileSelected (event: any): void {
     const file = event.target.files[0]
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (file) {
-      const dialogRef = this.dialog.open(CropperDialogueComponent, {
-        data: { image: file, width: this.imageWidth(), height: this.imageHeight() },
-        width: '500px'
-      })
+      const modalRef = this.modalService.open(CropperDialogueComponent, { width: '500px' })
+      modalRef.componentInstance.data = { image: file, width: this.imageWidth(), hieght: this.imageHeight() }
 
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      dialogRef.afterClosed().pipe(filter(result => !!result)).subscribe(result => {
-        this.croppedImage.set(result)
-      })
+      void modalRef.result.then(
+        (result: CropperDialogueResult | undefined) => {
+          if (result !== undefined) this.croppedImage.set(result)
+        },
+        () => {}
+      )
     }
   }
 

@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common'
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
-import { NgbActiveModal, NgbModalModule } from '@ng-bootstrap/ng-bootstrap'
+import { ActiveModal } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store'
 import * as moment from 'moment'
 import { Subject, debounceTime } from 'rxjs'
@@ -23,7 +23,6 @@ import { StartTimeValidationComponent } from './validation/start-time-validation
   standalone: true,
   imports: [
     CommonModule,
-    NgbModalModule,
     ReactiveFormsModule,
 
     // ? Validation Error Message Components
@@ -104,7 +103,7 @@ export class ShowFormModalComponent implements OnInit, OnDestroy {
 
   constructor (
     @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
-    @Inject(NgbActiveModal) public activeModal: NgbActiveModal,
+    @Inject(ActiveModal) public activeModal: ActiveModal,
     @Inject(MovieService) private readonly movieService: MovieService,
     @Inject(ScreenService) private readonly screenService: ScreenService,
     @Inject(Store) private readonly store: Store

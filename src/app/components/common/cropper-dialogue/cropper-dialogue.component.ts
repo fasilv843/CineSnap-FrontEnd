@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { Component, type OnInit, inject, signal } from '@angular/core'
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog'
-import { MatToolbarModule } from '@angular/material/toolbar'
 import { ImageCropperModule, type ImageCroppedEvent } from 'ngx-image-cropper'
+import { ActiveModal } from 'src/app/services/modal.service'
 
 export interface CropperDialogueData {
   image: File
@@ -19,9 +18,7 @@ export interface CropperDialogueResult {
   standalone: true,
   imports: [
     CommonModule,
-    ImageCropperModule,
-    MatToolbarModule,
-    MatDialogModule
+    ImageCropperModule
   ],
   selector: 'app-cropper-dialogue',
   templateUrl: './cropper-dialogue.component.html',
@@ -32,7 +29,9 @@ export class CropperDialogueComponent implements OnInit {
     console.log(this.data, 'data from cropped dialogue')
   }
 
-  data: CropperDialogueData = inject(MAT_DIALOG_DATA)
+  // set by the opener through componentInstance
+  data!: CropperDialogueData
+  activeModal = inject(ActiveModal)
   result = signal<CropperDialogueResult | undefined>(undefined)
 
   imageCropped (event: ImageCroppedEvent): void {

@@ -1,75 +1,94 @@
-import { Component, Input } from '@angular/core'
+import { type AfterViewInit, Component, type ElementRef, Input, type OnChanges, type OnDestroy, ViewChild } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { ChartModule } from 'primeng/chart'
+import {
+  CategoryScale,
+  Chart,
+  Filler,
+  Legend,
+  LineController,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  type ChartOptions
+} from 'chart.js'
 import { type ILineGraphData } from 'src/app/models/charts'
+
+Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Legend, Tooltip, Filler)
+
+const textColor = '#374151' // gray-700
+const textColorSecondary = '#6b7280' // gray-500
+const surfaceBorder = '#e5e7eb' // gray-200
 
 @Component({
   selector: 'app-line-graph',
   standalone: true,
   imports: [
-    CommonModule,
-    ChartModule
+    CommonModule
   ],
   templateUrl: './line-graph.component.html',
   styleUrls: ['./line-graph.component.css']
 })
-export class LineGraphComponent {
+export class LineGraphComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() data: ILineGraphData = {
     labels: [],
     datasets: []
   }
 
-  options: any
+  @ViewChild('canvas') canvas!: ElementRef<HTMLCanvasElement>
 
-  ngOnInit (): void {
-    const documentStyle = getComputedStyle(document.documentElement)
-    const textColor = documentStyle.getPropertyValue('--text-color')
-    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary')
-    const surfaceBorder = documentStyle.getPropertyValue('--surface-border')
+  private chart?: Chart<'line'>
 
-    this.data = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'First Dataset',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#3366ff',
-          tension: 0.4
+  options: ChartOptions<'line'> = {
+    maintainAspectRatio: false,
+    aspectRatio: 0.6,
+    plugins: {
+      legend: {
+        labels: {
+          color: textColor
         }
-      ]
-    }
-
-    this.options = {
-      maintainAspectRatio: false,
-      aspectRatio: 0.6,
-      plugins: {
-        legend: {
-          labels: {
-            color: textColor
-          }
+      }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: textColorSecondary
+        },
+        grid: {
+          color: surfaceBorder
         }
       },
-      scales: {
-        x: {
-          ticks: {
-            color: textColorSecondary
-          },
-          grid: {
-            color: surfaceBorder,
-            drawBorder: false
-          }
+      y: {
+        ticks: {
+          color: textColorSecondary
         },
-        y: {
-          ticks: {
-            color: textColorSecondary
-          },
-          grid: {
-            color: surfaceBorder,
-            drawBorder: false
-          }
+        grid: {
+          color: surfaceBorder
         }
       }
     }
+  }
+
+  ngAfterViewInit (): void {
+    this.chart = new Chart(this.canvas.nativeElement, {
+      type: 'line',
+      data: this.chartData(),
+      options: this.options
+    })
+  }
+
+  ngOnChanges (): void {
+    if (this.chart === undefined) return
+    this.chart.data = this.chartData()
+    this.chart.update()
+  }
+
+  ngOnDestroy (): void {
+    this.chart?.destroy()
+  }
+
+  private chartData (): ILineGraphData {
+    // parents pass undefined until their revenue request resolves
+    return this.data ?? { labels: [], datasets: [] }
   }
 }

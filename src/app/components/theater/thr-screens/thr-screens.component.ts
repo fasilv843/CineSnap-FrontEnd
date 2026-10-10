@@ -1,6 +1,6 @@
 import { Component, Inject, type OnInit } from '@angular/core'
 import { Router } from '@angular/router'
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
+import { ModalService } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store'
 import { type IScreenRequirements, type IApiScreensRes, type IScreen } from 'src/app/models/screens'
 import { ScreenService } from 'src/app/services/screen.service'
@@ -22,7 +22,7 @@ export class ThrScreensComponent implements OnInit {
     @Inject(ScreenService) private readonly screenService: ScreenService,
     @Inject(Store) private readonly store: Store,
     @Inject(Router) private readonly router: Router,
-    @Inject(NgbModal) private readonly modalService: NgbModal
+    @Inject(ModalService) private readonly modalService: ModalService
   ) {}
 
   ngOnInit (): void {
@@ -42,7 +42,7 @@ export class ThrScreensComponent implements OnInit {
   }
 
   addNewScreen (): void {
-    const modalRef = this.modalService.open(ScreenFormModalComponent, { backdrop: 'static', centered: true })
+    const modalRef = this.modalService.open(ScreenFormModalComponent, { static: true })
 
     modalRef.componentInstance.modalTitle = 'Add Screen'
     modalRef.componentInstance.submitBtn = 'Add'

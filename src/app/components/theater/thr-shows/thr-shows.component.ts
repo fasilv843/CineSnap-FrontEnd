@@ -1,5 +1,5 @@
 import { Component, Inject, type OnInit } from '@angular/core'
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
+import { ModalService } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store'
 import { ShowService } from 'src/app/services/show.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
@@ -27,7 +27,7 @@ export class ThrShowsComponent implements OnInit {
     @Inject(ShowService) private readonly showService: ShowService,
     @Inject(MovieService) private readonly movieService: MovieService,
     @Inject(Store) private readonly store: Store,
-    @Inject(NgbModal) private readonly modalService: NgbModal
+    @Inject(ModalService) private readonly modalService: ModalService
   ) {}
 
   ngOnInit (): void {
@@ -41,7 +41,7 @@ export class ThrShowsComponent implements OnInit {
   }
 
   addNewShow (): void {
-    const modalRef = this.modalService.open(ShowFormModalComponent, { backdrop: 'static', centered: true })
+    const modalRef = this.modalService.open(ShowFormModalComponent, { static: true })
 
     // Access the component instance and set input values
     modalRef.componentInstance.modalTitle = 'Add Show'

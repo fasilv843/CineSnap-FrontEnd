@@ -1,33 +1,33 @@
-<section class="vh-100 bg-image"
+<section class="min-h-screen bg-cover bg-center"
   style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
-  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
-    <div class="container h-100">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
-          <div class="card" style="border-radius: 15px;">
-            <div class="card-body p-5">
-              <h2 class="text-uppercase text-center mb-5">Log In</h2>
+  <div class="flex min-h-screen items-center">
+    <div class="container">
+      <div class="py-8 flex justify-center items-center">
+        <div class="w-full md:w-9/12 lg:w-7/12 xl:w-6/12">
+          <div class="bg-white shadow-lg" style="border-radius: 15px;">
+            <div class="p-6 sm:p-12">
+              <h2 class="uppercase text-2xl font-semibold text-center mb-12">Log In</h2>
 
               <form [formGroup]="form" (submit)="onSubmit()">
 
-                <div class="form-outline mb-3 ">
-                  <input type="email"  formControlName="email" id="form3Example3cg" class="form-control form-control-lg" placeholder="Enter Email" />
+                <div class="mb-3">
+                  <input type="email"  formControlName="email" id="form3Example3cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter Email" />
                   <app-email-validation [emailControl]="form.get('email')" [isSubmitted]="isSubmitted"></app-email-validation>
                 </div>
 
-                <div class="form-outline mb-3 ">
-                    <input type="password" formControlName="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Enter Password" />
+                <div class="mb-3">
+                    <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
                     <app-password-validation [passwordControl]="form.get('password')" [isSubmitted]="isSubmitted"></app-password-validation>
                 </div>
                   
 
-                <div class="d-flex justify-content-center">
+                <div class="flex justify-center">
                   <button type="submit"
-                    class="btn btn-warning btn-block btn-lg gradient-custom-4 text-body">Login</button>
+                    class="w-full rounded-md bg-amber-400 hover:bg-amber-500 disabled:opacity-60 px-6 py-2 text-lg font-semibold text-gray-900">Login</button>
                 </div>
 
-                <p class="text-center text-muted mt-3 mb-0">Not a member yet? 
-                    <a routerLink="/theater/register" class="fw-bold text-body"><u>Register here</u></a>
+                <p class="text-center text-gray-500 mt-3 mb-0">Not a member yet? 
+                    <a routerLink="/theater/register" class="font-bold text-gray-900"><u>Register here</u></a>
                 </p>
 
               </form>

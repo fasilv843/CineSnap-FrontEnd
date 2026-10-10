@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { type ICouponRes } from 'src/app/models/coupon'
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'
+import { ActiveModal } from 'src/app/services/modal.service'
 
 @Component({
   selector: 'app-coupon-modal',
@@ -18,7 +18,7 @@ export class CouponModalComponent {
   appliedCouponId = ''
 
   constructor (
-    @Inject(NgbActiveModal) public readonly activeModal: NgbActiveModal
+    @Inject(ActiveModal) public readonly activeModal: ActiveModal
   ) {}
 
   onApply (coupon: ICouponRes): void {

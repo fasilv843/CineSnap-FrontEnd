@@ -1,24 +1,24 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { NgbActiveOffcanvas, NgbOffcanvasModule } from '@ng-bootstrap/ng-bootstrap'
+import { ActiveModal } from 'src/app/services/modal.service'
 import { Store } from '@ngrx/store'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 
 @Component({
   selector: 'app-user-offcanvas',
   standalone: true,
-  imports: [CommonModule, NgbOffcanvasModule],
+  imports: [CommonModule],
   templateUrl: './user-offcanvas.component.html',
   styleUrls: ['./user-offcanvas.component.css']
 })
 export class UserOffcanvasComponent implements OnInit {
-  // private readonly _ngbActiveOffcanvas = inject(NgbActiveOffcanvas)
+  // private readonly activeModal = inject(ActiveModal)
   userDetails$ = this._store.select(selectUserDetails)
   isLoggedIn = false
 
   constructor (
-    private readonly _ngbActiveOffcanvas: NgbActiveOffcanvas,
+    private readonly activeModal: ActiveModal,
     private readonly _store: Store
   ) {}
 
@@ -29,11 +29,11 @@ export class UserOffcanvasComponent implements OnInit {
   }
 
   onDismiss (reason: string): void {
-    this._ngbActiveOffcanvas.dismiss(reason)
+    this.activeModal.dismiss(reason)
   }
 
   onClose (str: string): void {
-    this._ngbActiveOffcanvas.close(str)
+    this.activeModal.close(str)
   }
 
   // closeResult = ''
