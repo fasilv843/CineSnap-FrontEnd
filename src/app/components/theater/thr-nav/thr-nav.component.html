@@ -32,7 +32,7 @@
         <!-- Header Icons -->
         <div class="hidden sm:flex items-center space-x-5">
 
-          @if (theaterDetails$ | async; as theater) {
+          @if (theaterDetails(); as theater) {
             <div class="flex items-center" routerLink="/theater/profile">
               @if (theater.profilePic) {
                 <div>

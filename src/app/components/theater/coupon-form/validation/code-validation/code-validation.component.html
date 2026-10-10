@@ -1,10 +1,10 @@
-
-@if (isSubmitted && codeControl && codeControl.errors) {
+@let control = codeControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (codeControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Code is required</div>
     }
-    @if (codeControl.errors['pattern']) {
+    @if (control.errors['pattern']) {
       <div style="color: red;">Invalid Code format</div>
     }
   </div>

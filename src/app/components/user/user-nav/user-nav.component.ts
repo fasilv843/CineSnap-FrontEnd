@@ -1,36 +1,35 @@
 /* eslint-disable @typescript-eslint/semi */
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy, inject, effect, Injector } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ModalService } from 'src/app/services/modal.service'
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { imagesFolderPath } from 'src/app/shared/constants';
 import { saveCoords } from 'src/app/states/coords/coords.actions';
 import { selectCoords } from 'src/app/states/coords/coords.selector';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
 import { UserOffcanvasComponent } from './user-offcanvas/user-offcanvas.component';
 import { deleteUserFromStore } from 'src/app/states/user/user.actions';
-import { NgIf, AsyncPipe, UpperCasePipe, SlicePipe } from '@angular/common';
+import { UpperCasePipe, SlicePipe } from '@angular/common';
 
 @Component({
     selector: 'app-user-nav',
     templateUrl: './user-nav.component.html',
     styleUrls: ['./user-nav.component.css'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, NgIf, AsyncPipe, UpperCasePipe, SlicePipe]
+    imports: [RouterLink, UpperCasePipe, SlicePipe]
 })
 export class UserNavComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly injector = inject(Injector);
+  private readonly store = inject(Store);
+  private readonly modalService = inject(ModalService);
+
   isLoggedIn: boolean = false
-  userDetails$ = this.store.pipe(select(selectUserDetails))
-  coords$ = this.store.pipe(select(selectCoords))
+  userDetails = this.store.selectSignal(selectUserDetails)
+  coords = this.store.selectSignal(selectCoords)
   latitude: number | undefined;
   longitude: number | undefined;
   imageFolderPath = imagesFolderPath
-
-  constructor (
-    @Inject(Router) private readonly router: Router,
-    @Inject(Store) private readonly store: Store,
-    @Inject(ModalService) private readonly modalService: ModalService
-  ) {}
 
   ngOnInit (): void {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
@@ -45,9 +44,10 @@ export class UserNavComponent implements OnInit {
       console.log('No support for geolocation')
     }
 
-    this.userDetails$.subscribe(user => {
+    effect(() => {
+      const user = this.userDetails()
       if (user !== null) this.isLoggedIn = true
-    })
+    }, { injector: this.injector })
   }
 
   openOffcanvas (): void {

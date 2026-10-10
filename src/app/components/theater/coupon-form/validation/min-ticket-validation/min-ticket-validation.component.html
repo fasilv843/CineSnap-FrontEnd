@@ -1,14 +1,14 @@
-
-@if (isSubmitted && minTicketControl && minTicketControl.errors) {
+@let control = minTicketControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (minTicketControl.errors['pattern']) {
+    @if (control.errors['pattern']) {
       <div style="color: red;">Ticket count must be a number</div>
     }
-    @if (minTicketControl.errors['min']) {
+    @if (control.errors['min']) {
       <div style="color: red;">Enter a positive number</div>
     }
-    @if (minTicketControl.errors['max']) {
-      <div style="color: red;">Max Ticket allowed is {{ minTicketControl.getError('max').maxValue }}</div>
+    @if (control.errors['max']) {
+      <div style="color: red;">Max Ticket allowed is {{ control.getError('max').maxValue }}</div>
     }
   </div>
 }

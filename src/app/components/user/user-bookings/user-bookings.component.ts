@@ -1,5 +1,5 @@
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
-import { Store, select } from '@ngrx/store'
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
+import { Store } from '@ngrx/store'
 import { getLanguage } from 'src/app/helpers/movie'
 import { type ITicketSeat, type ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
@@ -17,22 +17,19 @@ import { DatePipe } from '@angular/common';
     imports: [UserNavComponent, DatePipe]
 })
 export class UserBookingsComponent implements OnInit {
-  userDetails$ = this.store.pipe(select(selectUserDetails))
+  private readonly ticketService = inject(TicketService)
+  private readonly store = inject(Store)
+
+  userDetails = this.store.selectSignal(selectUserDetails)
   userId = ''
   tickets: ITicketRes[] = []
   now = new Date()
 
   getLanguage = getLanguage
 
-  constructor (
-    @Inject(TicketService) private readonly ticketService: TicketService,
-    @Inject(Store) private readonly store: Store
-  ) {}
-
   ngOnInit (): void {
-    this.userDetails$.subscribe((user) => {
-      if (user !== null) this.userId = user._id
-    })
+    const user = this.userDetails()
+    if (user !== null) this.userId = user._id
 
     this.ticketService.getTicketsOfUser(this.userId).subscribe({
       next: (res) => {

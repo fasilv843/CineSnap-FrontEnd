@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, input } from '@angular/core'
 
 import { AbstractControl } from '@angular/forms'
 
@@ -11,6 +11,6 @@ import { AbstractControl } from '@angular/forms'
     styleUrls: ['./coupon-end-validation.component.css']
 })
 export class CouponEndValidationComponent {
-  @Input() endControl: AbstractControl | null = null
-  @Input() isSubmitted = false
+  readonly endControl = input<AbstractControl | null>(null);
+  readonly isSubmitted = input(false);
 }

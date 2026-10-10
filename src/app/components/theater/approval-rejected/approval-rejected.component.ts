@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy, inject, signal } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { environments } from 'src/environments/environment'
 
@@ -10,22 +10,20 @@ import { environments } from 'src/environments/environment'
     changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ApprovalRejectedComponent implements OnInit {
-  @Input() reason = 'Block'
+  private readonly _route = inject(ActivatedRoute)
 
-  constructor (
-    private readonly _route: ActivatedRoute
-  ) {}
+  readonly reason = signal('Block')
 
   ngOnInit (): void {
     this._route.queryParamMap.subscribe(params => {
-      this.reason = params.get('reason') as string
-      console.log(this.reason, 'reason')
+      this.reason.set(params.get('reason') as string)
+      console.log(this.reason(), 'reason')
       console.log(params, 'params')
     })
   }
 
   contactSupport (): void {
-    const mailSubject = this.reason === 'Block'
+    const mailSubject = this.reason() === 'Block'
       ? 'Inquiry Regarding Theater Registration Rejection'
       : 'Inquiry Regarding Theater Block'
     window.location.href = `mailto:${environments.supportMail}?subject=${encodeURIComponent(mailSubject)}`

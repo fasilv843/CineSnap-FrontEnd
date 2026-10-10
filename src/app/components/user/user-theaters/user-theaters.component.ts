@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
-import { Component, Inject, OnDestroy, type OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { ITheaterRes } from 'src/app/models/theater';
 import { TheaterService } from 'src/app/services/theater.service';
 import { imagesFolderPath } from 'src/app/shared/constants';
@@ -19,17 +18,16 @@ import { RouterLink } from '@angular/router';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [UserNavComponent, RouterLink]
 })
-export class UserTheatersComponent implements OnInit, OnDestroy {
-  coords$ = this.store.pipe(select(selectCoords))
-  userData$ = this.store.pipe(select(selectUserDetails))
+export class UserTheatersComponent implements OnInit {
+  private readonly store = inject(Store);
+  private readonly theaterService = inject(TheaterService);
+
+  coords = this.store.selectSignal(selectCoords)
+  userData = this.store.selectSignal(selectUserDetails)
   theaters: ITheaterRes[] = []
   folderPath = imagesFolderPath
-  unsubscribe$ = new Subject<void>()
 
-  constructor (
-    @Inject(Store) private readonly store: Store,
-    private readonly theaterService: TheaterService
-  ) {
+  constructor () {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -46,24 +44,22 @@ export class UserTheatersComponent implements OnInit, OnDestroy {
     // Longitude and Latitude of Ramanattukara as default
     let lon = 75.869032
     let lat = 11.178324
-    this.coords$.pipe(takeUntil(this.unsubscribe$)).subscribe((coords) => {
-      if (coords !== null) {
-        console.log('coords from ngOnInit', coords);
-        lon = coords.coordinates[0]
-        lat = coords.coordinates[1]
-      } else {
-        console.log('curr coords not available')
-      }
-    })
+    const coords = this.coords()
+    if (coords !== null) {
+      console.log('coords from ngOnInit', coords);
+      lon = coords.coordinates[0]
+      lat = coords.coordinates[1]
+    } else {
+      console.log('curr coords not available')
+    }
 
-    this.userData$.pipe(takeUntil(this.unsubscribe$)).subscribe((user) => {
-      // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/strict-boolean-expressions
-      if (user && user.coords && user.coords.coordinates[0] && user.coords.coordinates[1]) {
-        console.log(user.coords, 'user.coords from ngOnInit');
-        lon = user.coords.coordinates[0]
-        lat = user.coords.coordinates[1]
-      }
-    })
+    const user = this.userData()
+    // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/strict-boolean-expressions
+    if (user && user.coords && user.coords.coordinates[0] && user.coords.coordinates[1]) {
+      console.log(user.coords, 'user.coords from ngOnInit');
+      lon = user.coords.coordinates[0]
+      lat = user.coords.coordinates[1]
+    }
 
     this.theaterService.getNearestTheaters(lon, lat).subscribe({
       next: (res) => {
@@ -71,10 +67,5 @@ export class UserTheatersComponent implements OnInit, OnDestroy {
         this.theaters = res.data
       }
     })
-  }
-
-  ngOnDestroy (): void {
-    this.unsubscribe$.next()
-    this.unsubscribe$.complete()
   }
 }

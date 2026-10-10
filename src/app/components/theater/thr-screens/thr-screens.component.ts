@@ -1,7 +1,7 @@
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { Router } from '@angular/router'
 import { ModalService } from 'src/app/services/modal.service'
-import { Store, select } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 import { type IScreenRequirements, type IApiScreensRes, type IScreen } from 'src/app/models/screens'
 import { ScreenService } from 'src/app/services/screen.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
@@ -17,23 +17,17 @@ import { ThrNavComponent } from '../thr-nav/thr-nav.component';
     imports: [ThrNavComponent]
 })
 export class ThrScreensComponent implements OnInit {
+  private readonly screenService = inject(ScreenService)
+  private readonly store = inject(Store)
+  private readonly router = inject(Router)
+  private readonly modalService = inject(ModalService)
+
   screens: IScreen[] = []
-  theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
+  theaterDetails = this.store.selectSignal(selectTheaterDetails)
   theaterId: string = ''
 
-  constructor (
-    @Inject(ScreenService) private readonly screenService: ScreenService,
-    @Inject(Store) private readonly store: Store,
-    @Inject(Router) private readonly router: Router,
-    @Inject(ModalService) private readonly modalService: ModalService
-  ) {}
-
   ngOnInit (): void {
-    this.theaterDetails$.subscribe({
-      next: (theater) => {
-        this.theaterId = theater?._id as string
-      }
-    })
+    this.theaterId = this.theaterDetails()?._id as string
 
     this.screenService.findScreens(this.theaterId).subscribe({
       next: (res: IApiScreensRes) => {

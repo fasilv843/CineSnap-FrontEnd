@@ -1,6 +1,6 @@
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { ModalService } from 'src/app/services/modal.service'
-import { Store, select } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 import { ShowService } from 'src/app/services/show.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import { ShowFormModalComponent } from '../show-form-modal/show-form-modal.component'
@@ -21,7 +21,12 @@ import { DatePipe } from '@angular/common';
     imports: [ThrNavComponent, DateComponent, SpinnerComponent, DatePipe]
 })
 export class ThrShowsComponent implements OnInit {
-  theaterData$ = this.store.pipe(select(selectTheaterDetails))
+  private readonly showService = inject(ShowService)
+  private readonly movieService = inject(MovieService)
+  private readonly store = inject(Store)
+  private readonly modalService = inject(ModalService)
+
+  theaterData = this.store.selectSignal(selectTheaterDetails)
   theaterId = ''
   screens: IShowsOnAScreen[] = []
   currDate: Date = new Date()
@@ -29,19 +34,11 @@ export class ThrShowsComponent implements OnInit {
   getGenre = getGenre
   getLanguage = getLanguage
 
-  constructor (
-    @Inject(ShowService) private readonly showService: ShowService,
-    @Inject(MovieService) private readonly movieService: MovieService,
-    @Inject(Store) private readonly store: Store,
-    @Inject(ModalService) private readonly modalService: ModalService
-  ) {}
-
   ngOnInit (): void {
-    this.theaterData$.subscribe((theater) => {
-      if (theater != null) {
-        this.theaterId = theater._id
-      }
-    })
+    const theater = this.theaterData()
+    if (theater != null) {
+      this.theaterId = theater._id
+    }
 
     this.onSelectDate(new Date())
   }

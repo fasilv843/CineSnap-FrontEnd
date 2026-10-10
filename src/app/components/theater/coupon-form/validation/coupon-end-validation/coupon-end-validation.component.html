@@ -1,7 +1,7 @@
-
-@if (isSubmitted && endControl && endControl.errors) {
+@let control = endControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (endControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">End Date is required</div>
     }
   </div>

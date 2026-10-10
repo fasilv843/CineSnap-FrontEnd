@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject, effect, Injector } from '@angular/core'
 import { Router } from '@angular/router'
-import { Store, select } from '@ngrx/store'
-import { Subject, takeUntil } from 'rxjs'
+import { Store } from '@ngrx/store'
 import { getGenre, getGenreId, getLanguage, getLanguageAbbr } from 'src/app/helpers/movie'
 // import { type ICSMovieRes } from 'src/app/models/movie'
 import { type ITheaterRes } from 'src/app/models/theater'
@@ -22,26 +21,26 @@ import { ScrollHTabsComponent } from '../../common/scroll-h-tabs/scroll-h-tabs.c
     imports: [UserNavComponent, CarouselComponent, ScrollHTabsComponent]
 })
 export class UserHomeComponent implements OnInit {
-  coords$ = this.store.pipe(select(selectCoords))
+  private readonly movieService = inject(MovieService)
+  private readonly injector = inject(Injector)
+  private readonly theaterService = inject(TheaterService)
+  private readonly store = inject(Store)
+  private readonly router = inject(Router)
+
+  coords = this.store.selectSignal(selectCoords)
   bannerMovies: ICarouselData[] = []
   active = 1
   languages: string[] = []
   genres: string[] = []
   theaters: ITheaterRes[] = []
   theaterNames: string[] = []
-  unsubscribe$ = new Subject<void>()
 
   getLanguage = getLanguage
   getGenre = getGenre
   getGenreId = getGenreId
   getLanguageAbbr = getLanguageAbbr
 
-  constructor (
-    @Inject(MovieService) private readonly movieService: MovieService,
-    @Inject(TheaterService) private readonly theaterService: TheaterService,
-    @Inject(Store) private readonly store: Store,
-    @Inject(Router) private readonly router: Router
-  ) {
+  constructor () {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -75,7 +74,8 @@ export class UserHomeComponent implements OnInit {
       }
     })
 
-    this.coords$.pipe(takeUntil(this.unsubscribe$)).subscribe((coords) => {
+    effect(() => {
+      const coords = this.coords()
       if (coords !== null) {
         const lon = coords.coordinates[0]
         const lat = coords.coordinates[1]
@@ -89,7 +89,7 @@ export class UserHomeComponent implements OnInit {
       } else {
         console.log('coords not available now')
       }
-    })
+    }, { injector: this.injector })
   }
 
   onClickGenre (genre: string): void {
@@ -115,10 +115,5 @@ export class UserHomeComponent implements OnInit {
 
   setActive (index: number): void {
     this.active = index
-  }
-
-  ngOnDestroy (): void {
-    this.unsubscribe$.next()
-    this.unsubscribe$.complete()
   }
 }

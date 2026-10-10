@@ -1,16 +1,16 @@
-
-@if (isSubmitted && discountControl && discountControl.errors) {
+@let control = discountControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (discountControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Discount is required</div>
     }
-    @if (discountControl.errors['pattern']) {
+    @if (control.errors['pattern']) {
       <div style="color: red;">Discount must be a number</div>
     }
-    @if (discountControl.errors['min']) {
+    @if (control.errors['min']) {
       <div style="color: red;">Discount Can't be 0 or less</div>
     }
-    @if (discountControl.errors['max']) {
+    @if (control.errors['max']) {
       <div style="color: red;">Max discount is 1000</div>
     }
   </div>

@@ -1,6 +1,6 @@
 /* eslint-disable no-void */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core'
 import { DataServiceService } from 'src/app/services/data-service.service'
 import { MovieService } from 'src/app/services/movie.service'
 import Swal from 'sweetalert2'
@@ -16,10 +16,8 @@ import { CsMoviesComponent } from '../../common/cs-movies/cs-movies.component';
     imports: [AdminNavComponent, CsMoviesComponent]
 })
 export class AdminCsMoviesComponent {
-  constructor (
-    private readonly movieService: MovieService,
-    private readonly dataService: DataServiceService
-  ) {}
+  private readonly movieService = inject(MovieService)
+  private readonly dataService = inject(DataServiceService)
 
   deleteMovie (movieData: { movieId: string, action: 'Add' | 'Delete' }): void {
     const { movieId, action } = movieData

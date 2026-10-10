@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/semi */
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
@@ -10,11 +10,9 @@ import { Router, RouterLink } from '@angular/router';
     imports: [RouterLink]
 })
 export class AdminNavComponent {
-  showSidebar = false
+  private readonly router = inject(Router);
 
-  constructor (
-    @Inject(Router) private readonly router: Router
-  ) {}
+  showSidebar = false
 
   toggleSideBar (): void {
     this.showSidebar = !this.showSidebar

@@ -1,5 +1,5 @@
 
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, input } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
@@ -10,6 +10,6 @@ import { type AbstractControl } from '@angular/forms'
     styleUrls: ['./screen-select-validation.component.css']
 })
 export class ScreenSelectValidationComponent {
-  @Input() screenControl: AbstractControl | null = null
-  @Input() isSubmitted: boolean = false
+  readonly screenControl = input<AbstractControl | null>(null);
+  readonly isSubmitted = input<boolean>(false);
 }

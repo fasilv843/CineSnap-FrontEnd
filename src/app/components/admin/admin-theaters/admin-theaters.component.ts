@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ITheaterRes } from 'src/app/models/theater';
 import { TheaterService } from 'src/app/services/theater.service';
 import Swal from 'sweetalert2';
@@ -16,15 +16,13 @@ import { NgClass } from '@angular/common';
     imports: [AdminNavComponent, TableFilterComponent, NgClass]
 })
 export class AdminTheatersComponent {
+  private readonly theaterService = inject(TheaterService);
+
   theaters: ITheaterRes[] = []
   currPage = 1
   itemsPerPage = 10
   searchQuery: string = ''
   theaterCount = 0
-
-  constructor (
-    private readonly theaterService: TheaterService
-  ) {}
 
   ngOnInit (): void {
     this.getTheaters()

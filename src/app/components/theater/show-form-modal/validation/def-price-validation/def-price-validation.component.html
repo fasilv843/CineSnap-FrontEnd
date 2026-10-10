@@ -1,16 +1,17 @@
-@if (isSubmitted && priceControl && priceControl.errors) {
+@let control = priceControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (priceControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Price is required</div>
     }
-    @if (priceControl.errors['pattern']) {
+    @if (control.errors['pattern']) {
       <div style="color: red;">Price must be a number</div>
     }
-    @if (priceControl.errors['min']) {
-      <div style="color: red;">Price must be at least {{ priceControl.errors['min'].min }}</div>
+    @if (control.errors['min']) {
+      <div style="color: red;">Price must be at least {{ control.errors['min'].min }}</div>
     }
-    @if (priceControl.errors['max']) {
-      <div style="color: red;">Price must be at most {{ priceControl.errors['max'].max }}</div>
+    @if (control.errors['max']) {
+      <div style="color: red;">Price must be at most {{ control.errors['max'].max }}</div>
     }
   </div>
 }

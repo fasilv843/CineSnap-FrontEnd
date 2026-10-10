@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/semi */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Movie } from 'src/app/models/movie';
 import { MovieService } from 'src/app/services/movie.service';
@@ -20,11 +20,9 @@ import { MovieRowComponent } from '../../common/movie-row/movie-row.component';
     imports: [AdminNavComponent, AdminMoviesSearchComponent, MovieRowComponent]
 })
 export class AdminMoviesComponent implements OnInit {
-  constructor (
-    private readonly tmdbService: TMDBService,
-    private readonly movieService: MovieService,
-    private readonly router: Router
-  ) {}
+  private readonly tmdbService = inject(TMDBService);
+  private readonly movieService = inject(MovieService);
+  private readonly router = inject(Router);
 
   tmdbIds: number[] = []
   searchResultMovies: Movie[] = []

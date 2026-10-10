@@ -1,8 +1,8 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core'
 
 import { FormBuilder, type FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ActiveModal } from 'src/app/services/modal.service'
-import { Store, select } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import { validateByTrimming } from 'src/app/helpers/validations'
 import { codeValidators, couponCountValidators, couponTypeValidators, descriptionValidators, discountTypeValidators, discountValidators, endDateValidators, maxDiscountAmtValidators, minTicketCountValidators, startDateValidators } from 'src/app/shared/valiators'
@@ -37,19 +37,17 @@ import { CouponCountValidationComponent } from './validation/coupon-count-valida
     styleUrls: ['./coupon-form.component.css']
 })
 export class CouponFormComponent {
-  theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
+  private readonly formBuilder = inject(FormBuilder)
+  activeModal = inject(ActiveModal)
+  private readonly store = inject(Store)
+
+  theaterDetails = this.store.selectSignal(selectTheaterDetails)
   couponForm!: FormGroup
   isSubmitted = false
   theaterId: string = ''
 
   modalTitle: string = ''
   submitBtn: string = ''
-
-  constructor (
-    @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
-    @Inject(ActiveModal) public activeModal: ActiveModal,
-    @Inject(Store) private readonly store: Store
-  ) {}
 
   ngOnInit (): void {
     this.couponForm = this.formBuilder.group({
@@ -65,9 +63,8 @@ export class CouponFormComponent {
       couponCount: ['', [validateByTrimming(couponCountValidators)]]
     })
 
-    this.theaterDetails$.subscribe(theater => {
-      if (theater !== null) this.theaterId = theater._id
-    })
+    const theater = this.theaterDetails()
+    if (theater !== null) this.theaterId = theater._id
   }
 
   onSubmit (): void {

@@ -1,4 +1,4 @@
-import { Component, Input, type OnDestroy, type OnInit, signal, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnDestroy, type OnInit, signal, ChangeDetectionStrategy, input } from '@angular/core'
 
 
 export interface ICarouselData {
@@ -16,7 +16,7 @@ const SLIDE_INTERVAL = 3000
     styleUrls: ['./carousel.component.css']
 })
 export class CarouselComponent implements OnInit, OnDestroy {
-  @Input() images: ICarouselData[] = []
+  readonly images = input<ICarouselData[]>([]);
 
   activeIndex = signal(0)
   private paused = false
@@ -33,13 +33,13 @@ export class CarouselComponent implements OnInit, OnDestroy {
   }
 
   next (): void {
-    if (this.images.length === 0) return
-    this.activeIndex.update(i => (i + 1) % this.images.length)
+    if (this.images().length === 0) return
+    this.activeIndex.update(i => (i + 1) % this.images().length)
   }
 
   prev (): void {
-    if (this.images.length === 0) return
-    this.activeIndex.update(i => (i - 1 + this.images.length) % this.images.length)
+    if (this.images().length === 0) return
+    this.activeIndex.update(i => (i - 1 + this.images().length) % this.images().length)
   }
 
   setPaused (paused: boolean): void {

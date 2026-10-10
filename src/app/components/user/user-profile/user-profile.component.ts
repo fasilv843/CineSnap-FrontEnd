@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/semi */
-import { Component, Inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, type OnDestroy, type OnInit, ChangeDetectionStrategy, inject, effect, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalService } from 'src/app/services/modal.service'
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { type IUserRes } from 'src/app/models/users';
 import { deleteUserFromStore, saveUserOnStore } from 'src/app/states/user/user.actions';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
@@ -23,20 +23,21 @@ import { DatePipe } from '@angular/common';
     imports: [UserNavComponent, DatePipe]
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
-  userDetails$ = this.store.pipe(select(selectUserDetails))
+  private readonly store = inject(Store);
+  private readonly injector = inject(Injector);
+  private readonly router = inject(Router);
+  private readonly modalService = inject(ModalService);
+  private readonly userService = inject(UserService);
+  private readonly razorpayService = inject(RazorpayService);
+
+  userDetails = this.store.selectSignal(selectUserDetails)
   private readonly paymentResultSubscription: Subscription;
   user!: IUserRes
   profilePic: string = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=200'
   userId: string = ''
   moneyToAddToWallet = 0
 
-  constructor (
-    @Inject(Store) private readonly store: Store,
-    @Inject(Router) private readonly router: Router,
-    @Inject(ModalService) private readonly modalService: ModalService,
-    @Inject(UserService) private readonly userService: UserService,
-    @Inject(RazorpayService) private readonly razorpayService: RazorpayService
-  ) {
+  constructor () {
     this.paymentResultSubscription = this.razorpayService
       .getPaymentResultObservable()
       .subscribe((response: IRazorpayRes | null) => {
@@ -58,7 +59,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit (): void {
-    this.userDetails$.subscribe((user) => {
+    effect(() => {
+      const user = this.userDetails()
       console.log(user, 'user data from state, user profile')
       if (user !== null) {
         this.user = user
@@ -66,7 +68,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         console.log(this.profilePic)
         this.userId = user._id
       }
-    })
+    }, { injector: this.injector })
   }
 
   ngOnDestroy (): void {

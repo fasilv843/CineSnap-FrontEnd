@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, ChangeDetectionStrategy } from '@angular/core'
-import { select, Store } from '@ngrx/store'
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core'
+import { Store } from '@ngrx/store'
 import { IWalletHistory } from 'src/app/models/common'
 import { TheaterService } from 'src/app/services/theater.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
@@ -15,7 +15,10 @@ import { WalletHistoryComponent } from '../../common/wallet-history/wallet-histo
     imports: [ThrNavComponent, WalletHistoryComponent]
 })
 export class ThrWalletComponent {
-  theaterData$ = this.store.pipe(select(selectTheaterDetails))
+  private readonly store = inject(Store)
+  private readonly theaterService = inject(TheaterService)
+
+  theaterData = this.store.selectSignal(selectTheaterDetails)
   theaterId = ''
 
   walletHistory: IWalletHistory[] = []
@@ -24,16 +27,9 @@ export class ThrWalletComponent {
   page = 1
   itemsPerPage = 10
 
-  constructor (
-    private readonly store: Store,
-    private readonly theaterService: TheaterService
-  ) {}
-
   ngOnInit (): void {
-    this.theaterData$.subscribe(theater => {
-      if (theater === null) return
-      this.theaterId = theater._id
-    })
+    const theater = this.theaterData()
+    if (theater !== null) this.theaterId = theater._id
 
     this.getWalletHistory()
   }

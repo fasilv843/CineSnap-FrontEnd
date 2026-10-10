@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 
 import { ActiveModal } from 'src/app/services/modal.service'
 import { Store } from '@ngrx/store'
@@ -13,19 +13,15 @@ import { selectUserDetails } from 'src/app/states/user/user.selector'
     styleUrls: ['./user-offcanvas.component.css']
 })
 export class UserOffcanvasComponent implements OnInit {
+  private readonly activeModal = inject(ActiveModal)
+  private readonly _store = inject(Store)
+
   // private readonly activeModal = inject(ActiveModal)
-  userDetails$ = this._store.select(selectUserDetails)
+  userDetails = this._store.selectSignal(selectUserDetails)
   isLoggedIn = false
 
-  constructor (
-    private readonly activeModal: ActiveModal,
-    private readonly _store: Store
-  ) {}
-
   ngOnInit (): void {
-    this.userDetails$.subscribe((user) => {
-      if (user != null) this.isLoggedIn = true
-    })
+    if (this.userDetails() != null) this.isLoggedIn = true
   }
 
   onDismiss (reason: string): void {

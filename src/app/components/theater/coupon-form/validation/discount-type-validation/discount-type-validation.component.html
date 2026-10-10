@@ -1,7 +1,7 @@
-
-@if (isSubmitted && discountTypeControl && discountTypeControl.errors) {
+@let control = discountTypeControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (discountTypeControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Discount Type is required</div>
     }
   </div>

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/space-before-function-paren */
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { FormBuilder, type FormGroup, type AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import {
@@ -31,6 +31,12 @@ import { OtpValidationComponent } from '../../common/validation/otp-validation/o
     imports: [FormsModule, ReactiveFormsModule, NameValidationComponent, EmailValidationComponent, PasswordValidationComponent, RepeatPassValidationComponent, OtpValidationComponent, RouterLink]
 })
 export class UserRegisterComponent implements OnInit {
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly authService = inject(SocialAuthService);
+  private readonly store = inject(Store);
+
   form!: FormGroup;
   isSubmitted = false
   showOtpField = false
@@ -38,14 +44,6 @@ export class UserRegisterComponent implements OnInit {
   formattedTime: string = '03:00'
   otpResendCount: number = 0
   showOTPResend: boolean = true
-
-  constructor (
-    @Inject(HttpClient) private readonly http: HttpClient,
-    @Inject(Router) private readonly router: Router,
-    @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
-    @Inject(SocialAuthService) private readonly authService: SocialAuthService,
-    @Inject(Store) private readonly store: Store
-  ) {}
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({

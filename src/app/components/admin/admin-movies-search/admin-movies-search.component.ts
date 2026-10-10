@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
 
-import { Component, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, inject, output } from '@angular/core'
 import { SearchComponent } from '../../common/search/search.component';
 import { Router } from '@angular/router';
 
@@ -15,11 +15,9 @@ import { Router } from '@angular/router';
     styleUrls: ['./admin-movies-search.component.css']
 })
 export class AdminMoviesSearchComponent {
-  @Output() search = new EventEmitter<string>()
+  private readonly router = inject(Router);
 
-  constructor (
-    private readonly router: Router
-  ) {}
+  readonly search = output<string>();
 
   showTmdbMovies (): void {
     void this.router.navigate(['/admin/movies/tmdb'])

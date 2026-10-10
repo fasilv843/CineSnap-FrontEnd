@@ -1,6 +1,6 @@
-import { Component, Inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnDestroy, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { Store, select } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 import { type IChatReqs, type IChatMessage, type IApiChatRes } from 'src/app/models/chat'
 import { type ITheaterRes } from 'src/app/models/theater'
 import { TheaterService } from 'src/app/services/theater.service'
@@ -21,13 +21,19 @@ import { UpperCasePipe, SlicePipe, DatePipe } from '@angular/common';
     imports: [UserNavComponent, FormsModule, UpperCasePipe, SlicePipe, DatePipe]
 })
 export class UserMessageComponent implements OnInit, OnDestroy {
+  private readonly socketService = inject(WebSocketService)
+  private readonly theaterService = inject(TheaterService)
+  private readonly userService = inject(UserService)
+  private readonly route = inject(ActivatedRoute)
+  private readonly store = inject(Store)
+
   // @ViewChild('messageContainer') messageContainer: ElementRef
   // @ViewChild(NgxIntersectionObserverDirective) observer: NgxIntersectionObserverDirective
 
   message: string = ''
   // feedback: string = ''
   chats: IChatMessage[] = []
-  userDetails$ = this.store.pipe(select(selectUserDetails))
+  userDetails = this.store.selectSignal(selectUserDetails)
   theaterId: string = ''
   userId = ''
   userName = 'User'
@@ -35,19 +41,14 @@ export class UserMessageComponent implements OnInit, OnDestroy {
   currTheater!: ITheaterRes
   imageFolderPath = imagesFolderPath
 
-  constructor (
-    @Inject(WebSocketService) private readonly socketService: WebSocketService,
-    @Inject(TheaterService) private readonly theaterService: TheaterService,
-    @Inject(UserService) private readonly userService: UserService,
-    @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
-    @Inject(Store) private readonly store: Store
-  ) {
-    this.userDetails$.subscribe((user) => {
-      if (user !== null) {
-        this.userId = user._id
-        this.userName = user.name
-      }
-    })
+  constructor () {
+    const socketService = this.socketService;
+
+    const user = this.userDetails()
+    if (user !== null) {
+      this.userId = user._id
+      this.userName = user.name
+    }
 
     socketService.connectSocket(this.userId)
   }

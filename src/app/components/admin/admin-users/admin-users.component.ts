@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { type IUserRes } from 'src/app/models/users'
 import { UserService } from 'src/app/services/user.service'
 import Swal from 'sweetalert2'
@@ -15,15 +15,13 @@ import { NgClass, DatePipe } from '@angular/common';
     imports: [AdminNavComponent, TableFilterComponent, NgClass, DatePipe]
 })
 export class AdminUsersComponent implements OnInit {
+  private readonly userService = inject(UserService)
+
   users: IUserRes[] = []
   currPage = 1
   itemsPerPage = 10
   searchQuery: string = ''
   userCount = 0
-
-  constructor (
-    private readonly userService: UserService
-  ) {}
 
   ngOnInit (): void {
     this.getUsers()

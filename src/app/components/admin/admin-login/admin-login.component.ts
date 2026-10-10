@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { type AbstractControl, FormBuilder, type FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { validateByTrimming } from 'src/app/helpers/validations';
@@ -17,14 +17,12 @@ import { PasswordValidationComponent } from '../../common/validation/password-va
     imports: [FormsModule, ReactiveFormsModule, EmailValidationComponent, PasswordValidationComponent]
 })
 export class AdminLoginComponent implements OnInit {
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+  private readonly formBuilder = inject(FormBuilder);
+
   isSubmitted = false
   form!: FormGroup
-
-  constructor (
-    @Inject(HttpClient) private readonly http: HttpClient,
-    @Inject(Router) private readonly router: Router,
-    @Inject(FormBuilder) private readonly formBuilder: FormBuilder
-  ) {}
 
   ngOnInit (): void {
     this.form = this.formBuilder.group({

@@ -1,14 +1,14 @@
-
-@if (isSubmitted && descriptionControl && descriptionControl.errors) {
+@let control = descriptionControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (descriptionControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Description is required</div>
     }
-    @if (descriptionControl.errors['minlength']) {
-      <div style="color: red;">Description must contain {{ descriptionControl.errors['minlength'].requiredLength }} characters</div>
+    @if (control.errors['minlength']) {
+      <div style="color: red;">Description must contain {{ control.errors['minlength'].requiredLength }} characters</div>
     }
-    @if (descriptionControl.errors['maxlength']) {
-      <div style="color: red;">Description max contain {{ descriptionControl.errors['maxlength'].requiredLength }} characters</div>
+    @if (control.errors['maxlength']) {
+      <div style="color: red;">Description max contain {{ control.errors['maxlength'].requiredLength }} characters</div>
     }
   </div>
 }

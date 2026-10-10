@@ -1,9 +1,10 @@
-@if (isSubmitted && rowControl && rowControl.errors) {
+@let control = rowControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (rowControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Rows are required</div>
     }
-    @if (rowControl.errors['pattern']) {
+    @if (control.errors['pattern']) {
       <div style="color: red;">Row must be a single uppercase char</div>
     }
   </div>

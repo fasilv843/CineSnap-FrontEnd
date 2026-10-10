@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { DatePipe } from '@angular/common'
-import { Component, Inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ActiveModal } from 'src/app/services/modal.service'
-import { Store, select } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 import moment from 'moment'
 import { Subject, debounceTime } from 'rxjs'
 import { validateByTrimming } from 'src/app/helpers/validations'
@@ -36,7 +36,13 @@ import { StartTimeValidationComponent } from './validation/start-time-validation
     styleUrls: ['./show-form-modal.component.css']
 })
 export class ShowFormModalComponent implements OnInit, OnDestroy {
-  theaterData$ = this.store.pipe(select(selectTheaterDetails))
+  private readonly formBuilder = inject(FormBuilder)
+  activeModal = inject(ActiveModal)
+  private readonly movieService = inject(MovieService)
+  private readonly screenService = inject(ScreenService)
+  private readonly store = inject(Store)
+
+  theaterData = this.store.selectSignal(selectTheaterDetails)
   searchSubject = new Subject<string>()
   showForm!: FormGroup
   isSubmitted = false
@@ -100,14 +106,6 @@ export class ShowFormModalComponent implements OnInit, OnDestroy {
 
   priceControls: Array<{ category: string, label: string, controlName: string }> = []
 
-  constructor (
-    @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
-    @Inject(ActiveModal) public activeModal: ActiveModal,
-    @Inject(MovieService) private readonly movieService: MovieService,
-    @Inject(ScreenService) private readonly screenService: ScreenService,
-    @Inject(Store) private readonly store: Store
-  ) {}
-
   ngOnInit (): void {
     this.showForm = this.formBuilder.group({
       movie: ['', [validateByTrimming(requiredValidator)]],
@@ -116,9 +114,8 @@ export class ShowFormModalComponent implements OnInit, OnDestroy {
       date: [this.currDate.toISOString().substring(0, 10), [validateByTrimming(requiredValidator)]]
     })
 
-    this.theaterData$.subscribe(theater => {
-      if (theater !== null) this.theaterId = theater._id
-    })
+    const theater = this.theaterData()
+    if (theater !== null) this.theaterId = theater._id
 
     this.movieService.findAllMovies().subscribe({
       next: (res) => {

@@ -1,6 +1,7 @@
-@if (isSubmitted && showDateControl && showDateControl.errors) {
+@let control = showDateControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (showDateControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Date is required</div>
     }
   </div>

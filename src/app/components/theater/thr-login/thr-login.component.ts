@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormBuilder, type FormGroup, type AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -20,15 +20,13 @@ import { PasswordValidationComponent } from '../../common/validation/password-va
     imports: [FormsModule, ReactiveFormsModule, EmailValidationComponent, PasswordValidationComponent, RouterLink]
 })
 export class ThrLoginComponent {
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly store = inject(Store);
+
   isSubmitted = false
   form!: FormGroup
-
-  constructor (
-    @Inject(HttpClient) private readonly http: HttpClient,
-    @Inject(Router) private readonly router: Router,
-    @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
-    @Inject(Store) private readonly store: Store
-  ) {}
 
   ngOnInit (): void {
     this.form = this.formBuilder.group({

@@ -1,7 +1,7 @@
-import { Component, Inject, type OnDestroy, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnDestroy, type OnInit, ChangeDetectionStrategy, inject, effect, Injector } from '@angular/core'
 import { Router } from '@angular/router'
 import { ModalService } from 'src/app/services/modal.service'
-import { Store, select } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 import { type ITheaterRes } from 'src/app/models/theater'
 import { deleteTheaterFromStore, saveTheaterOnStore } from 'src/app/states/theater/theater.action'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
@@ -21,20 +21,21 @@ import { ThrNavComponent } from '../thr-nav/thr-nav.component';
     imports: [ThrNavComponent]
 })
 export class ThrProfileComponent implements OnInit, OnDestroy {
-  theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
+  private readonly store = inject(Store)
+  private readonly injector = inject(Injector)
+  private readonly router = inject(Router)
+  private readonly modalService = inject(ModalService)
+  private readonly razorpayService = inject(RazorpayService)
+  private readonly theaterService = inject(TheaterService)
+
+  theaterDetails = this.store.selectSignal(selectTheaterDetails)
   theater!: ITheaterRes
   profilePic: string = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=200'
   amountToAdd: number = 0
   private readonly paymentResultSubscription: Subscription
   theaterId = ''
 
-  constructor (
-    @Inject(Store) private readonly store: Store,
-    @Inject(Router) private readonly router: Router,
-    @Inject(ModalService) private readonly modalService: ModalService,
-    @Inject(RazorpayService) private readonly razorpayService: RazorpayService,
-    @Inject(TheaterService) private readonly theaterService: TheaterService
-  ) {
+  constructor () {
     this.paymentResultSubscription = this.razorpayService
       .getPaymentResultObservable()
       .subscribe((response: IRazorpayRes | null) => {
@@ -54,13 +55,14 @@ export class ThrProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit (): void {
-    this.theaterDetails$.subscribe((theater) => {
+    effect(() => {
+      const theater = this.theaterDetails()
       if (theater !== null) {
         this.theater = theater
         this.theaterId = theater._id
         if (theater.profilePic !== undefined) this.profilePic = environments.backendUrl + `/images/${theater.profilePic}`
       }
-    })
+    }, { injector: this.injector })
   }
 
   ngOnDestroy (): void {

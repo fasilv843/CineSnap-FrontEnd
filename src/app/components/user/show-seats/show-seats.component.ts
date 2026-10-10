@@ -1,6 +1,6 @@
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { Store, select } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 import { type ICSMovieRes } from 'src/app/models/movie'
 import { type IShow, type IShowSeat } from 'src/app/models/show'
 import { type IShowSeatCategoryRes, type IShowSeatsRes } from 'src/app/models/showSeat'
@@ -25,7 +25,14 @@ interface IShowWithMovie extends Omit<IShow, 'movieId'> {
     imports: [UserNavComponent, SeatStatusDirective]
 })
 export class ShowSeatsComponent implements OnInit {
-  userDetails$ = this.store.pipe(select(selectUserDetails))
+  private readonly route = inject(ActivatedRoute)
+  private readonly store = inject(Store)
+  private readonly router = inject(Router)
+  private readonly showService = inject(ShowService)
+  private readonly ticketService = inject(TicketService)
+  private readonly showSeatService = inject(ShowSeatService)
+
+  userDetails = this.store.selectSignal(selectUserDetails)
   userId = ''
   theaterId = ''
   showId = ''
@@ -43,15 +50,6 @@ export class ShowSeatsComponent implements OnInit {
   diamondKeys = this.getDiamondKeys
   goldKeys = this.getGoldKeys
   silverKeys = this.getSilverKeys
-
-  constructor (
-    @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
-    @Inject(Store) private readonly store: Store,
-    @Inject(Router) private readonly router: Router,
-    @Inject(ShowService) private readonly showService: ShowService,
-    @Inject(TicketService) private readonly ticketService: TicketService,
-    @Inject(ShowSeatService) private readonly showSeatService: ShowSeatService
-  ) {}
 
   ngOnInit (): void {
     this.route.params.subscribe(params => {
@@ -135,9 +133,8 @@ export class ShowSeatsComponent implements OnInit {
   }
 
   bookTicket (): void {
-    this.userDetails$.subscribe((user) => {
-      if (user != null) this.userId = user._id
-    })
+    const user = this.userDetails()
+    if (user != null) this.userId = user._id
 
     // const diamondKeys = this.getDiamondKeys
     // const goldKeys = this.getGoldKeys

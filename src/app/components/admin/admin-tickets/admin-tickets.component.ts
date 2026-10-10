@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core'
 import { type ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
 import { AdminNavComponent } from '../admin-nav/admin-nav.component';
@@ -14,15 +14,13 @@ import { DatePipe } from '@angular/common';
     imports: [AdminNavComponent, TableFilterComponent, DatePipe]
 })
 export class AdminTicketsComponent {
+  private readonly ticketService = inject(TicketService)
+
   tickets: ITicketRes[] = []
   ticketCount = 0
   currPage = 1
   itemsPerPage = 10
   now = new Date()
-
-  constructor (
-    private readonly ticketService: TicketService
-  ) {}
 
   ngOnInit (): void {
     this.getTickets()

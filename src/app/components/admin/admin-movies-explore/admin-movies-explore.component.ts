@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { Movie } from 'src/app/models/movie'
 import { MovieService } from 'src/app/services/movie.service'
@@ -17,16 +17,14 @@ import { DatePipe } from '@angular/common';
     imports: [AdminNavComponent, DatePipe]
 })
 export class AdminMoviesExploreComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute)
+  private readonly tmdbService = inject(TMDBService)
+  private readonly movieService = inject(MovieService)
+
   routeParam: string = ''
   movies: Movie[] = []
   page: number = 1
   tmdbIds: number[] = []
-
-  constructor (
-    private readonly route: ActivatedRoute,
-    private readonly tmdbService: TMDBService,
-    private readonly movieService: MovieService
-  ) { }
 
   ngOnInit (): void {
     this.routeParam = this.route.snapshot.paramMap.get('lang') ?? 'ml'

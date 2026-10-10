@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
-import { Store, select } from '@ngrx/store'
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
+import { Store } from '@ngrx/store'
 import { getRandomColor } from 'src/app/helpers/generateColors'
 import { type ILineGraphData } from 'src/app/models/charts'
 import { TheaterService } from 'src/app/services/theater.service'
@@ -16,19 +16,16 @@ import { LineGraphComponent } from '../../common/line-graph/line-graph.component
     imports: [ThrNavComponent, LineGraphComponent]
 })
 export class ThrHomeComponent implements OnInit {
-  theaterData$ = this.store.pipe(select(selectTheaterDetails))
+  private readonly theaterService = inject(TheaterService)
+  private readonly store = inject(Store)
+
+  theaterData = this.store.selectSignal(selectTheaterDetails)
   data!: ILineGraphData
   theaterId = ''
 
-  constructor (
-    private readonly theaterService: TheaterService,
-    private readonly store: Store
-  ) {}
-
   ngOnInit (): void {
-    this.theaterData$.subscribe(theater => {
-      if (theater !== null) this.theaterId = theater._id
-    })
+    const theater = this.theaterData()
+    if (theater !== null) this.theaterId = theater._id
     this.theaterService.getRevenueData(this.theaterId).subscribe({
       next: (res) => {
         console.log(res.data, 'res from get revenue')

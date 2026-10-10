@@ -1,15 +1,16 @@
-@if (isSubmitted && nameControl &&  nameControl.errors) {
+@let control = nameControl();
+@if (isSubmitted() && control &&  control.errors) {
   <div>
-    @if (nameControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Screen Name is required</div>
     }
-    @if (nameControl.errors['minlength']) {
-      <div style="color: red;">Name must contain {{ nameControl.errors['minlength'].requiredLength }} characters</div>
+    @if (control.errors['minlength']) {
+      <div style="color: red;">Name must contain {{ control.errors['minlength'].requiredLength }} characters</div>
     }
-    @if (nameControl.errors['maxlength']) {
-      <div style="color: red;">Name max contain {{ nameControl.errors['maxlength'].requiredLength }} characters</div>
+    @if (control.errors['maxlength']) {
+      <div style="color: red;">Name max contain {{ control.errors['maxlength'].requiredLength }} characters</div>
     }
-    @if (nameControl.errors['pattern'] && !nameControl.errors['minlength'] && !nameControl.errors['maxlength']) {
+    @if (control.errors['pattern'] && !control.errors['minlength'] && !control.errors['maxlength']) {
       <div style="color: red;">Name only contains alphabets and numbers</div>
     }
   </div>

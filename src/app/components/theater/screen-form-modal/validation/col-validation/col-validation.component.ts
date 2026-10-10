@@ -1,5 +1,5 @@
 
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, input } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
@@ -10,6 +10,6 @@ import { type AbstractControl } from '@angular/forms'
     styleUrls: ['./col-validation.component.css']
 })
 export class ColValidationComponent {
-  @Input() colControl: AbstractControl | null = null
-  @Input() isSubmitted: boolean = false
+  readonly colControl = input<AbstractControl | null>(null);
+  readonly isSubmitted = input<boolean>(false);
 }

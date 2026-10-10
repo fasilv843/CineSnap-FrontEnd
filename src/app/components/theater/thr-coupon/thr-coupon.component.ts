@@ -1,9 +1,9 @@
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { ModalService } from 'src/app/services/modal.service'
 import { CouponFormComponent } from '../coupon-form/coupon-form.component'
 import { type ICouponRes, type ICouponReqs } from 'src/app/models/coupon'
 import { CouponService } from 'src/app/services/coupon.service'
-import { Store, select } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import { ThrNavComponent } from '../thr-nav/thr-nav.component';
 
@@ -15,20 +15,17 @@ import { ThrNavComponent } from '../thr-nav/thr-nav.component';
     imports: [ThrNavComponent]
 })
 export class ThrCouponComponent implements OnInit {
-  theaterData$ = this.store.pipe(select(selectTheaterDetails))
+  private readonly modalService = inject(ModalService)
+  private readonly couponService = inject(CouponService)
+  private readonly store = inject(Store)
+
+  theaterData = this.store.selectSignal(selectTheaterDetails)
   theaterId = ''
   coupons: ICouponRes[] = []
 
-  constructor (
-    @Inject(ModalService) private readonly modalService: ModalService,
-    @Inject(CouponService) private readonly couponService: CouponService,
-    @Inject(Store) private readonly store: Store
-  ) {}
-
   ngOnInit (): void {
-    this.theaterData$.subscribe(theater => {
-      if (theater !== null) this.theaterId = theater._id
-    })
+    const theater = this.theaterData()
+    if (theater !== null) this.theaterId = theater._id
 
     this.couponService.findCouponsOnTheater(this.theaterId).subscribe({
       next: (res) => {

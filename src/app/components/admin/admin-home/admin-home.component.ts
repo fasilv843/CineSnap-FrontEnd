@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { getRandomColor } from 'src/app/helpers/generateColors';
 import { ILineGraphData } from 'src/app/models/charts';
 import { AdminService } from 'src/app/services/admin.service';
@@ -14,11 +14,9 @@ import { LineGraphComponent } from '../../common/line-graph/line-graph.component
     imports: [AdminNavComponent, LineGraphComponent]
 })
 export class AdminHomeComponent implements OnInit {
-  data!: ILineGraphData
+  private readonly adminService = inject(AdminService)
 
-  constructor (
-    private readonly adminService: AdminService
-  ) {}
+  data!: ILineGraphData
 
   ngOnInit (): void {
     this.adminService.getRevenueData().subscribe({

@@ -3,9 +3,9 @@
 /* eslint-disable @typescript-eslint/quotes */
 /* eslint-disable @typescript-eslint/semi */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, effect, Injector } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { getLanguage } from 'src/app/helpers/movie';
 import { formatTime } from 'src/app/helpers/timer';
 import { ICSMovieRes } from 'src/app/models/movie';
@@ -36,7 +36,16 @@ import { DatePipe } from '@angular/common';
     imports: [UserNavComponent, FormsModule, DatePipe]
 })
 export class BookingComponent implements OnInit, OnDestroy {
-  userDetails$ = this.store.pipe(select(selectUserDetails))
+  private readonly ticketService = inject(TicketService);
+  private readonly injector = inject(Injector);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly store = inject(Store);
+  private readonly razorpayService = inject(RazorpayService);
+  private readonly couponService = inject(CouponService);
+  private readonly modalService = inject(ModalService);
+
+  userDetails = this.store.selectSignal(selectUserDetails)
   user!: IUserRes
   movie!: ICSMovieRes
   tempTicket!: ITempTicketRes
@@ -60,15 +69,7 @@ export class BookingComponent implements OnInit, OnDestroy {
 
   getLanguage = getLanguage
 
-  constructor (
-    private readonly ticketService: TicketService,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly store: Store,
-    private readonly razorpayService: RazorpayService,
-    private readonly couponService: CouponService,
-    private readonly modalService: ModalService
-  ) {
+  constructor () {
     this.paymentResultSubscription = this.razorpayService
       .getPaymentResultObservable()
       .subscribe((response: IRazorpayRes | null) => {
@@ -103,11 +104,15 @@ export class BookingComponent implements OnInit, OnDestroy {
       this.ticketId = params['ticketId']
     })
 
-    this.userDetails$.subscribe(user => {
+    // Read synchronously (the coupon request below needs the id), then follow wallet updates
+    const currentUser = this.userDetails()
+    if (currentUser !== null) this.user = currentUser
+    effect(() => {
+      const user = this.userDetails()
       if (user !== null) {
         this.user = user
       }
-    })
+    }, { injector: this.injector })
 
     console.log('getting temp ticket with ticketId : ', this.ticketId)
     this.ticketService.getTempTicketData(this.ticketId).subscribe({

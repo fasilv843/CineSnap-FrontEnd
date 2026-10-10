@@ -2,16 +2,16 @@
   p-6 rounded-md shadow-lg">
 
   <!-- Rejected Message Heading with Design -->
-  <h1 class="text-4xl font-bold mb-4">{{ reason === 'Block' ? 'You\'re Blocked' : 'Approval Rejected' }}</h1>
+  <h1 class="text-4xl font-bold mb-4">{{ reason() === 'Block' ? 'You\'re Blocked' : 'Approval Rejected' }}</h1>
 
   <!-- Message -->
-  @if (reason === 'Block') {
+  @if (reason() === 'Block') {
     <p class="text-lg mb-4 text-center text-gray-300 leading-7 font-medium">
       We're sorry, but your theater has been blocked by CineSnap admin
     </p>
   }
 
-  @if (reason === 'Rejection') {
+  @if (reason() === 'Rejection') {
     <p class="text-lg mb-4 text-center text-gray-300 leading-7 font-medium">
       We're sorry, but your theater registration with CineSnap has been rejected by the admin.
     </p>

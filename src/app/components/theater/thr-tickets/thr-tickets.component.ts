@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
@@ -15,6 +15,9 @@ import { DatePipe } from '@angular/common';
     imports: [ThrNavComponent, TableFilterComponent, DatePipe]
 })
 export class ThrTicketsComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute)
+  private readonly ticketService = inject(TicketService)
+
   theaterId = ''
   tickets: ITicketRes[] = []
   ticketCount = 0
@@ -22,10 +25,7 @@ export class ThrTicketsComponent implements OnInit {
   itemsPerPage = 10
   now = new Date()
 
-  constructor (
-    private readonly route: ActivatedRoute,
-    private readonly ticketService: TicketService
-  ) {
+  constructor () {
     this.route.params.subscribe(params => {
       this.theaterId = params['theaterId']
     })

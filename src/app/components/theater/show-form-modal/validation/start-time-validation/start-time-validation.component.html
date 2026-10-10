@@ -1,6 +1,7 @@
-@if (isSubmitted && startTimeControl && startTimeControl.errors) {
+@let control = startTimeControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (startTimeControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Time is required</div>
     }
   </div>

@@ -1,5 +1,5 @@
 
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, input } from '@angular/core'
 
 @Component({
     selector: 'app-movie-select-validation',
@@ -9,6 +9,6 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core'
     styleUrls: ['./movie-select-validation.component.css']
 })
 export class MovieSelectValidationComponent {
-  @Input() movieId = ''
-  @Input() isSubmitted: boolean = false
+  readonly movieId = input('');
+  readonly isSubmitted = input<boolean>(false);
 }

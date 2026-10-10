@@ -1,4 +1,4 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core'
 
 import { type ICouponRes } from 'src/app/models/coupon'
 import { ActiveModal } from 'src/app/services/modal.service'
@@ -11,13 +11,11 @@ import { ActiveModal } from 'src/app/services/modal.service'
     styleUrls: ['./coupon-modal.component.css']
 })
 export class CouponModalComponent {
+  readonly activeModal = inject(ActiveModal)
+
   modalTitle: string = 'Coupons'
   coupons: ICouponRes[] = []
   appliedCouponId = ''
-
-  constructor (
-    @Inject(ActiveModal) public readonly activeModal: ActiveModal
-  ) {}
 
   onApply (coupon: ICouponRes): void {
     this.activeModal.close(coupon)

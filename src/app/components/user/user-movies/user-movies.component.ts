@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { ActivatedRoute } from '@angular/router';
 import { langType } from 'src/app/models/filter';
 import { DataServiceService } from 'src/app/services/data-service.service';
@@ -14,11 +14,10 @@ import { CsMoviesComponent } from '../../common/cs-movies/cs-movies.component';
     imports: [UserNavComponent, CsMoviesComponent]
 })
 export class UserMoviesComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute)
+
   genreId: number | undefined
   langAbbr: langType | undefined
-  constructor (
-    private readonly route: ActivatedRoute
-  ) {}
 
   ngOnInit (): void {
     this.route.queryParamMap.subscribe(params => {

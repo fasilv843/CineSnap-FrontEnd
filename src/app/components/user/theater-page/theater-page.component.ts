@@ -1,4 +1,4 @@
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { getGenre, getLanguage } from 'src/app/helpers/movie'
 import { type IShow, type IShowsOnAScreen } from 'src/app/models/show'
@@ -19,6 +19,11 @@ import { SpinnerComponent } from '../../common/spinner/spinner.component';
     imports: [UserNavComponent, RouterLink, DateComponent, NgClass, SpinnerComponent, DatePipe]
 })
 export class TheaterPageComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute)
+  private readonly showService = inject(ShowService)
+  private readonly theaterService = inject(TheaterService)
+  private readonly router = inject(Router)
+
   theaterId = ''
   theater!: ITheaterRes
   screens: IShowsOnAScreen[] = []
@@ -29,15 +34,6 @@ export class TheaterPageComponent implements OnInit {
   getLanguage = getLanguage
   isShowLoading = true
   imagesFolderPath = imagesFolderPath
-
-  // Commented template codes that may cause error, until add show complete
-
-  constructor (
-    @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
-    @Inject(ShowService) private readonly showService: ShowService,
-    @Inject(TheaterService) private readonly theaterService: TheaterService,
-    @Inject(Router) private readonly router: Router
-  ) {}
 
   ngOnInit (): void {
     this.route.params.subscribe(params => {

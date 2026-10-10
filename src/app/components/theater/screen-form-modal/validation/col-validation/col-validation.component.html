@@ -1,16 +1,17 @@
-@if (isSubmitted && colControl && colControl.errors) {
+@let control = colControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (colControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Columns are required</div>
     }
-    @if (colControl.errors['pattern']) {
+    @if (control.errors['pattern']) {
       <div style="color: red;">Columns must be a positive number</div>
     }
-    @if (colControl.errors['min']) {
-      <div style="color: red;">Columns must be at least {{ colControl.errors['min'].min }}</div>
+    @if (control.errors['min']) {
+      <div style="color: red;">Columns must be at least {{ control.errors['min'].min }}</div>
     }
-    @if (colControl.errors['max']) {
-      <div style="color: red;">Columns must be at most {{ colControl.errors['max'].max }}</div>
+    @if (control.errors['max']) {
+      <div style="color: red;">Columns must be at most {{ control.errors['max'].max }}</div>
     }
   </div>
 }

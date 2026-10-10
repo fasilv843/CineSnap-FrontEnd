@@ -1,6 +1,6 @@
 /* eslint-disable quote-props */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { ColNumType } from 'src/app/models/common'
 import { IScreenSeatCategoryRes, IScreenSeatRes } from 'src/app/models/screenSeat'
@@ -19,6 +19,9 @@ type SeatCategory = 'Diamond' | 'Gold' | 'Silver'
     imports: [ThrNavComponent, FormsModule]
 })
 export class ThrSeatingComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute)
+  private readonly screenSeatService = inject(ScreenSeatService)
+
   seatId = ''
   editMode = false
 
@@ -38,11 +41,6 @@ export class ThrSeatingComponent implements OnInit {
     name: 'Silver',
     seats: {}
   }
-
-  constructor (
-    @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
-    @Inject(ScreenSeatService) private readonly screenSeatService: ScreenSeatService
-  ) { }
 
   ngOnInit (): void {
     this.route.params.subscribe(params => {

@@ -1,6 +1,7 @@
-@if (isSubmitted && couponTypeControl && couponTypeControl.errors) {
+@let control = couponTypeControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (couponTypeControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Coupon Type is required</div>
     }
   </div>

@@ -1,9 +1,10 @@
-@if (isSubmitted && couponCountControl && couponCountControl.errors) {
+@let control = couponCountControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (couponCountControl.errors['min']) {
+    @if (control.errors['min']) {
       <div style="color: red;">Coupon Count can't be negative</div>
     }
-    @if (couponCountControl.errors['pattern']) {
+    @if (control.errors['pattern']) {
       <div style="color: red;">Enter a number</div>
     }
   </div>

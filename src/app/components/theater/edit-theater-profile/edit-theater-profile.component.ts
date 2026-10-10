@@ -1,7 +1,7 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, inject, effect, Injector } from '@angular/core'
 import { FormBuilder, type FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'
-import { Store, select } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 import { getLocation } from 'src/app/helpers/location'
 import { validateByTrimming } from 'src/app/helpers/validations'
 import { type ICoords, type ITheaterAddress } from 'src/app/models/common'
@@ -30,7 +30,15 @@ import { ZipValidationComponent } from '../../common/validation/zip-validation/z
     imports: [ThrNavComponent, ProfileDpComponent, FormsModule, ReactiveFormsModule, NameValidationComponent, MobileValidationComponent, CityValidationComponent, DistrictValidationComponent, StateValidationComponent, CountryValidationComponent, ZipValidationComponent, RouterLink]
 })
 export class EditTheaterProfileComponent {
-  theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
+  private readonly formBuilder = inject(FormBuilder)
+  private readonly injector = inject(Injector)
+  private readonly theaterService = inject(TheaterService)
+  private readonly store = inject(Store)
+  private readonly router = inject(Router)
+  private readonly route = inject(ActivatedRoute)
+  private readonly locationService = inject(GeoLocationService)
+
+  theaterDetails = this.store.selectSignal(selectTheaterDetails)
   theater: ITheaterRes | null = null
   theaterId = ''
   profileForm!: FormGroup
@@ -38,15 +46,6 @@ export class EditTheaterProfileComponent {
   longitude: number = 0
   latitude: number = 0
   dpUrl: string = ''
-
-  constructor (
-    @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
-    @Inject(TheaterService) private readonly theaterService: TheaterService,
-    @Inject(Store) private readonly store: Store,
-    @Inject(Router) private readonly router: Router,
-    @Inject(ActivatedRoute) private readonly route: ActivatedRoute,
-    @Inject(GeoLocationService) private readonly locationService: GeoLocationService
-  ) {}
 
   ngOnInit (): void {
     this.route.params.subscribe(params => {
@@ -65,7 +64,8 @@ export class EditTheaterProfileComponent {
       landmark: ['']
     })
 
-    this.theaterDetails$.subscribe(theater => {
+    effect(() => {
+      const theater = this.theaterDetails()
       if (theater !== null) {
         this.theater = theater
         if (theater.profilePic !== undefined) this.dpUrl = environments.backendUrl + `/images/${theater.profilePic}`
@@ -82,7 +82,7 @@ export class EditTheaterProfileComponent {
         this.longitude = theater.coords.coordinates[0]
         this.latitude = theater.coords.coordinates[1]
       }
-    })
+    }, { injector: this.injector })
   }
 
   imageReady (blob: Blob): void {

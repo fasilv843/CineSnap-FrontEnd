@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
-import { Store, select } from '@ngrx/store'
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
+import { Store } from '@ngrx/store'
 import { IWalletHistory } from 'src/app/models/common'
 import { UserService } from 'src/app/services/user.service'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
@@ -15,7 +15,10 @@ import { WalletHistoryComponent } from '../../common/wallet-history/wallet-histo
     imports: [UserNavComponent, WalletHistoryComponent]
 })
 export class UserWalletComponent implements OnInit {
-  userData$ = this.store.pipe(select(selectUserDetails))
+  private readonly store = inject(Store)
+  private readonly userService = inject(UserService)
+
+  userData = this.store.selectSignal(selectUserDetails)
   userId = ''
   walletHistory: IWalletHistory[] = []
   count = 0
@@ -23,16 +26,9 @@ export class UserWalletComponent implements OnInit {
   page = 1
   itemsPerPage = 10
 
-  constructor (
-    private readonly store: Store,
-    private readonly userService: UserService
-  ) {}
-
   ngOnInit (): void {
-    this.userData$.subscribe(user => {
-      if (user === null) return
-      this.userId = user._id
-    })
+    const user = this.userData()
+    if (user !== null) this.userId = user._id
 
     this.getWalletHistory()
   }

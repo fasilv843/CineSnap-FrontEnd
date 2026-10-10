@@ -1,7 +1,7 @@
-import { Component, Inject, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject, effect, Injector } from '@angular/core'
 import { FormBuilder, type FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
-import { Store, select } from '@ngrx/store'
+import { Store } from '@ngrx/store'
 import { dateToString } from 'src/app/helpers/date'
 import { getLocation } from 'src/app/helpers/location'
 import { validateByTrimming, validateDOB } from 'src/app/helpers/validations'
@@ -32,7 +32,14 @@ import { ZipValidationComponent } from '../../common/validation/zip-validation/z
     imports: [UserNavComponent, ProfileDpComponent, FormsModule, ReactiveFormsModule, NameValidationComponent, MobileValidationComponent, DobValidationComponent, CityValidationComponent, DistrictValidationComponent, StateValidationComponent, CountryValidationComponent, ZipValidationComponent, RouterLink]
 })
 export class EditUserProfileComponent implements OnInit {
-  userDetails$ = this.store.pipe(select(selectUserDetails))
+  private readonly formBuilder = inject(FormBuilder)
+  private readonly injector = inject(Injector)
+  private readonly userService = inject(UserService)
+  private readonly store = inject(Store)
+  private readonly router = inject(Router)
+  private readonly locationService = inject(GeoLocationService)
+
+  userDetails = this.store.selectSignal(selectUserDetails)
   user: IUserRes | null = null
   userId = ''
   profileForm!: FormGroup
@@ -48,14 +55,6 @@ export class EditUserProfileComponent implements OnInit {
   selectedFile!: File
   dpUrl = ''
 
-  constructor (
-    @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
-    @Inject(UserService) private readonly userService: UserService,
-    @Inject(Store) private readonly store: Store,
-    @Inject(Router) private readonly router: Router,
-    @Inject(GeoLocationService) private readonly locationService: GeoLocationService
-  ) {}
-
   ngOnInit (): void {
     this.profileForm = this.formBuilder.group({
       name: ['', [validateByTrimming(nameValidators)]],
@@ -70,7 +69,8 @@ export class EditUserProfileComponent implements OnInit {
       validators: validateDOB
     })
 
-    this.userDetails$.subscribe(user => {
+    effect(() => {
+      const user = this.userDetails()
       this.user = user ?? this.user
       if (this.user !== null && this.user !== undefined) {
         this.userId = this.user._id
@@ -88,7 +88,7 @@ export class EditUserProfileComponent implements OnInit {
         }
       }
       console.log(this.dpUrl, 'dpUrl from edit profile')
-    })
+    }, { injector: this.injector })
   }
 
   onSubmit (): void {

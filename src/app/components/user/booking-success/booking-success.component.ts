@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, type OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { getLanguage } from 'src/app/helpers/movie'
 import { ITicketRes, ITicketSeat } from 'src/app/models/ticket'
@@ -16,6 +16,10 @@ import { DatePipe } from '@angular/common';
     imports: [UserNavComponent, DatePipe]
 })
 export class BookingSuccessComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly ticketService = inject(TicketService)
+
   ticketId = ''
   userId = ''
   ticket!: ITicketRes
@@ -27,12 +31,7 @@ export class BookingSuccessComponent implements OnInit {
 
   getLanguage = getLanguage
 
-  constructor (
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly ticketService: TicketService
-
-  ) {
+  constructor () {
     this.route.params.subscribe(params => {
       this.ticketId = params['ticketId']
     })

@@ -1,6 +1,7 @@
-@if (isSubmitted && screenControl && screenControl.errors) {
+@let control = screenControl();
+@if (isSubmitted() && control && control.errors) {
   <div>
-    @if (screenControl.errors['required']) {
+    @if (control.errors['required']) {
       <div style="color: red;">Screen is required</div>
     }
   </div>

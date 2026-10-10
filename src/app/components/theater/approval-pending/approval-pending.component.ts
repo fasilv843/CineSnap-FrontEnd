@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core'
 import { Router } from '@angular/router'
 
 @Component({
@@ -9,9 +9,7 @@ import { Router } from '@angular/router'
     changeDetection: ChangeDetectionStrategy.Eager
 })
 export class ApprovalPendingComponent {
-  constructor (
-    private readonly router: Router
-  ) {}
+  private readonly router = inject(Router)
 
   redirectUserToHome (): void {
     void this.router.navigate(['/user/home'])

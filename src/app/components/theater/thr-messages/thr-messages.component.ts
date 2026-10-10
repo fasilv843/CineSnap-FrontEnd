@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, Inject, type OnInit, type OnDestroy, ChangeDetectionStrategy } from '@angular/core'
-import { select, Store } from '@ngrx/store'
+import { Component, type OnInit, type OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core'
+import { Store } from '@ngrx/store'
 import { type IApiChatRes, type IChatReqs, type IChatRes, type IUsersListForChats, IChatMessageRes } from 'src/app/models/chat'
 import { TheaterService } from 'src/app/services/theater.service'
 import { UserService } from 'src/app/services/user.service'
@@ -19,9 +19,14 @@ import { UpperCasePipe, SlicePipe, DatePipe } from '@angular/common';
     imports: [ThrNavComponent, FormsModule, UpperCasePipe, SlicePipe, DatePipe]
 })
 export class ThrMessagesComponent implements OnInit, OnDestroy {
+  private readonly socketService = inject(WebSocketService)
+  private readonly theaterService = inject(TheaterService)
+  private readonly userService = inject(UserService)
+  private readonly store = inject(Store)
+
   message: string = ''
   chats: IChatMessageRes[] = []
-  theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
+  theaterDetails = this.store.selectSignal(selectTheaterDetails)
   theaterId: string = ''
   userId = ''
   theaterName = ''
@@ -29,18 +34,14 @@ export class ThrMessagesComponent implements OnInit, OnDestroy {
   currUser?: IUsersListForChats
   imageFolderPath = imagesFolderPath
 
-  constructor (
-    @Inject(WebSocketService) private readonly socketService: WebSocketService,
-    @Inject(TheaterService) private readonly theaterService: TheaterService,
-    @Inject(UserService) private readonly userService: UserService,
-    @Inject(Store) private readonly store: Store
-  ) {
-    this.theaterDetails$.subscribe((theater) => {
-      if (theater !== null) {
-        this.theaterId = theater._id
-        this.theaterName = theater.name
-      }
-    })
+  constructor () {
+    const socketService = this.socketService;
+
+    const theater = this.theaterDetails()
+    if (theater !== null) {
+      this.theaterId = theater._id
+      this.theaterName = theater.name
+    }
 
     socketService.connectSocket(this.theaterId)
   }

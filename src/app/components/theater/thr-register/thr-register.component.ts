@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/semi */
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormBuilder, type FormGroup, type AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -26,6 +26,12 @@ import { OtpValidationComponent } from '../../common/validation/otp-validation/o
     imports: [FormsModule, ReactiveFormsModule, NameValidationComponent, EmailValidationComponent, PasswordValidationComponent, RepeatPassValidationComponent, OtpValidationComponent, RouterLink]
 })
 export class ThrRegisterComponent {
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+  private readonly fromBuilder = inject(FormBuilder);
+  private readonly store = inject(Store);
+  private readonly locationService = inject(GeoLocationService);
+
   isSubmitted = false
   showOtpField = false
   remainingTime = 0
@@ -41,14 +47,6 @@ export class ThrRegisterComponent {
   zip: string = ''
   latitude: number | undefined;
   longitude: number | undefined;
-
-  constructor (
-    @Inject(HttpClient) private readonly http: HttpClient,
-    @Inject(Router) private readonly router: Router,
-    @Inject(FormBuilder) private readonly fromBuilder: FormBuilder,
-    @Inject(Store) private readonly store: Store,
-    @Inject(GeoLocationService) private readonly locationService: GeoLocationService
-  ) {}
 
   ngOnInit (): void {
     this.form = this.fromBuilder.group({

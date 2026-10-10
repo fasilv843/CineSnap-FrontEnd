@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
-import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActiveModal } from 'src/app/services/modal.service'
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { validateByTrimming } from 'src/app/helpers/validations';
 import { colValidators, rowValidators, screenNameValidators } from 'src/app/shared/valiators';
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector';
@@ -25,19 +25,17 @@ import { ColValidationComponent } from './validation/col-validation/col-validati
     styleUrls: ['./screen-form-modal.component.css']
 })
 export class ScreenFormModalComponent implements OnInit {
-  theaterDetails$ = this.store.pipe(select(selectTheaterDetails))
+  private readonly formBuilder = inject(FormBuilder);
+  activeModal = inject(ActiveModal);
+  private readonly store = inject(Store);
+
+  theaterDetails = this.store.selectSignal(selectTheaterDetails)
   screenForm!: FormGroup
   isSubmitted = false
   theaterId: string = ''
 
   modalTitle: string = ''
   submitBtn: string = ''
-
-  constructor (
-    @Inject(FormBuilder) private readonly formBuilder: FormBuilder,
-    @Inject(ActiveModal) public activeModal: ActiveModal,
-    @Inject(Store) private readonly store: Store
-  ) {}
 
   ngOnInit (): void {
     console.log('modal form is initializing')
@@ -47,9 +45,8 @@ export class ScreenFormModalComponent implements OnInit {
       cols: ['', [validateByTrimming(colValidators)]]
     })
 
-    this.theaterDetails$.subscribe(theater => {
-      if (theater !== null) this.theaterId = theater._id
-    })
+    const theater = this.theaterDetails()
+    if (theater !== null) this.theaterId = theater._id
   }
 
   onSubmit (): void {
