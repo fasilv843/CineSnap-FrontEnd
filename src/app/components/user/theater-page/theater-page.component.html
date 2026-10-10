@@ -3,7 +3,7 @@
 <div class="bg-gray-100 p-4 lg:p-16 mb-6">
 
     <!-- Theater Profile Section -->
-    <div class="flex items-center justify-between mb-8 h-screen/2">
+    <div *ngIf="theater" class="flex items-center justify-between mb-8 h-screen/2">
       <!-- Theater Logo -->
       <div class="bg-gray-300 w-24 h-24  overflow-hidden">
         <img class="w-full h-full object-cover" [src]="imagesFolderPath + theater.profilePic" alt="Theater Logo">

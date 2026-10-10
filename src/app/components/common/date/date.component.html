@@ -3,7 +3,7 @@
     <div class="flex flex-col md:flex-row justify-between">
       <div class="flex items-center justify-between gap-3">
         <div class="flex gap-2 ">
-          <ng-container class="inline-block sm:hidden">
+          <div class="sm:hidden">
             <div class="month-separator flex">
               <div class="w-5 h-14 bg-gray-500 vertical-text rounded-sm flex items-center justify-center mr-1">
                 {{ dates[0] | date: 'MMM' | uppercase }}
@@ -16,7 +16,7 @@
                 </a>
               </div>
             </div>
-          </ng-container>
+          </div>
           <div *ngFor="let date of dates; let i = index" class="hidden sm:inline-block">
               <ng-container *ngIf="(date | date: 'MM') !== (dates[i - 1] | date: 'MM') || i === 0">
                 <div class="month-separator flex">
