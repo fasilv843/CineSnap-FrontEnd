@@ -8,9 +8,10 @@ import { TMDBService } from 'src/app/services/tmdb.service'
 import Swal from 'sweetalert2'
 
 @Component({
-  selector: 'app-admin-movies-explore',
-  templateUrl: './admin-movies-explore.component.html',
-  styleUrls: ['./admin-movies-explore.component.css']
+    selector: 'app-admin-movies-explore',
+    templateUrl: './admin-movies-explore.component.html',
+    styleUrls: ['./admin-movies-explore.component.css'],
+    standalone: false
 })
 export class AdminMoviesExploreComponent implements OnInit {
   routeParam: string = ''

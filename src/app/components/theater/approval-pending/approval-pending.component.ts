@@ -3,9 +3,10 @@ import { Component } from '@angular/core'
 import { Router } from '@angular/router'
 
 @Component({
-  selector: 'app-approval-pending',
-  templateUrl: './approval-pending.component.html',
-  styleUrls: ['./approval-pending.component.css']
+    selector: 'app-approval-pending',
+    templateUrl: './approval-pending.component.html',
+    styleUrls: ['./approval-pending.component.css'],
+    standalone: false
 })
 export class ApprovalPendingComponent {
   constructor (

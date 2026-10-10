@@ -11,9 +11,10 @@ import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
 import { saveTheaterOnStore } from 'src/app/states/theater/theater.action';
 
 @Component({
-  selector: 'app-thr-login',
-  templateUrl: './thr-login.component.html',
-  styleUrls: ['./thr-login.component.css']
+    selector: 'app-thr-login',
+    templateUrl: './thr-login.component.html',
+    styleUrls: ['./thr-login.component.css'],
+    standalone: false
 })
 export class ThrLoginComponent {
   isSubmitted = false

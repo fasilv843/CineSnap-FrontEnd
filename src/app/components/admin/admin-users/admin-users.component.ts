@@ -5,9 +5,10 @@ import { UserService } from 'src/app/services/user.service'
 import Swal from 'sweetalert2'
 
 @Component({
-  selector: 'app-admin-users',
-  templateUrl: './admin-users.component.html',
-  styleUrls: ['./admin-users.component.css']
+    selector: 'app-admin-users',
+    templateUrl: './admin-users.component.html',
+    styleUrls: ['./admin-users.component.css'],
+    standalone: false
 })
 export class AdminUsersComponent implements OnInit {
   users: IUserRes[] = []

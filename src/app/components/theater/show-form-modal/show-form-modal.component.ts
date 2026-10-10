@@ -20,21 +20,19 @@ import { ShowDateValidationComponent } from './validation/show-date-validation/s
 import { StartTimeValidationComponent } from './validation/start-time-validation/start-time-validation.component'
 
 @Component({
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-
-    // ? Validation Error Message Components
-    MovieSelectValidationComponent,
-    ScreenSelectValidationComponent,
-    ShowDateValidationComponent,
-    StartTimeValidationComponent,
-    DefPriceValidationComponent
-  ],
-  selector: 'app-show-form-modal',
-  templateUrl: './show-form-modal.component.html',
-  styleUrls: ['./show-form-modal.component.css']
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        // ? Validation Error Message Components
+        MovieSelectValidationComponent,
+        ScreenSelectValidationComponent,
+        ShowDateValidationComponent,
+        StartTimeValidationComponent,
+        DefPriceValidationComponent
+    ],
+    selector: 'app-show-form-modal',
+    templateUrl: './show-form-modal.component.html',
+    styleUrls: ['./show-form-modal.component.css']
 })
 export class ShowFormModalComponent implements OnInit, OnDestroy {
   theaterData$ = this.store.pipe(select(selectTheaterDetails))

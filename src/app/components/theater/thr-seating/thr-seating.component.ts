@@ -10,9 +10,10 @@ import { ScreenSeatService } from 'src/app/services/screen-seat.service'
 type SeatCategory = 'Diamond' | 'Gold' | 'Silver'
 
 @Component({
-  selector: 'app-thr-seating',
-  templateUrl: './thr-seating.component.html',
-  styleUrls: ['./thr-seating.component.css']
+    selector: 'app-thr-seating',
+    templateUrl: './thr-seating.component.html',
+    styleUrls: ['./thr-seating.component.css'],
+    standalone: false
 })
 export class ThrSeatingComponent implements OnInit {
   seatId = ''

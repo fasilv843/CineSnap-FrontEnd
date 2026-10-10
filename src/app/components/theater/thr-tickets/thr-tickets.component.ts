@@ -5,9 +5,10 @@ import { ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
 
 @Component({
-  selector: 'app-thr-tickets',
-  templateUrl: './thr-tickets.component.html',
-  styleUrls: ['./thr-tickets.component.css']
+    selector: 'app-thr-tickets',
+    templateUrl: './thr-tickets.component.html',
+    styleUrls: ['./thr-tickets.component.css'],
+    standalone: false
 })
 export class ThrTicketsComponent implements OnInit {
   theaterId = ''

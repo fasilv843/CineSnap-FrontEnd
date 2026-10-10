@@ -4,14 +4,13 @@ import { type IWalletHistory } from 'src/app/models/common'
 import { TableFilterComponent } from '../table-filter/table-filter.component'
 
 @Component({
-  selector: 'app-wallet-history',
-  standalone: true,
-  imports: [
-    CommonModule,
-    TableFilterComponent
-  ],
-  templateUrl: './wallet-history.component.html',
-  styleUrls: ['./wallet-history.component.css']
+    selector: 'app-wallet-history',
+    imports: [
+        CommonModule,
+        TableFilterComponent
+    ],
+    templateUrl: './wallet-history.component.html',
+    styleUrls: ['./wallet-history.component.css']
 })
 export class WalletHistoryComponent {
   @Input() walletHistory: IWalletHistory[] = []

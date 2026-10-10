@@ -7,15 +7,14 @@ import { walletAmountValidators } from 'src/app/shared/valiators'
 import { WalletAmountValidationComponent } from './validation/wallet-amount-validation/wallet-amount-validation.component'
 
 @Component({
-  selector: 'app-add-to-wallet-modal',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    WalletAmountValidationComponent
-  ],
-  templateUrl: './add-to-wallet-modal.component.html',
-  styleUrls: ['./add-to-wallet-modal.component.css']
+    selector: 'app-add-to-wallet-modal',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        WalletAmountValidationComponent
+    ],
+    templateUrl: './add-to-wallet-modal.component.html',
+    styleUrls: ['./add-to-wallet-modal.component.css']
 })
 export class AddToWalletModalComponent implements OnInit {
   isSubmitted = false

@@ -9,9 +9,10 @@ import Swal from 'sweetalert2'
 import { ScreenFormModalComponent } from '../screen-form-modal/screen-form-modal.component'
 
 @Component({
-  selector: 'app-thr-screens',
-  templateUrl: './thr-screens.component.html',
-  styleUrls: ['./thr-screens.component.css']
+    selector: 'app-thr-screens',
+    templateUrl: './thr-screens.component.html',
+    styleUrls: ['./thr-screens.component.css'],
+    standalone: false
 })
 export class ThrScreensComponent implements OnInit {
   screens: IScreen[] = []

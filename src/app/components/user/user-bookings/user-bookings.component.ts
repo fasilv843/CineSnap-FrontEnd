@@ -8,9 +8,10 @@ import { selectUserDetails } from 'src/app/states/user/user.selector'
 import Swal from 'sweetalert2'
 
 @Component({
-  selector: 'app-user-bookings',
-  templateUrl: './user-bookings.component.html',
-  styleUrls: ['./user-bookings.component.css']
+    selector: 'app-user-bookings',
+    templateUrl: './user-bookings.component.html',
+    styleUrls: ['./user-bookings.component.css'],
+    standalone: false
 })
 export class UserBookingsComponent implements OnInit {
   userDetails$ = this.store.pipe(select(selectUserDetails))

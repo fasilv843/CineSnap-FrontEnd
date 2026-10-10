@@ -3,11 +3,10 @@ import { Component, type OnInit, EventEmitter, Output, Input } from '@angular/co
 import { getDatesArray } from 'src/app/helpers/date'
 
 @Component({
-  standalone: true,
-  imports: [CommonModule],
-  selector: 'app-date',
-  templateUrl: './date.component.html',
-  styleUrls: ['./date.component.css']
+    imports: [CommonModule],
+    selector: 'app-date',
+    templateUrl: './date.component.html',
+    styleUrls: ['./date.component.css']
 })
 export class DateComponent implements OnInit {
   @Output() dateSelected = new EventEmitter<Date>()

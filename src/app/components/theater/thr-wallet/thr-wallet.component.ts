@@ -6,9 +6,10 @@ import { TheaterService } from 'src/app/services/theater.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 
 @Component({
-  selector: 'app-thr-wallet',
-  templateUrl: './thr-wallet.component.html',
-  styleUrls: ['./thr-wallet.component.css']
+    selector: 'app-thr-wallet',
+    templateUrl: './thr-wallet.component.html',
+    styleUrls: ['./thr-wallet.component.css'],
+    standalone: false
 })
 export class ThrWalletComponent {
   theaterData$ = this.store.pipe(select(selectTheaterDetails))

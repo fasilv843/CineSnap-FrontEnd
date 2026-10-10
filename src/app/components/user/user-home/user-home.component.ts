@@ -13,9 +13,10 @@ import { selectCoords } from 'src/app/states/coords/coords.selector'
 import { ICarouselData } from './carousel/carousel.component'
 
 @Component({
-  selector: 'app-user-home',
-  templateUrl: './user-home.component.html',
-  styleUrls: ['./user-home.component.css']
+    selector: 'app-user-home',
+    templateUrl: './user-home.component.html',
+    styleUrls: ['./user-home.component.css'],
+    standalone: false
 })
 export class UserHomeComponent implements OnInit {
   coords$ = this.store.pipe(select(selectCoords))

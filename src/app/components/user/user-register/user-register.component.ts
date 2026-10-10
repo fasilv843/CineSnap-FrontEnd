@@ -19,9 +19,10 @@ import { emailValidators, nameValidators, otpValidators, passwordValidators } fr
 import { type IUserSocialAuth, type IUserRes, type IApiUserAuthRes } from 'src/app/models/users'
 
 @Component({
-  selector: 'app-user-register',
-  templateUrl: './user-register.component.html',
-  styleUrls: ['./user-register.component.css']
+    selector: 'app-user-register',
+    templateUrl: './user-register.component.html',
+    styleUrls: ['./user-register.component.css'],
+    standalone: false
 })
 export class UserRegisterComponent implements OnInit {
   form!: FormGroup;

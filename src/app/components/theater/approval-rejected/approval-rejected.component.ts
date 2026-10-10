@@ -4,9 +4,10 @@ import { ActivatedRoute } from '@angular/router'
 import { environments } from 'src/environments/environment'
 
 @Component({
-  selector: 'app-approval-rejected',
-  templateUrl: './approval-rejected.component.html',
-  styleUrls: ['./approval-rejected.component.css']
+    selector: 'app-approval-rejected',
+    templateUrl: './approval-rejected.component.html',
+    styleUrls: ['./approval-rejected.component.css'],
+    standalone: false
 })
 export class ApprovalRejectedComponent implements OnInit {
   @Input() reason = 'Block'

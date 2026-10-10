@@ -5,7 +5,8 @@ import { type ISelectedSeat } from '../models/ticket'
 import { IShowSeat } from '../models/show'
 
 @Directive({
-  selector: '[appSeatStatus]'
+    selector: '[appSeatStatus]',
+    standalone: false
 })
 export class SeatStatusDirective implements OnInit {
   @Input() row = ''

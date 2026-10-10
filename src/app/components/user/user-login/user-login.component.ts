@@ -11,9 +11,10 @@ import { emailValidators, passwordValidators } from 'src/app/shared/valiators';
 import { type IApiUserAuthRes } from 'src/app/models/users';
 
 @Component({
-  selector: 'app-user-login',
-  templateUrl: './user-login.component.html',
-  styleUrls: ['./user-login.component.css']
+    selector: 'app-user-login',
+    templateUrl: './user-login.component.html',
+    styleUrls: ['./user-login.component.css'],
+    standalone: false
 })
 export class UserLoginComponent implements OnInit {
   isSubmitted = false

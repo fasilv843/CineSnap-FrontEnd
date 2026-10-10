@@ -6,11 +6,10 @@ import { Store } from '@ngrx/store'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 
 @Component({
-  selector: 'app-user-offcanvas',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './user-offcanvas.component.html',
-  styleUrls: ['./user-offcanvas.component.css']
+    selector: 'app-user-offcanvas',
+    imports: [CommonModule],
+    templateUrl: './user-offcanvas.component.html',
+    styleUrls: ['./user-offcanvas.component.css']
 })
 export class UserOffcanvasComponent implements OnInit {
   // private readonly activeModal = inject(ActiveModal)

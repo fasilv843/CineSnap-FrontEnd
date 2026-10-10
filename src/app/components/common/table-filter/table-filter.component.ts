@@ -4,15 +4,14 @@ import { Component, EventEmitter, type OnInit, Output, Input } from '@angular/co
 import { type FormGroup, FormBuilder, ReactiveFormsModule, FormsModule } from '@angular/forms'
 
 @Component({
-  selector: 'app-table-filter',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule
-  ],
-  templateUrl: './table-filter.component.html',
-  styleUrls: ['./table-filter.component.css']
+    selector: 'app-table-filter',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule
+    ],
+    templateUrl: './table-filter.component.html',
+    styleUrls: ['./table-filter.component.css']
 })
 export class TableFilterComponent implements OnInit {
   @Output() search = new EventEmitter<string>()

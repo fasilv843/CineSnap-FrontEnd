@@ -3,9 +3,10 @@ import { Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-admin-nav',
-  templateUrl: './admin-nav.component.html',
-  styleUrls: ['./admin-nav.component.css']
+    selector: 'app-admin-nav',
+    templateUrl: './admin-nav.component.html',
+    styleUrls: ['./admin-nav.component.css'],
+    standalone: false
 })
 export class AdminNavComponent {
   showSidebar = false

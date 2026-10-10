@@ -18,24 +18,23 @@ import { MaxDiscountValidationComponent } from './validation/max-discount-valida
 import { CouponCountValidationComponent } from './validation/coupon-count-validation/coupon-count-validation.component'
 
 @Component({
-  selector: 'app-coupon-form',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    CodeValidationComponent,
-    DescriptionValidationComponent,
-    CouponStartValidationComponent,
-    CouponEndValidationComponent,
-    DiscountValidationComponent,
-    MinTicketValidationComponent,
-    CouponTypeValidationComponent,
-    DiscountTypeValidationComponent,
-    MaxDiscountValidationComponent,
-    CouponCountValidationComponent
-  ],
-  templateUrl: './coupon-form.component.html',
-  styleUrls: ['./coupon-form.component.css']
+    selector: 'app-coupon-form',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        CodeValidationComponent,
+        DescriptionValidationComponent,
+        CouponStartValidationComponent,
+        CouponEndValidationComponent,
+        DiscountValidationComponent,
+        MinTicketValidationComponent,
+        CouponTypeValidationComponent,
+        DiscountTypeValidationComponent,
+        MaxDiscountValidationComponent,
+        CouponCountValidationComponent
+    ],
+    templateUrl: './coupon-form.component.html',
+    styleUrls: ['./coupon-form.component.css']
 })
 export class CouponFormComponent {
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))

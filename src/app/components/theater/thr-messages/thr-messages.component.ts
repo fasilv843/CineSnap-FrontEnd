@@ -9,9 +9,10 @@ import { imagesFolderPath } from 'src/app/shared/constants'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 
 @Component({
-  selector: 'app-thr-messages',
-  templateUrl: './thr-messages.component.html',
-  styleUrls: ['./thr-messages.component.css']
+    selector: 'app-thr-messages',
+    templateUrl: './thr-messages.component.html',
+    styleUrls: ['./thr-messages.component.css'],
+    standalone: false
 })
 export class ThrMessagesComponent implements OnInit, OnDestroy {
   message: string = ''

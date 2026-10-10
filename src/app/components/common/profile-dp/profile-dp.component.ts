@@ -4,14 +4,13 @@ import { ModalService } from 'src/app/services/modal.service'
 import { CommonModule } from '@angular/common'
 
 @Component({
-  selector: 'app-profile-dp',
-  standalone: true,
-  imports: [
-    CommonModule,
-    CropperDialogueComponent
-  ],
-  templateUrl: './profile-dp.component.html',
-  styleUrls: ['./profile-dp.component.css']
+    selector: 'app-profile-dp',
+    imports: [
+        CommonModule,
+        CropperDialogueComponent
+    ],
+    templateUrl: './profile-dp.component.html',
+    styleUrls: ['./profile-dp.component.css']
 })
 export class ProfileDpComponent {
   imageWidth = signal(0)

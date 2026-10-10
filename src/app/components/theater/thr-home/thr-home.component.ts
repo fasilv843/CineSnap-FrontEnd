@@ -7,9 +7,10 @@ import { TheaterService } from 'src/app/services/theater.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 
 @Component({
-  selector: 'app-thr-home',
-  templateUrl: './thr-home.component.html',
-  styleUrls: ['./thr-home.component.css']
+    selector: 'app-thr-home',
+    templateUrl: './thr-home.component.html',
+    styleUrls: ['./thr-home.component.css'],
+    standalone: false
 })
 export class ThrHomeComponent implements OnInit {
   theaterData$ = this.store.pipe(select(selectTheaterDetails))

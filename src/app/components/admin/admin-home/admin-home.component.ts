@@ -5,9 +5,10 @@ import { ILineGraphData } from 'src/app/models/charts';
 import { AdminService } from 'src/app/services/admin.service';
 
 @Component({
-  selector: 'app-admin-home',
-  templateUrl: './admin-home.component.html',
-  styleUrls: ['./admin-home.component.css']
+    selector: 'app-admin-home',
+    templateUrl: './admin-home.component.html',
+    styleUrls: ['./admin-home.component.css'],
+    standalone: false
 })
 export class AdminHomeComponent implements OnInit {
   data!: ILineGraphData

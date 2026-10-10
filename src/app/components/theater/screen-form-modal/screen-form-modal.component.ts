@@ -13,19 +13,17 @@ import { RowValidationComponent } from './validation/row-validation/row-validati
 import { ColValidationComponent } from './validation/col-validation/col-validation.component';
 
 @Component({
-  selector: 'app-screen-form-modal',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-
-    // ? Validation Error Message Components
-    ScreenNameValidationComponent,
-    RowValidationComponent,
-    ColValidationComponent
-  ],
-  templateUrl: './screen-form-modal.component.html',
-  styleUrls: ['./screen-form-modal.component.css']
+    selector: 'app-screen-form-modal',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        // ? Validation Error Message Components
+        ScreenNameValidationComponent,
+        RowValidationComponent,
+        ColValidationComponent
+    ],
+    templateUrl: './screen-form-modal.component.html',
+    styleUrls: ['./screen-form-modal.component.css']
 })
 export class ScreenFormModalComponent implements OnInit {
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))

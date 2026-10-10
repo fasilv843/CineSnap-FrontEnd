@@ -13,9 +13,10 @@ import { type IRazorpayRes } from 'src/app/models/common'
 import { TheaterService } from 'src/app/services/theater.service'
 
 @Component({
-  selector: 'app-thr-profile',
-  templateUrl: './thr-profile.component.html',
-  styleUrls: ['./thr-profile.component.css']
+    selector: 'app-thr-profile',
+    templateUrl: './thr-profile.component.html',
+    styleUrls: ['./thr-profile.component.css'],
+    standalone: false
 })
 export class ThrProfileComponent implements OnInit, OnDestroy {
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))

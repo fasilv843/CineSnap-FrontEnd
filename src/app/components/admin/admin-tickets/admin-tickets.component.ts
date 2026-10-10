@@ -4,9 +4,10 @@ import { type ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
 
 @Component({
-  selector: 'app-admin-tickets',
-  templateUrl: './admin-tickets.component.html',
-  styleUrls: ['./admin-tickets.component.css']
+    selector: 'app-admin-tickets',
+    templateUrl: './admin-tickets.component.html',
+    styleUrls: ['./admin-tickets.component.css'],
+    standalone: false
 })
 export class AdminTicketsComponent {
   tickets: ITicketRes[] = []

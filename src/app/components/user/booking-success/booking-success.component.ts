@@ -7,9 +7,10 @@ import { TicketService } from 'src/app/services/ticket.service'
 import Swal from 'sweetalert2'
 
 @Component({
-  selector: 'app-booking-success',
-  templateUrl: './booking-success.component.html',
-  styleUrls: ['./booking-success.component.css']
+    selector: 'app-booking-success',
+    templateUrl: './booking-success.component.html',
+    styleUrls: ['./booking-success.component.css'],
+    standalone: false
 })
 export class BookingSuccessComponent implements OnInit {
   ticketId = ''

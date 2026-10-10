@@ -4,10 +4,11 @@ import { langType } from 'src/app/models/filter';
 import { DataServiceService } from 'src/app/services/data-service.service';
 
 @Component({
-  selector: 'app-user-movies',
-  templateUrl: './user-movies.component.html',
-  styleUrls: ['./user-movies.component.css'],
-  providers: [DataServiceService]
+    selector: 'app-user-movies',
+    templateUrl: './user-movies.component.html',
+    styleUrls: ['./user-movies.component.css'],
+    providers: [DataServiceService],
+    standalone: false
 })
 export class UserMoviesComponent implements OnInit {
   genreId: number | undefined

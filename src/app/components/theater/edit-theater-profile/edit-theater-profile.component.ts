@@ -14,9 +14,10 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import { environments } from 'src/environments/environment'
 
 @Component({
-  selector: 'app-edit-theater-profile',
-  templateUrl: './edit-theater-profile.component.html',
-  styleUrls: ['./edit-theater-profile.component.css']
+    selector: 'app-edit-theater-profile',
+    templateUrl: './edit-theater-profile.component.html',
+    styleUrls: ['./edit-theater-profile.component.css'],
+    standalone: false
 })
 export class EditTheaterProfileComponent {
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))

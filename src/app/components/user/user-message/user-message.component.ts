@@ -11,9 +11,10 @@ import { selectUserDetails } from 'src/app/states/user/user.selector'
 // import { NgxIntersectionObserverDirective } from 'ngx-intersection-observer'
 
 @Component({
-  selector: 'app-user-message',
-  templateUrl: './user-message.component.html',
-  styleUrls: ['./user-message.component.css']
+    selector: 'app-user-message',
+    templateUrl: './user-message.component.html',
+    styleUrls: ['./user-message.component.css'],
+    standalone: false
 })
 export class UserMessageComponent implements OnInit, OnDestroy {
   // @ViewChild('messageContainer') messageContainer: ElementRef

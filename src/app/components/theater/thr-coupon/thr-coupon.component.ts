@@ -7,9 +7,10 @@ import { Store, select } from '@ngrx/store'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 
 @Component({
-  selector: 'app-thr-coupon',
-  templateUrl: './thr-coupon.component.html',
-  styleUrls: ['./thr-coupon.component.css']
+    selector: 'app-thr-coupon',
+    templateUrl: './thr-coupon.component.html',
+    styleUrls: ['./thr-coupon.component.css'],
+    standalone: false
 })
 export class ThrCouponComponent implements OnInit {
   theaterData$ = this.store.pipe(select(selectTheaterDetails))

@@ -3,11 +3,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
-  selector: 'app-otp-validation',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './otp-validation.component.html',
-  styleUrls: ['./otp-validation.component.css']
+    selector: 'app-otp-validation',
+    imports: [CommonModule],
+    templateUrl: './otp-validation.component.html',
+    styleUrls: ['./otp-validation.component.css']
 })
 export class OtpValidationComponent {
   @Input() otpControl: AbstractControl | null = null

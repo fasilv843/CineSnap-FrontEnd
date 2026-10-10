@@ -6,14 +6,13 @@ import { SearchComponent } from '../../common/search/search.component';
 import { Router } from '@angular/router';
 
 @Component({
-  standalone: true,
-  imports: [
-    CommonModule,
-    SearchComponent
-  ],
-  selector: 'app-admin-movies-search',
-  templateUrl: './admin-movies-search.component.html',
-  styleUrls: ['./admin-movies-search.component.css']
+    imports: [
+        CommonModule,
+        SearchComponent
+    ],
+    selector: 'app-admin-movies-search',
+    templateUrl: './admin-movies-search.component.html',
+    styleUrls: ['./admin-movies-search.component.css']
 })
 export class AdminMoviesSearchComponent {
   @Output() search = new EventEmitter<string>()

@@ -14,9 +14,10 @@ import { type Subscription } from 'rxjs';
 import { type IRazorpayRes } from 'src/app/models/common';
 
 @Component({
-  selector: 'app-user-profile',
-  templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.css']
+    selector: 'app-user-profile',
+    templateUrl: './user-profile.component.html',
+    styleUrls: ['./user-profile.component.css'],
+    standalone: false
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
   userDetails$ = this.store.pipe(select(selectUserDetails))

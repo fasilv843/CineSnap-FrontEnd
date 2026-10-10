@@ -14,9 +14,10 @@ import { emailValidators, nameValidators, otpValidators, passwordValidators, req
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-thr-register',
-  templateUrl: './thr-register.component.html',
-  styleUrls: ['./thr-register.component.css']
+    selector: 'app-thr-register',
+    templateUrl: './thr-register.component.html',
+    styleUrls: ['./thr-register.component.css'],
+    standalone: false
 })
 export class ThrRegisterComponent {
   isSubmitted = false

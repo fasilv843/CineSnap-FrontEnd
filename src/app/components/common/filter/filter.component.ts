@@ -5,11 +5,10 @@ import { type IFilterEvent, type langType, type genreType, type valueType } from
 import { MovieService } from 'src/app/services/movie.service'
 
 @Component({
-  standalone: true,
-  imports: [CommonModule],
-  selector: 'app-filter',
-  templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.css']
+    imports: [CommonModule],
+    selector: 'app-filter',
+    templateUrl: './filter.component.html',
+    styleUrls: ['./filter.component.css']
 })
 export class FilterComponent implements OnInit {
   @Input() isAdmin: boolean = false

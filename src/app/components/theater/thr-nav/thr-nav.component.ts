@@ -9,9 +9,10 @@ import { ModalService } from 'src/app/services/modal.service'
 import { deleteTheaterFromStore } from 'src/app/states/theater/theater.action';
 
 @Component({
-  selector: 'app-thr-nav',
-  templateUrl: './thr-nav.component.html',
-  styleUrls: ['./thr-nav.component.css']
+    selector: 'app-thr-nav',
+    templateUrl: './thr-nav.component.html',
+    styleUrls: ['./thr-nav.component.css'],
+    standalone: false
 })
 export class ThrNavComponent {
   theaterDetails$ = this.store.pipe(select(selectTheaterDetails))

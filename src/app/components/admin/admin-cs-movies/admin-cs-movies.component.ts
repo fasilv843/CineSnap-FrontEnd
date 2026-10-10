@@ -6,10 +6,11 @@ import { MovieService } from 'src/app/services/movie.service'
 import Swal from 'sweetalert2'
 
 @Component({
-  selector: 'app-admin-cs-movies',
-  templateUrl: './admin-cs-movies.component.html',
-  styleUrls: ['./admin-cs-movies.component.css'],
-  providers: [DataServiceService]
+    selector: 'app-admin-cs-movies',
+    templateUrl: './admin-cs-movies.component.html',
+    styleUrls: ['./admin-cs-movies.component.css'],
+    providers: [DataServiceService],
+    standalone: false
 })
 export class AdminCsMoviesComponent {
   constructor (

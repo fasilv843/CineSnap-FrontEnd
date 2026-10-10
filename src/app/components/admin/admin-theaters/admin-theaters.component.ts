@@ -6,9 +6,10 @@ import { TheaterService } from 'src/app/services/theater.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-admin-theaters',
-  templateUrl: './admin-theaters.component.html',
-  styleUrls: ['./admin-theaters.component.css']
+    selector: 'app-admin-theaters',
+    templateUrl: './admin-theaters.component.html',
+    styleUrls: ['./admin-theaters.component.css'],
+    standalone: false
 })
 export class AdminTheatersComponent {
   theaters: ITheaterRes[] = []

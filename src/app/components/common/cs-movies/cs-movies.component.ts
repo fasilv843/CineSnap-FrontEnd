@@ -12,17 +12,16 @@ import { DataServiceService } from 'src/app/services/data-service.service'
 import { Subscription } from 'rxjs'
 
 @Component({
-  selector: 'app-cs-movies',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FilterComponent,
-    SearchComponent,
-    SpinnerComponent,
-    AdminMoviesSearchComponent
-  ],
-  templateUrl: './cs-movies.component.html',
-  styleUrls: ['./cs-movies.component.css']
+    selector: 'app-cs-movies',
+    imports: [
+        CommonModule,
+        FilterComponent,
+        SearchComponent,
+        SpinnerComponent,
+        AdminMoviesSearchComponent
+    ],
+    templateUrl: './cs-movies.component.html',
+    styleUrls: ['./cs-movies.component.css']
 })
 export class CsMoviesComponent implements OnInit, OnDestroy {
   @Input() isAdmin = false

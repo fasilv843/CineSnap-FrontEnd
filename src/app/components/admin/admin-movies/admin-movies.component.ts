@@ -10,9 +10,10 @@ import { Language } from 'src/app/shared/langAbbreviation';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-admin-movies',
-  templateUrl: './admin-movies.component.html',
-  styleUrls: ['./admin-movies.component.css']
+    selector: 'app-admin-movies',
+    templateUrl: './admin-movies.component.html',
+    styleUrls: ['./admin-movies.component.css'],
+    standalone: false
 })
 export class AdminMoviesComponent implements OnInit {
   constructor (

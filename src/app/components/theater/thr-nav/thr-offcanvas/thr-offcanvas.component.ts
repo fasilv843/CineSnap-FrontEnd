@@ -6,11 +6,10 @@ import { ActiveModal } from 'src/app/services/modal.service'
 // import { Store } from '@ngrx/store'
 
 @Component({
-  selector: 'app-thr-offcanvas',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './thr-offcanvas.component.html',
-  styleUrls: ['./thr-offcanvas.component.css']
+    selector: 'app-thr-offcanvas',
+    imports: [CommonModule],
+    templateUrl: './thr-offcanvas.component.html',
+    styleUrls: ['./thr-offcanvas.component.css']
 })
 export class ThrOffcanvasComponent {
   // theaterDetails$ = this._store.select(selectTheaterDetails)

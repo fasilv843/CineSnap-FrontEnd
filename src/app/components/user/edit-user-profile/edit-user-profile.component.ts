@@ -15,9 +15,10 @@ import { selectUserDetails } from 'src/app/states/user/user.selector'
 import { environments } from 'src/environments/environment'
 
 @Component({
-  selector: 'app-edit-user-profile',
-  templateUrl: './edit-user-profile.component.html',
-  styleUrls: ['./edit-user-profile.component.css']
+    selector: 'app-edit-user-profile',
+    templateUrl: './edit-user-profile.component.html',
+    styleUrls: ['./edit-user-profile.component.css'],
+    standalone: false
 })
 export class EditUserProfileComponent implements OnInit {
   userDetails$ = this.store.pipe(select(selectUserDetails))

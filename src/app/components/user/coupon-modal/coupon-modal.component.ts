@@ -4,13 +4,12 @@ import { type ICouponRes } from 'src/app/models/coupon'
 import { ActiveModal } from 'src/app/services/modal.service'
 
 @Component({
-  selector: 'app-coupon-modal',
-  standalone: true,
-  imports: [
-    CommonModule
-  ],
-  templateUrl: './coupon-modal.component.html',
-  styleUrls: ['./coupon-modal.component.css']
+    selector: 'app-coupon-modal',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './coupon-modal.component.html',
+    styleUrls: ['./coupon-modal.component.css']
 })
 export class CouponModalComponent {
   modalTitle: string = 'Coupons'

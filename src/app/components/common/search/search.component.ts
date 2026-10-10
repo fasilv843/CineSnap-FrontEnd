@@ -4,11 +4,10 @@ import { CommonModule } from '@angular/common'
 import { Subject, debounceTime } from 'rxjs'
 
 @Component({
-  selector: 'app-search',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css']
+    selector: 'app-search',
+    imports: [CommonModule],
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit, OnDestroy {
   @Output() searchEvent = new EventEmitter<string>()

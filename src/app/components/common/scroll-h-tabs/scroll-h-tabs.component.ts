@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common'
 import {  AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core'
 
 @Component({
-  standalone: true,
-  imports: [
-    CommonModule
-  ],
-  selector: 'app-scroll-h-tabs',
-  templateUrl: './scroll-h-tabs.component.html',
-  styleUrls: ['./scroll-h-tabs.component.css']
+    imports: [
+        CommonModule
+    ],
+    selector: 'app-scroll-h-tabs',
+    templateUrl: './scroll-h-tabs.component.html',
+    styleUrls: ['./scroll-h-tabs.component.css']
 })
 export class ScrollHTabsComponent {
   @Input() labels: string[] = []

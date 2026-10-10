@@ -6,9 +6,10 @@ import { UserService } from 'src/app/services/user.service'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 
 @Component({
-  selector: 'app-user-wallet',
-  templateUrl: './user-wallet.component.html',
-  styleUrls: ['./user-wallet.component.css']
+    selector: 'app-user-wallet',
+    templateUrl: './user-wallet.component.html',
+    styleUrls: ['./user-wallet.component.css'],
+    standalone: false
 })
 export class UserWalletComponent implements OnInit {
   userData$ = this.store.pipe(select(selectUserDetails))

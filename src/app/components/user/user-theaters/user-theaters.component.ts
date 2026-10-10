@@ -11,9 +11,10 @@ import { selectCoords } from 'src/app/states/coords/coords.selector';
 import { selectUserDetails } from 'src/app/states/user/user.selector';
 
 @Component({
-  selector: 'app-user-theaters',
-  templateUrl: './user-theaters.component.html',
-  styleUrls: ['./user-theaters.component.css']
+    selector: 'app-user-theaters',
+    templateUrl: './user-theaters.component.html',
+    styleUrls: ['./user-theaters.component.css'],
+    standalone: false
 })
 export class UserTheatersComponent implements OnInit, OnDestroy {
   coords$ = this.store.pipe(select(selectCoords))

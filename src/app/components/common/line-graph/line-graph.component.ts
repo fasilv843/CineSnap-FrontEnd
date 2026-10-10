@@ -21,13 +21,12 @@ const textColorSecondary = '#6b7280' // gray-500
 const surfaceBorder = '#e5e7eb' // gray-200
 
 @Component({
-  selector: 'app-line-graph',
-  standalone: true,
-  imports: [
-    CommonModule
-  ],
-  templateUrl: './line-graph.component.html',
-  styleUrls: ['./line-graph.component.css']
+    selector: 'app-line-graph',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './line-graph.component.html',
+    styleUrls: ['./line-graph.component.css']
 })
 export class LineGraphComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() data: ILineGraphData = {

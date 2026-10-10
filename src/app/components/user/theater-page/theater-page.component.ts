@@ -8,9 +8,10 @@ import { TheaterService } from 'src/app/services/theater.service'
 import { imagesFolderPath } from 'src/app/shared/constants'
 
 @Component({
-  selector: 'app-theater-page',
-  templateUrl: './theater-page.component.html',
-  styleUrls: ['./theater-page.component.css']
+    selector: 'app-theater-page',
+    templateUrl: './theater-page.component.html',
+    styleUrls: ['./theater-page.component.css'],
+    standalone: false
 })
 export class TheaterPageComponent implements OnInit {
   theaterId = ''

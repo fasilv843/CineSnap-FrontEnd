@@ -15,14 +15,13 @@ export interface CropperDialogueResult {
 }
 
 @Component({
-  standalone: true,
-  imports: [
-    CommonModule,
-    ImageCropperModule
-  ],
-  selector: 'app-cropper-dialogue',
-  templateUrl: './cropper-dialogue.component.html',
-  styleUrls: ['./cropper-dialogue.component.css']
+    imports: [
+        CommonModule,
+        ImageCropperModule
+    ],
+    selector: 'app-cropper-dialogue',
+    templateUrl: './cropper-dialogue.component.html',
+    styleUrls: ['./cropper-dialogue.component.css']
 })
 export class CropperDialogueComponent implements OnInit {
   ngOnInit (): void {

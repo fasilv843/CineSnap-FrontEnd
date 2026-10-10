@@ -4,11 +4,10 @@ import { Language, LanguageAbbreviation } from 'src/app/shared/langAbbreviation'
 import { type Movie } from 'src/app/models/movie'
 
 @Component({
-  selector: 'app-movie-row',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './movie-row.component.html',
-  styleUrls: ['./movie-row.component.css']
+    selector: 'app-movie-row',
+    imports: [CommonModule],
+    templateUrl: './movie-row.component.html',
+    styleUrls: ['./movie-row.component.css']
 })
 export class MovieRowComponent {
   @Input() tmdbIds: number[] = []

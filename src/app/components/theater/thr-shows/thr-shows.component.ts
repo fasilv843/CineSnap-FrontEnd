@@ -10,9 +10,10 @@ import { MovieService } from 'src/app/services/movie.service'
 import { isSameDay } from 'src/app/helpers/date'
 
 @Component({
-  selector: 'app-thr-shows',
-  templateUrl: './thr-shows.component.html',
-  styleUrls: ['./thr-shows.component.css']
+    selector: 'app-thr-shows',
+    templateUrl: './thr-shows.component.html',
+    styleUrls: ['./thr-shows.component.css'],
+    standalone: false
 })
 export class ThrShowsComponent implements OnInit {
   theaterData$ = this.store.pipe(select(selectTheaterDetails))

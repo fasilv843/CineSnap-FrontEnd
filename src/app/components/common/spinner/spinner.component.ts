@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common'
 import { Component } from '@angular/core'
 
 @Component({
-  selector: 'app-spinner',
-  template: `
+    selector: 'app-spinner',
+    template: `
     <div class="spinner-container mt-3">
       <div class="film-reel-spinner"></div>
     </div>
   `,
-  styles: [`
+    styles: [`
     .spinner-container {
       display: flex;
       justify-content: center;
@@ -32,7 +32,6 @@ import { Component } from '@angular/core'
       }
     }
   `],
-  standalone: true,
-  imports: [CommonModule]
+    imports: [CommonModule]
 })
 export class SpinnerComponent {}

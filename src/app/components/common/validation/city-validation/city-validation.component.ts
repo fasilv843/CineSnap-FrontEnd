@@ -3,11 +3,10 @@ import { Component, Input } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
-  selector: 'app-city-validation',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './city-validation.component.html',
-  styleUrls: ['./city-validation.component.css']
+    selector: 'app-city-validation',
+    imports: [CommonModule],
+    templateUrl: './city-validation.component.html',
+    styleUrls: ['./city-validation.component.css']
 })
 export class CityValidationComponent {
   @Input() cityControl: AbstractControl | null = null

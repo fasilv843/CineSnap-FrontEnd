@@ -16,9 +16,10 @@ interface IShowWithMovie extends Omit<IShow, 'movieId'> {
 }
 
 @Component({
-  selector: 'app-show-seats',
-  templateUrl: './show-seats.component.html',
-  styleUrls: ['./show-seats.component.css']
+    selector: 'app-show-seats',
+    templateUrl: './show-seats.component.html',
+    styleUrls: ['./show-seats.component.css'],
+    standalone: false
 })
 export class ShowSeatsComponent implements OnInit {
   userDetails$ = this.store.pipe(select(selectUserDetails))

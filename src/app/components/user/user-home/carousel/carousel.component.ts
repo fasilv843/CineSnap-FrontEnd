@@ -9,11 +9,10 @@ export interface ICarouselData {
 const SLIDE_INTERVAL = 3000
 
 @Component({
-  selector: 'app-carousel',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './carousel.component.html',
-  styleUrls: ['./carousel.component.css']
+    selector: 'app-carousel',
+    imports: [CommonModule],
+    templateUrl: './carousel.component.html',
+    styleUrls: ['./carousel.component.css']
 })
 export class CarouselComponent implements OnInit, OnDestroy {
   @Input() images: ICarouselData[] = []

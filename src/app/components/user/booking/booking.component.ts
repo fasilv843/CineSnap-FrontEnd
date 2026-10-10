@@ -26,9 +26,10 @@ import { fetchUserData } from 'src/app/states/user/user.actions';
 
 // declare var Razorpay: any;
 @Component({
-  selector: 'app-booking',
-  templateUrl: './booking.component.html',
-  styleUrls: ['./booking.component.css']
+    selector: 'app-booking',
+    templateUrl: './booking.component.html',
+    styleUrls: ['./booking.component.css'],
+    standalone: false
 })
 export class BookingComponent implements OnInit, OnDestroy {
   userDetails$ = this.store.pipe(select(selectUserDetails))
