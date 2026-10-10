@@ -1,3 +1,5 @@
-<div *ngIf="isSubmitted && movieId === ''">
+@if (isSubmitted && movieId === '') {
+  <div>
     <div style="color: red;">Movie is required</div>
-</div>
+  </div>
+}

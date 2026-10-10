@@ -1,13 +1,11 @@
 import { Component, Inject } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import { type ICouponRes } from 'src/app/models/coupon'
 import { ActiveModal } from 'src/app/services/modal.service'
 
 @Component({
     selector: 'app-coupon-modal',
-    imports: [
-        CommonModule
-    ],
+    imports: [],
     templateUrl: './coupon-modal.component.html',
     styleUrls: ['./coupon-modal.component.css']
 })

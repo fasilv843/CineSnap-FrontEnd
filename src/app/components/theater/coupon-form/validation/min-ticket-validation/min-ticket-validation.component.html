@@ -1,6 +1,14 @@
 
-<div *ngIf="isSubmitted && minTicketControl && minTicketControl.errors">
-    <div *ngIf="minTicketControl.errors['pattern']" style="color: red;">Ticket count must be a number</div>
-    <div *ngIf="minTicketControl.errors['min']" style="color: red;">Enter a positive number</div>
-    <div *ngIf="minTicketControl.errors['max']" style="color: red;">Max Ticket allowed is {{ minTicketControl.getError('max').maxValue }}</div>
-</div>
+@if (isSubmitted && minTicketControl && minTicketControl.errors) {
+  <div>
+    @if (minTicketControl.errors['pattern']) {
+      <div style="color: red;">Ticket count must be a number</div>
+    }
+    @if (minTicketControl.errors['min']) {
+      <div style="color: red;">Enter a positive number</div>
+    }
+    @if (minTicketControl.errors['max']) {
+      <div style="color: red;">Max Ticket allowed is {{ minTicketControl.getError('max').maxValue }}</div>
+    }
+  </div>
+}

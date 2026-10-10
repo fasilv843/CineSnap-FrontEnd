@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core'
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FilterComponent } from '../filter/filter.component'
 import { SearchComponent } from '../search/search.component'
@@ -44,10 +44,10 @@ export class CsMoviesComponent implements OnInit, OnDestroy {
   showSpellingError = false
   private dataServiceSubscription!: Subscription
 
-  @HostBinding() isLargeScreen = window.innerWidth > 768
+  isLargeScreen = window.innerWidth > 768
 
   // Listen for window resize events
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize (): void {
     // Update variable name based on screen size
     this.isLargeScreen = window.innerWidth > 768
@@ -60,7 +60,7 @@ export class CsMoviesComponent implements OnInit, OnDestroy {
     private readonly dataService: DataServiceService
   ) {}
 
-  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:scroll')
   onScroll (): void {
     if (!this.isLoading && !this.isCompleted && this.isAtBottom()) {
       this.isLoading = true

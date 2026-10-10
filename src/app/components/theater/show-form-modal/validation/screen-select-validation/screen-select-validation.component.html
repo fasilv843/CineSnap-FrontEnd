@@ -1,3 +1,7 @@
-<div *ngIf="isSubmitted && screenControl && screenControl.errors">
-    <div *ngIf="screenControl.errors['required']" style="color: red;">Screen is required</div>
-</div>
+@if (isSubmitted && screenControl && screenControl.errors) {
+  <div>
+    @if (screenControl.errors['required']) {
+      <div style="color: red;">Screen is required</div>
+    }
+  </div>
+}

@@ -20,30 +20,38 @@
                   <app-email-validation [emailControl]="form.get('email')" [isSubmitted]="isSubmitted"></app-email-validation>
                 </div>
 
-                <div *ngIf="!showOtpField" class="mb-3">
+                @if (!showOtpField) {
+                  <div class="mb-3">
                     <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
                     <app-password-validation [passwordControl]="form.get('password')" [isSubmitted]="isSubmitted"></app-password-validation>
-                </div>
-                  
-                <div *ngIf="!showOtpField" class="mb-3">
+                  </div>
+                }
+
+                @if (!showOtpField) {
+                  <div class="mb-3">
                     <input type="password" formControlName="repeatPassword" id="form3Example4cdg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Repeat Password" />
                     <app-repeat-pass-validation [repeatPassControl]="form.get('repeatPassword')" [isSubmitted]="isSubmitted"></app-repeat-pass-validation>
-                </div>
+                  </div>
+                }
 
-                <div *ngIf="showOtpField">
-                  <input type="text" formControlName="otp" id="otp" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter OTP" />
-                  <app-otp-validation [otpControl]="form.get('otp')" [showOTPResend]="showOTPResend" [timerStr]="formattedTime" (OTPResend)="resendOTP()"></app-otp-validation>          
-                </div>
-                  
+                @if (showOtpField) {
+                  <div>
+                    <input type="text" formControlName="otp" id="otp" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter OTP" />
+                    <app-otp-validation [otpControl]="form.get('otp')" [showOTPResend]="showOTPResend" [timerStr]="formattedTime" (OTPResend)="resendOTP()"></app-otp-validation>
+                  </div>
+                }
+
 
                 <div class="flex justify-center my-2">
                   <button type="submit" [disabled]="formattedTime === '00:00'"
-                    class="w-full rounded-md bg-amber-400 hover:bg-amber-500 disabled:opacity-60 px-6 py-2 text-lg font-semibold text-gray-900">{{ showOtpField ? 'Verify' : 'Register' }}</button>
+                  class="w-full rounded-md bg-amber-400 hover:bg-amber-500 disabled:opacity-60 px-6 py-2 text-lg font-semibold text-gray-900">{{ showOtpField ? 'Verify' : 'Register' }}</button>
                 </div>
 
-                <p *ngIf="!showOtpField" class="text-center text-gray-500 mt-3 mb-0">Have already an account? 
+                @if (!showOtpField) {
+                  <p class="text-center text-gray-500 mt-3 mb-0">Have already an account?
                     <a routerLink="/user/login" class="font-bold text-gray-900"><u>Login here</u></a>
-                </p>
+                  </p>
+                }
 
               </form>
 

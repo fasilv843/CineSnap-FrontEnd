@@ -1,3 +1,7 @@
-<div *ngIf="isSubmitted && showDateControl && showDateControl.errors">
-    <div *ngIf="showDateControl.errors['required']" style="color: red;">Date is required</div>
-</div>
+@if (isSubmitted && showDateControl && showDateControl.errors) {
+  <div>
+    @if (showDateControl.errors['required']) {
+      <div style="color: red;">Date is required</div>
+    }
+  </div>
+}

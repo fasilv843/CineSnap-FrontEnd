@@ -2,59 +2,85 @@
 
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 m-4">
-    <div *ngFor="let ticket of tickets" class="bg-white p-4 rounded-lg shadow-md">
-        <div class="flex items-center mb-4">
-            <img class="w-28 h-28 object-cover rounded mr-4" src="https://image.tmdb.org/t/p/original/{{ ticket.movieId.poster_path }}" alt="{{ ticket.movieId.title }} poster">
-            <div class="flex flex-col flex-grow">
-                <div class="mb-4">
-                    <h6 class="text-xl font-semibold">{{ ticket.movieId.title }}</h6>
-                    <small class="text-gray-600">{{ getLanguage(ticket.movieId.language) }}</small>
-                </div>
-                <div class="mb-4">
-                    <h6 class="text-md font-medium">{{ ticket.theaterId.name }}</h6>
-                </div>
-            </div>
-            <div class="flex flex-col">
-                <div *ngIf="!ticket.isCancelled" class="my-2">
-                    <button (click)="downloadInvoice(ticket)">Invoice</button>
-                </div>
-                <img src="path/to/qr-code-placeholder.png" alt="QR Code" class="w-12 h-12 object-cover rounded">
-            </div>
+  @for (ticket of tickets; track ticket) {
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <div class="flex items-center mb-4">
+        <img class="w-28 h-28 object-cover rounded mr-4" src="https://image.tmdb.org/t/p/original/{{ ticket.movieId.poster_path }}" alt="{{ ticket.movieId.title }} poster">
+        <div class="flex flex-col flex-grow">
+          <div class="mb-4">
+            <h6 class="text-xl font-semibold">{{ ticket.movieId.title }}</h6>
+            <small class="text-gray-600">{{ getLanguage(ticket.movieId.language) }}</small>
+          </div>
+          <div class="mb-4">
+            <h6 class="text-md font-medium">{{ ticket.theaterId.name }}</h6>
+          </div>
         </div>
-        <div class="flex items-center mb-4">
-            <div class="flex flex-col flex-grow mr-4">
-                <h6 class="text-md font-semibold mb-1">{{ ticket.startTime | date: 'EEE, dd MMM yyyy, hh:mm a' }}</h6>
-                <span class="text-gray-600">{{ ticket.screenId.name }}</span>
-                <div class="flex flex-wrap gap-1 mt-1">
-                    <span *ngFor="let seat of getSeatsArr(ticket.diamondSeats, ticket.goldSeats, ticket.silverSeats).slice(0, 5)" class="bg-green-500 text-white p-1 rounded">{{ seat }}</span>
-                </div>
-                <div *ngIf="getSeatsArr(ticket.diamondSeats, ticket.goldSeats, ticket.silverSeats).length > 5" class="flex flex-wrap gap-1 mt-1">
-                    <span *ngFor="let seat of getSeatsArr(ticket.diamondSeats, ticket.goldSeats, ticket.silverSeats).slice(5)" class="bg-green-500 text-white p-1 rounded">{{ seat }}</span>
-                </div>
+        <div class="flex flex-col">
+          @if (!ticket.isCancelled) {
+            <div class="my-2">
+              <button (click)="downloadInvoice(ticket)">Invoice</button>
             </div>
-            <div class="flex flex-col items-center">
-                <div class="bg-gray-200 p-2 rounded-md mb-2">
-                    <p class="text-gray-900 text-lg text-center font-semibold">{{ ticket.seatCount }}</p>
-                    <p class="text-gray-700 text-center">Tickets</p>
-                </div>
-                <div *ngIf="ticket.isCancelled">
-                    <p *ngIf="ticket.cancelledBy === 'User'" class="text-red-600">Cancelled</p>
-                    <p *ngIf="ticket.cancelledBy === 'Theater'" class="text-red-600">Cancelled By Theater</p>
-                    <p *ngIf="ticket.cancelledBy === 'Admin'" class="text-red-600">Cancelled By Admin</p>
-                </div>
-                <div *ngIf="!ticket.isCancelled &&  (now > getFourHourBeforeTime(ticket.startTime)) && getDate(ticket.startTime) > now">
-                    <p class="text-red-600 text-lg font-medium">Cancelling is only allowed before 4hrs of show</p>
-                </div>
-                <div *ngIf="!ticket.isCancelled &&  getDate(ticket.startTime) < now && getDate(ticket.endTime) > now">
-                    <p class="text-green-600 text-lg font-medium">Show is running...</p>
-                </div>
-                <div *ngIf="!ticket.isCancelled && getDate(ticket.endTime) < now">
-                    <p class="text-green-600 text-lg font-medium">Thanks for Choosing CineSnap :)</p>
-                </div>
+          }
+          <img src="path/to/qr-code-placeholder.png" alt="QR Code" class="w-12 h-12 object-cover rounded">
+        </div>
+      </div>
+      <div class="flex items-center mb-4">
+        <div class="flex flex-col flex-grow mr-4">
+          <h6 class="text-md font-semibold mb-1">{{ ticket.startTime | date: 'EEE, dd MMM yyyy, hh:mm a' }}</h6>
+          <span class="text-gray-600">{{ ticket.screenId.name }}</span>
+          <div class="flex flex-wrap gap-1 mt-1">
+            @for (seat of getSeatsArr(ticket.diamondSeats, ticket.goldSeats, ticket.silverSeats).slice(0, 5); track seat) {
+              <span class="bg-green-500 text-white p-1 rounded">{{ seat }}</span>
+            }
+          </div>
+          @if (getSeatsArr(ticket.diamondSeats, ticket.goldSeats, ticket.silverSeats).length > 5) {
+            <div class="flex flex-wrap gap-1 mt-1">
+              @for (seat of getSeatsArr(ticket.diamondSeats, ticket.goldSeats, ticket.silverSeats).slice(5); track seat) {
+                <span class="bg-green-500 text-white p-1 rounded">{{ seat }}</span>
+              }
             </div>
+          }
         </div>
-        <div *ngIf="!ticket.isCancelled && (now < getFourHourBeforeTime(ticket.startTime))" class="flex justify-end">
-            <button class="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded-md cursor-pointer focus:outline-none" (click)="cancelTicket(ticket._id)">Cancel</button>
+        <div class="flex flex-col items-center">
+          <div class="bg-gray-200 p-2 rounded-md mb-2">
+            <p class="text-gray-900 text-lg text-center font-semibold">{{ ticket.seatCount }}</p>
+            <p class="text-gray-700 text-center">Tickets</p>
+          </div>
+          @if (ticket.isCancelled) {
+            <div>
+              @if (ticket.cancelledBy === 'User') {
+                <p class="text-red-600">Cancelled</p>
+              }
+              @if (ticket.cancelledBy === 'Theater') {
+                <p class="text-red-600">Cancelled By Theater</p>
+              }
+              @if (ticket.cancelledBy === 'Admin') {
+                <p class="text-red-600">Cancelled By Admin</p>
+              }
+            </div>
+          }
+          @if (!ticket.isCancelled &&  (now > getFourHourBeforeTime(ticket.startTime)) && getDate(ticket.startTime) > now) {
+            <div>
+              <p class="text-red-600 text-lg font-medium">Cancelling is only allowed before 4hrs of show</p>
+            </div>
+          }
+          @if (!ticket.isCancelled &&  getDate(ticket.startTime) < now && getDate(ticket.endTime) > now) {
+            <div>
+              <p class="text-green-600 text-lg font-medium">Show is running...</p>
+            </div>
+          }
+          @if (!ticket.isCancelled && getDate(ticket.endTime) < now) {
+            <div>
+              <p class="text-green-600 text-lg font-medium">Thanks for Choosing CineSnap :)</p>
+            </div>
+          }
         </div>
+      </div>
+      @if (!ticket.isCancelled && (now < getFourHourBeforeTime(ticket.startTime))) {
+        <div class="flex justify-end">
+          <button class="text-white bg-red-500 hover:bg-red-700 px-3 py-2 rounded-md cursor-pointer focus:outline-none" (click)="cancelTicket(ticket._id)">Cancel</button>
+        </div>
+      }
     </div>
+  }
 </div>

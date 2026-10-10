@@ -1,5 +1,5 @@
 import { Component, Input, type OnDestroy, type OnInit, signal } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 
 export interface ICarouselData {
   imageUrl: string
@@ -10,7 +10,7 @@ const SLIDE_INTERVAL = 3000
 
 @Component({
     selector: 'app-carousel',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './carousel.component.html',
     styleUrls: ['./carousel.component.css']
 })

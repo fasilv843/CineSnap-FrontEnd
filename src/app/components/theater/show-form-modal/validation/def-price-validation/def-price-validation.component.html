@@ -1,6 +1,16 @@
-<div *ngIf="isSubmitted && priceControl && priceControl.errors">
-    <div *ngIf="priceControl.errors['required']" style="color: red;">Price is required</div>
-    <div *ngIf="priceControl.errors['pattern']" style="color: red;">Price must be a number</div>
-    <div *ngIf="priceControl.errors['min']" style="color: red;">Price must be at least {{ priceControl.errors['min'].min }}</div>
-    <div *ngIf="priceControl.errors['max']" style="color: red;">Price must be at most {{ priceControl.errors['max'].max }}</div>
-</div>
+@if (isSubmitted && priceControl && priceControl.errors) {
+  <div>
+    @if (priceControl.errors['required']) {
+      <div style="color: red;">Price is required</div>
+    }
+    @if (priceControl.errors['pattern']) {
+      <div style="color: red;">Price must be a number</div>
+    }
+    @if (priceControl.errors['min']) {
+      <div style="color: red;">Price must be at least {{ priceControl.errors['min'].min }}</div>
+    }
+    @if (priceControl.errors['max']) {
+      <div style="color: red;">Price must be at most {{ priceControl.errors['max'].max }}</div>
+    }
+  </div>
+}

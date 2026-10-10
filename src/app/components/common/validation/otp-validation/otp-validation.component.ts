@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
     selector: 'app-otp-validation',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './otp-validation.component.html',
     styleUrls: ['./otp-validation.component.css']
 })

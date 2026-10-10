@@ -1,9 +1,9 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, Input } from '@angular/core'
 
 @Component({
     selector: 'app-movie-select-validation',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './movie-select-validation.component.html',
     styleUrls: ['./movie-select-validation.component.css']
 })

@@ -1,69 +1,79 @@
 <div class="container mx-auto p-4">
-    <div class="flex justify-between items-center bg-gray-800 p-4 rounded-md">
-        <div class="flex items-center">
-            <div *ngIf="searchField">
-                <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="flex items-center">
-                    <input type="text" formControlName="searchQuery" id="filter"  placeholder="Search..."
-                        class="border border-gray-400 rounded-md px-4 py-2 bg-gray-700 text-white focus:outline-none">
-                    <button type="submit" class="ml-2 bg-amber-500 text-black px-4 py-2 rounded-md hover:bg-amber-600 focus:outline-none">
-                        Search
-                    </button>
-                </form>
-            </div>
-        </div>
-        <div class="flex items-center">
-            <label for="itemsPerPage" class="mr-4 text-white">Items per page:</label>
-            <select id="itemsPerPage" class="border border-gray-400 rounded-md px-4 py-2 bg-gray-700 text-white" 
-                [(ngModel)]="itemsPerPage" (ngModelChange)="onItemsPerPageChange($event)">
-                <option value="1">1</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="15">15</option>
-            </select>
-        </div>
+  <div class="flex justify-between items-center bg-gray-800 p-4 rounded-md">
+    <div class="flex items-center">
+      @if (searchField) {
+        <div>
+          <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="flex items-center">
+            <input type="text" formControlName="searchQuery" id="filter"  placeholder="Search..."
+              class="border border-gray-400 rounded-md px-4 py-2 bg-gray-700 text-white focus:outline-none">
+              <button type="submit" class="ml-2 bg-amber-500 text-black px-4 py-2 rounded-md hover:bg-amber-600 focus:outline-none">
+                Search
+              </button>
+            </form>
+          </div>
+        }
+      </div>
+      <div class="flex items-center">
+        <label for="itemsPerPage" class="mr-4 text-white">Items per page:</label>
+        <select id="itemsPerPage" class="border border-gray-400 rounded-md px-4 py-2 bg-gray-700 text-white"
+          [(ngModel)]="itemsPerPage" (ngModelChange)="onItemsPerPageChange($event)">
+          <option value="1">1</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+        </select>
+      </div>
     </div>
 
     <ng-content></ng-content>
 
-    <div *ngIf="getTotalPage() > 1" class="flex justify-center mt-8 gap-1">
+    @if (getTotalPage() > 1) {
+      <div class="flex justify-center mt-8 gap-1">
         <button
-            class="pagination-btn"
-            (click)="onPageChange(currentPage - 1)"
-            [disabled]="currentPage === 1"
-        >
-            Prev
+          class="pagination-btn"
+          (click)="onPageChange(currentPage - 1)"
+          [disabled]="currentPage === 1"
+          >
+          Prev
         </button>
-    
-        <ng-container *ngIf="getTotalPage() <= 7; else showDynamicPages">
-            <!-- Display individual page numbers if there are 7 or fewer pages -->
-            <ng-container *ngFor="let page of getPagesArray()">
-                <span
-                    class="pagination-btn"
-                    [class.active]="currentPage === page"
-                    (click)="onPageChange(page)"
-                >
-                    {{ page }}
-                </span>
-            </ng-container>
-        </ng-container>
-    
-        <ng-template #showDynamicPages>
-            <!-- Display dynamic page numbers with ellipsis if there are more than 7 pages -->
-            <span *ngIf="currentPage > 2" class="pagination-btn" (click)="onPageChange(1)">1</span>
-            <span *ngIf="currentPage > 3" class="pagination-btn">...</span>
-            <span *ngFor="let page of dynamicPages" class="pagination-btn" (click)="onPageChange(page)">
-                {{ page }}
+        @if (getTotalPage() <= 7) {
+          <!-- Display individual page numbers if there are 7 or fewer pages -->
+          @for (page of getPagesArray(); track page) {
+            <span
+              class="pagination-btn"
+              [class.active]="currentPage === page"
+              (click)="onPageChange(page)"
+              >
+              {{ page }}
             </span>
-            <span *ngIf="currentPage < getTotalPage() -2" class="pagination-btn">...</span>
-            <span *ngIf="currentPage < getTotalPage() -1" class="pagination-btn" (click)="onPageChange(getTotalPage())">{{ getTotalPage() }}</span>
-        </ng-template>
-    
+          }
+        } @else {
+          <!-- Display dynamic page numbers with ellipsis if there are more than 7 pages -->
+          @if (currentPage > 2) {
+            <span class="pagination-btn" (click)="onPageChange(1)">1</span>
+          }
+          @if (currentPage > 3) {
+            <span class="pagination-btn">...</span>
+          }
+          @for (page of dynamicPages; track page) {
+            <span class="pagination-btn" (click)="onPageChange(page)">
+              {{ page }}
+            </span>
+          }
+          @if (currentPage < getTotalPage() -2) {
+            <span class="pagination-btn">...</span>
+          }
+          @if (currentPage < getTotalPage() -1) {
+            <span class="pagination-btn" (click)="onPageChange(getTotalPage())">{{ getTotalPage() }}</span>
+          }
+        }
         <button
-            class="pagination-btn"
-            (click)="onPageChange(currentPage + 1)"
-            [disabled]="currentPage * itemsPerPage >= totalItems"
-        >
-            Next
+          class="pagination-btn"
+          (click)="onPageChange(currentPage + 1)"
+          [disabled]="currentPage * itemsPerPage >= totalItems"
+          >
+          Next
         </button>
-    </div>
-</div>
+      </div>
+    }
+  </div>

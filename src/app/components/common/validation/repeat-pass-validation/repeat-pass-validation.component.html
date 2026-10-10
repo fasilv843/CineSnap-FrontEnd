@@ -1,4 +1,10 @@
-<div *ngIf="isSubmitted && repeatPassControl && repeatPassControl.errors">
-    <div *ngIf="repeatPassControl.errors['required']" style="color: red;">Password is required</div>
-    <div *ngIf="repeatPassControl.errors['passwordMismatch']" style="color: red;">Passwords do not match</div>
-</div>
+@if (isSubmitted && repeatPassControl && repeatPassControl.errors) {
+  <div>
+    @if (repeatPassControl.errors['required']) {
+      <div style="color: red;">Password is required</div>
+    }
+    @if (repeatPassControl.errors['passwordMismatch']) {
+      <div style="color: red;">Passwords do not match</div>
+    }
+  </div>
+}

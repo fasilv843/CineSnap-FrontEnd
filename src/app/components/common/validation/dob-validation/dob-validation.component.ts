@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, Input } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
     selector: 'app-dob-validation',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './dob-validation.component.html',
     styleUrls: ['./dob-validation.component.css']
 })

@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, Input } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
     selector: 'app-country-validation',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './country-validation.component.html',
     styleUrls: ['./country-validation.component.css']
 })

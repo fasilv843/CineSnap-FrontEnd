@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, Input } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import { AbstractControl } from '@angular/forms'
 
 @Component({
     selector: 'app-code-validation',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './code-validation.component.html',
     styleUrls: ['./code-validation.component.css']
 })

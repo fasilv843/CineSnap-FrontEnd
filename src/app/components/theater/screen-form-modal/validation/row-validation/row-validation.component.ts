@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, Input } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
     selector: 'app-row-validation',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './row-validation.component.html',
     styleUrls: ['./row-validation.component.css']
 })

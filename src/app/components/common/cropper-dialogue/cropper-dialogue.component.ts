@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, type OnInit, inject, signal } from '@angular/core'
 import { ImageCropperModule, type ImageCroppedEvent } from 'ngx-image-cropper'
 import { ActiveModal } from 'src/app/services/modal.service'
@@ -16,9 +16,8 @@ export interface CropperDialogueResult {
 
 @Component({
     imports: [
-        CommonModule,
-        ImageCropperModule
-    ],
+    ImageCropperModule
+],
     selector: 'app-cropper-dialogue',
     templateUrl: './cropper-dialogue.component.html',
     styleUrls: ['./cropper-dialogue.component.css']

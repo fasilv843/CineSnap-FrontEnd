@@ -1,3 +1,7 @@
-<div *ngIf="isSubmitted && countryControl && countryControl.errors">
-    <div *ngIf="countryControl.errors['required']" style="color: red;">Country is required</div>
-</div>
+@if (isSubmitted && countryControl && countryControl.errors) {
+  <div>
+    @if (countryControl.errors['required']) {
+      <div style="color: red;">Country is required</div>
+    }
+  </div>
+}

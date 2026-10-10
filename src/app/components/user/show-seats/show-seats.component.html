@@ -2,103 +2,129 @@
 
 <div class="flex flex-col items-center mt-8 overflow-x-auto">
 
-    <div *ngIf="diamond" class="mb-10">
+  @if (diamond) {
+    <div class="mb-10">
       <div class="flex justify-between font-bold text-lg px-1 mb-2">
         <h4 class="">{{ diamond.name }} </h4>
         <span>&#8377; {{ diamond.price }}</span>
       </div>
       <div class="flex items-center gap-4">
         <div>
-          <ng-container *ngFor="let row of diamondKeys">
+          @for (row of diamondKeys; track row) {
             <div class="flex flex-nowrap items-center">
-              <ng-container *ngFor="let seatCol of diamond.seats[row]; index as i">
+              @for (seatCol of diamond.seats[row]; track seatCol; let i = $index) {
                 <div class="flex flex-col">
-                  <a *ngIf="seatCol.col !== 0 && !seatCol.isBooked" (click)="selectSeat(row, seatCol)">
-                    <div class="seat p-3 text-center text-sm with-margin relative" appSeatStatus
-                      [row]="row" [col]="seatCol" [holdedSeats]="holdedSeats"
-                      [class.selected]="isSeatSelected(row, seatCol.col)">
+                  @if (seatCol.col !== 0 && !seatCol.isBooked) {
+                    <a (click)="selectSeat(row, seatCol)">
+                      <div class="seat p-3 text-center text-sm with-margin relative" appSeatStatus
+                        [row]="row" [col]="seatCol" [holdedSeats]="holdedSeats"
+                        [class.selected]="isSeatSelected(row, seatCol.col)">
+                        {{ row + seatCol.col }}
+                      </div>
+                    </a>
+                  }
+                  @if (seatCol.col !== 0 && seatCol.isBooked) {
+                    <div class="seat booked p-3 text-center text-sm with-margin">
                       {{ row + seatCol.col }}
                     </div>
-                  </a>
-                  <div *ngIf="seatCol.col !== 0 && seatCol.isBooked" class="seat booked p-3 text-center text-sm with-margin">
-                    {{ row + seatCol.col }}
-                  </div>
-                  <div *ngIf="seatCol.col === 0" class="empty-space p-3 text-center text-sm with-margin"></div>
+                  }
+                  @if (seatCol.col === 0) {
+                    <div class="empty-space p-3 text-center text-sm with-margin"></div>
+                  }
                 </div>
-              </ng-container>
+              }
             </div>
-          </ng-container>
+          }
         </div>
       </div>
     </div>
+  }
 
-  <div *ngIf="gold" class="mb-10">
-    <div class="flex justify-between font-bold text-lg px-1 mb-2">
-      <h4 class="">{{ gold.name }} </h4>
-      <span>&#8377; {{ gold.price }}</span>
-    </div>
-    <div class="flex items-center gap-4">
-      <div>
-        <ng-container *ngFor="let row of goldKeys">
-          <div class="flex flex-nowrap items-center">
-            <ng-container *ngFor="let seatCol of gold.seats[row]; index as i">
-              <div class="flex flex-col">
-                <a *ngIf="seatCol.col !== 0 && !seatCol.isBooked" (click)="selectSeat(row, seatCol)">
-                  <div class="seat p-3 text-center text-sm with-margin relative" appSeatStatus
-                    [row]="row" [col]="seatCol" [holdedSeats]="holdedSeats"
-                    [class.selected]="isSeatSelected(row, seatCol.col)">
-                    {{ row + seatCol.col }}
-                  </div>
-                </a>
-                <div *ngIf="seatCol.col !== 0 && seatCol.isBooked" class="seat booked p-3 text-center text-sm with-margin relative">
-                  {{ row + seatCol.col }}
+  @if (gold) {
+    <div class="mb-10">
+      <div class="flex justify-between font-bold text-lg px-1 mb-2">
+        <h4 class="">{{ gold.name }} </h4>
+        <span>&#8377; {{ gold.price }}</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div>
+          @for (row of goldKeys; track row) {
+            <div class="flex flex-nowrap items-center">
+              @for (seatCol of gold.seats[row]; track seatCol; let i = $index) {
+                <div class="flex flex-col">
+                  @if (seatCol.col !== 0 && !seatCol.isBooked) {
+                    <a (click)="selectSeat(row, seatCol)">
+                      <div class="seat p-3 text-center text-sm with-margin relative" appSeatStatus
+                        [row]="row" [col]="seatCol" [holdedSeats]="holdedSeats"
+                        [class.selected]="isSeatSelected(row, seatCol.col)">
+                        {{ row + seatCol.col }}
+                      </div>
+                    </a>
+                  }
+                  @if (seatCol.col !== 0 && seatCol.isBooked) {
+                    <div class="seat booked p-3 text-center text-sm with-margin relative">
+                      {{ row + seatCol.col }}
+                    </div>
+                  }
+                  @if (seatCol.col === 0) {
+                    <div class="empty-space p-3 text-center text-sm with-margin"></div>
+                  }
                 </div>
-                <div *ngIf="seatCol.col === 0" class="empty-space p-3 text-center text-sm with-margin"></div>
-              </div>
-            </ng-container>
-          </div>
-        </ng-container>
+              }
+            </div>
+          }
+        </div>
       </div>
     </div>
-  </div>
+  }
 
-  <div *ngIf="silver" class="mb-32">
-    <div class="flex justify-between font-bold text-lg px-1 mb-2">
-      <h4 class="">{{ silver.name }} </h4>
-      <span>&#8377; {{ silver.price }}</span>
-    </div>
-    <div class="flex items-center gap-4">
-      <div>
-        <ng-container *ngFor="let row of silverKeys">
-          <div class="flex flex-nowrap items-center">
-            <ng-container *ngFor="let seatCol of silver.seats[row]; index as i">
-              <div class="flex flex-col">
-                <a *ngIf="seatCol.col !== 0 && !seatCol.isBooked" (click)="selectSeat(row, seatCol)">
-                  <div class="seat p-3 text-center text-sm with-margin relative" appSeatStatus
-                    [row]="row" [col]="seatCol" [holdedSeats]="holdedSeats"
-                    [class.selected]="isSeatSelected(row, seatCol.col)">
-                    {{ row + seatCol.col }}
-                  </div>
-                </a>
-                <div *ngIf="seatCol.col !== 0 && seatCol.isBooked" class="seat booked p-3 text-center text-sm with-margin relative">
-                  {{ row + seatCol.col }}
+  @if (silver) {
+    <div class="mb-32">
+      <div class="flex justify-between font-bold text-lg px-1 mb-2">
+        <h4 class="">{{ silver.name }} </h4>
+        <span>&#8377; {{ silver.price }}</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div>
+          @for (row of silverKeys; track row) {
+            <div class="flex flex-nowrap items-center">
+              @for (seatCol of silver.seats[row]; track seatCol; let i = $index) {
+                <div class="flex flex-col">
+                  @if (seatCol.col !== 0 && !seatCol.isBooked) {
+                    <a (click)="selectSeat(row, seatCol)">
+                      <div class="seat p-3 text-center text-sm with-margin relative" appSeatStatus
+                        [row]="row" [col]="seatCol" [holdedSeats]="holdedSeats"
+                        [class.selected]="isSeatSelected(row, seatCol.col)">
+                        {{ row + seatCol.col }}
+                      </div>
+                    </a>
+                  }
+                  @if (seatCol.col !== 0 && seatCol.isBooked) {
+                    <div class="seat booked p-3 text-center text-sm with-margin relative">
+                      {{ row + seatCol.col }}
+                    </div>
+                  }
+                  @if (seatCol.col === 0) {
+                    <div class="empty-space p-3 text-center text-sm with-margin"></div>
+                  }
                 </div>
-                <div *ngIf="seatCol.col === 0" class="empty-space p-3 text-center text-sm with-margin"></div>
-              </div>
-            </ng-container>
-          </div>
-        </ng-container>
+              }
+            </div>
+          }
+        </div>
       </div>
     </div>
-  </div>
+  }
 
   <div class="fixed flex py-4 w-full bottom-0">
     <img src="../../../../assets/screen-icon.svg" alt="Screen SVG" class="w-full h-12" />
     <div>
-      <button *ngIf="selectedSeats.length" (click)="bookTicket()"
-        class="inline-block rounded-md border px-3 py-1.5 border-transparent items-end text-gray-900 m-4 justify-center bg-amber-500 hover:bg-amber-600">
-        Book Tickets
-      </button>
+      @if (selectedSeats.length) {
+        <button (click)="bookTicket()"
+          class="inline-block rounded-md border px-3 py-1.5 border-transparent items-end text-gray-900 m-4 justify-center bg-amber-500 hover:bg-amber-600">
+          Book Tickets
+        </button>
+      }
     </div>
   </div>
 </div>

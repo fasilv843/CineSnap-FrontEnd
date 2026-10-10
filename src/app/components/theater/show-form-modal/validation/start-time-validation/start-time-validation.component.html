@@ -1,3 +1,7 @@
-<div *ngIf="isSubmitted && startTimeControl && startTimeControl.errors">
-    <div *ngIf="startTimeControl.errors['required']" style="color: red;">Time is required</div>
-</div>
+@if (isSubmitted && startTimeControl && startTimeControl.errors) {
+  <div>
+    @if (startTimeControl.errors['required']) {
+      <div style="color: red;">Time is required</div>
+    }
+  </div>
+}

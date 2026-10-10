@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, OnInit } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import { ActiveModal } from 'src/app/services/modal.service'
 import { Store } from '@ngrx/store'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 
 @Component({
     selector: 'app-user-offcanvas',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './user-offcanvas.component.html',
     styleUrls: ['./user-offcanvas.component.css']
 })

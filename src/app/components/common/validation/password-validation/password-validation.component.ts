@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, Input } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
     selector: 'app-password-validation',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './password-validation.component.html',
     styleUrls: ['./password-validation.component.css']
 })

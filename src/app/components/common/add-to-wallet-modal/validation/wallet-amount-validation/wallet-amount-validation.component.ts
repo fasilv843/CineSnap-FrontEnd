@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
     selector: 'app-wallet-amount-validation',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './wallet-amount-validation.component.html',
     styleUrls: ['./wallet-amount-validation.component.css']
 })

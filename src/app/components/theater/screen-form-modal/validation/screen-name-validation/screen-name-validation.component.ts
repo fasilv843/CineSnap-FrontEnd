@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, Input } from '@angular/core'
 import { type AbstractControl } from '@angular/forms'
 
 @Component({
     selector: 'app-screen-name-validation',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './screen-name-validation.component.html',
     styleUrls: ['./screen-name-validation.component.css']
 })

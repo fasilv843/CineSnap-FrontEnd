@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { CommonModule } from '@angular/common'
+
 import { Component, EventEmitter, type OnInit, Output, Input } from '@angular/core'
 import { type FormGroup, FormBuilder, ReactiveFormsModule, FormsModule } from '@angular/forms'
 
 @Component({
     selector: 'app-table-filter',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule
-    ],
+    ReactiveFormsModule,
+    FormsModule
+],
     templateUrl: './table-filter.component.html',
     styleUrls: ['./table-filter.component.css']
 })

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import { Subject, debounceTime } from 'rxjs'
 
 @Component({
     selector: 'app-search',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './search.component.html',
     styleUrls: ['./search.component.css']
 })

@@ -1,3 +1,7 @@
-<div *ngIf="isSubmitted && stateControl && stateControl.errors">
-    <div *ngIf="stateControl.errors['required']" style="color: red;">State is required</div>
-</div>
+@if (isSubmitted && stateControl && stateControl.errors) {
+  <div>
+    @if (stateControl.errors['required']) {
+      <div style="color: red;">State is required</div>
+    }
+  </div>
+}

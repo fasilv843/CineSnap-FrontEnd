@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import { Language, LanguageAbbreviation } from 'src/app/shared/langAbbreviation'
 import { type Movie } from 'src/app/models/movie'
 
 @Component({
     selector: 'app-movie-row',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './movie-row.component.html',
     styleUrls: ['./movie-row.component.css']
 })

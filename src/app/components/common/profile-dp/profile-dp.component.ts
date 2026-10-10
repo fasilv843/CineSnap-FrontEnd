@@ -1,13 +1,11 @@
 import { Component, EventEmitter, Input, Output, computed, effect, inject, signal } from '@angular/core'
 import { CropperDialogueComponent, type CropperDialogueResult } from '../cropper-dialogue/cropper-dialogue.component'
 import { ModalService } from 'src/app/services/modal.service'
-import { CommonModule } from '@angular/common'
+
 
 @Component({
     selector: 'app-profile-dp',
-    imports: [
-        CommonModule
-    ],
+    imports: [],
     templateUrl: './profile-dp.component.html',
     styleUrls: ['./profile-dp.component.css']
 })

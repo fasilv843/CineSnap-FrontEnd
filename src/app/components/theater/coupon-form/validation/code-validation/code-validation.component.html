@@ -1,5 +1,11 @@
 
-<div *ngIf="isSubmitted && codeControl && codeControl.errors">
-    <div *ngIf="codeControl.errors['required']" style="color: red;">Code is required</div>
-    <div *ngIf="codeControl.errors['pattern']" style="color: red;">Invalid Code format</div>
-</div>
+@if (isSubmitted && codeControl && codeControl.errors) {
+  <div>
+    @if (codeControl.errors['required']) {
+      <div style="color: red;">Code is required</div>
+    }
+    @if (codeControl.errors['pattern']) {
+      <div style="color: red;">Invalid Code format</div>
+    }
+  </div>
+}

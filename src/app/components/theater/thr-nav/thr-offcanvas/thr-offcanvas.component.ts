@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 // import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
 import { ActiveModal } from 'src/app/services/modal.service'
 // import { Store } from '@ngrx/store'
 
 @Component({
     selector: 'app-thr-offcanvas',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './thr-offcanvas.component.html',
     styleUrls: ['./thr-offcanvas.component.css']
 })

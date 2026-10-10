@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
 import { Component, Inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActiveModal } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store';
@@ -15,13 +15,11 @@ import { ColValidationComponent } from './validation/col-validation/col-validati
 @Component({
     selector: 'app-screen-form-modal',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        // ? Validation Error Message Components
-        ScreenNameValidationComponent,
-        RowValidationComponent,
-        ColValidationComponent
-    ],
+    ReactiveFormsModule,
+    ScreenNameValidationComponent,
+    RowValidationComponent,
+    ColValidationComponent
+],
     templateUrl: './screen-form-modal.component.html',
     styleUrls: ['./screen-form-modal.component.css']
 })

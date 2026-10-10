@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /* eslint-disable @typescript-eslint/semi */
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, Output } from '@angular/core'
 import { SearchComponent } from '../../common/search/search.component';
 import { Router } from '@angular/router';
 
 @Component({
     imports: [
-        CommonModule,
-        SearchComponent
-    ],
+    SearchComponent
+],
     selector: 'app-admin-movies-search',
     templateUrl: './admin-movies-search.component.html',
     styleUrls: ['./admin-movies-search.component.css']

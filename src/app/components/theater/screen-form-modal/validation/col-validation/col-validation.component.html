@@ -1,6 +1,16 @@
-<div *ngIf="isSubmitted && colControl && colControl.errors">
-    <div *ngIf="colControl.errors['required']" style="color: red;">Columns are required</div>
-    <div *ngIf="colControl.errors['pattern']" style="color: red;">Columns must be a positive number</div>
-    <div *ngIf="colControl.errors['min']" style="color: red;">Columns must be at least {{ colControl.errors['min'].min }}</div>
-    <div *ngIf="colControl.errors['max']" style="color: red;">Columns must be at most {{ colControl.errors['max'].max }}</div>
-</div>
+@if (isSubmitted && colControl && colControl.errors) {
+  <div>
+    @if (colControl.errors['required']) {
+      <div style="color: red;">Columns are required</div>
+    }
+    @if (colControl.errors['pattern']) {
+      <div style="color: red;">Columns must be a positive number</div>
+    }
+    @if (colControl.errors['min']) {
+      <div style="color: red;">Columns must be at least {{ colControl.errors['min'].min }}</div>
+    }
+    @if (colControl.errors['max']) {
+      <div style="color: red;">Columns must be at most {{ colControl.errors['max'].max }}</div>
+    }
+  </div>
+}

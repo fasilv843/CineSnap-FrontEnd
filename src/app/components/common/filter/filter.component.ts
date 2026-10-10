@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common'
+
 import { Component, EventEmitter, Inject, Output, type OnInit, Input } from '@angular/core'
 import { getGenre, getLanguage, isGenreType, isLangType } from 'src/app/helpers/movie'
 import { type IFilterEvent, type langType, type genreType, type valueType } from 'src/app/models/filter'
 import { MovieService } from 'src/app/services/movie.service'
 
 @Component({
-    imports: [CommonModule],
+    imports: [],
     selector: 'app-filter',
     templateUrl: './filter.component.html',
     styleUrls: ['./filter.component.css']

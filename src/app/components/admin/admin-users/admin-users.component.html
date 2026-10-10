@@ -1,61 +1,67 @@
 <app-admin-nav></app-admin-nav>
 
-<app-table-filter 
-(search)="onSearchUsers($event)"
-(pageChange)="onPageChange($event)"
-(itemsPerPageChange)="onItemsPerPageChange($event)"
-[totalItems]="userCount"
->
-	<div class="overflow-x-auto">
-		<table class="w-full p-6 text-xs text-left whitespace-nowrap bg-gray-800 text-white">
-	
-			<thead>
-				<tr class="dark:bg-gray-700">
-					<th class="p-3">No</th>
-					<th class="p-3">Name</th>
-					<th class="p-3">Contact</th>
-					<th class="p-3">Wallet</th>
-					<th class="p-3">DOB</th>
-					<th class="p-3">Address</th>
-					<th class="p-3">Block</th>
-				</tr>
-			</thead>
-			<tbody class="border-b dark:bg-gray-900 dark:border-gray-700">
-	
-				<tr *ngFor="let user of users; index as i">
-					<td class="px-3 font-medium dark:text-gray-400">{{ ((currPage -1) * itemsPerPage) + (i + 1) }}</td>
-					<td class="px-3 py-2">
-						<p>{{ user.name }}</p>
-					</td>
-					<td class="px-3 py-2">
-						<span>{{ user.email }}</span>
-						<p class="dark:text-gray-400">{{ user.mobile }}</p>
-					</td>
-					<td class="px-3 py-2">
-						<p>{{ user.wallet }}</p>
-					</td>
-					<td class="px-3 py-2">
-						<p>{{ user.dob | date:'MMM d, y' }}</p>
-					</td>
-					<td class="px-3 py-2">
-						<div *ngIf="user.address">
-							<p>{{ user.address.city }} {{ user.address.state }}</p>
-							<p class="dark:text-gray-400"> {{ user.address.country }}</p>
-						</div>
-						<div *ngIf="!user.address">
-							<p class="dark:text-gray-400">N/A</p>
-						</div>
-					</td>
-					<td class="px-3 py-2">
-						<button type="button" title="Open details"
-							class="px-2 rounded-full dark:text-black focus:dark:bg-gray-700"
-							[ngClass]="user.isBlocked ? 'bg-green-400 focus:dark:bg-green-600' : 'bg-red-500 focus:dark:bg-red-600'"
-							(click)="onBlock(user._id, user.isBlocked ?  'Unblock' : 'Block')">
-							{{ user.isBlocked ? 'Unblock' : 'Block' }}
-						</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+<app-table-filter
+  (search)="onSearchUsers($event)"
+  (pageChange)="onPageChange($event)"
+  (itemsPerPageChange)="onItemsPerPageChange($event)"
+  [totalItems]="userCount"
+  >
+  <div class="overflow-x-auto">
+    <table class="w-full p-6 text-xs text-left whitespace-nowrap bg-gray-800 text-white">
+
+      <thead>
+        <tr class="dark:bg-gray-700">
+          <th class="p-3">No</th>
+          <th class="p-3">Name</th>
+          <th class="p-3">Contact</th>
+          <th class="p-3">Wallet</th>
+          <th class="p-3">DOB</th>
+          <th class="p-3">Address</th>
+          <th class="p-3">Block</th>
+        </tr>
+      </thead>
+      <tbody class="border-b dark:bg-gray-900 dark:border-gray-700">
+
+        @for (user of users; track user; let i = $index) {
+          <tr>
+            <td class="px-3 font-medium dark:text-gray-400">{{ ((currPage -1) * itemsPerPage) + (i + 1) }}</td>
+            <td class="px-3 py-2">
+              <p>{{ user.name }}</p>
+            </td>
+            <td class="px-3 py-2">
+              <span>{{ user.email }}</span>
+              <p class="dark:text-gray-400">{{ user.mobile }}</p>
+            </td>
+            <td class="px-3 py-2">
+              <p>{{ user.wallet }}</p>
+            </td>
+            <td class="px-3 py-2">
+              <p>{{ user.dob | date:'MMM d, y' }}</p>
+            </td>
+            <td class="px-3 py-2">
+              @if (user.address) {
+                <div>
+                  <p>{{ user.address.city }} {{ user.address.state }}</p>
+                  <p class="dark:text-gray-400"> {{ user.address.country }}</p>
+                </div>
+              }
+              @if (!user.address) {
+                <div>
+                  <p class="dark:text-gray-400">N/A</p>
+                </div>
+              }
+            </td>
+            <td class="px-3 py-2">
+              <button type="button" title="Open details"
+                class="px-2 rounded-full dark:text-black focus:dark:bg-gray-700"
+                [ngClass]="user.isBlocked ? 'bg-green-400 focus:dark:bg-green-600' : 'bg-red-500 focus:dark:bg-red-600'"
+                (click)="onBlock(user._id, user.isBlocked ?  'Unblock' : 'Block')">
+                {{ user.isBlocked ? 'Unblock' : 'Block' }}
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 </app-table-filter>

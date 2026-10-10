@@ -20,84 +20,130 @@
                   <app-email-validation [emailControl]="form.get('email')" [isSubmitted]="isSubmitted"></app-email-validation>
                 </div>
 
-                <div *ngIf="!showOtpField" class="mb-3" (click)="autoFillAddress()">
+                @if (!showOtpField) {
+                  <div class="mb-3" (click)="autoFillAddress()">
                     <input type="radio" class="mx-2"> <label for=""> Get Location</label>
-                </div>
+                  </div>
+                }
 
-                <div *ngIf="!showOtpField" class="mb-3 flex gap-x-2">
+                @if (!showOtpField) {
+                  <div class="mb-3 flex gap-x-2">
                     <div>
-                        <input type="text"  formControlName="country" [(ngModel)]="country"  id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Country" />
-                        <div *ngIf="isSubmitted && form.controls['country'].errors">
-                            <div *ngIf="form.controls['country'].errors['required']" style="color: red;">country is required</div>
+                      <input type="text"  formControlName="country" [(ngModel)]="country"  id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Country" />
+                      @if (isSubmitted && form.controls['country'].errors) {
+                        <div>
+                          @if (form.controls['country'].errors['required']) {
+                            <div style="color: red;">country is required</div>
+                          }
                         </div>
+                      }
                     </div>
                     <div>
-                        <input type="text"  formControlName="state"  [(ngModel)]="state" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="State" />
-                        <div *ngIf="isSubmitted && form.controls['state'].errors">
-                            <div *ngIf="form.controls['state'].errors['required']" style="color: red;">State is required</div>
+                      <input type="text"  formControlName="state"  [(ngModel)]="state" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="State" />
+                      @if (isSubmitted && form.controls['state'].errors) {
+                        <div>
+                          @if (form.controls['state'].errors['required']) {
+                            <div style="color: red;">State is required</div>
+                          }
                         </div>
+                      }
                     </div>
-                </div>
+                  </div>
+                }
 
-                <div *ngIf="!showOtpField" class="mb-3 flex gap-x-2">
+                @if (!showOtpField) {
+                  <div class="mb-3 flex gap-x-2">
                     <div>
-                        <input type="text"  formControlName="district"  [(ngModel)]="district" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="District" />
-                        <div *ngIf="isSubmitted && form.controls['district'].errors">
-                            <div *ngIf="form.controls['district'].errors['required']" style="color: red;">District is required</div>
+                      <input type="text"  formControlName="district"  [(ngModel)]="district" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="District" />
+                      @if (isSubmitted && form.controls['district'].errors) {
+                        <div>
+                          @if (form.controls['district'].errors['required']) {
+                            <div style="color: red;">District is required</div>
+                          }
                         </div>
+                      }
                     </div>
                     <div>
-                        <input type="text"  formControlName="city"  [(ngModel)]="city" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="City" />
-                        <div *ngIf="isSubmitted && form.controls['city'].errors">
-                            <div *ngIf="form.controls['city'].errors['required']" style="color: red;">City is required</div>
+                      <input type="text"  formControlName="city"  [(ngModel)]="city" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="City" />
+                      @if (isSubmitted && form.controls['city'].errors) {
+                        <div>
+                          @if (form.controls['city'].errors['required']) {
+                            <div style="color: red;">City is required</div>
+                          }
                         </div>
+                      }
                     </div>
-                </div>
+                  </div>
+                }
 
 
-                <div *ngIf="!showOtpField" class="mb-3 flex gap-x-2">
+                @if (!showOtpField) {
+                  <div class="mb-3 flex gap-x-2">
                     <input type="text"  formControlName="zip"  [(ngModel)]="zip" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="ZIP Code" />
-                    <div *ngIf="isSubmitted && form.controls['zip'].errors">
-                      <div *ngIf="form.controls['zip'].errors['required']" style="color: red;">ZIP is required</div>
-                      <div *ngIf="form.controls['zip'].errors['pattern']" style="color: red;">Invalid zip format</div>
-                    </div>
-                </div>
+                    @if (isSubmitted && form.controls['zip'].errors) {
+                      <div>
+                        @if (form.controls['zip'].errors['required']) {
+                          <div style="color: red;">ZIP is required</div>
+                        }
+                        @if (form.controls['zip'].errors['pattern']) {
+                          <div style="color: red;">Invalid zip format</div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
 
-                <div *ngIf="!showOtpField" class="mb-3">
+                @if (!showOtpField) {
+                  <div class="mb-3">
                     <input type="text" formControlName="landmark" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Landmark" />
-                </div>
+                  </div>
+                }
 
-                <div *ngIf="!showOtpField" class="mb-3">
+                @if (!showOtpField) {
+                  <div class="mb-3">
                     <input type="text" formControlName="liscenceId" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Liscence ID" />
-                    <div *ngIf="isSubmitted && f['liscenceId'].errors">
-                      <div *ngIf="f['liscenceId'].errors['required']" style="color: red;">Liscence ID is required</div>
-                    </div>
-                </div>
+                    @if (isSubmitted && f['liscenceId'].errors) {
+                      <div>
+                        @if (f['liscenceId'].errors['required']) {
+                          <div style="color: red;">Liscence ID is required</div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
 
-                <div  *ngIf="!showOtpField" class="mb-3">
+                @if (!showOtpField) {
+                  <div  class="mb-3">
                     <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
                     <app-password-validation [passwordControl]="form.get('password')" [isSubmitted]="isSubmitted"></app-password-validation>
-                </div>
-                  
-                <div  *ngIf="!showOtpField" class="mb-3">
+                  </div>
+                }
+
+                @if (!showOtpField) {
+                  <div  class="mb-3">
                     <input type="password" formControlName="repeatPassword" id="form3Example4cdg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Repeat Password" />
                     <app-repeat-pass-validation [repeatPassControl]="form.get('repeatPassword')" [isSubmitted]="isSubmitted"></app-repeat-pass-validation>
-                </div>
+                  </div>
+                }
 
-                <div *ngIf="showOtpField">
+                @if (showOtpField) {
+                  <div>
                     <input type="text" formControlName="otp" id="otp" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Enter OTP" />
-                    <app-otp-validation [otpControl]="form.get('otp')" [showOTPResend]="showOTPResend" [timerStr]="formattedTime" (OTPResend)="resendOTP()"></app-otp-validation>  
-                </div>
-                  
+                    <app-otp-validation [otpControl]="form.get('otp')" [showOTPResend]="showOTPResend" [timerStr]="formattedTime" (OTPResend)="resendOTP()"></app-otp-validation>
+                  </div>
+                }
+
 
                 <div class="flex justify-center my-2">
                   <button type="submit"
-                    class="w-full rounded-md bg-amber-400 hover:bg-amber-500 disabled:opacity-60 px-6 py-2 text-lg font-semibold text-gray-900">{{ showOtpField ? 'Verify' : 'Register' }}</button>
+                  class="w-full rounded-md bg-amber-400 hover:bg-amber-500 disabled:opacity-60 px-6 py-2 text-lg font-semibold text-gray-900">{{ showOtpField ? 'Verify' : 'Register' }}</button>
                 </div>
 
-                <p *ngIf="!showOtpField" class="text-center text-gray-500 mt-3 mb-0">Have already an account? 
+                @if (!showOtpField) {
+                  <p class="text-center text-gray-500 mt-3 mb-0">Have already an account?
                     <a routerLink="/theater/login" class="font-bold text-gray-900"><u>Login here</u></a>
-                </p>
+                  </p>
+                }
 
               </form>
 

@@ -1,5 +1,5 @@
 import { Component, Inject, type OnInit } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import { ActiveModal } from 'src/app/services/modal.service'
 import { FormBuilder, type FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { validateByTrimming } from 'src/app/helpers/validations'
@@ -9,10 +9,9 @@ import { WalletAmountValidationComponent } from './validation/wallet-amount-vali
 @Component({
     selector: 'app-add-to-wallet-modal',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        WalletAmountValidationComponent
-    ],
+    ReactiveFormsModule,
+    WalletAmountValidationComponent
+],
     templateUrl: './add-to-wallet-modal.component.html',
     styleUrls: ['./add-to-wallet-modal.component.css']
 })

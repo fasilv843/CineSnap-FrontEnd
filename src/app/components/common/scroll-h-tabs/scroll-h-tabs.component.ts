@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { CommonModule } from '@angular/common'
+
 import {  AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core'
 
 @Component({
-    imports: [
-        CommonModule
-    ],
+    imports: [],
     selector: 'app-scroll-h-tabs',
     templateUrl: './scroll-h-tabs.component.html',
     styleUrls: ['./scroll-h-tabs.component.css']

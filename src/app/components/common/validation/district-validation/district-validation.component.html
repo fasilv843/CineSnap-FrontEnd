@@ -1,3 +1,7 @@
-<div *ngIf="isSubmitted && districtControl && districtControl.errors">
-    <div *ngIf="districtControl.errors['required']" style="color: red;">District is required</div>
-</div>
+@if (isSubmitted && districtControl && districtControl.errors) {
+  <div>
+    @if (districtControl.errors['required']) {
+      <div style="color: red;">District is required</div>
+    }
+  </div>
+}

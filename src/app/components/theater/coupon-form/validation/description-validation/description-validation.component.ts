@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { Component, Input } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import { AbstractControl } from '@angular/forms'
 
 @Component({
     selector: 'app-description-validation',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './description-validation.component.html',
     styleUrls: ['./description-validation.component.css']
 })

@@ -1,4 +1,8 @@
 
-<div *ngIf="isSubmitted && mobileControl && mobileControl.errors">
-    <div *ngIf="mobileControl.errors['pattern']" style="color: red;">Mobiel should be 10 numbers</div>
-</div>
+@if (isSubmitted && mobileControl && mobileControl.errors) {
+  <div>
+    @if (mobileControl.errors['pattern']) {
+      <div style="color: red;">Mobiel should be 10 numbers</div>
+    }
+  </div>
+}

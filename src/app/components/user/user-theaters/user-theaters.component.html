@@ -4,24 +4,26 @@
   <h2 class="text-3xl font-bold my-3">Cinema Halls Near You</h2>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-5">
-      <!-- Theaters -->
-      <div *ngFor="let thr of theaters" >
+    <!-- Theaters -->
+    @for (thr of theaters; track thr) {
+      <div >
         <div  class="flex gap-5 border p-4 rounded-md">
-            <div class="flex items-center gap-3">
-                <img src="{{ thr.profilePic !== undefined ? folderPath + thr.profilePic : 'https://placehold.it/150x150' }}" alt="{{ thr.name }} image" class="w-32 h-32 rounded-md">
+          <div class="flex items-center gap-3">
+            <img src="{{ thr.profilePic !== undefined ? folderPath + thr.profilePic : 'https://placehold.it/150x150' }}" alt="{{ thr.name }} image" class="w-32 h-32 rounded-md">
+          </div>
+          <div class="flex flex-col justify-between gap-3">
+            <div>
+              <h3 class="font-bold text-xl">{{ thr.name }}</h3>
+              <p class="text-gray-500 text-sm">{{ thr.address.landmark }} {{ thr.address.city }}</p>
             </div>
-            <div class="flex flex-col justify-between gap-3">
-                <div>
-                    <h3 class="font-bold text-xl">{{ thr.name }}</h3>
-                    <p class="text-gray-500 text-sm">{{ thr.address.landmark }} {{ thr.address.city }}</p>
-                </div>
-                <div class="flex gap-2">
-                    <a target="_blank" href="http://maps.google.co.uk/maps?q={{ thr.coords.coordinates[1] }},{{ thr.coords.coordinates[0] }}" class="inline-block rounded-md border px-3 py-1.5 border-transparent bg-blue-600 hover:bg-blue-700 text-white">Direction</a>
-                    <a [routerLink]="['/user/theater', thr._id]" class="inline-block rounded-md border px-3 py-1.5 border-transparent bg-gray-500 hover:bg-gray-600 text-white">View</a>
-                </div>
+            <div class="flex gap-2">
+              <a target="_blank" href="http://maps.google.co.uk/maps?q={{ thr.coords.coordinates[1] }},{{ thr.coords.coordinates[0] }}" class="inline-block rounded-md border px-3 py-1.5 border-transparent bg-blue-600 hover:bg-blue-700 text-white">Direction</a>
+              <a [routerLink]="['/user/theater', thr._id]" class="inline-block rounded-md border px-3 py-1.5 border-transparent bg-gray-500 hover:bg-gray-600 text-white">View</a>
             </div>
+          </div>
         </div>
-    </div>
-    
+      </div>
+    }
+
   </div>
 </div>

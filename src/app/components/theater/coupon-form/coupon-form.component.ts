@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import { FormBuilder, type FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ActiveModal } from 'src/app/services/modal.service'
 import { Store, select } from '@ngrx/store'
@@ -20,19 +20,18 @@ import { CouponCountValidationComponent } from './validation/coupon-count-valida
 @Component({
     selector: 'app-coupon-form',
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        CodeValidationComponent,
-        DescriptionValidationComponent,
-        CouponStartValidationComponent,
-        CouponEndValidationComponent,
-        DiscountValidationComponent,
-        MinTicketValidationComponent,
-        CouponTypeValidationComponent,
-        DiscountTypeValidationComponent,
-        MaxDiscountValidationComponent,
-        CouponCountValidationComponent
-    ],
+    ReactiveFormsModule,
+    CodeValidationComponent,
+    DescriptionValidationComponent,
+    CouponStartValidationComponent,
+    CouponEndValidationComponent,
+    DiscountValidationComponent,
+    MinTicketValidationComponent,
+    CouponTypeValidationComponent,
+    DiscountTypeValidationComponent,
+    MaxDiscountValidationComponent,
+    CouponCountValidationComponent
+],
     templateUrl: './coupon-form.component.html',
     styleUrls: ['./coupon-form.component.css']
 })

@@ -1,5 +1,5 @@
 import { type AfterViewInit, Component, type ElementRef, Input, type OnChanges, type OnDestroy, ViewChild } from '@angular/core'
-import { CommonModule } from '@angular/common'
+
 import {
   CategoryScale,
   Chart,
@@ -22,9 +22,7 @@ const surfaceBorder = '#e5e7eb' // gray-200
 
 @Component({
     selector: 'app-line-graph',
-    imports: [
-        CommonModule
-    ],
+    imports: [],
     templateUrl: './line-graph.component.html',
     styleUrls: ['./line-graph.component.css']
 })

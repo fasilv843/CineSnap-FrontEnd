@@ -1,3 +1,7 @@
-<div *ngIf="isSubmitted && couponTypeControl && couponTypeControl.errors">
-    <div *ngIf="couponTypeControl.errors['required']" style="color: red;">Coupon Type is required</div>
-</div>
+@if (isSubmitted && couponTypeControl && couponTypeControl.errors) {
+  <div>
+    @if (couponTypeControl.errors['required']) {
+      <div style="color: red;">Coupon Type is required</div>
+    }
+  </div>
+}

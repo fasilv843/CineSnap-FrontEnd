@@ -1,6 +1,14 @@
 
-<div *ngIf="isSubmitted && descriptionControl && descriptionControl.errors">
-    <div *ngIf="descriptionControl.errors['required']" style="color: red;">Description is required</div>
-    <div *ngIf="descriptionControl.errors['minlength']" style="color: red;">Description must contain {{ descriptionControl.errors['minlength'].requiredLength }} characters</div>
-    <div *ngIf="descriptionControl.errors['maxlength']" style="color: red;">Description max contain {{ descriptionControl.errors['maxlength'].requiredLength }} characters</div>
-</div>
+@if (isSubmitted && descriptionControl && descriptionControl.errors) {
+  <div>
+    @if (descriptionControl.errors['required']) {
+      <div style="color: red;">Description is required</div>
+    }
+    @if (descriptionControl.errors['minlength']) {
+      <div style="color: red;">Description must contain {{ descriptionControl.errors['minlength'].requiredLength }} characters</div>
+    }
+    @if (descriptionControl.errors['maxlength']) {
+      <div style="color: red;">Description max contain {{ descriptionControl.errors['maxlength'].requiredLength }} characters</div>
+    }
+  </div>
+}
