@@ -11,6 +11,7 @@ import { imagesFolderPath } from 'src/app/shared/constants'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { selectCoords } from 'src/app/states/coords/coords.selector'
 import { UserNavComponent } from '../user-nav/user-nav.component'
+import { valueOf } from 'src/app/helpers/resource'
 
 // Used when the browser can't share a location: Ramanattukara
 const FALLBACK = { name: 'Ramanattukara', coordinates: [75.869032, 11.178324] }
@@ -88,7 +89,7 @@ export class UserTheatersComponent {
 
   protected readonly visibleTheaters = computed(() => {
     const term = this.search().toLowerCase()
-    const list = this.theaters.value() ?? []
+    const list = valueOf(this.theaters) ?? []
     return term === '' ? list : list.filter(theater => theater.searchText.includes(term))
   })
 

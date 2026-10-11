@@ -1,38 +1,39 @@
-import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core'
-
-import { Language, LanguageAbbreviation } from 'src/app/shared/langAbbreviation'
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core'
+import { DatePipe } from '@angular/common'
 import { type Movie } from 'src/app/models/movie'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { TmdbImportService } from '../../admin/tmdb-import.service'
 
+/** A TMDB movie poster with "Add to CineSnap" (or "Update" when it's already there). */
 @Component({
-    selector: 'app-movie-row',
-    imports: [],
-    templateUrl: './movie-row.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    styleUrls: ['./movie-row.component.css']
+  selector: 'app-tmdb-movie-card',
+  imports: [DatePipe, ButtonDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block' },
+  template: `
+    @let m = movie();
+    <figure>
+      <div class="relative">
+        <img [src]="'https://image.tmdb.org/t/p/w342' + m.poster_path" [alt]="m.title + ' poster'" class="aspect-[2/3] w-full rounded-card bg-muted object-cover" loading="lazy" />
+        @if (added()) {
+          <span class="absolute left-2 top-2 rounded-full bg-surface shadow-raised"><span class="status-pill" data-tone="success">On CineSnap</span></span>
+        }
+      </div>
+      <figcaption class="mt-2">
+        <span class="line-clamp-1 font-semibold">{{ m.title }}</span>
+        <span class="text-sm text-muted">{{ m.release_date | date: 'y' }}</span>
+      </figcaption>
+    </figure>
+    <button csButton size="sm" type="button" class="mt-2 w-full" [variant]="added() ? 'secondary' : 'primary'" [disabled]="saving()" (click)="importer.add(m)">
+      @if (saving()) { <span class="spinner"></span> Saving… } @else { {{ added() ? 'Update details' : 'Add to CineSnap' }} }
+      <span class="sr-only"> {{ m.title }}</span>
+    </button>
+  `
 })
-export class MovieRowComponent {
-  @Input() tmdbIds: number[] = []
-  @Input() language: string = Language.MALAYALAM
-  @Input() movies: Movie[] = []
-  @Input() searchResult = false
+export class TmdbMovieCardComponent {
+  protected readonly importer = inject(TmdbImportService)
+  readonly movie = input.required<Movie>()
 
-  getTitle (): string {
-    if (this.searchResult) return 'Search Results'
-    return LanguageAbbreviation[this.language as Language] + ' Movies'
-  }
-
-  @Output() exploreLangEvent = new EventEmitter<Language>()
-  @Output() addMovieEvent = new EventEmitter<Movie>()
-
-  exploreLanguage (): void {
-    this.exploreLangEvent.emit(this.language as Language)
-  }
-
-  addMovie (movie: Movie): void {
-    this.addMovieEvent.emit(movie)
-  }
-
-  isMovieAlreadyExist (tmdbId: number): boolean {
-    return this.tmdbIds.includes(tmdbId)
-  }
+  protected readonly added = computed(() => this.importer.ids().has(this.movie().tmdbId))
+  protected readonly saving = computed(() => this.importer.saving().has(this.movie().tmdbId))
 }

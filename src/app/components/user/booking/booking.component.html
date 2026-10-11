@@ -1,142 +1,157 @@
-<app-user-nav></app-user-nav>
+<app-user-nav />
 
-<div class="w-full text-center text-lg text-red-500 py-2">
-  <p class="font-bold">Session will expire in {{ formattedTime }}</p>
-</div>
+<main class="container max-w-5xl pb-16 pt-6 sm:pt-8">
+  <h1 class="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">Review and pay</h1>
 
-@if (tempTicket) {
-  <div class="flex flex-col md:flex-row w-full justify-around h-fit border p-4 my-4 bg-white shadow-lg rounded-lg overflow-hidden">
-    <div class="flex flex-col md:flex-row border p-4">
-      <div class="mb-4 md:mr-4">
-        <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="{{ movie.title }} Poster" class=" h-80 object-cover rounded-lg shadow-md">
-      </div>
-      <div class="flex flex-col">
-        <div class="mb-4">
-          <h6 class="text-xl font-semibold mb-2">{{ movie.title }}</h6>
-          <span class="text-gray-600">{{ getLanguage(movie.language) }}</span>
-        </div>
-        <div class="mb-4">
-          <h6 class="text-xl font-semibold mb-2">{{ theater.name }}</h6>
-          <span class="text-gray-600">{{ theater.address.city }}, {{ theater.address.district }}, {{ theater.address.state }}, {{ theater.address.country }}, {{ theater.address.zip }}</span>
-        </div>
-        <div class="flex items-center mb-4">
-          <div class="flex flex-col mr-4">
-            <h6 class="text-lg font-semibold mb-1">{{ tempTicket.startTime  | date: 'EEE, dd MMM yyyy, hh:mm a' }}</h6>
-            <span class="text-gray-600">{{ tempTicket.screenId.name }}</span>
-            <div class="flex flex-wrap gap-1 mt-1">
-              @for (seat of seats; track seat) {
-                <span class="bg-green-500 text-white p-1 rounded-sm w-1/6">{{ seat }}</span>
+  @if (ticket.error()) {
+    <div class="card mt-6">
+      <cs-state-panel heading="This booking couldn't be loaded" message="Your seats may have been released. Try again, or pick your seats again." [retry]="true" (retried)="ticket.reload()">
+        <a csButton variant="ghost" size="sm" routerLink="/user/theaters">Theaters</a>
+      </cs-state-panel>
+    </div>
+  } @else if (ticket.isLoading()) {
+    <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_22rem]" aria-busy="true">
+      <div class="skeleton h-72"></div>
+      <div class="skeleton h-96"></div>
+    </div>
+  } @else if (ticket.value() == null || expired()) {
+    <div class="card mt-6">
+      <cs-state-panel heading="Your seats were released" message="Held seats are kept for 10 minutes. Pick them again to book.">
+        <a csButton size="sm" [routerLink]="theaterLink()">Pick seats again</a>
+      </cs-state-panel>
+    </div>
+  } @else if (ticket.value(); as t) {
+    <p class="hold-banner mt-4" [class.hold-urgent]="secondsLeft() < 120" role="timer" aria-live="off">
+      Your seats are held for <strong class="tabular-nums">{{ timeLeft() }}</strong>
+    </p>
+
+    <div class="mt-6 grid items-start gap-6 lg:grid-cols-[1fr_22rem]">
+      <!-- Order -->
+      <section class="card flex flex-col gap-5 p-5 sm:flex-row" aria-label="Your booking">
+        @if (movie(); as m) {
+          <img [src]="m.poster" [alt]="m.title + ' poster'" class="aspect-[2/3] w-28 shrink-0 self-start rounded-control bg-muted object-cover sm:w-36" />
+        }
+        <div class="min-w-0 flex-1">
+          <h2 class="text-2xl font-semibold">{{ movie()?.title ?? 'Movie no longer listed' }}</h2>
+          @if (movie(); as m) { <p class="text-sm text-muted">{{ m.meta }}</p> }
+
+          <dl class="mt-5 grid gap-4 sm:grid-cols-2">
+            <div>
+              <dt class="text-sm text-muted">When</dt>
+              <dd class="font-semibold">{{ t.startTime | date: 'EEE d MMM, h:mm a' }}</dd>
+            </div>
+            <div>
+              <dt class="text-sm text-muted">Where</dt>
+              @let theater = t.theaterId;
+              @let screen = t.screenId;
+              <dd class="font-semibold">{{ theater?.name ?? 'Theater no longer listed' }}{{ screen ? ' · ' + screen.name : '' }}</dd>
+              @if (theater?.address; as a) {
+                <dd class="text-sm text-muted">{{ a.city }}, {{ a.district }}</dd>
               }
             </div>
-          </div>
-          <div class="bg-gray-200 p-2 rounded-md">
-            <p class="text-gray-900 text-lg text-center font-semibold">{{ tempTicket.seatCount }}</p>
-            <p class="text-gray-700 text-center">Tickets</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="flex-col bg-gray-200 p-4 rounded-lg border">
-      <div>
-        <h5 class="text-xl font-semibold mb-4">Payment Details</h5>
-        @if (diamondSeats; as d) {
-          <div class="flex justify-between mb-2">
-            <p>{{ d.name }} x {{ d.seats.length }}</p>
-            <span>&#8377; {{ (d.singlePrice + d.CSFeePerTicket) * d.seats.length }}</span>
-          </div>
-        }
-        @if (goldSeats; as g) {
-          <div class="flex justify-between mb-2">
-            <p>{{ g.name }} x {{ g.seats.length }}</p>
-            <span>&#8377; {{ (g.singlePrice + g.CSFeePerTicket) * g.seats.length }}</span>
-          </div>
-        }
-        @if (silverSeats; as s) {
-          <div class="flex justify-between mb-2">
-            <p>{{ s.name }} x {{ s.seats.length }}</p>
-            <span>&#8377; {{ (s.singlePrice + s.CSFeePerTicket) * s.seats.length }}</span>
-          </div>
-        }
-        <div class="flex justify-between font-bold mb-4">
-          <p>Total</p>
-          <span>&#8377; {{ tempTicket.totalPrice }}</span>
-        </div>
-        @if (appliedCoupon) {
-          <div class="flex justify-between font-bold mb-4">
-            <p>Coupon Discount: </p>
-            <span>&#8377; {{ getDiscountedAmt(appliedCoupon) }}</span>
-          </div>
-        }
-      </div>
-      @if (coupons.length) {
-        <div class="flex justify-between my-2">
-          <div class="flex items-center">
-            <div>
-              <p class="text-lg font-bold">{{ suggestionCoupon.code }}</p>
-              <p class="text-sm text-gray-500">{{ suggestionCoupon.description }}</p>
+            <div class="sm:col-span-2">
+              <dt class="text-sm text-muted">{{ seats().length }} {{ seats().length === 1 ? 'seat' : 'seats' }}</dt>
+              <dd class="mt-1 flex flex-wrap gap-1.5">
+                @for (seat of seats(); track seat) {
+                  <span class="badge">{{ seat }}</span>
+                }
+              </dd>
             </div>
-          </div>
-          <div class="flex items-center space-x-2">
-            @if (appliedCouponId !== suggestionCoupon._id) {
-              <button (click)="applyCoupon(suggestionCoupon)"
-                class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-hidden focus:ring-3 focus:border-blue-300">
-                Apply
-              </button>
-            }
-            @if (appliedCouponId === suggestionCoupon._id) {
-              <button (click)="applyCoupon(suggestionCoupon)"
-                class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-hidden focus:ring-3 focus:border-green-300">
-                Applied
-              </button>
-            }
-          </div>
+          </dl>
         </div>
-      }
-      <div class="my-2">
-        @if (coupons.length > 1) {
-          <a (click)="showCouponsModal()" class="cursor-pointer text-blue-600 underline">Show more coupons</a>
+      </section>
+
+      <!-- Payment -->
+      <section class="card p-5" aria-labelledby="pay-heading">
+        <h2 id="pay-heading" class="text-lg font-semibold">Payment</h2>
+
+        <dl class="mt-4 space-y-2 text-sm">
+          @for (line of lines(); track line.name) {
+            <div class="flex justify-between gap-4">
+              <dt class="text-muted">{{ line.name }} × {{ line.seats.length }}</dt>
+              <dd class="tabular-nums">₹{{ line.singlePrice * line.seats.length }}</dd>
+            </div>
+          }
+          <div class="flex justify-between gap-4">
+            <dt class="text-muted">Booking fee</dt>
+            <dd class="tabular-nums">₹{{ fees() }}</dd>
+          </div>
+          @if (appliedCoupon(); as c) {
+            <div class="flex justify-between gap-4 text-success">
+              <dt>Coupon {{ c.code }}</dt>
+              <dd class="tabular-nums">−₹{{ discount() }}</dd>
+            </div>
+          }
+          <div class="flex justify-between gap-4 border-t border-default pt-3 text-base font-semibold">
+            <dt>Total</dt>
+            <dd class="tabular-nums">₹{{ total() }}</dd>
+          </div>
+        </dl>
+
+        <!-- Coupons -->
+        <div class="mt-5 border-t border-default pt-4">
+          @if (coupons.isLoading()) {
+            <div class="skeleton h-12"></div>
+          } @else if (coupons.error()) {
+            <p class="flex items-center justify-between gap-2 text-sm text-muted">
+              Coupons couldn't be loaded.
+              <button csButton variant="link" type="button" (click)="coupons.reload()">Try again</button>
+            </p>
+          } @else if (suggestedCoupon(); as c) {
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="font-semibold">{{ c.code }}</p>
+                <p class="truncate text-sm text-muted">{{ c.description }}</p>
+              </div>
+              <button csButton size="sm" type="button" [variant]="appliedCoupon()?._id === c._id ? 'secondary' : 'accent'"
+                [attr.aria-pressed]="appliedCoupon()?._id === c._id" (click)="toggleCoupon(c)">
+                {{ appliedCoupon()?._id === c._id ? 'Remove' : 'Apply' }}
+              </button>
+            </div>
+            @if ((coupons.value() ?? []).length > 1) {
+              <button csButton variant="link" type="button" class="mt-2 text-sm" (click)="showAllCoupons()">
+                See all {{ coupons.value()?.length }} coupons
+              </button>
+            }
+          } @else {
+            <p class="text-sm text-muted">No coupons for this booking.</p>
+          }
+        </div>
+
+        <!-- Method -->
+        @if (wallet() > 0) {
+          <fieldset class="mt-5 border-t border-default pt-4">
+            <legend class="sr-only">Pay with</legend>
+            @if (walletCovers()) {
+              <div class="space-y-2">
+                <label class="method">
+                  <input type="radio" name="method" value="Wallet" [checked]="method() === 'Wallet'" (change)="method.set('Wallet')" />
+                  <span class="flex-1">CineSnap wallet</span>
+                  <span class="text-sm text-muted">₹{{ wallet() }}</span>
+                </label>
+                <label class="method">
+                  <input type="radio" name="method" value="Razorpay" [checked]="method() === 'Razorpay'" (change)="method.set('Razorpay')" />
+                  <span class="flex-1">Card, UPI or netbanking</span>
+                </label>
+              </div>
+            } @else {
+              <label class="method">
+                <input type="checkbox" [checked]="useWallet()" (change)="useWallet.set(!useWallet())" />
+                <span class="flex-1">Use wallet balance</span>
+                <span class="text-sm text-muted">₹{{ wallet() }}</span>
+              </label>
+            }
+          </fieldset>
         }
-      </div>
-      @if (user.wallet >= tempTicket.totalPrice - getDiscountedAmt(appliedCoupon)) {
-        <div class="flex flex-col">
-          <label class="inline-flex my-1">
-            <input type="radio" class="form-radio" name="payment-method" [(ngModel)]="paymentMethod" value="Razorpay" selected>
-            <span class="ml-2">Razorpay</span>
-          </label>
-          <label class="inline-flex my-1">
-            <input type="radio" class="form-radio" name="payment-method" [(ngModel)]="paymentMethod" value="Wallet">
-            <span class="ml-2">Wallet {{ user.wallet }}</span>
-          </label>
-        </div>
-      }
-      @if (user.wallet < tempTicket.totalPrice - getDiscountedAmt(appliedCoupon) && user.wallet > 0) {
-        <div class="flex flex-col">
-          <label class="inline-flex items-center my-2">
-            <input type="checkbox" (click)="toggleUsewallet()">
-            <span class="ml-2">Use Wallet {{ user.wallet }}</span>
-          </label>
-        </div>
-      }
-      <button type="submit" class="w-full bg-amber-400 hover:bg-amber-600 text-white rounded-md px-5 py-2" (click)="payForTicket(tempTicket.totalPrice - getDiscountedAmt(appliedCoupon))">
-        Proceed To Pay &#8377; {{ getPayAmount() }}
-      </button>
-      <!-- <div *ngIf="user.wallet > tempTicket.totalPrice - getDiscountedAmt(appliedCoupon); else showCheckbox" class="flex flex-col ">
-      <label class="inline-flex my-1">
-        <input type="radio" class="form-radio" name="payment-method" value="razorpay">
-        <span class="ml-2">Razorpay</span>
-      </label>
-      <label class="inline-flex my-1">
-        <input type="radio" class="form-radio" name="payment-method" value="wallet">
-        <span class="ml-2">Wallet {{ user.wallet }}</span>
-      </label>
+
+        <button csButton size="lg" type="button" class="mt-5 w-full" [disabled]="paying() || !user()" (click)="pay()">
+          @if (paying()) { <span class="spinner"></span> Processing… } @else { Pay ₹{{ payable() }} }
+        </button>
+        <p class="mt-2 text-center text-xs text-subtle">
+          @if (walletCovers() && method() === 'Wallet') { Paid from your wallet. } @else { Secure checkout by Razorpay. }
+          Cancel up to 4 hours before the show for a refund to your wallet.
+        </p>
+      </section>
     </div>
-    <ng-template #showCheckbox >
-      <label class="inline-flex my-1">
-        <input type="radio" class="form-radio" name="payment-method" value="wallet">
-        <span class="ml-2">Use Wallet {{ user.wallet }}</span>
-      </label>
-    </ng-template>
-    <button (click)="payForTicket(tempTicket.totalPrice- getDiscountedAmt(appliedCoupon))" class="w-full bg-amber-400 hover:bg-amber-600 text-white rounded-md px-5 py-2">Proceed To Pay &#8377; {{ tempTicket.totalPrice - getDiscountedAmt(appliedCoupon) }}</button> -->
-  </div>
-</div>
-}
+  }
+</main>

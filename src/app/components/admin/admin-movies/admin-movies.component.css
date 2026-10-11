@@ -1,0 +1,28 @@
+/* A sideways-scrolling shelf of posters */
+.movie-row {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: 0.5rem;
+  margin-inline: -1rem;
+  padding-inline: 1rem;
+}
+
+.movie-row > * {
+  scroll-snap-align: start;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .movie-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .movie-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}

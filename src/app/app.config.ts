@@ -1,4 +1,4 @@
-import { type ApplicationConfig, isDevMode, provideZoneChangeDetection } from '@angular/core'
+import { type ApplicationConfig, isDevMode, provideZonelessChangeDetection } from '@angular/core'
 import { provideRouter } from '@angular/router'
 import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http'
 import { provideStore } from '@ngrx/store'
@@ -13,13 +13,13 @@ import { reducers } from './states/app.state'
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection(),
+    provideZonelessChangeDetection(),
     provideRouter(routes),
     provideHttpClient(
       withXhr(),
       withInterceptors([jwtInterceptor, transformUrlInterceptor, errorHandlerInterceptor])
     ),
     provideStore(reducers, { metaReducers: [hydrationMetaReducer] }),
-    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode(), connectInZone: true })
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
   ]
 }

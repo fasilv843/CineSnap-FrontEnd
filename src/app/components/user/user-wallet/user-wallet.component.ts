@@ -12,6 +12,7 @@ import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { PaginationComponent } from 'src/app/shared/ui/pagination.component'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 import { UserNavComponent } from '../user-nav/user-nav.component'
+import { valueOf } from 'src/app/helpers/resource'
 
 const PAGE_SIZES = [10, 20, 50]
 
@@ -55,8 +56,8 @@ export class UserWalletComponent {
     )
   })
 
-  private readonly rows = computed(() => this.history.value()?.walletHistory ?? [])
-  protected readonly total = computed(() => this.history.value()?.count ?? 0)
+  private readonly rows = computed(() => valueOf(this.history)?.walletHistory ?? [])
+  protected readonly total = computed(() => valueOf(this.history)?.count ?? 0)
 
   protected readonly table = injectTable(() => ({
     features,

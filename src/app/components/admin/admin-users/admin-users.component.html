@@ -1,67 +1,69 @@
-<app-admin-nav></app-admin-nav>
+<main class="mx-auto max-w-6xl px-4 py-6 sm:px-8 lg:py-10">
+  <cs-page-header heading="Users" description="Movie-goers with a CineSnap account.">
+    <cs-search-field class="w-full sm:w-72" [value]="paging.query()" label="Search users" placeholder="Search by name or email" (search)="paging.setQuery($event)" />
+  </cs-page-header>
 
-<app-table-filter
-  (search)="onSearchUsers($event)"
-  (pageChange)="onPageChange($event)"
-  (itemsPerPageChange)="onItemsPerPageChange($event)"
-  [totalItems]="userCount"
-  >
-  <div class="overflow-x-auto">
-    <table class="w-full p-6 text-xs text-left whitespace-nowrap bg-gray-800 text-white">
-
-      <thead>
-        <tr class="dark:bg-gray-700">
-          <th class="p-3">No</th>
-          <th class="p-3">Name</th>
-          <th class="p-3">Contact</th>
-          <th class="p-3">Wallet</th>
-          <th class="p-3">DOB</th>
-          <th class="p-3">Address</th>
-          <th class="p-3">Block</th>
-        </tr>
-      </thead>
-      <tbody class="border-b dark:bg-gray-900 dark:border-gray-700">
-
-        @for (user of users; track user; let i = $index) {
-          <tr>
-            <td class="px-3 font-medium dark:text-gray-400">{{ ((currPage -1) * itemsPerPage) + (i + 1) }}</td>
-            <td class="px-3 py-2">
-              <p>{{ user.name }}</p>
-            </td>
-            <td class="px-3 py-2">
-              <span>{{ user.email }}</span>
-              <p class="dark:text-gray-400">{{ user.mobile }}</p>
-            </td>
-            <td class="px-3 py-2">
-              <p>{{ user.wallet }}</p>
-            </td>
-            <td class="px-3 py-2">
-              <p>{{ user.dob | date:'MMM d, y' }}</p>
-            </td>
-            <td class="px-3 py-2">
-              @if (user.address) {
-                <div>
-                  <p>{{ user.address.city }} {{ user.address.state }}</p>
-                  <p class="dark:text-gray-400"> {{ user.address.country }}</p>
-                </div>
+  <section class="card mt-6 overflow-hidden" aria-label="Users" [attr.aria-busy]="users.isLoading()">
+    @if (users.error()) {
+      <cs-state-panel heading="Users couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="users.reload()" />
+    } @else if (users.isLoading() && rows().length === 0) {
+      <div class="space-y-3 p-5">
+        @for (i of [0, 1, 2, 3, 4]; track i) { <div class="skeleton h-12"></div> }
+      </div>
+    } @else if (total() === 0) {
+      <cs-state-panel [heading]="paging.query() ? 'No users match “' + paging.query() + '”' : 'No users yet'"
+        [message]="paging.query() ? 'Try another name or email.' : 'People who sign up show up here.'" />
+    } @else {
+      <table class="data-table" [class.opacity-60]="users.isLoading()">
+        <thead>
+          @for (headerGroup of table.getHeaderGroups(); track headerGroup.id) {
+            <tr>
+              @for (header of headerGroup.headers; track header.id) {
+                <th scope="col" [class.text-right]="header.column.id === 'wallet' || header.column.id === 'actions'">{{ header.column.columnDef.header }}</th>
               }
-              @if (!user.address) {
-                <div>
-                  <p class="dark:text-gray-400">N/A</p>
+            </tr>
+          }
+        </thead>
+        <tbody>
+          @for (row of table.getRowModel().rows; track row.id) {
+            @let u = row.original;
+            <tr>
+              <td>
+                <div class="flex items-center gap-3">
+                  <cs-avatar [name]="u.name" [src]="avatar(u)" />
+                  <div class="min-w-0">
+                    <p class="font-semibold">{{ u.name }}</p>
+                    <p class="break-all text-sm text-muted">{{ u.email }}</p>
+                  </div>
                 </div>
-              }
-            </td>
-            <td class="px-3 py-2">
-              <button type="button" title="Open details"
-                class="px-2 rounded-full dark:text-black dark:focus:bg-gray-700"
-                [ngClass]="user.isBlocked ? 'bg-green-400 dark:focus:bg-green-600' : 'bg-red-500 dark:focus:bg-red-600'"
-                (click)="onBlock(user._id, user.isBlocked ?  'Unblock' : 'Block')">
-                {{ user.isBlocked ? 'Unblock' : 'Block' }}
-              </button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-</app-table-filter>
+              </td>
+              <td data-label="Mobile">{{ u.mobile ?? '—' }}</td>
+              <td data-label="Location">
+                @if (u.address) {
+                  {{ u.address.city }}<span class="block text-sm text-muted">{{ u.address.state }}</span>
+                } @else {
+                  <span class="text-subtle">Not added</span>
+                }
+              </td>
+              <td data-label="Wallet" class="text-right tabular-nums">₹{{ u.wallet }}</td>
+              <td data-label="Status">
+                <span class="status-pill" [attr.data-tone]="u.isBlocked ? 'danger' : 'success'">{{ u.isBlocked ? 'Blocked' : 'Active' }}</span>
+              </td>
+              <td data-label="Actions" class="text-right">
+                <button csButton size="sm" type="button" [variant]="u.isBlocked ? 'secondary' : 'danger'" [disabled]="busy() === u._id" (click)="toggleBlock(u)">
+                  @if (busy() === u._id) { <span class="spinner"></span> }
+                  {{ u.isBlocked ? 'Unblock' : 'Block' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  @if (total() > 0) {
+    <cs-pagination class="mt-4 block" [page]="paging.page()" [pageSize]="paging.limit()" [total]="total()" [pageSizes]="paging.pageSizes"
+      (pageChange)="paging.goToPage($event)" (pageSizeChange)="paging.setPageSize($event)" />
+  }
+</main>

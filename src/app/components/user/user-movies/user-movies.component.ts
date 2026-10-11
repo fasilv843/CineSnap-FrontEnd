@@ -10,6 +10,7 @@ import { MovieService } from 'src/app/services/movie.service'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { InViewDirective } from 'src/app/shared/ui/in-view.directive'
 import { UserNavComponent } from '../user-nav/user-nav.component'
+import { valueOf } from 'src/app/helpers/resource'
 
 const PAGE_SIZE = 10 // fixed by the backend
 const SEARCH_DEBOUNCE_MS = 350
@@ -92,7 +93,7 @@ export class UserMoviesComponent {
 
   // All pages loaded so far. A first page replaces the list; later pages are appended.
   protected readonly movies = linkedSignal<MoviePage | undefined, MovieCard[]>({
-    source: this.pageResource.value,
+    source: () => valueOf(this.pageResource),
     computation: (page, previous) => {
       if (page === undefined) return previous?.value ?? []
       return page.page === 1 ? page.movies : [...(previous?.value ?? []), ...page.movies]
@@ -101,7 +102,7 @@ export class UserMoviesComponent {
 
   protected readonly isLoading = this.pageResource.isLoading
   protected readonly error = this.pageResource.error
-  protected readonly isComplete = computed(() => this.pageResource.value()?.complete ?? false)
+  protected readonly isComplete = computed(() => valueOf(this.pageResource)?.complete ?? false)
   protected readonly isFirstLoad = computed(() => this.isLoading() && this.movies().length === 0)
   // A new query is loading while the previous results are still on screen
   protected readonly isRefreshing = computed(() => this.isLoading() && this.page() === 1 && this.movies().length > 0)

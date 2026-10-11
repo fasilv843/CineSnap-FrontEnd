@@ -1,166 +1,211 @@
-/* eslint-disable @typescript-eslint/semi */
-import { HttpClient } from '@angular/common/http';
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { FormBuilder, type FormGroup, type AbstractControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { getLocation } from 'src/app/helpers/location';
-import { formatTime } from 'src/app/helpers/timer';
-import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations';
-import { type IApiTheaterAuthRes } from 'src/app/models/theater';
-import { GeoLocationService } from 'src/app/services/geo-location.service';
-import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER } from 'src/app/shared/constants';
-import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators';
-import Swal from 'sweetalert2';
-import { NameValidationComponent } from '../../common/validation/name-validation/name-validation.component';
-import { EmailValidationComponent } from '../../common/validation/email-validation/email-validation.component';
-import { PasswordValidationComponent } from '../../common/validation/password-validation/password-validation.component';
-import { RepeatPassValidationComponent } from '../../common/validation/repeat-pass-validation/repeat-pass-validation.component';
-import { OtpValidationComponent } from '../../common/validation/otp-validation/otp-validation.component';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core'
+import { HttpClient } from '@angular/common/http'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { Router, RouterLink } from '@angular/router'
+import { type Observable, type Subscription, catchError, map, of, switchMap, take, timer } from 'rxjs'
+import { getLocation } from 'src/app/helpers/location'
+import { formatTime } from 'src/app/helpers/timer'
+import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations'
+import { GeoLocationService } from 'src/app/services/geo-location.service'
+import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants'
+import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators'
+import { AuthShellComponent } from 'src/app/shared/ui/auth-shell.component'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 
+type Step = 'details' | 'verify'
+interface Coords { lat: number, lon: number }
+
+/** Theater sign-up in two steps: theater details, then the 4-digit code the backend emails. Approval follows. */
 @Component({
-    selector: 'app-thr-register',
-    templateUrl: './thr-register.component.html',
-    styleUrls: ['./thr-register.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FormsModule, ReactiveFormsModule, NameValidationComponent, EmailValidationComponent, PasswordValidationComponent, RepeatPassValidationComponent, OtpValidationComponent, RouterLink]
+  selector: 'app-thr-register',
+  templateUrl: './thr-register.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, RouterLink, AuthShellComponent, ButtonDirective, FieldErrorComponent]
 })
 export class ThrRegisterComponent {
-  private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
-  private readonly fromBuilder = inject(FormBuilder);
-  private readonly store = inject(Store);
-  private readonly locationService = inject(GeoLocationService);
+  private readonly http = inject(HttpClient)
+  private readonly router = inject(Router)
+  private readonly geo = inject(GeoLocationService)
 
-  isSubmitted = false
-  showOtpField = false
-  remainingTime = 0
-  formattedTime: string = '03:00'
-  otpResendCount: number = 0
-  showOTPResend: boolean = true
-  getLocationClicked = false
-  form!: FormGroup
-  country: string = ''
-  state: string = ''
-  district: string = ''
-  city: string = ''
-  zip: string = ''
-  latitude: number | undefined;
-  longitude: number | undefined;
+  protected readonly step = signal<Step>('details')
+  /** Where the code was sent, shown on the code step */
+  protected readonly sentTo = signal('')
+  protected readonly busy = signal(false)
+  protected readonly showPassword = signal(false)
 
-  ngOnInit (): void {
-    this.form = this.fromBuilder.group({
-      name: ['', [validateByTrimming(nameValidators)]],
-      email: ['', [validateByTrimming(emailValidators)]],
-      password: ['', [validateByTrimming(passwordValidators)]],
-      repeatPassword: [''],
-      country: ['', [validateByTrimming(requiredValidator)]],
-      state: ['', [validateByTrimming(requiredValidator)]],
-      district: ['', [validateByTrimming(requiredValidator)]],
-      city: ['', [validateByTrimming(requiredValidator)]],
-      zip: ['', [validateByTrimming(zipValidators)]],
-      landmark: [''],
-      liscenceId: ['LI-ID3983KHS098SL', [validateByTrimming(requiredValidator)]],
-      otp: [{ value: '', disabled: true }, [validateByTrimming(otpValidators)]]
-    }, { validators: passwordMatchValidator })
+  // Step 1: details -------------------------------------------------------------
+
+  protected readonly details = new FormGroup({
+    name: new FormControl('', { nonNullable: true, validators: [validateByTrimming(nameValidators)] }),
+    email: new FormControl('', { nonNullable: true, validators: [validateByTrimming(emailValidators)] }),
+    liscenceId: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
+    landmark: new FormControl('', { nonNullable: true }),
+    city: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
+    district: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
+    state: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
+    country: new FormControl('India', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
+    zip: new FormControl('', { nonNullable: true, validators: [validateByTrimming(zipValidators)] }),
+    password: new FormControl('', { nonNullable: true, validators: [validateByTrimming(passwordValidators)] }),
+    repeatPassword: new FormControl('', { nonNullable: true })
+  }, { validators: passwordMatchValidator })
+
+  protected readonly detailsSubmitted = signal(false)
+
+  protected readonly messages = {
+    name: {
+      required: 'Enter the theater name',
+      minlength: `Use at least ${userNameMinLength} letters`,
+      maxlength: `Use at most ${userNameMaxLength} letters`,
+      pattern: 'Use letters and spaces only'
+    },
+    email: { required: 'Enter your business email', pattern: 'Enter a valid email address' },
+    liscenceId: { required: 'Enter your theater licence number' },
+    city: { required: 'Enter the city' },
+    district: { required: 'Enter the district' },
+    state: { required: 'Enter the state' },
+    country: { required: 'Enter the country' },
+    zip: { required: 'Enter the PIN code', pattern: 'PIN codes are 6 digits' },
+    password: {
+      required: 'Choose a password',
+      minlength: `Use at least ${passwordMinLength} characters`,
+      pattern: 'Include an uppercase letter, a lowercase letter and a number'
+    },
+    repeatPassword: { required: 'Type the password again', passwordMismatch: "The passwords don't match" },
+    otp: { required: 'Enter the 4-digit code', pattern: 'The code is 4 digits' }
   }
 
-  startTimer (): void {
-    this.remainingTime = OTP_TIMER;
+  // Where the theater is: from the browser, or looked up from the typed address when sending
+  private readonly coords = signal<Coords | null>(null)
+  protected readonly locating = signal(false)
+  protected readonly locationNote = signal<{ tone: 'success' | 'danger', text: string } | null>(null)
 
-    const timer = setInterval(() => {
-      this.remainingTime--;
+  // Step 2: email code -------------------------------------------------------------
 
-      if (this.remainingTime <= 0) {
-        clearInterval(timer);
-        // Handle expiration logic here
-        console.log('OTP expired');
+  protected readonly otp = new FormControl('', { nonNullable: true, validators: [validateByTrimming(otpValidators)] })
+  protected readonly otpSubmitted = signal(false)
+  protected readonly secondsLeft = signal(0)
+  protected readonly countdown = computed(() => formatTime(this.secondsLeft()))
+  protected readonly expired = computed(() => this.step() === 'verify' && this.secondsLeft() === 0)
+  protected readonly resendsUsed = signal(0)
+  protected readonly resendWindowOpen = signal(true)
+  protected readonly canResend = computed(() => this.resendWindowOpen() && this.resendsUsed() < MAX_OTP_LIMIT)
+  protected readonly resendNote = signal<string | null>(null)
+
+  private countdownSub?: Subscription
+  private resendWindowSub?: Subscription
+
+  constructor () {
+    inject(DestroyRef).onDestroy(() => {
+      this.countdownSub?.unsubscribe()
+      this.resendWindowSub?.unsubscribe()
+    })
+  }
+
+  protected async useMyLocation (): Promise<void> {
+    this.locating.set(true)
+    this.locationNote.set(null)
+    const position = await getLocation()
+    if (position === null) {
+      this.locating.set(false)
+      this.locationNote.set({ tone: 'danger', text: 'Location is off or blocked. Type the address instead.' })
+      return
+    }
+    this.coords.set(position)
+    this.geo.getAddress(position.lat, position.lon).subscribe({
+      next: address => {
+        this.details.patchValue({
+          city: address.city ?? '',
+          district: address.district ?? '',
+          state: address.state ?? '',
+          country: address.country ?? '',
+          zip: address.zip !== undefined ? String(address.zip) : ''
+        })
+        this.locating.set(false)
+        this.locationNote.set({ tone: 'success', text: 'Address filled in from your location. Check it before continuing.' })
+      },
+      error: () => {
+        this.locating.set(false)
+        this.locationNote.set({ tone: 'danger', text: "We couldn't look up that address. Type it instead." })
       }
-      this.formattedTime = formatTime(this.remainingTime)
-    }, 1000); // Update every second
+    })
   }
 
-  resendOTP (): void {
-    if (this.otpResendCount < MAX_OTP_LIMIT) {
-      this.http.get('theater/resendOtp').subscribe({
-        next: () => {
-          console.log('otp successfully resent');
-          void Swal.fire('OTP sent', 'Check your mail for OTP', 'success');
-          this.startTimer();
-          this.otpResendCount++;
-        }
-      });
-    } else {
-      void Swal.fire('Oops!', 'Maximum resend attempts reached', 'warning');
-    }
+  protected sendCode (): void {
+    this.detailsSubmitted.set(true)
+    if (this.details.invalid) return
+    this.busy.set(true)
+    const value = this.details.getRawValue()
+    const trimmed = Object.fromEntries(Object.entries(value).map(([key, field]) => [key, key.toLowerCase().includes('password') ? field : field.trim()]))
+
+    this.resolveCoords(value.city, value.country, Number(value.zip)).pipe(
+      switchMap(coords => this.http.post<{ token: string }>('theater/register', {
+        ...trimmed,
+        latitude: coords?.lat,
+        longitude: coords?.lon
+      }))
+    ).subscribe({
+      next: res => {
+        localStorage.setItem('theaterAuthToken', res.token) // identifies this sign-up when verifying and resending
+        this.sentTo.set(value.email.trim())
+        this.busy.set(false)
+        this.step.set('verify')
+        this.startCountdown()
+        this.resendWindowSub = timer(OTP_RESEND_MAX_TIME).pipe(take(1)).subscribe(() => { this.resendWindowOpen.set(false) })
+      },
+      error: () => { this.busy.set(false) }
+    })
   }
 
-  get f (): Record<string, AbstractControl> {
-    return this.form.controls
+  protected verify (): void {
+    this.otpSubmitted.set(true)
+    if (this.otp.invalid || this.expired()) return
+    this.busy.set(true)
+    const authToken = localStorage.getItem('theaterAuthToken')
+    this.http.post('theater/validateOtp', { otp: this.otp.value.trim(), authToken }).subscribe({
+      next: () => {
+        localStorage.removeItem('theaterAuthToken')
+        void this.router.navigate(['/theater/approval/pending'])
+      },
+      error: () => { this.busy.set(false) }
+    })
   }
 
-  async autoFillAddress (): Promise<void> {
-    const coords = await getLocation()
-    if (coords !== null) {
-      console.log(coords, 'coords from getLocation');
-      this.longitude = coords.lon
-      this.latitude = coords.lat
-      this.locationService.getAddress(coords.lat, coords.lon).subscribe({
-        next: (res) => {
-          console.log(res, 'res from getAddress');
-          this.country = res.country
-          this.state = res.state
-          this.district = res.district
-          this.city = res.city
-          this.zip = String(res.zip)
-        }
-      })
-    }
+  protected resendCode (): void {
+    if (!this.canResend()) return
+    this.http.get('theater/resendOtp').subscribe(() => {
+      this.resendsUsed.update(count => count + 1)
+      this.resendNote.set(`We sent a new code to ${this.sentTo()}.`)
+      this.otp.reset()
+      this.otpSubmitted.set(false)
+      this.startCountdown()
+    })
   }
 
-  onSubmit (): void {
-    this.isSubmitted = true
-    console.log('submitted');
-    if (!this.form.invalid && !this.showOtpField) {
-      const theater = this.form.getRawValue()
-      theater.latitude = this.latitude
-      theater.longitude = this.longitude
-      console.log(theater, 'theater data that passed to backend');
-      this.http.post('theater/register', theater).subscribe({
-        next: (res: any) => {
-          localStorage.setItem('theaterAuthToken', res.token)
-          this.showOtpField = true
-          this.form.get('name')?.disable()
-          this.form.get('email')?.disable()
-          this.form.get('country')?.disable()
-          this.form.get('state')?.disable()
-          this.form.get('district')?.disable()
-          this.form.get('city')?.disable()
-          this.form.get('zip')?.disable()
-          this.form.get('liscenceId')?.disable()
-          this.form.get('password')?.disable()
-          this.form.get('repeatPassword')?.disable()
-          this.form.get('landmark')?.disable()
-          this.form.get('otp')?.enable()
-          this.startTimer()
-          setTimeout(() => {
-            this.showOTPResend = false
-          }, OTP_RESEND_MAX_TIME)
-        }
-      })
-    } else if (!this.form.invalid && this.showOtpField) {
-      const theater = this.form.getRawValue()
-      console.log(theater);
-      console.log(theater.otp);
-      const authToken = localStorage.getItem('theaterAuthToken')
-      const otp = theater.otp
-      this.http.post<IApiTheaterAuthRes>('theater/validateOtp', { otp, authToken }).subscribe({
-        next: () => {
-          void this.router.navigate(['/theater/approval/pending'])
-        }
-      })
-    } else {
-      console.log('error', this.form.errors)
-    }
+  protected changeDetails (): void {
+    this.countdownSub?.unsubscribe()
+    this.step.set('details')
+    this.resendNote.set(null)
+    this.otp.reset()
+    this.otpSubmitted.set(false)
+  }
+
+  /** Coordinates from "Use my location", else looked up from the address; null if the lookup fails */
+  private resolveCoords (city: string, country: string, zip: number): Observable<Coords | null> {
+    const known = this.coords()
+    if (known !== null) return of(known)
+    return this.geo.getCoords(city.trim(), country.trim(), zip).pipe(
+      map(found => ({ lon: found.coordinates[0], lat: found.coordinates[1] })),
+      catchError(() => of(null))
+    )
+  }
+
+  private startCountdown (): void {
+    this.countdownSub?.unsubscribe()
+    this.secondsLeft.set(OTP_TIMER)
+    this.countdownSub = timer(1000, 1000).pipe(
+      take(OTP_TIMER),
+      map(tick => OTP_TIMER - tick - 1)
+    ).subscribe(left => { this.secondsLeft.set(left) })
   }
 }

@@ -1,107 +1,92 @@
-import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
-import { ModalService } from 'src/app/services/modal.service'
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core'
+import { rxResource, toSignal } from '@angular/core/rxjs-interop'
+import { DatePipe } from '@angular/common'
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
+import { map } from 'rxjs'
+import { dateToString } from 'src/app/helpers/date'
+import { toMovieCard } from 'src/app/helpers/movie-card'
+import { type IShowRequirements } from 'src/app/models/show'
+import { ModalService } from 'src/app/services/modal.service'
 import { ShowService } from 'src/app/services/show.service'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { DayPickerComponent } from 'src/app/shared/ui/day-picker.component'
+import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
+import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
+import { ToastService } from 'src/app/shared/ui/toast.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import { ShowFormModalComponent } from '../show-form-modal/show-form-modal.component'
-import { type IShowsOnAScreen } from 'src/app/models/show'
-import { getGenre, getLanguage } from 'src/app/helpers/movie'
-import { MovieService } from 'src/app/services/movie.service'
-import { isSameDay } from 'src/app/helpers/date'
-import { ThrNavComponent } from '../thr-nav/thr-nav.component';
-import { DateComponent } from '../../common/date/date.component';
-import { SpinnerComponent } from '../../common/spinner/spinner.component';
-import { DatePipe } from '@angular/common';
+import { ShowFormModalComponent, type ShowFormResult } from '../show-form-modal/show-form-modal.component'
+
+const DATE_KEY = /^\d{4}-\d{2}-\d{2}$/
 
 @Component({
-    selector: 'app-thr-shows',
-    templateUrl: './thr-shows.component.html',
-    styleUrls: ['./thr-shows.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ThrNavComponent, DateComponent, SpinnerComponent, DatePipe]
+  selector: 'app-thr-shows',
+  templateUrl: './thr-shows.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, DatePipe, ButtonDirective, DayPickerComponent, PageHeaderComponent, StatePanelComponent]
 })
-export class ThrShowsComponent implements OnInit {
+export class ThrShowsComponent {
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
   private readonly showService = inject(ShowService)
-  private readonly movieService = inject(MovieService)
-  private readonly store = inject(Store)
   private readonly modalService = inject(ModalService)
+  private readonly toast = inject(ToastService)
 
-  theaterData = this.store.selectSignal(selectTheaterDetails)
-  theaterId = ''
-  screens: IShowsOnAScreen[] = []
-  currDate: Date = new Date()
-  isLoading = true
-  getGenre = getGenre
-  getLanguage = getLanguage
+  private readonly theater = inject(Store).selectSignal(selectTheaterDetails)
 
-  ngOnInit (): void {
-    const theater = this.theaterData()
-    if (theater != null) {
-      this.theaterId = theater._id
-    }
+  // The day lives in ?date=YYYY-MM-DD so reloads and back keep it
+  private readonly query = toSignal(this.route.queryParamMap, { requireSync: true })
+  protected readonly date = computed(() => {
+    const key = this.query().get('date')
+    return key !== null && DATE_KEY.test(key) ? key : dateToString(new Date())
+  })
 
-    this.onSelectDate(new Date())
-  }
+  protected readonly dateLabel = computed(() => {
+    const [year, month, day] = this.date().split('-').map(Number)
+    return new Date(year, month - 1, day)
+  })
 
-  addNewShow (): void {
-    const modalRef = this.modalService.open(ShowFormModalComponent, { static: true })
-
-    // Access the component instance and set input values
-    modalRef.componentInstance.modalTitle = 'Add Show'
-    modalRef.componentInstance.submitBtn = 'Add'
-    modalRef.componentInstance.currDate = this.currDate
-
-    void modalRef.result.then(
-      (result) => {
-        console.log('submitted form data', result)
-        this.showService.addShow(result).subscribe({
-          next: (res) => {
-            if (res.data !== null && isSameDay(res.data.startTime, this.currDate)) {
-              const newShow = res.data
-              console.log(res.data, 'res from addShow')
-              const { screenId, movieId } = res.data
-              const screenIdx = this.screens.findIndex(screen => screen.screenId === screenId)
-              const showIdx = this.screens[screenIdx].shows.findIndex(show => show.movieId._id === movieId)
-              if (showIdx !== -1) {
-                // if movie already exist on the day, just add new show details
-                this.screens[screenIdx].shows[showIdx].shows.push(newShow)
-              } else {
-                // if movie don't exist in the screen on the day, get movie data and push
-                this.movieService.findMovieById(movieId).subscribe({
-                  next: (res) => {
-                    const movie = res.data
-                    this.screens[screenIdx].shows.push({
-                      movieId: movie,
-                      shows: [newShow]
-                    })
-                  }
-                })
-              }
-            }
-          }
-        })
-      },
-      (reason) => {
-        // Handle dismissal or any other reason
-        console.log('Modal dismissed with reason:', reason)
-      }
+  protected readonly screens = rxResource({
+    params: () => ({ theaterId: this.theater()?._id ?? '', date: this.date() }),
+    stream: ({ params }) => this.showService.findShowsOnDateForTheater(params.theaterId, params.date).pipe(
+      map(res => (res.data ?? []).map(screen => ({
+        id: screen.screenId,
+        name: screen.screenName,
+        movies: screen.shows.map(group => ({
+          movie: group.movieId != null ? toMovieCard(group.movieId) : null,
+          shows: [...group.shows]
+            .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+            .map(show => ({
+              id: show._id,
+              start: show.startTime,
+              end: show.endTime,
+              sold: show.totalSeatCount - show.availableSeatCount,
+              total: show.totalSeatCount
+            }))
+        }))
+      })).filter(screen => screen.movies.length > 0))
     )
+  })
+
+  protected selectDate (key: string): void {
+    void this.router.navigate([], { relativeTo: this.route, queryParams: { date: key }, replaceUrl: true })
   }
 
-  onSelectDate (date: Date): void {
-    this.isLoading = true
-    this.currDate = date
-    console.log(date.toISOString().split('T')[0], 'date selected from onSelectDate')
-    const formattedDate = date.toISOString().split('T')[0]
-    this.showService.findShowsOnDateForTheater(this.theaterId, formattedDate).subscribe({
-      next: (res) => {
-        this.isLoading = false
-        console.log(res.data, 'res.data from show service')
-        if (res.data !== null) this.screens = res.data
-      },
-      error: () => {
-        this.isLoading = false
-      }
-    })
+  protected addShow (): void {
+    const ref = this.modalService.open(ShowFormModalComponent, { static: true })
+    ref.componentInstance.date.set(this.date())
+    ref.result.then((result: ShowFormResult) => {
+      this.showService.addShow(result as unknown as IShowRequirements).subscribe(res => {
+        if (res.data === null) return
+        this.toast.success('Show added', 'Tickets are on sale now.')
+        // Jump to the new show's day; on the same day, just refresh
+        if (result.date === this.date()) this.screens.reload()
+        else this.selectDate(result.date)
+      })
+    }, () => {})
+  }
+
+  protected fill (show: { sold: number, total: number }): number {
+    return show.total > 0 ? Math.round((show.sold / show.total) * 100) : 0
   }
 }

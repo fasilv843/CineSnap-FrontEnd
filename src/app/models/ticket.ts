@@ -60,6 +60,14 @@ export interface ITicketRes extends Omit<ITicket, 'showId' | 'screenId' | 'movie
   theaterId: ITheaterRes
   userId: IUserRes
 }
+/**
+ * The backend populates a reference with null once that movie, theater, screen, user or show is deleted.
+ * Use these when rendering tickets so every populated field is read null-safely.
+ */
+type NullableRefs<T, K extends keyof T> = Omit<T, K> & { [P in K]: T[P] | null }
+export type ITicketView = NullableRefs<ITicketRes, 'showId' | 'screenId' | 'movieId' | 'theaterId' | 'userId'>
+export type ITempTicketView = NullableRefs<ITempTicketRes, 'showId' | 'screenId' | 'movieId' | 'theaterId'>
+
 export interface IApiTicketRes extends IApiRes<ITicketRes | null> {}
 export interface IApiTicketsRes extends IApiRes<ITicketRes[]> {}
 

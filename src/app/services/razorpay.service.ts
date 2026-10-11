@@ -1,64 +1,41 @@
-/* eslint-disable no-var */
-/* eslint-disable @typescript-eslint/semi */
-/* eslint-disable quote-props */
-/* eslint-disable @typescript-eslint/quotes */
 import { Injectable } from '@angular/core'
-import { environments } from 'src/environments/environment';
-import { type IRazorpayRes } from '../models/common';
-import { type Observable, Subject } from 'rxjs';
+import { environments } from 'src/environments/environment'
+import { type IRazorpayRes } from '../models/common'
 
-interface IUserPayment {
+export interface IPayer {
   name: string
   email: string
   mobile: string
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-declare var Razorpay: any
+
+// Loaded from checkout.razorpay.com in index.html
+declare const Razorpay: new (options: Record<string, unknown>) => { open: () => void }
 
 @Injectable({
   providedIn: 'root'
 })
 export class RazorpayService {
-  private readonly options: any;
-  private readonly paymentResultSubject = new Subject<IRazorpayRes | null>();
-
-  constructor () {
-    this.options = {
-      "key": environments.razorpayPublicKey,
-      "amount": 1000000000, // amount in paise (Rupees x 100)
-      "currency": 'INR',
-      "name": 'CineSnap',
-      "description": 'Payment for Booking Movie',
-      "image": '../../../assets/logo-1x1.png',
-      "order_id": '', // Replace with your order ID
-      "handler": (response: IRazorpayRes) => { this.paymentResultSubject.next(response); },
-      "prefill": {
-        "name": '',
-        "email": '',
-        "contact": ''
-      },
-      "notes": {
-        "address": 'CineSnap Private Limited'
-      },
-      "theme": {
-        "color": '#f2bd00'
-      }
-    }
-  }
-
-  getPaymentResultObservable (): Observable<null | IRazorpayRes> {
-    return this.paymentResultSubject.asObservable();
-  }
-
-  initiateRazorpayPayment (amount: number, user: IUserPayment): void {
-    console.log('Initiating Razorpay payment');
-
-    this.options.prefill.name = user.name;
-    this.options.prefill.email = user.email;
-    this.options.prefill.contact = user.mobile;
-    this.options.amount = amount * 100;
-
-    const rzp = new Razorpay(this.options);
-    rzp.open();
+  /**
+   * Opens Razorpay checkout for one payment.
+   * Resolves with the payment response, or null when the payer closes the checkout without paying.
+   */
+  async pay (amount: number, payer: IPayer, description = 'Payment for booking a movie'): Promise<IRazorpayRes | null> {
+    return await new Promise(resolve => {
+      const checkout = new Razorpay({
+        key: environments.razorpayPublicKey,
+        amount: Math.round(amount * 100), // paise
+        currency: 'INR',
+        name: 'CineSnap',
+        description,
+        image: 'assets/logo-1x1.png',
+        prefill: { name: payer.name, email: payer.email, contact: payer.mobile },
+        notes: { address: 'CineSnap Private Limited' },
+        theme: { color: getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() },
+        // Callers set signals from the result, which schedules rendering (the app is zoneless)
+        handler: (response: IRazorpayRes) => { resolve(response) },
+        modal: { ondismiss: () => { resolve(null) } }
+      })
+      checkout.open()
+    })
   }
 }

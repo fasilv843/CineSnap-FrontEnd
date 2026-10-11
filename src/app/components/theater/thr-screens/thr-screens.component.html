@@ -1,55 +1,54 @@
-<app-thr-nav></app-thr-nav>
-
-@if (screens.length !== 0) {
-  <div
-    class="flex justify-end pr-10 pt-5">
-    <button
-      (click)="addNewScreen()"
-      class="block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2"
-      >
-      Add Screen
+<main class="mx-auto max-w-6xl px-4 py-6 sm:px-8 lg:py-10">
+  <cs-page-header heading="Screens" description="Each screen's seat layout is used for every show on it.">
+    <button csButton type="button" [disabled]="adding()" (click)="addScreen()">
+      @if (adding()) { <span class="spinner"></span> Adding… } @else { Add screen }
     </button>
-  </div>
-}
+  </cs-page-header>
 
-@if (screens.length !== 0) {
-  <div>
-    @for (screen of screens; track screen) {
-      <div class="max-w-md mx-auto bg-white rounded-xl overflow-hidden shadow-md border border-gray-300 md:max-w-2xl mt-8">
-        <div class="md:flex">
-          <div class="p-8 w-full">
-            <h2 class="text-2xl font-semibold text-gray-800">{{ screen.name }}</h2>
-            <div class="mt-4">
-              <p class="text-gray-800">Total Seat Count: {{ screen.seatsCount }}</p>
-              <div class="flex justify-between">
-                <div class="w-1/2">
-                  <p class="text-gray-800">Rows: {{ screen.rows }}</p>
-                </div>
-                <div class="w-1/2">
-                  <p class="text-gray-800">Columns: {{ screen.cols }}</p>
-                </div>
-              </div>
-            </div>
-            <div class="mt-6 flex justify-end">
-              <button (click)="viewScreen(screen.seatId)" class="bg-gray-500 text-white px-4 py-2 rounded-full mr-2 hover:bg-gray-600">View</button>
-              <button (click)="deleteScreen(screen._id)" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">Delete</button>
-            </div>
-          </div>
-        </div>
+  <section class="mt-8" aria-label="Your screens" [attr.aria-busy]="loaded.isLoading()">
+    @if (loaded.error()) {
+      <div class="card">
+        <cs-state-panel heading="Screens couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="loaded.reload()" />
       </div>
+    } @else if (loaded.isLoading()) {
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @for (i of [0, 1, 2]; track i) { <div class="skeleton h-40"></div> }
+      </div>
+    } @else if (screens().length === 0) {
+      <div class="card">
+        <cs-state-panel heading="No screens yet" message="Add your first screen and lay out its seats. Then you can schedule shows on it.">
+          <button csButton size="sm" type="button" (click)="addScreen()">Add screen</button>
+        </cs-state-panel>
+      </div>
+    } @else {
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        @for (screen of screens(); track screen._id) {
+          <li class="card flex flex-col p-5">
+            <h2 class="font-display text-3xl font-extrabold tracking-tight">{{ screen.name }}</h2>
+            <dl class="mt-3 grid grid-cols-3 gap-2 text-sm">
+              <div>
+                <dt class="text-muted">Seats</dt>
+                <dd class="font-semibold tabular-nums">{{ screen.seatsCount }}</dd>
+              </div>
+              <div>
+                <dt class="text-muted">Rows</dt>
+                <dd class="font-semibold">A–{{ screen.rows }}</dd>
+              </div>
+              <div>
+                <dt class="text-muted">Per row</dt>
+                <dd class="font-semibold tabular-nums">{{ screen.cols }}</dd>
+              </div>
+            </dl>
+            <div class="mt-5 flex flex-1 items-end gap-2">
+              <a csButton variant="secondary" size="sm" [routerLink]="['/theater/screens/seat', screen.seatId]">Seat layout</a>
+              <button csButton variant="danger" size="sm" type="button" class="ml-auto" [disabled]="deleting() === screen._id"
+                [attr.aria-label]="'Delete ' + screen.name" (click)="deleteScreen(screen)">
+                @if (deleting() === screen._id) { <span class="spinner"></span> } Delete
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
     }
-  </div>
-} @else {
-  <div class="flex items-center justify-center mt-20 w-full">
-    <div class="text-center">
-      <p class="text-lg font-semibold text-gray-600">Screens not added yet!</p>
-      <p class="text-gray-500">Add new screens to continue.</p>
-      <button (click)="addNewScreen()" class="mt-4 px-4 py-2 rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800">Add New Screens</button>
-    </div>
-  </div>
-}
-
-
-
-
-
+  </section>
+</main>

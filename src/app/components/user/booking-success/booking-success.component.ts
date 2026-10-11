@@ -1,76 +1,67 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
-import { getLanguage } from 'src/app/helpers/movie'
-import { ITicketRes, ITicketSeat } from 'src/app/models/ticket'
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core'
+import { rxResource, toSignal } from '@angular/core/rxjs-interop'
+import { DatePipe } from '@angular/common'
+import { ActivatedRoute, RouterLink } from '@angular/router'
+import { Store } from '@ngrx/store'
+import { map } from 'rxjs'
+import { toMovieCard } from 'src/app/helpers/movie-card'
+import { type ITicketView } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
-import Swal from 'sweetalert2'
-import { UserNavComponent } from '../user-nav/user-nav.component';
-import { DatePipe } from '@angular/common';
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { IconComponent } from 'src/app/shared/ui/icon.component'
+import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
+import { ToastService } from 'src/app/shared/ui/toast.service'
+import { selectUserDetails } from 'src/app/states/user/user.selector'
+import { UserNavComponent } from '../user-nav/user-nav.component'
+import { valueOf } from 'src/app/helpers/resource'
 
 @Component({
-    selector: 'app-booking-success',
-    templateUrl: './booking-success.component.html',
-    styleUrls: ['./booking-success.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [UserNavComponent, DatePipe]
+  selector: 'app-booking-success',
+  templateUrl: './booking-success.component.html',
+  styleUrl: './booking-success.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [UserNavComponent, RouterLink, DatePipe, ButtonDirective, IconComponent, StatePanelComponent]
 })
-export class BookingSuccessComponent implements OnInit {
+export class BookingSuccessComponent {
   private readonly route = inject(ActivatedRoute)
-  private readonly router = inject(Router)
   private readonly ticketService = inject(TicketService)
+  private readonly toast = inject(ToastService)
 
-  ticketId = ''
-  userId = ''
-  ticket!: ITicketRes
-  seats: string[] = []
+  protected readonly user = inject(Store).selectSignal(selectUserDetails)
+  private readonly params = toSignal(this.route.paramMap, { requireSync: true })
+  protected readonly ticketId = computed(() => this.params().get('ticketId') ?? '')
 
-  diamondSeats?: ITicketSeat
-  goldSeats?: ITicketSeat
-  silverSeats?: ITicketSeat
+  protected readonly ticket = rxResource({
+    params: () => this.ticketId(),
+    stream: ({ params }) => this.ticketService.getTicketData(params).pipe(map(res => res.data as ITicketView | null))
+  })
 
-  getLanguage = getLanguage
+  protected readonly movie = computed(() => {
+    const movie = valueOf(this.ticket)?.movieId
+    return movie != null ? toMovieCard(movie) : null
+  })
 
-  constructor () {
-    this.route.params.subscribe(params => {
-      this.ticketId = params['ticketId']
+  protected readonly seats = computed(() => {
+    const ticket = valueOf(this.ticket)
+    if (ticket == null) return []
+    return [ticket.diamondSeats, ticket.goldSeats, ticket.silverSeats].flatMap(line => line?.seats ?? []).sort()
+  })
+
+  protected readonly directions = computed(() => {
+    const coords = valueOf(this.ticket)?.theaterId?.coords
+    return coords != null ? `https://www.google.com/maps/dir/?api=1&destination=${coords.coordinates[1]},${coords.coordinates[0]}` : null
+  })
+
+  protected readonly sendingInvoice = signal(false)
+
+  protected emailInvoice (): void {
+    this.sendingInvoice.set(true)
+    this.ticketService.sendInvoiceRequest(this.ticketId()).subscribe({
+      next: () => {
+        this.sendingInvoice.set(false)
+        this.toast.success('Invoice sent', `Check ${this.user()?.email ?? 'your email'} in a minute.`)
+      },
+      error: () => { this.sendingInvoice.set(false) }
     })
-  }
-
-  ngOnInit (): void {
-    console.log(this.ticketId, 'ticketId from success component')
-
-    this.ticketService.getTicketData(this.ticketId).subscribe({
-      next: (res) => {
-        if (res.data !== null) {
-          console.warn(res.data, 'res data from get ticket data')
-          this.ticket = res.data
-          this.userId = res.data.userId as unknown as string
-          if (res.data.diamondSeats !== undefined) {
-            this.diamondSeats = res.data.diamondSeats
-            this.seats = [...this.seats, ...res.data.diamondSeats.seats]
-          }
-          if (res.data.goldSeats !== undefined) {
-            this.goldSeats = res.data.goldSeats
-            this.seats = [...this.seats, ...res.data.goldSeats.seats]
-          }
-          if (res.data.silverSeats !== undefined) {
-            this.silverSeats = res.data.silverSeats
-            this.seats = [...this.seats, ...res.data.silverSeats.seats]
-          }
-          this.seats = this.seats.sort()
-        }
-      }
-    })
-  }
-
-  downloadInvoice (): void {
-    this.ticketService.sendInvoiceRequest(this.ticketId).subscribe(() => {
-      void Swal.fire('Mail Sent', 'Invoice Sent to your mail', 'success')
-    })
-  }
-
-  openBookings (): void {
-    void this.router.navigate(['/user/bookings', this.userId])
   }
 }

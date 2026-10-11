@@ -1,88 +1,111 @@
-<!-- <p>show-form-modal works!</p> -->
+<div class="card mx-auto max-h-[calc(100dvh-2rem)] w-[min(36rem,calc(100vw-2rem))] overflow-y-auto p-6 shadow-raised" role="dialog" aria-labelledby="show-form-title">
+  <h2 id="show-form-title" class="text-xl font-semibold">Add a show</h2>
 
-<div class="max-w-2xl mx-auto shadow-xl rounded-lg text-gray-900 border-2 border-gray-300 bg-white">
-  <div class="p-4 md:p-8">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ modalTitle }}</h2>
-
-    <form [formGroup]="showForm" (ngSubmit)="onSubmit()">
-      <ng-container class="flex flex-col">
-
-        <div class="mb-3 relative">
-          <label for="screenName" class="block mb-2 text-sm font-semibold text-gray-700">Movie:</label>
-          <input type="text" formControlName="movie"
-            (dblclick)="changeMovie()" (input)="onInputChange($event)" (blur)="onInputBlur()"
-            (focus)="onInputFocus()" placeholder="Search Movie Name"
-            class=" block w-full bg-white border border-gray-300 rounded-md shadow-xs pl-3 pr-10 py-2 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            >
-            <app-movie-select-validation [movieId]="selectedMovieId" [isSubmitted]="isSubmitted"></app-movie-select-validation>
-            @if (showMovieOptions) {
-              <div class="absolute top-16 z-40 bg-white shadow-lg max-h-60 rounded-md py-1 overflow-auto mt-1 w-full">
-                @if (movies.length === 0) {
-                  <div class="bg-gray-400 px-4 py-2 text-sm">Movie Not Available</div>
-                }
-                @for (movie of movies; track movie) {
-                  <div (click)="selectMovie(movie)"
-                    class="cursor-pointer hover:bg-gray-200 px-4 py-2 text-sm">
-                    {{ movie.title }} {{ movie.release_date | date: 'yyyy' }}
-                  </div>
-                }
-              </div>
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="mt-5 space-y-5">
+    <!-- Movie -->
+    <div>
+      <span class="mb-1.5 block text-sm font-semibold" id="movie-label">Movie</span>
+      @if (movie(); as m) {
+        <div class="flex items-center gap-3 rounded-control border border-default p-2">
+          <img [src]="'https://image.tmdb.org/t/p/w92' + m.poster_path" alt="" class="h-14 w-10 rounded-sm bg-muted object-cover" />
+          <div class="min-w-0 flex-1">
+            <p class="truncate font-semibold">{{ m.title }}</p>
+            <p class="text-xs text-muted">{{ m.release_date | date: 'yyyy' }} · {{ runtime() }}</p>
+          </div>
+          <button csButton variant="ghost" size="sm" type="button" (click)="changeMovie()">Change</button>
+        </div>
+      } @else {
+        <input id="movie" class="input" type="search" placeholder="Search CineSnap movies" autocomplete="off" aria-labelledby="movie-label"
+          [value]="query()" (input)="query.set($any($event.target).value)" />
+        <div class="mt-2 max-h-56 overflow-y-auto rounded-control border border-default" role="listbox" aria-labelledby="movie-label" [attr.aria-busy]="searching()">
+          @if (searching() && movies().length === 0) {
+            <div class="space-y-2 p-2">
+              @for (i of [0, 1, 2]; track i) { <div class="skeleton h-9"></div> }
+            </div>
+          } @else if (searchFailed()) {
+            <p class="p-3 text-sm text-muted">Movies couldn't be loaded. Edit the search to try again.</p>
+          } @else if (movies().length === 0) {
+            <p class="p-3 text-sm text-muted">No movies match "{{ query() }}". Ask the CineSnap admin to add it.</p>
+          } @else {
+            @for (option of movies(); track option._id) {
+              <button type="button" role="option" aria-selected="false" class="movie-option" (click)="pickMovie(option)">
+                <span class="truncate font-medium">{{ option.title }}</span>
+                <span class="shrink-0 text-xs text-muted">{{ option.release_date | date: 'yyyy' }}</span>
+              </button>
             }
-          </div>
+          }
+        </div>
+        @if (submitted()) {
+          <p class="mt-1 text-sm text-danger" role="alert">Choose a movie</p>
+        }
+      }
+    </div>
 
-          <div class="mb-3">
-            <label for="screen" class="block mb-2 text-sm font-semibold text-gray-700">Screen:</label>
-            <select id="screen" formControlName="screenId"
-              class="block bg-gray-50 border rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm"
-              placeholder="Select a screen"
-              (change)="onScreenChange($event)"
-              >
-              <option value="" disabled selected>Select a screen</option>
-              @for (screen of screens; track screen) {
-                <option  [value]="screen._id">{{ screen.name }}</option>
-              }
-            </select>
-            <app-screen-select-validation [screenControl]="showForm.get('screenId')" [isSubmitted]="isSubmitted"></app-screen-select-validation>
-          </div>
+    <!-- Screen -->
+    <div>
+      <label for="screen" class="mb-1.5 block text-sm font-semibold">Screen</label>
+      @if (screens.error()) {
+        <p class="text-sm text-muted">Screens couldn't be loaded. <button csButton variant="link" type="button" (click)="screens.reload()">Try again</button></p>
+      } @else {
+        <select id="screen" class="input" formControlName="screenId" [attr.aria-busy]="screens.isLoading()">
+          <option value="" disabled>{{ screens.isLoading() ? 'Loading screens…' : 'Choose a screen' }}</option>
+          @for (screen of screens.value() ?? []; track screen._id) {
+            <option [value]="screen._id">{{ screen.name }} · {{ screen.seatsCount }} seats</option>
+          }
+        </select>
+        @if (!screens.isLoading() && (screens.value() ?? []).length === 0) {
+          <p class="mt-1 text-sm text-muted">Add a screen first, from the Screens page.</p>
+        }
+        <cs-field-error [control]="form.controls.screenId" [submitted]="submitted()" [messages]="messages.screenId" />
+      }
+    </div>
 
-          <div class="mb-3">
-            <label for="date" class="block mb-2 text-sm font-semibold text-gray-700">Date:</label>
-            <input id="date" formControlName="date" type="date" class="block bg-gray-50 border rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 text-gray-700 sm:text-sm" placeholder="Select a date" />
-            <app-show-date-validation [showDateControl]="showForm.get('date')" [isSubmitted]="isSubmitted"></app-show-date-validation>
-          </div>
+    <!-- When -->
+    <div class="grid gap-4 sm:grid-cols-3">
+      <div>
+        <label for="date" class="mb-1.5 block text-sm font-semibold">Date</label>
+        <input id="date" type="date" class="input" formControlName="date" [min]="today" />
+        <cs-field-error [control]="form.controls.date" [submitted]="submitted()" [messages]="messages.date" />
+      </div>
+      <div>
+        <label for="startTime" class="mb-1.5 block text-sm font-semibold">Starts</label>
+        <input id="startTime" type="time" class="input" formControlName="startTime" />
+        <cs-field-error [control]="form.controls.startTime" [submitted]="submitted()" [messages]="messages.startTime" />
+      </div>
+      <div>
+        <span class="mb-1.5 block text-sm font-semibold">Ends</span>
+        <p class="flex h-11 items-center rounded-control bg-muted px-3.5 text-muted" aria-live="polite">
+          {{ endTime() ? (endTime() | date: 'h:mm a') : 'Pick a movie and time' }}
+        </p>
+      </div>
+    </div>
 
-          <div class="mb-3 flex flex-col sm:flex-row">
-            <div class="grow mb-2 sm:mr-2">
-              <label for="startTime" class="block mb-2 text-sm font-semibold text-gray-700">Starting Time:</label>
-              <input id="startTime" formControlName="startTime" type="time" class="block w-full bg-gray-50 border rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Select start time" (change)="onStartTimeChange($event)" />
-              <app-start-time-validation [startTimeControl]="showForm.get('startTime')" [isSubmitted]="isSubmitted"></app-start-time-validation>
-            </div>
-            <div class="grow mb-2 sm:ml-2">
-              <span class="block mb-2 text-sm font-bold text-gray-700">Ending Time:</span>
-              <span class="bg-gray-100 rounded-md p-2.5 text-gray-700 sm:text-sm">{{ endingTime }}</span>
-            </div>
-          </div>
-
-
-          @for (priceControl of priceControls; track priceControl) {
+    <!-- Prices for the seat categories this screen has -->
+    @if (categories.isLoading()) {
+      <div class="skeleton h-16"></div>
+    } @else if (categories.error()) {
+      <p class="text-sm text-muted">Seat categories couldn't be loaded. <button csButton variant="link" type="button" (click)="categories.reload()">Try again</button></p>
+    } @else if ((categories.value() ?? []).length > 0) {
+      <fieldset>
+        <legend class="mb-1.5 text-sm font-semibold">Ticket prices</legend>
+        <div class="grid gap-4 sm:grid-cols-3">
+          @for (category of categories.value(); track category.key) {
             <div>
-              <div class="mb-3">
-                <label [for]="priceControl.controlName" class="block mb-2 text-sm font-semibold text-gray-700">{{ priceControl.label }} Price:</label>
-                <input [id]="priceControl.controlName" [formControlName]="priceControl.controlName" type="text" class="block w-full bg-gray-50 border rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 p-2.5 text-gray-700 sm:text-sm" placeholder="Enter Ticket Price"/>
-                <app-def-price-validation [priceControl]="showForm.get(priceControl.controlName)" [isSubmitted]="isSubmitted"></app-def-price-validation>
+              <label [for]="category.control" class="mb-1 block text-sm text-muted">{{ category.label }}</label>
+              <div class="relative">
+                <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted">₹</span>
+                <input [id]="category.control" class="input pl-7" inputmode="numeric" [formControlName]="category.control" />
               </div>
+              <cs-field-error [control]="form.controls[category.control]" [submitted]="submitted()" [messages]="messages.price" />
             </div>
           }
-
-        </ng-container>
-
-
-        <hr class="border-t mx-0 mt-2">
-
-        <div class="flex justify-around items-center p-4 space-x-4">
-          <button (click)="onCancel()" class="w-full md:w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">Cancel</button>
-          <button type="submit" class="w-full md:w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">{{ submitBtn }}</button>
         </div>
-      </form>
+      </fieldset>
+    }
+
+    <div class="flex justify-end gap-2 border-t border-default pt-5">
+      <button csButton variant="ghost" type="button" (click)="modal.dismiss('cancel')">Cancel</button>
+      <button csButton type="submit">Add show</button>
     </div>
-  </div>
+  </form>
+</div>

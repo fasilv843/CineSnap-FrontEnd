@@ -1,18 +1,10 @@
 import { type HttpInterceptorFn } from '@angular/common/http'
 import { environments } from 'src/environments/environment'
 
+/** Prefixes CineSnap API paths with the backend URL; requests marked Bypass-Interceptor go out as they are. */
 export const transformUrlInterceptor: HttpInterceptorFn = (request, next) => {
   if (request.headers.has('Bypass-Interceptor')) {
-    console.log('deleting bypass interceptor')
-    const bypassedRequest = request.clone({
-      headers: request.headers.delete('bypass-interceptor')
-    })
-    return next(bypassedRequest)
+    return next(request.clone({ headers: request.headers.delete('bypass-interceptor') }))
   }
-  const { baseUrl } = environments
-  const newReq = request.clone(
-    { url: baseUrl + request.url }
-  )
-  console.log(newReq.url, 'new url from interceptor')
-  return next(newReq)
+  return next(request.clone({ url: environments.baseUrl + request.url }))
 }

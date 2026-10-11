@@ -1,240 +1,200 @@
-import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
+import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, signal } from '@angular/core'
+import { rxResource, toSignal } from '@angular/core/rxjs-interop'
+import { DatePipe } from '@angular/common'
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
+import { map, of } from 'rxjs'
+import { dateToString } from 'src/app/helpers/date'
+import { toMovieCard } from 'src/app/helpers/movie-card'
 import { type ICSMovieRes } from 'src/app/models/movie'
-import { type IShow, type IShowSeat } from 'src/app/models/show'
-import { type IShowSeatCategoryRes, type IShowSeatsRes } from 'src/app/models/showSeat'
-import { type ITicketSeat, type ISelectedSeat, type ITicketReqs } from 'src/app/models/ticket'
+import { type IShow } from 'src/app/models/show'
+import { type IShowSeatCategoryRes } from 'src/app/models/showSeat'
+import { type ITicketReqs, type ITicketSeat } from 'src/app/models/ticket'
 import { ShowSeatService } from 'src/app/services/show-seat.service'
 import { ShowService } from 'src/app/services/show.service'
 import { TicketService } from 'src/app/services/ticket.service'
 import { ChargePerDiamondTicket, ChargePerGoldTicket, ChargePerSilverTicket } from 'src/app/shared/constants'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { IconComponent } from 'src/app/shared/ui/icon.component'
+import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
-import { UserNavComponent } from '../user-nav/user-nav.component';
-import { SeatStatusDirective } from '../../../directives/seat-status.directive';
+import { UserNavComponent } from '../user-nav/user-nav.component'
+import { valueOf } from 'src/app/helpers/resource'
 
 interface IShowWithMovie extends Omit<IShow, 'movieId'> {
-  movieId: ICSMovieRes
+  movieId: ICSMovieRes | null
+}
+
+type CategoryKey = 'diamond' | 'gold' | 'silver'
+type SeatStatus = 'free' | 'held' | 'sold'
+
+interface SeatView { id: string, col: number, status: SeatStatus }
+interface RowView { label: string, seats: Array<SeatView | null> } // null = aisle gap
+interface CategoryView { key: CategoryKey, name: string, price: number, fee: number, rows: RowView[] }
+
+const MAX_SEATS = 10
+const FEES: Record<CategoryKey, number> = { diamond: ChargePerDiamondTicket, gold: ChargePerGoldTicket, silver: ChargePerSilverTicket }
+const CATEGORY_KEYS: CategoryKey[] = ['diamond', 'gold', 'silver']
+const SEAT_LISTS = { diamond: 'diamondSeats', gold: 'goldSeats', silver: 'silverSeats' } as const
+
+function toCategory (key: CategoryKey, category: IShowSeatCategoryRes | undefined, held: Set<string>): CategoryView | null {
+  if (category === undefined || category === null) return null
+  const rows = Object.entries(category.seats).map(([label, seats]) => ({
+    label,
+    seats: (seats ?? []).map(seat => {
+      if (seat.col === 0) return null
+      const id = label + seat.col
+      const status: SeatStatus = seat.isBooked ? 'sold' : held.has(id) ? 'held' : 'free'
+      return { id, col: seat.col, status }
+    })
+  }))
+  return rows.length > 0 ? { key, name: category.name, price: category.price, fee: FEES[key], rows } : null
 }
 
 @Component({
-    selector: 'app-show-seats',
-    templateUrl: './show-seats.component.html',
-    styleUrls: ['./show-seats.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [UserNavComponent, SeatStatusDirective]
+  selector: 'app-show-seats',
+  templateUrl: './show-seats.component.html',
+  styleUrl: './show-seats.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [UserNavComponent, RouterLink, DatePipe, ButtonDirective, IconComponent, StatePanelComponent]
 })
-export class ShowSeatsComponent implements OnInit {
+export class ShowSeatsComponent {
   private readonly route = inject(ActivatedRoute)
-  private readonly store = inject(Store)
   private readonly router = inject(Router)
+  private readonly store = inject(Store)
   private readonly showService = inject(ShowService)
   private readonly ticketService = inject(TicketService)
   private readonly showSeatService = inject(ShowSeatService)
 
-  userDetails = this.store.selectSignal(selectUserDetails)
-  userId = ''
-  theaterId = ''
-  showId = ''
-  rows: string[] = []
-  showSeatId: string = ''
-  show!: IShowWithMovie
-  seats!: IShowSeatsRes
-  selectedSeats: ISelectedSeat[] = []
-  holdedSeats: ISelectedSeat[] = []
+  protected readonly user = this.store.selectSignal(selectUserDetails)
+  protected readonly maxSeats = MAX_SEATS
 
-  diamond?: IShowSeatCategoryRes
-  gold?: IShowSeatCategoryRes
-  silver?: IShowSeatCategoryRes
+  private readonly params = toSignal(this.route.paramMap, { requireSync: true })
+  private readonly query = toSignal(this.route.queryParamMap, { requireSync: true })
+  protected readonly seatMapId = computed(() => this.params().get('seatId') ?? '')
+  protected readonly showId = computed(() => this.query().get('showId') ?? '')
+  protected readonly theaterId = computed(() => this.query().get('theaterId') ?? '')
 
-  diamondKeys = this.getDiamondKeys
-  goldKeys = this.getGoldKeys
-  silverKeys = this.getSilverKeys
+  protected readonly seatMap = rxResource({
+    params: () => this.seatMapId(),
+    stream: ({ params }) => this.showSeatService.getShowSeatDetails(params).pipe(map(res => res.data))
+  })
 
-  ngOnInit (): void {
-    this.route.params.subscribe(params => {
-      this.showSeatId = params['seatId']
-    })
+  protected readonly show = rxResource({
+    params: () => this.showId(),
+    stream: ({ params }) => this.showService.getShowDetails(params).pipe(map(res => res.data as unknown as IShowWithMovie | null))
+  })
 
-    this.route.queryParamMap.subscribe(params => {
-      this.theaterId = params.get('theaterId') as string
-      this.showId = params.get('showId') as string
-      // console.log('queryMap working')
-    })
+  // Seats other people are paying for right now
+  private readonly held = rxResource({
+    params: () => this.showId(),
+    stream: ({ params }) => params === ''
+      ? of(new Set<string>())
+      : this.ticketService.getHoldedSeats(params).pipe(map(res => new Set((res.data ?? []).flatMap(ticket =>
+        CATEGORY_KEYS.flatMap(key => ticket[SEAT_LISTS[key]]?.seats ?? [])))))
+  })
 
-    // console.warn(this.theaterId, this.showId, 'theaterId, showId')
+  protected readonly movie = computed(() => {
+    const movie = valueOf(this.show)?.movieId
+    return movie !== null && movie !== undefined ? toMovieCard(movie) : null
+  })
 
-    this.showSeatService.getShowSeatDetails(this.showSeatId).subscribe({
-      next: (res) => {
-        if (res.data === null) return
-        this.seats = res.data
-        this.diamond = res.data.diamond
-        this.gold = res.data.gold
-        this.silver = res.data.silver
+  protected readonly categories = computed(() => {
+    const seats = valueOf(this.seatMap)
+    if (seats === null || seats === undefined) return []
+    const held = valueOf(this.held) ?? new Set<string>()
+    return CATEGORY_KEYS.map(key => toCategory(key, seats[key], held)).filter((category): category is CategoryView => category !== null)
+  })
 
-        this.diamondKeys = this.getDiamondKeys
-        this.goldKeys = this.getGoldKeys
-        this.silverKeys = this.getSilverKeys
-        console.log(this.seats, 'seats from get show seats')
-      }
-    })
+  protected readonly loading = computed(() => this.seatMap.isLoading() || this.show.isLoading() || this.held.isLoading())
+  protected readonly failed = computed(() => this.seatMap.error() !== undefined || this.show.error() !== undefined || this.held.error() !== undefined)
 
-    this.showService.getShowDetails(this.showId).subscribe({
-      next: (res) => {
-        console.log(res.data, 'show data from getShowDetails')
-        if (res.data !== null) {
-          this.show = res.data as unknown as IShowWithMovie
-          // console.log(res.data, 'log seats')
-          // console.log(typeof res.data.seats, 'type of seats')
-          // console.dir(res.data.seats, 'dir seats')
-          // this.rows = Array.from(Object.keys(res.data.seats))
-        }
-      }
-    })
+  /** Picked seats, in the order picked; cleared when the user switches to another show */
+  protected readonly selected = linkedSignal<string, Array<{ id: string, category: CategoryKey }>>({
+    source: this.seatMapId,
+    computation: () => []
+  })
 
-    this.ticketService.getHoldedSeats(this.showId).subscribe({
-      next: (res) => {
-        console.warn(res, 'res from holded seats')
-        if (res.data === null) return
-        res.data.forEach(tkt => {
-          console.log(tkt, 'tkt from forEach holded seat')
-          if (tkt.diamondSeats !== undefined) {
-            const holded = tkt.diamondSeats.seats.map(seat => ({ row: seat[0], col: parseInt(seat.slice(1)) }))
-            console.log(holded, 'holded from diamond')
-            this.holdedSeats = [...holded, ...this.holdedSeats]
-          }
+  protected readonly selectedIds = computed(() => new Set(this.selected().map(seat => seat.id)))
 
-          if (tkt.goldSeats !== undefined) {
-            const holded = tkt.goldSeats.seats.map(seat => ({ row: seat[0], col: parseInt(seat.slice(1)) }))
-            console.log(holded, 'holded from gold')
-            this.holdedSeats = [...holded, ...this.holdedSeats]
-          }
+  protected readonly summary = computed(() => {
+    const byKey = new Map(this.categories().map(category => [category.key, category]))
+    const total = this.selected().reduce((sum, seat) => {
+      const category = byKey.get(seat.category)
+      return sum + (category !== undefined ? category.price + category.fee : 0)
+    }, 0)
+    return { count: this.selected().length, labels: this.selected().map(seat => seat.id).join(', '), total }
+  })
 
-          if (tkt.silverSeats !== undefined) {
-            const holded = tkt.silverSeats.seats.map(seat => ({ row: seat[0], col: parseInt(seat.slice(1)) }))
-            console.log(holded, 'holded from silver')
-            this.holdedSeats = [...holded, ...this.holdedSeats]
-          }
-        })
+  protected readonly booking = signal(false)
+  protected readonly canBook = computed(() => !this.loading() && !this.failed() && valueOf(this.show) != null && this.selected().length > 0 && !this.booking())
 
-        console.log(this.holdedSeats, 'holded seats')
-      }
+  protected readonly backLink = computed(() => this.theaterId() !== '' ? ['/user/theater', this.theaterId()] : ['/user/theaters'])
+  // Back on the theater page, open the same day as this show
+  protected readonly backQuery = computed(() => {
+    const start = valueOf(this.show)?.startTime
+    return start !== undefined ? { date: dateToString(new Date(start)) } : {}
+  })
+
+  protected toggle (seat: SeatView, category: CategoryKey): void {
+    if (seat.status !== 'free') return
+    this.selected.update(list => {
+      if (list.some(picked => picked.id === seat.id)) return list.filter(picked => picked.id !== seat.id)
+      return list.length < MAX_SEATS ? [...list, { id: seat.id, category }] : list
     })
   }
 
-  getSeatDefaultValue (cat: IShowSeatCategoryRes | undefined, CSCharge: number): ITicketSeat {
-    return {
-      seats: [],
-      name: cat?.name ?? '',
-      singlePrice: cat !== undefined ? cat.price : 0,
-      CSFeePerTicket: CSCharge,
-      totalPrice: 0
-    }
+  protected seatLabel (seat: SeatView, category: CategoryView): string {
+    const state = seat.status === 'sold' ? 'sold' : seat.status === 'held' ? 'being booked' : `₹${category.price}`
+    return `Seat ${seat.id}, ${category.name}, ${state}`
   }
 
-  bookTicket (): void {
-    const user = this.userDetails()
-    if (user != null) this.userId = user._id
+  protected retry (): void {
+    this.seatMap.reload()
+    this.show.reload()
+    this.held.reload()
+  }
 
-    // const diamondKeys = this.getDiamondKeys
-    // const goldKeys = this.getGoldKeys
-    // const silverKeys = this.getSilverKeys
+  protected book (): void {
+    const show = valueOf(this.show)
+    const user = this.user()
+    if (!this.canBook() || show == null || user === null) return
 
-    const diamondSeats = this.getSeatDefaultValue(this.diamond, ChargePerDiamondTicket)
-    const goldSeats = this.getSeatDefaultValue(this.gold, ChargePerGoldTicket)
-    const silverSeats = this.getSeatDefaultValue(this.silver, ChargePerSilverTicket)
-
-    this.selectedSeats.forEach(seat => {
-      if (this.diamondKeys.length > 0 && this.diamondKeys.includes(seat.row)) {
-        diamondSeats.seats.push(seat.row + seat.col)
-      } else if (this.goldKeys.length > 0 && this.goldKeys.includes(seat.row)) {
-        goldSeats.seats.push(seat.row + seat.col)
-      } else if (this.silverKeys.length > 0 && this.silverKeys.includes(seat.row)) {
-        silverSeats.seats.push(seat.row + seat.col)
-      }
-    })
-
-    diamondSeats.totalPrice = (diamondSeats.singlePrice + diamondSeats.CSFeePerTicket) * diamondSeats.seats.length
-    goldSeats.totalPrice = (goldSeats.singlePrice + goldSeats.CSFeePerTicket) * goldSeats.seats.length
-    silverSeats.totalPrice = (silverSeats.singlePrice + silverSeats.CSFeePerTicket) * silverSeats.seats.length
-
-    const totalPrice = diamondSeats.totalPrice + goldSeats.totalPrice + silverSeats.totalPrice
-
-    const ticketReqs: ITicketReqs = {
-      showId: this.showId,
-      screenId: this.show.screenId,
-      movieId: this.show.movieId._id,
-      theaterId: this.theaterId,
-      userId: this.userId,
-      totalPrice,
-      seatCount: this.selectedSeats.length,
-      startTime: this.show.startTime,
-      endTime: this.show.endTime
+    const byKey = new Map(this.categories().map(category => [category.key, category]))
+    const ticket: ITicketReqs = {
+      showId: this.showId(),
+      screenId: show.screenId,
+      movieId: show.movieId?._id ?? '',
+      theaterId: this.theaterId(),
+      userId: user._id,
+      totalPrice: this.summary().total,
+      seatCount: this.selected().length,
+      startTime: show.startTime,
+      endTime: show.endTime
     }
 
-    if (diamondSeats.seats.length > 0) ticketReqs.diamondSeats = diamondSeats
-    if (goldSeats.seats.length > 0) ticketReqs.goldSeats = goldSeats
-    if (silverSeats.seats.length > 0) ticketReqs.silverSeats = silverSeats
-
-    console.warn('booking ticket', ticketReqs)
-    this.ticketService.bookTicket(ticketReqs).subscribe({
-      next: (res) => {
-        if (res.data != null) {
-          // console.log(res.data, 'res from bookTicket')
-          void this.router.navigate(['/user/show/book', res.data._id])
-        }
+    for (const key of CATEGORY_KEYS) {
+      const category = byKey.get(key)
+      const seats = this.selected().filter(seat => seat.category === key).map(seat => seat.id)
+      if (category === undefined || seats.length === 0) continue
+      const line: ITicketSeat = {
+        seats,
+        name: category.name,
+        singlePrice: category.price,
+        CSFeePerTicket: category.fee,
+        totalPrice: (category.price + category.fee) * seats.length
       }
+      ticket[SEAT_LISTS[key]] = line
+    }
+
+    this.booking.set(true)
+    this.ticketService.bookTicket(ticket).subscribe({
+      next: res => {
+        this.booking.set(false)
+        if (res.data != null) void this.router.navigate(['/user/show/book', res.data._id])
+      },
+      // The error toast comes from the HTTP error handler; refresh holds in case someone took the seats
+      error: () => { this.booking.set(false); this.held.reload() }
     })
   }
-
-  isSeatSelected (row: string, col: number): boolean {
-    for (const seat of this.selectedSeats) {
-      if (seat.row === row && seat.col === col) return true
-    }
-    return false
-  }
-
-  isHolded (row: string, col: number): boolean {
-    for (const seat of this.holdedSeats) {
-      if (seat.row === row && seat.col === col) return true
-    }
-    return false
-  }
-
-  selectSeat (row: string, column: IShowSeat): void {
-    if (!column.isBooked && !this.isHolded(row, column.col)) {
-      const col = column.col
-      if (this.isSeatSelected(row, col)) {
-        this.selectedSeats = this.selectedSeats.filter(seat => !(seat.row === row && seat.col === col))
-      } else {
-        if (this.selectedSeats.length < 10) {
-          this.selectedSeats.push({ row, col })
-        }
-      }
-    }
-  }
-
-  get getDiamondKeys (): string[] {
-    console.log(this.diamond, 'keys from getDiamondKeys')
-    if (this.diamond === undefined) return []
-    return Object.keys(this.diamond.seats)
-  }
-
-  get getGoldKeys (): string[] {
-    console.log(this.gold, 'keys from getgoldKeys')
-    if (this.gold === undefined) return []
-    return Object.keys(this.gold.seats)
-  }
-
-  get getSilverKeys (): string[] {
-    console.log(this.silver, 'keys from getsilverKeys')
-    if (this.silver === undefined) return []
-    return Object.keys(this.silver.seats)
-  }
-
-  // getRowKeys (category?: IShowSeatCategoryRes): string[] {
-  //   console.log(category, 'category from getRowKeys')
-  //   if (category === undefined) return []
-  //   return Object.keys(category.seats)
-  // }
 }

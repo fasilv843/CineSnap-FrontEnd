@@ -1,48 +1,88 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core'
+import { rxResource } from '@angular/core/rxjs-interop'
+import { DatePipe } from '@angular/common'
+import { RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { getRandomColor } from 'src/app/helpers/generateColors'
-import { type ILineGraphData } from 'src/app/models/charts'
+import { map } from 'rxjs'
+import { dateToString } from 'src/app/helpers/date'
+import { type IShowsOnAScreen } from 'src/app/models/show'
+import { ShowService } from 'src/app/services/show.service'
 import { TheaterService } from 'src/app/services/theater.service'
+import { TicketService } from 'src/app/services/ticket.service'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
+import { RevenueChartComponent } from 'src/app/shared/ui/revenue-chart.component'
+import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
+import { StatTileComponent } from 'src/app/shared/ui/stat-tile.component'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import { ThrNavComponent } from '../thr-nav/thr-nav.component';
-import { LineGraphComponent } from '../../common/line-graph/line-graph.component';
+import { valueOf } from 'src/app/helpers/resource'
+
+const rupees = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })
+
+interface TodayShow {
+  id: string
+  movie: string
+  screen: string
+  start: Date
+  sold: number
+  total: number
+}
+
+/** Every show of the day across screens, earliest first */
+function toTodayShows (screens: IShowsOnAScreen[]): TodayShow[] {
+  return screens
+    .flatMap(screen => screen.shows.flatMap(group => group.shows.map((show): TodayShow => ({
+      id: show._id,
+      movie: group.movieId?.title ?? 'Movie no longer listed',
+      screen: screen.screenName,
+      start: new Date(show.startTime),
+      sold: show.totalSeatCount - show.availableSeatCount,
+      total: show.totalSeatCount
+    }))))
+    .sort((a, b) => a.start.getTime() - b.start.getTime())
+}
 
 @Component({
-    selector: 'app-thr-home',
-    templateUrl: './thr-home.component.html',
-    styleUrls: ['./thr-home.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ThrNavComponent, LineGraphComponent]
+  selector: 'app-thr-home',
+  templateUrl: './thr-home.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, DatePipe, ButtonDirective, PageHeaderComponent, RevenueChartComponent, StatePanelComponent, StatTileComponent]
 })
-export class ThrHomeComponent implements OnInit {
+export class ThrHomeComponent {
   private readonly theaterService = inject(TheaterService)
-  private readonly store = inject(Store)
+  private readonly showService = inject(ShowService)
+  private readonly ticketService = inject(TicketService)
 
-  theaterData = this.store.selectSignal(selectTheaterDetails)
-  data!: ILineGraphData
-  theaterId = ''
+  protected readonly theater = inject(Store).selectSignal(selectTheaterDetails)
+  private readonly theaterId = computed(() => this.theater()?._id ?? '')
+  protected readonly today = new Date()
 
-  ngOnInit (): void {
-    const theater = this.theaterData()
-    if (theater !== null) this.theaterId = theater._id
-    this.theaterService.getRevenueData(this.theaterId).subscribe({
-      next: (res) => {
-        console.log(res.data, 'res from get revenue')
-        if (res.data === null) return
-        this.data = {
-          labels: res.data.labels,
-          datasets: [
-            {
-              label: 'Revenue Graph',
-              data: res.data.data,
-              fill: false,
-              borderColor: getRandomColor(),
-              tension: 0.4
-            }
-          ]
-        }
-      }
-    })
+  protected readonly revenue = rxResource({
+    params: () => this.theaterId(),
+    stream: ({ params }) => this.theaterService.getRevenueData(params).pipe(map(res => res.data ?? { labels: [], data: [] }))
+  })
+
+  protected readonly shows = rxResource({
+    params: () => this.theaterId(),
+    stream: ({ params }) => this.showService.findShowsOnDateForTheater(params, dateToString(this.today)).pipe(
+      map(res => toTodayShows(res.data ?? []))
+    )
+  })
+
+  // Only the count is needed, so ask for a single row
+  protected readonly ticketCount = rxResource({
+    params: () => this.theaterId(),
+    stream: ({ params }) => this.ticketService.getAllTicketsOfTheater(params, 1, 1).pipe(map(res => res.data?.ticketCount ?? 0))
+  })
+
+  protected readonly revenueTotal = computed(() => rupees.format((valueOf(this.revenue)?.data ?? []).reduce((sum, value) => sum + value, 0)))
+  protected readonly wallet = computed(() => rupees.format(this.theater()?.wallet ?? 0))
+  protected readonly soldToday = computed(() => (valueOf(this.shows) ?? []).reduce((sum, show) => sum + show.sold, 0))
+  protected readonly todayCount = computed(() => (valueOf(this.shows) ?? []).length)
+  protected readonly ticketTotal = computed(() => valueOf(this.ticketCount) ?? 0)
+  protected readonly hasRevenue = computed(() => (valueOf(this.revenue)?.data ?? []).some(value => value > 0))
+
+  protected fill (show: TodayShow): number {
+    return show.total > 0 ? Math.round((show.sold / show.total) * 100) : 0
   }
 }

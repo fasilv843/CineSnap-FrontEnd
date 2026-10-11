@@ -7,16 +7,19 @@ import {
   createColumnHelper, createPaginatedRowModel, createSortedRowModel, injectTable,
   rowPaginationFeature, rowSortingFeature, type SortingState, tableFeatures
 } from '@tanstack/angular-table'
-import { map } from 'rxjs'
+import { map, switchMap } from 'rxjs'
 import { getLanguage } from 'src/app/helpers/movie'
 import { type ITicketRes } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
+import { UserService } from 'src/app/services/user.service'
+import { ToastService } from 'src/app/shared/ui/toast.service'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { ConfirmService } from 'src/app/shared/ui/confirm-dialog.component'
 import { PaginationComponent } from 'src/app/shared/ui/pagination.component'
-import { fetchUserData } from 'src/app/states/user/user.actions'
+import { adjustUserWallet } from 'src/app/states/user/user.actions'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 import { UserNavComponent } from '../user-nav/user-nav.component'
+import { valueOf } from 'src/app/helpers/resource'
 
 const PAGE_SIZES = [10, 20, 50]
 const CANCEL_CUTOFF_HOURS = 4 // backend rule: bookings can be cancelled until 4 hours before the show
@@ -104,6 +107,8 @@ const columns = column.columns([
 })
 export class UserBookingsComponent {
   private readonly ticketService = inject(TicketService)
+  private readonly userService = inject(UserService)
+  private readonly toast = inject(ToastService)
   private readonly confirmService = inject(ConfirmService)
   private readonly store = inject(Store)
   private readonly router = inject(Router)
@@ -139,7 +144,7 @@ export class UserBookingsComponent {
   })
 
   // Rows built from the response; cancelling updates a row here without refetching
-  protected readonly rows = linkedSignal(() => (this.tickets.value() ?? []).map(ticket => toBookingRow(ticket, new Date())))
+  protected readonly rows = linkedSignal(() => (valueOf(this.tickets) ?? []).map(ticket => toBookingRow(ticket, new Date())))
   protected readonly isLoading = this.tickets.isLoading
   protected readonly error = this.tickets.error
 
@@ -194,14 +199,27 @@ export class UserBookingsComponent {
   protected async cancel (row: BookingRow): Promise<void> {
     const confirmed = await this.confirmService.confirm({
       title: 'Cancel this booking?',
-      message: `${row.movie} on ${row.startTime.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}. ₹${row.amount} will be refunded to your CineSnap wallet.`,
+      message: `${row.movie} on ${row.startTime.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}. ` +
+        'The refund goes to your CineSnap wallet: the full ticket price if the show is a while away, less as it gets closer. The booking fee isn\'t refunded.',
       confirmLabel: 'Cancel booking',
       tone: 'danger'
     })
     if (!confirmed) return
-    this.ticketService.cancelTicket(row.id).subscribe(() => {
+    const cancelledAt = Date.now()
+    this.ticketService.cancelTicket(row.id).pipe(
+      // The refund is tiered on the backend, so read what it credited from the newest wallet entries
+      switchMap(() => this.userService.getUserWalletHistory(this.userId, 1, 5))
+    ).subscribe(res => {
       this.rows.update(rows => rows.map(r => r.id === row.id ? { ...r, status: 'cancelled', cancelledBy: 'User', canCancel: false } : r))
-      this.store.dispatch(fetchUserData({ userId: this.userId })) // refreshes the wallet balance
+      const refunded = (res.data?.walletHistory ?? [])
+        .filter(entry => entry.amount > 0 && new Date(entry.date).getTime() >= cancelledAt - 60_000 && /refund/i.test(entry.message))
+        .reduce((sum, entry) => sum + entry.amount, 0)
+      if (refunded > 0) {
+        this.store.dispatch(adjustUserWallet({ by: refunded }))
+        this.toast.success('Booking cancelled', `₹${refunded} is back in your wallet.`)
+      } else {
+        this.toast.success('Booking cancelled')
+      }
     })
   }
 

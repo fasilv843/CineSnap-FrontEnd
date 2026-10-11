@@ -3,7 +3,7 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop'
 import { DatePipe } from '@angular/common'
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { catchError, map, of } from 'rxjs'
+import { map } from 'rxjs'
 import { dateToString } from 'src/app/helpers/date'
 import { distanceKm, formatDistance } from 'src/app/helpers/distance'
 import { type MovieCard, toMovieCard } from 'src/app/helpers/movie-card'
@@ -15,6 +15,7 @@ import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { selectCoords } from 'src/app/states/coords/coords.selector'
 import { UserNavComponent } from '../user-nav/user-nav.component'
+import { valueOf } from 'src/app/helpers/resource'
 
 const DAYS_AHEAD = 7
 
@@ -114,7 +115,7 @@ export class TheaterPageComponent {
   private readonly userCoords = this.store.selectSignal(selectCoords)
   protected readonly distance = computed(() => {
     const from = this.userCoords()?.coordinates
-    const to = this.theater.value()?.coordinates
+    const to = valueOf(this.theater)?.coordinates
     return from !== undefined && to !== undefined ? formatDistance(distanceKm(from, to)) : null
   })
 
@@ -123,8 +124,7 @@ export class TheaterPageComponent {
   protected readonly shows = rxResource({
     params: () => ({ theaterId: this.theaterId(), date: this.selectedDay().key }),
     stream: ({ params }) => this.showService.findShowsOnDate(params.theaterId, params.date).pipe(
-      map(res => groupByMovie(res.data ?? [])),
-      catchError(() => of([])) // a failed lookup shows the "no shows" state rather than a broken page
+      map(res => groupByMovie(res.data ?? []))
     )
   })
 

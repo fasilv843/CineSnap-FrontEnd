@@ -1,93 +1,78 @@
-import { Component, type OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
-import { Router } from '@angular/router'
-import { ModalService } from 'src/app/services/modal.service'
+import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, signal } from '@angular/core'
+import { rxResource } from '@angular/core/rxjs-interop'
+import { Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { type IScreenRequirements, type IApiScreensRes, type IScreen } from 'src/app/models/screens'
+import { map } from 'rxjs'
+import { type IScreen } from 'src/app/models/screens'
+import { ModalService } from 'src/app/services/modal.service'
 import { ScreenService } from 'src/app/services/screen.service'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { ConfirmService } from 'src/app/shared/ui/confirm-dialog.component'
+import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
+import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
+import { ToastService } from 'src/app/shared/ui/toast.service'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import Swal from 'sweetalert2'
-import { ScreenFormModalComponent } from '../screen-form-modal/screen-form-modal.component'
-import { ThrNavComponent } from '../thr-nav/thr-nav.component';
+import { ScreenFormModalComponent, type ScreenFormResult } from '../screen-form-modal/screen-form-modal.component'
+import { valueOf } from 'src/app/helpers/resource'
 
 @Component({
-    selector: 'app-thr-screens',
-    templateUrl: './thr-screens.component.html',
-    styleUrls: ['./thr-screens.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ThrNavComponent]
+  selector: 'app-thr-screens',
+  templateUrl: './thr-screens.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, ButtonDirective, PageHeaderComponent, StatePanelComponent]
 })
-export class ThrScreensComponent implements OnInit {
+export class ThrScreensComponent {
   private readonly screenService = inject(ScreenService)
-  private readonly store = inject(Store)
-  private readonly router = inject(Router)
   private readonly modalService = inject(ModalService)
+  private readonly confirm = inject(ConfirmService)
+  private readonly toast = inject(ToastService)
+  private readonly router = inject(Router)
 
-  screens: IScreen[] = []
-  theaterDetails = this.store.selectSignal(selectTheaterDetails)
-  theaterId: string = ''
+  private readonly theater = inject(Store).selectSignal(selectTheaterDetails)
+  private readonly theaterId = computed(() => this.theater()?._id ?? '')
 
-  ngOnInit (): void {
-    this.theaterId = this.theaterDetails()?._id as string
+  protected readonly loaded = rxResource({
+    params: () => this.theaterId(),
+    stream: ({ params }) => this.screenService.findScreens(params).pipe(map(res => res.data ?? []))
+  })
 
-    this.screenService.findScreens(this.theaterId).subscribe({
-      next: (res: IApiScreensRes) => {
-        if (res.data === null) return
-        console.log(res.data)
-        this.screens = res.data
-      }
-    })
+  // Local copy so a delete shows at once
+  protected readonly screens = linkedSignal<IScreen[]>(() => valueOf(this.loaded) ?? [])
+  protected readonly deleting = signal<string | null>(null)
+  protected readonly adding = signal(false)
+
+  protected addScreen (): void {
+    this.modalService.open(ScreenFormModalComponent, { static: true }).result.then((result: ScreenFormResult) => {
+      this.adding.set(true)
+      this.screenService.addScreen({ ...result, theaterId: this.theaterId() }).subscribe({
+        next: res => {
+          this.adding.set(false)
+          if (res.data === null) return
+          this.toast.success(`${res.data.name} added`, 'Now lay out its seats.')
+          void this.router.navigate(['/theater/screens/seat', res.data.seatId])
+        },
+        error: () => { this.adding.set(false) }
+      })
+    }, () => {})
   }
 
-  addNewScreen (): void {
-    const modalRef = this.modalService.open(ScreenFormModalComponent, { static: true })
-
-    modalRef.componentInstance.modalTitle = 'Add Screen'
-    modalRef.componentInstance.submitBtn = 'Add'
-
-    void modalRef.result.then(
-      (result: IScreenRequirements) => {
-        result.theaterId = this.theaterId
-        console.log('submitted form data', result)
-        this.screenService.addScreen(result).subscribe({
-          next: (res) => {
-            if (res.data === null) return
-            console.log(res.data, 'res.data from saving screen')
-            void this.router.navigate(['/theater/screens/seat', res.data.seatId])
-          }
-        })
+  protected async deleteScreen (screen: IScreen): Promise<void> {
+    const confirmed = await this.confirm.confirm({
+      title: `Delete ${screen.name}?`,
+      message: 'Its seat layout is deleted too, and this can\'t be undone.',
+      confirmLabel: 'Delete screen',
+      cancelLabel: 'Keep it',
+      tone: 'danger'
+    })
+    if (!confirmed) return
+    this.deleting.set(screen._id)
+    this.screenService.deleteScreen(screen._id).subscribe({
+      next: () => {
+        this.deleting.set(null)
+        this.screens.update(list => list.filter(s => s._id !== screen._id))
+        this.toast.success(`${screen.name} deleted`)
       },
-      (reason) => {
-        // Handle dismissal or any other reason
-        console.log('Modal dismissed with reason:', reason)
-      }
-    )
-  }
-
-  viewScreen (screenSeatId: string): void {
-    void this.router.navigate(['/theater/screens/seat', screenSeatId])
-  }
-
-  deleteScreen (screenId: string): void {
-    void Swal.fire({
-      title: 'Are you sure?',
-      text: 'Do you want to Delete this screen!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, Delete',
-      cancelButtonText: 'No, cancel!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.screenService.deleteScreen(screenId).subscribe({
-          next: (res) => {
-            void Swal.fire('Deleted', 'Screen Successfully Deleted', 'success')
-            this.screens = this.screens.filter(s => s._id !== screenId)
-          }
-        })
-      }
+      error: () => { this.deleting.set(null) }
     })
   }
-
-  // updateScreenName (screenId: string, screenName: string): void {
-  //   this.screenService.updateScreenName(screenId, screenName).subscribe({})
-  // }
 }

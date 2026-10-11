@@ -16,7 +16,7 @@ export class UserService {
   ) { }
 
   getAllUsers (page: number, limit: number, searchQuery: string): Observable<IApiRes<IUsersAndCount | null>> {
-    return this.http.get<IApiRes<IUsersAndCount | null>>(`admin/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`)
+    return this.http.get<IApiRes<IUsersAndCount | null>>(`admin/users?page=${page}&limit=${limit}&searchQuery=${encodeURIComponent(searchQuery)}`)
   }
 
   blockUser (userId: string): Observable<IApiUserRes> {

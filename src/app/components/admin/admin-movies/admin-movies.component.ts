@@ -1,121 +1,50 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/semi */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { Movie } from 'src/app/models/movie';
-import { MovieService } from 'src/app/services/movie.service';
-import { TMDBService } from 'src/app/services/tmdb.service';
-import { Language } from 'src/app/shared/langAbbreviation';
-import Swal from 'sweetalert2';
-import { AdminNavComponent } from '../admin-nav/admin-nav.component';
-import { AdminMoviesSearchComponent } from '../admin-movies-search/admin-movies-search.component';
-import { MovieRowComponent } from '../../common/movie-row/movie-row.component';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
+import { rxResource } from '@angular/core/rxjs-interop'
+import { RouterLink } from '@angular/router'
+import { catchError, forkJoin, map, of } from 'rxjs'
+import { type Movie } from 'src/app/models/movie'
+import { TMDBService } from 'src/app/services/tmdb.service'
+import { Language, LanguageAbbreviation } from 'src/app/shared/langAbbreviation'
+import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
+import { SearchFieldComponent } from 'src/app/shared/ui/search-field.component'
+import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
+import { injectUrlPaging } from 'src/app/shared/ui/url-paging'
+import { TmdbMovieCardComponent } from '../../common/movie-row/movie-row.component'
+import { AdminMoviesTabsComponent } from '../admin-movies-search/admin-movies-search.component'
+import { TmdbImportService } from '../tmdb-import.service'
+
+const ROW_LANGUAGES = [Language.MALAYALAM, Language.TAMIL, Language.HINDI, Language.TELUGU, Language.KANNADA, Language.ENGLISH]
+
+interface LanguageRow { code: Language, name: string, movies: Movie[], failed: boolean }
 
 @Component({
-    selector: 'app-admin-movies',
-    templateUrl: './admin-movies.component.html',
-    styleUrls: ['./admin-movies.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [AdminNavComponent, AdminMoviesSearchComponent, MovieRowComponent]
+  selector: 'app-admin-movies',
+  templateUrl: './admin-movies.component.html',
+  styleUrl: './admin-movies.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, PageHeaderComponent, SearchFieldComponent, StatePanelComponent, TmdbMovieCardComponent, AdminMoviesTabsComponent]
 })
-export class AdminMoviesComponent implements OnInit {
-  private readonly tmdbService = inject(TMDBService);
-  private readonly movieService = inject(MovieService);
-  private readonly router = inject(Router);
+export class AdminMoviesComponent {
+  private readonly tmdb = inject(TMDBService)
+  protected readonly importer = inject(TmdbImportService)
 
-  tmdbIds: number[] = []
-  searchResultMovies: Movie[] = []
-  malayalamMovies: Movie[] = []
-  tamilMovies: Movie[] = []
-  hindiMovies: Movie[] = []
-  teluguMovies: Movie[] = []
-  kannadaMovies: Movie[] = []
-  englishMovies: Movie[] = []
+  // Only ?q= is used here (search); the rows aren't paged
+  protected readonly search = injectUrlPaging()
 
-  ngOnInit (): void {
-    this.getMalayalmMovies()
-    this.getTamilMovies()
-    this.getHindiMovies()
-    this.getTeluguMovies()
-    this.getKannadaMovies()
-    this.getEnglishMovies()
+  /** Newest releases per language; one failing language doesn't hide the others */
+  protected readonly rows = rxResource({
+    stream: () => forkJoin(ROW_LANGUAGES.map(code => this.tmdb.fetchMovieByLanguage(code).pipe(
+      map((movies): LanguageRow => ({ code, name: LanguageAbbreviation[code], movies, failed: false })),
+      catchError(() => of<LanguageRow>({ code, name: LanguageAbbreviation[code], movies: [], failed: true }))
+    )))
+  })
 
-    this.movieService.fetchCineSnapMovies().subscribe({
-      next: (res) => {
-        this.tmdbIds = res.data
-      }
-    })
-  }
+  protected readonly results = rxResource({
+    params: () => this.search.query() || undefined,
+    stream: ({ params }) => this.tmdb.searchMovieByName(params)
+  })
 
-  isMovieAlreadyExist (tmdbId: number): boolean {
-    return this.tmdbIds.includes(tmdbId);
-  }
-
-  addMovie (movie: Movie): void {
-    this.movieService.saveMovie(movie).subscribe({
-      next: async () => await Swal.fire('Success', 'Movie Successfully Added', 'success')
-    });
-  }
-
-  searchTmdbMovies (title: string): void {
-    console.log(title, 'search on tmdb fn')
-    this.tmdbService.searchMovieByName(title).subscribe({
-      next: (res) => {
-        this.searchResultMovies = res
-      }
-    })
-  }
-
-  exploreLanguage (lang: string): void {
-    void this.router.navigate(['/admin/movies/', lang])
-  }
-
-  getMalayalmMovies (): void {
-    this.tmdbService.fetchMovieByLanguage(Language.MALAYALAM).subscribe({
-      next: (res) => {
-        this.malayalamMovies = res
-      }
-    })
-  }
-
-  getTamilMovies (): void {
-    this.tmdbService.fetchMovieByLanguage(Language.TAMIL).subscribe({
-      next: (res) => {
-        this.tamilMovies = res
-      }
-    })
-  }
-
-  getHindiMovies (): void {
-    this.tmdbService.fetchMovieByLanguage(Language.HINDI).subscribe({
-      next: (res) => {
-        this.hindiMovies = res
-      }
-    })
-  }
-
-  getTeluguMovies (): void {
-    this.tmdbService.fetchMovieByLanguage(Language.TELUGU).subscribe({
-      next: (res) => {
-        this.teluguMovies = res
-      }
-    })
-  }
-
-  getKannadaMovies (): void {
-    this.tmdbService.fetchMovieByLanguage(Language.KANNADA).subscribe({
-      next: (res) => {
-        this.kannadaMovies = res
-      }
-    })
-  }
-
-  getEnglishMovies (): void {
-    this.tmdbService.fetchMovieByLanguage(Language.ENGLISH).subscribe({
-      next: (res) => {
-        this.englishMovies = res
-      }
-    })
+  constructor () {
+    this.importer.reload() // pick up movies added elsewhere since the last visit
   }
 }

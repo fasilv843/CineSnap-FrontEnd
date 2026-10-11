@@ -1,58 +1,65 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core'
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core'
+import { rxResource } from '@angular/core/rxjs-interop'
+import { DatePipe } from '@angular/common'
+import { RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { IWalletHistory } from 'src/app/models/common'
+import { createColumnHelper, injectTable, rowPaginationFeature, tableFeatures } from '@tanstack/angular-table'
+import { map } from 'rxjs'
+import { type IWalletHistory } from 'src/app/models/common'
 import { TheaterService } from 'src/app/services/theater.service'
+import { WalletTopUpService } from 'src/app/services/wallet-top-up.service'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { IconComponent } from 'src/app/shared/ui/icon.component'
+import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
+import { PaginationComponent } from 'src/app/shared/ui/pagination.component'
+import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
+import { injectUrlPaging } from 'src/app/shared/ui/url-paging'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import { ThrNavComponent } from '../thr-nav/thr-nav.component';
-import { WalletHistoryComponent } from '../../common/wallet-history/wallet-history.component';
+import { valueOf } from 'src/app/helpers/resource'
+
+// The server pages the history, so the table only needs pagination state (no client row models)
+const features = tableFeatures({ rowPaginationFeature })
+const column = createColumnHelper<typeof features, IWalletHistory>()
+const columns = column.columns([
+  column.accessor('date', { header: 'Date' }),
+  column.accessor('message', { header: 'Description' }),
+  column.accessor('amount', { header: 'Amount' })
+])
 
 @Component({
-    selector: 'app-thr-wallet',
-    templateUrl: './thr-wallet.component.html',
-    styleUrls: ['./thr-wallet.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ThrNavComponent, WalletHistoryComponent]
+  selector: 'app-thr-wallet',
+  templateUrl: './thr-wallet.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, DatePipe, ButtonDirective, IconComponent, PageHeaderComponent, PaginationComponent, StatePanelComponent]
 })
 export class ThrWalletComponent {
-  private readonly store = inject(Store)
   private readonly theaterService = inject(TheaterService)
+  private readonly walletTopUp = inject(WalletTopUpService)
 
-  theaterData = this.store.selectSignal(selectTheaterDetails)
-  theaterId = ''
+  protected readonly theater = inject(Store).selectSignal(selectTheaterDetails)
+  protected readonly paging = injectUrlPaging()
 
-  walletHistory: IWalletHistory[] = []
-  count = 0
+  protected readonly history = rxResource({
+    params: () => ({ theaterId: this.theater()?._id ?? '', page: this.paging.page(), limit: this.paging.limit() }),
+    stream: ({ params }) => this.theaterService.getTheaterWalletHistory(params.theaterId, params.page, params.limit).pipe(
+      map(res => res.data ?? { walletHistory: [], count: 0 })
+    )
+  })
 
-  page = 1
-  itemsPerPage = 10
+  private readonly rows = computed(() => valueOf(this.history)?.walletHistory ?? [])
+  protected readonly total = computed(() => valueOf(this.history)?.count ?? 0)
 
-  ngOnInit (): void {
-    const theater = this.theaterData()
-    if (theater !== null) this.theaterId = theater._id
+  protected readonly table = injectTable(() => ({
+    features,
+    columns,
+    data: this.rows(),
+    manualPagination: true,
+    rowCount: this.total(),
+    state: { pagination: { pageIndex: this.paging.page() - 1, pageSize: this.paging.limit() } }
+  }))
 
-    this.getWalletHistory()
-  }
-
-  getWalletHistory (): void {
-    this.theaterService.getTheaterWalletHistory(this.theaterId, this.page, this.itemsPerPage).subscribe({
-      next: (res) => {
-        console.log(res.data, 'res.data from wallet history')
-        if (res.data === null) return
-        this.walletHistory = res.data.walletHistory
-        this.count = res.data.count
-      }
-    })
-  }
-
-  onPageChange (page: number): void {
-    this.page = page
-    this.getWalletHistory()
-  }
-
-  onItemsPerPageChange (itemsPerPage: number): void {
-    this.itemsPerPage = itemsPerPage
-    this.page = 1
-    this.getWalletHistory()
+  protected addMoney (): void {
+    const theater = this.theater()
+    if (theater !== null) this.walletTopUp.addTheaterMoney(theater)
   }
 }

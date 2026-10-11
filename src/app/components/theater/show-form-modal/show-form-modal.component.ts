@@ -1,231 +1,175 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core'
+import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop'
 import { DatePipe } from '@angular/common'
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms'
-import { ActiveModal } from 'src/app/services/modal.service'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { Store } from '@ngrx/store'
-import moment from 'moment'
-import { Subject, debounceTime } from 'rxjs'
+import { catchError, debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs'
+import { dateToString } from 'src/app/helpers/date'
 import { validateByTrimming } from 'src/app/helpers/validations'
-import { ICSMovieRes, IDuration } from 'src/app/models/movie'
-import { IScreen } from 'src/app/models/screens'
+import { type ICSMovieRes } from 'src/app/models/movie'
+import { ActiveModal } from 'src/app/services/modal.service'
 import { MovieService } from 'src/app/services/movie.service'
 import { ScreenService } from 'src/app/services/screen.service'
+import { MAX_TICKET_PRICE, MIN_TICKET_PRICE } from 'src/app/shared/constants'
 import { defaultPriceValidators, requiredValidator } from 'src/app/shared/valiators'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import { MovieSelectValidationComponent } from './validation/movie-select-validation/movie-select-validation.component'
-import { DefPriceValidationComponent } from './validation/def-price-validation/def-price-validation.component'
-import { ScreenSelectValidationComponent } from './validation/screen-select-validation/screen-select-validation.component'
-import { ShowDateValidationComponent } from './validation/show-date-validation/show-date-validation.component'
-import { StartTimeValidationComponent } from './validation/start-time-validation/start-time-validation.component'
+import { valueOf } from 'src/app/helpers/resource'
 
+type Category = 'diamond' | 'gold' | 'silver'
+const CATEGORIES: Category[] = ['diamond', 'gold', 'silver']
+
+export interface ShowFormResult {
+  movieId: string
+  screenId: string
+  date: string
+  startTime: Date
+  diamondPrice?: number
+  goldPrice?: number
+  silverPrice?: number
+}
+
+/** Schedules a show. Set `date` (YYYY-MM-DD) before it renders; closes with a ShowFormResult. */
 @Component({
-    imports: [
-    ReactiveFormsModule,
-    // ? Validation Error Message Components
-    MovieSelectValidationComponent,
-    ScreenSelectValidationComponent,
-    ShowDateValidationComponent,
-    StartTimeValidationComponent,
-    DefPriceValidationComponent,
-    DatePipe
-],
-    selector: 'app-show-form-modal',
-    templateUrl: './show-form-modal.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    styleUrls: ['./show-form-modal.component.css']
+  selector: 'app-show-form-modal',
+  templateUrl: './show-form-modal.component.html',
+  styleUrl: './show-form-modal.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, DatePipe, ButtonDirective, FieldErrorComponent]
 })
-export class ShowFormModalComponent implements OnInit, OnDestroy {
-  private readonly formBuilder = inject(FormBuilder)
-  activeModal = inject(ActiveModal)
+export class ShowFormModalComponent {
+  protected readonly modal = inject(ActiveModal)
   private readonly movieService = inject(MovieService)
   private readonly screenService = inject(ScreenService)
-  private readonly store = inject(Store)
+  private readonly theater = inject(Store).selectSignal(selectTheaterDetails)
 
-  theaterData = this.store.selectSignal(selectTheaterDetails)
-  searchSubject = new Subject<string>()
-  showForm!: FormGroup
-  isSubmitted = false
-  movies: ICSMovieRes[] = []
-  screens: IScreen[] = []
-  theaterId: string = ''
+  /** Day the form opens on */
+  readonly date = signal(dateToString(new Date()))
+  protected readonly today = dateToString(new Date())
 
-  modalTitle: string = ''
-  submitBtn: string = ''
+  protected readonly form = new FormGroup({
+    screenId: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
+    date: new FormControl(this.today, { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
+    startTime: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
+    diamondPrice: new FormControl({ value: '', disabled: true }, { nonNullable: true, validators: [validateByTrimming(defaultPriceValidators)] }),
+    goldPrice: new FormControl({ value: '', disabled: true }, { nonNullable: true, validators: [validateByTrimming(defaultPriceValidators)] }),
+    silverPrice: new FormControl({ value: '', disabled: true }, { nonNullable: true, validators: [validateByTrimming(defaultPriceValidators)] })
+  })
 
-  isMovieSelected = false
-  movieDuration!: IDuration
-  isStartTimeSelected = false
-  startTimeStr = '00:00'
-  endingTime: string = '00:00'
-  currDate: Date = new Date()
-
-  showMovieOptions = false
-  showMovieError = false
-  selectedMovieId = ''
-
-  onInputBlur (): void {
-    setTimeout(() => {
-      this.showMovieOptions = false
-    }, 200)
-  }
-
-  onInputFocus (): void {
-    setTimeout(() => {
-      this.showMovieOptions = true
-    }, 200)
-  }
-
-  onInputChange (event: any): void {
-    const query = event.target.value as string
-    this.searchSubject.next(query)
-  }
-
-  selectMovie (movie: ICSMovieRes): void {
-    this.isMovieSelected = true
-    this.showForm.controls['movie'].setValue(movie.title)
-    this.showForm.controls['movie'].disable()
-    this.showMovieOptions = false
-    this.showMovieError = false
-    this.selectedMovieId = movie._id
-    this.movieDuration = movie.duration
-    console.log(movie, 'selected movie')
-    if (this.isStartTimeSelected) {
-      this.calculateEndTime(this.startTimeStr, movie.duration)
+  protected readonly submitted = signal(false)
+  protected readonly messages = {
+    screenId: { required: 'Choose a screen' },
+    date: { required: 'Choose a date' },
+    startTime: { required: 'Choose a start time' },
+    price: {
+      required: 'Enter a ticket price',
+      pattern: 'Use whole rupees',
+      min: `At least ₹${MIN_TICKET_PRICE}`,
+      max: `At most ₹${MAX_TICKET_PRICE}`
     }
   }
 
-  changeMovie (): void {
-    console.log('allowing movie change')
-    this.showForm.controls['movie'].enable()
-    this.showMovieOptions = true
-    this.isMovieSelected = false
-    this.selectedMovieId = ''
-    this.endingTime = ''
-  }
+  // Movie search ------------------------------------------------------------------------
 
-  priceControls: Array<{ category: string, label: string, controlName: string }> = []
-
-  ngOnInit (): void {
-    this.showForm = this.formBuilder.group({
-      movie: ['', [validateByTrimming(requiredValidator)]],
-      screenId: ['', [validateByTrimming(requiredValidator)]],
-      startTime: ['', [validateByTrimming(requiredValidator)]],
-      date: [this.currDate.toISOString().substring(0, 10), [validateByTrimming(requiredValidator)]]
+  protected readonly query = signal('')
+  protected readonly movie = signal<ICSMovieRes | null>(null)
+  protected readonly searching = signal(false)
+  protected readonly searchFailed = signal(false)
+  protected readonly movies = toSignal(toObservable(this.query).pipe(
+    map(text => text.trim()),
+    debounceTime(300),
+    distinctUntilChanged(),
+    switchMap(text => {
+      this.searching.set(true)
+      this.searchFailed.set(false)
+      const request = text === '' ? this.movieService.findAllMovies() : this.movieService.searchMovie(text, false)
+      return request.pipe(
+        map(res => { this.searching.set(false); return (res.data ?? []).slice(0, 8) }),
+        catchError(() => { this.searching.set(false); this.searchFailed.set(true); return of([]) })
+      )
     })
+  ), { initialValue: [] })
 
-    const theater = this.theaterData()
-    if (theater !== null) this.theaterId = theater._id
+  // Screens and the seat categories each one has --------------------------------------
 
-    this.movieService.findAllMovies().subscribe({
-      next: (res) => {
-        this.movies = res.data
-      }
-    })
+  protected readonly screens = rxResource({
+    params: () => this.theater()?._id ?? '',
+    stream: ({ params }) => this.screenService.findScreens(params).pipe(map(res => res.data ?? []))
+  })
 
-    this.screenService.findScreens(this.theaterId).subscribe({
-      next: (res) => {
-        if (res.data === null) return
-        this.screens = res.data
-      }
-    })
+  private readonly screenId = toSignal(this.form.controls.screenId.valueChanges.pipe(startWith('')), { initialValue: '' })
 
-    this.searchSubject
-      .pipe(debounceTime(500))
-      .subscribe(movieName => {
-        this.movieService.searchMovie(movieName, false).subscribe((res) => {
-          this.movies = res.data
-        })
-      })
-  }
+  protected readonly categories = rxResource({
+    params: () => this.screenId(),
+    stream: ({ params }) => params === ''
+      ? of([])
+      : this.screenService.getAvailSeatsOnScreen(params).pipe(map(res => {
+        const names = res.data
+        if (names === null) return []
+        return CATEGORIES.filter(key => names[key] !== undefined && names[key] !== null && names[key] !== '')
+          .map(key => ({ key, label: names[key] as string, control: `${key}Price` as const }))
+      }))
+  })
 
-  onScreenChange (event: Event): void {
-    console.log(event, 'event on screen change')
-    const target = event.target as HTMLSelectElement
-    const screenId = target.value
+  // Show length -------------------------------------------------------------------------
 
-    this.screenService.getAvailSeatsOnScreen(screenId).subscribe({
-      next: (res) => {
-        if (res.data === null) return
-        console.log(res.data, 'res from getAvailSEats on screen')
-        this.showForm.removeControl('diamondPrice')
-        this.showForm.removeControl('goldPrice')
-        this.showForm.removeControl('silverPrice')
-        this.priceControls = []
-        for (const category in res.data) {
-          if (Object.prototype.hasOwnProperty.call(res.data, category)) {
-            const priceControlName = `${category}Price`
-            console.log(priceControlName, 'price control name')
+  private readonly startTime = toSignal(this.form.controls.startTime.valueChanges, { initialValue: '' })
+  protected readonly endTime = computed(() => {
+    const movie = this.movie()
+    const start = this.startTime()
+    if (movie === null || start === '') return null
+    const [hours, minutes] = start.split(':').map(Number)
+    const end = new Date()
+    end.setHours(hours, minutes + movie.duration.hours * 60 + movie.duration.minutes, 0, 0)
+    return end
+  })
 
-            // Check if the control already exists to avoid duplicates
-            if (this.showForm.get(priceControlName) == null) {
-              this.showForm.addControl(priceControlName, this.formBuilder.control('', [validateByTrimming(defaultPriceValidators)]))
-              this.priceControls.push({ category, label: res.data[category as keyof typeof res.data] as string, controlName: priceControlName })
-            }
-          }
-        }
+  protected readonly runtime = computed(() => {
+    const duration = this.movie()?.duration
+    return duration !== undefined ? `${duration.hours}h ${duration.minutes.toString().padStart(2, '0')}m` : ''
+  })
+
+  constructor () {
+    // Open on the day the theater was looking at
+    effect(() => { this.form.controls.date.setValue(this.date() < this.today ? this.today : this.date()) })
+
+    // Only categories the chosen screen has need a price
+    effect(() => {
+      const available = new Set((valueOf(this.categories) ?? []).map(category => category.key))
+      for (const key of CATEGORIES) {
+        const control = this.form.controls[`${key}Price`]
+        if (available.has(key)) control.enable()
+        else { control.disable(); control.reset() }
       }
     })
   }
 
-  ngOnDestroy (): void {
-    this.searchSubject.unsubscribe()
+  protected pickMovie (movie: ICSMovieRes): void {
+    this.movie.set(movie)
   }
 
-  onStartTimeChange (event: any): void {
-    const startingTimeString = event.target.value
-    this.startTimeStr = startingTimeString
-    this.isStartTimeSelected = true
-    console.log(this.isMovieSelected, this.movieDuration, 'ismovieselected, movieduration')
-    if (this.isMovieSelected && this.movieDuration !== null) {
-      console.log(startingTimeString, 'startingTime str')
-      this.calculateEndTime(startingTimeString, this.movieDuration)
-      console.log(this.endingTime, 'ending time')
+  protected changeMovie (): void {
+    this.movie.set(null)
+  }
+
+  protected submit (): void {
+    this.submitted.set(true)
+    const movie = this.movie()
+    if (this.form.invalid || movie === null) return
+
+    const value = this.form.getRawValue()
+    const [hours, minutes] = value.startTime.split(':').map(Number)
+    const [year, month, day] = value.date.split('-').map(Number)
+    const result: ShowFormResult = {
+      movieId: movie._id,
+      screenId: value.screenId,
+      date: value.date,
+      startTime: new Date(year, month - 1, day, hours, minutes, 0, 0)
     }
-  }
-
-  calculateEndTime (startingTimeString: string, duration: IDuration): void {
-    const startingTimeMoment = moment(startingTimeString, 'HH:mm') // Parse starting time with format
-    console.log(startingTimeMoment, 'moment')
-    // console.log(startingTimeMoment.valueOf(), 'moment valueof')
-    const totalDurationMinutes = duration.hours * 60 + duration.minutes
-    const endingTimeMoment = startingTimeMoment.add(totalDurationMinutes, 'minutes') // Add duration to starting time
-    this.endingTime = endingTimeMoment.format('LT') // Format ending time with desired format
-  }
-
-  setData (data: any): void {
-    this.showForm.patchValue(data)
-  }
-
-  onSubmit (): void {
-    this.isSubmitted = true
-    if (this.showForm.valid && this.selectedMovieId !== '') {
-      const showFormData = this.showForm.value
-      showFormData.movieId = this.selectedMovieId
-      console.log(showFormData, 'show form data from modal')
-      showFormData.startTime = this.convertTimeStrToDateObj(showFormData.startTime, new Date(showFormData.date))
-      console.log(showFormData.startTime, 'start time from modal')
-      this.activeModal.close(showFormData)
-    } else if (this.selectedMovieId === '') {
-      this.showMovieError = true
-    } else {
-      console.log('showForm is invalid', this.showForm.controls)
+    for (const { key } of valueOf(this.categories) ?? []) {
+      result[`${key}Price`] = Number(value[`${key}Price`])
     }
-  }
-
-  convertTimeStrToDateObj (timeStr: string, date: Date): Date {
-    // Set the hours and minutes from the time string
-    console.log(timeStr, 'tiemStr from convert funcion')
-    date.setHours(parseInt(timeStr.split(':')[0]), parseInt(timeStr.split(':')[1]))
-
-    // Clear seconds, milliseconds for cleaner representation
-    date.setSeconds(0)
-    date.setMilliseconds(0)
-
-    return date
-  }
-
-  onCancel (): void {
-    this.activeModal.dismiss('cancel')
+    this.modal.close(result)
   }
 }

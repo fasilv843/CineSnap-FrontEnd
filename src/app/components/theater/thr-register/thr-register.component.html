@@ -1,156 +1,135 @@
-<section class="min-h-screen bg-cover bg-center"
-  style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
-  <div class="flex min-h-screen items-center">
-    <div class="container">
-      <div class="py-8 flex justify-center items-center">
-        <div class="w-full md:w-9/12 lg:w-7/12 xl:w-6/12">
-          <div class="bg-white shadow-lg" style="border-radius: 15px;">
-            <div class="p-6 sm:p-12">
-              <h2 class="uppercase text-2xl font-semibold text-center mb-12">Register Your Theater</h2>
+@if (step() === 'details') {
+  <cs-auth-shell heading="Register your theater" subheading="Tell us about your theater. We review every registration before it goes live."
+    pitch="Fill every seat, every show." pitchDetail="Schedule shows, design seat maps and see your revenue as tickets sell.">
+    <form [formGroup]="details" (ngSubmit)="sendCode()" novalidate class="space-y-6">
+      <fieldset class="space-y-4">
+        <legend class="mb-1 font-semibold">Theater</legend>
+        <div>
+          <label for="name" class="mb-1.5 block text-sm font-semibold">Theater name</label>
+          <input id="name" class="input" formControlName="name" autocomplete="organization" />
+          <cs-field-error [control]="details.controls.name" [submitted]="detailsSubmitted()" [messages]="messages.name" />
+        </div>
+        <div>
+          <label for="email" class="mb-1.5 block text-sm font-semibold">Business email</label>
+          <input id="email" type="email" class="input" formControlName="email" autocomplete="email" placeholder="you@yourtheater.com" />
+          <cs-field-error [control]="details.controls.email" [submitted]="detailsSubmitted()" [messages]="messages.email" />
+        </div>
+        <div>
+          <label for="licence" class="mb-1.5 block text-sm font-semibold">Licence number</label>
+          <input id="licence" class="input" formControlName="liscenceId" autocomplete="off" />
+          <cs-field-error [control]="details.controls.liscenceId" [submitted]="detailsSubmitted()" [messages]="messages.liscenceId" />
+        </div>
+      </fieldset>
 
-              <form [formGroup]="form" (submit)="onSubmit()">
-
-                <div class="mb-3">
-                  <input type="text"  formControlName="name" id="form3Example1cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Theater Name" />
-                  <app-name-validation [nameControl]="form.get('name')" [isSubmitted]="isSubmitted"></app-name-validation>
-                </div>
-
-                <div class="mb-3">
-                  <input type="email"  formControlName="email" id="form3Example3cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Business Mail" />
-                  <app-email-validation [emailControl]="form.get('email')" [isSubmitted]="isSubmitted"></app-email-validation>
-                </div>
-
-                @if (!showOtpField) {
-                  <div class="mb-3" (click)="autoFillAddress()">
-                    <input type="radio" class="mx-2"> <label for=""> Get Location</label>
-                  </div>
-                }
-
-                @if (!showOtpField) {
-                  <div class="mb-3 flex gap-x-2">
-                    <div>
-                      <input type="text"  formControlName="country" [(ngModel)]="country"  id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Country" />
-                      @if (isSubmitted && form.controls['country'].errors) {
-                        <div>
-                          @if (form.controls['country'].errors['required']) {
-                            <div style="color: red;">country is required</div>
-                          }
-                        </div>
-                      }
-                    </div>
-                    <div>
-                      <input type="text"  formControlName="state"  [(ngModel)]="state" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="State" />
-                      @if (isSubmitted && form.controls['state'].errors) {
-                        <div>
-                          @if (form.controls['state'].errors['required']) {
-                            <div style="color: red;">State is required</div>
-                          }
-                        </div>
-                      }
-                    </div>
-                  </div>
-                }
-
-                @if (!showOtpField) {
-                  <div class="mb-3 flex gap-x-2">
-                    <div>
-                      <input type="text"  formControlName="district"  [(ngModel)]="district" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="District" />
-                      @if (isSubmitted && form.controls['district'].errors) {
-                        <div>
-                          @if (form.controls['district'].errors['required']) {
-                            <div style="color: red;">District is required</div>
-                          }
-                        </div>
-                      }
-                    </div>
-                    <div>
-                      <input type="text"  formControlName="city"  [(ngModel)]="city" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="City" />
-                      @if (isSubmitted && form.controls['city'].errors) {
-                        <div>
-                          @if (form.controls['city'].errors['required']) {
-                            <div style="color: red;">City is required</div>
-                          }
-                        </div>
-                      }
-                    </div>
-                  </div>
-                }
-
-
-                @if (!showOtpField) {
-                  <div class="mb-3 flex gap-x-2">
-                    <input type="text"  formControlName="zip"  [(ngModel)]="zip" id="" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="ZIP Code" />
-                    @if (isSubmitted && form.controls['zip'].errors) {
-                      <div>
-                        @if (form.controls['zip'].errors['required']) {
-                          <div style="color: red;">ZIP is required</div>
-                        }
-                        @if (form.controls['zip'].errors['pattern']) {
-                          <div style="color: red;">Invalid zip format</div>
-                        }
-                      </div>
-                    }
-                  </div>
-                }
-
-                @if (!showOtpField) {
-                  <div class="mb-3">
-                    <input type="text" formControlName="landmark" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Landmark" />
-                  </div>
-                }
-
-                @if (!showOtpField) {
-                  <div class="mb-3">
-                    <input type="text" formControlName="liscenceId" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Liscence ID" />
-                    @if (isSubmitted && f['liscenceId'].errors) {
-                      <div>
-                        @if (f['liscenceId'].errors['required']) {
-                          <div style="color: red;">Liscence ID is required</div>
-                        }
-                      </div>
-                    }
-                  </div>
-                }
-
-                @if (!showOtpField) {
-                  <div  class="mb-3">
-                    <input type="password" formControlName="password" id="form3Example4cg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter Password" />
-                    <app-password-validation [passwordControl]="form.get('password')" [isSubmitted]="isSubmitted"></app-password-validation>
-                  </div>
-                }
-
-                @if (!showOtpField) {
-                  <div  class="mb-3">
-                    <input type="password" formControlName="repeatPassword" id="form3Example4cdg" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Repeat Password" />
-                    <app-repeat-pass-validation [repeatPassControl]="form.get('repeatPassword')" [isSubmitted]="isSubmitted"></app-repeat-pass-validation>
-                  </div>
-                }
-
-                @if (showOtpField) {
-                  <div>
-                    <input type="text" formControlName="otp" id="otp" class="w-full rounded-md border border-gray-300 px-4 py-2 text-lg focus:outline-hidden focus:ring-2 focus:ring-amber-400" placeholder="Enter OTP" />
-                    <app-otp-validation [otpControl]="form.get('otp')" [showOTPResend]="showOTPResend" [timerStr]="formattedTime" (OTPResend)="resendOTP()"></app-otp-validation>
-                  </div>
-                }
-
-
-                <div class="flex justify-center my-2">
-                  <button type="submit"
-                  class="w-full rounded-md bg-amber-400 hover:bg-amber-500 disabled:opacity-60 px-6 py-2 text-lg font-semibold text-gray-900">{{ showOtpField ? 'Verify' : 'Register' }}</button>
-                </div>
-
-                @if (!showOtpField) {
-                  <p class="text-center text-gray-500 mt-3 mb-0">Have already an account?
-                    <a routerLink="/theater/login" class="font-bold text-gray-900"><u>Login here</u></a>
-                  </p>
-                }
-
-              </form>
-
-            </div>
+      <fieldset class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <legend class="font-semibold">Address</legend>
+          <button csButton variant="secondary" size="sm" type="button" [disabled]="locating()" (click)="useMyLocation()">
+            @if (locating()) { <span class="spinner"></span> Finding you… } @else { Use my location }
+          </button>
+        </div>
+        @if (locationNote(); as note) {
+          <p class="text-sm" [class.text-success]="note.tone === 'success'" [class.text-danger]="note.tone === 'danger'" role="status">{{ note.text }}</p>
+        }
+        <div>
+          <label for="landmark" class="mb-1.5 block text-sm font-semibold">Street or landmark <span class="font-normal text-subtle">(optional)</span></label>
+          <input id="landmark" class="input" formControlName="landmark" autocomplete="address-line1" />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="city" class="mb-1.5 block text-sm font-semibold">City</label>
+            <input id="city" class="input" formControlName="city" autocomplete="address-level2" />
+            <cs-field-error [control]="details.controls.city" [submitted]="detailsSubmitted()" [messages]="messages.city" />
+          </div>
+          <div>
+            <label for="district" class="mb-1.5 block text-sm font-semibold">District</label>
+            <input id="district" class="input" formControlName="district" />
+            <cs-field-error [control]="details.controls.district" [submitted]="detailsSubmitted()" [messages]="messages.district" />
+          </div>
+          <div>
+            <label for="state" class="mb-1.5 block text-sm font-semibold">State</label>
+            <input id="state" class="input" formControlName="state" autocomplete="address-level1" />
+            <cs-field-error [control]="details.controls.state" [submitted]="detailsSubmitted()" [messages]="messages.state" />
+          </div>
+          <div>
+            <label for="zip" class="mb-1.5 block text-sm font-semibold">PIN code</label>
+            <input id="zip" class="input" formControlName="zip" inputmode="numeric" maxlength="6" autocomplete="postal-code" />
+            <cs-field-error [control]="details.controls.zip" [submitted]="detailsSubmitted()" [messages]="messages.zip" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="country" class="mb-1.5 block text-sm font-semibold">Country</label>
+            <input id="country" class="input" formControlName="country" autocomplete="country-name" />
+            <cs-field-error [control]="details.controls.country" [submitted]="detailsSubmitted()" [messages]="messages.country" />
           </div>
         </div>
+      </fieldset>
+
+      <fieldset class="space-y-4">
+        <legend class="mb-1 font-semibold">Password</legend>
+        <div>
+          <label for="password" class="mb-1.5 block text-sm font-semibold">Password</label>
+          <div class="relative">
+            <input id="password" class="input pr-16" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
+              autocomplete="new-password" aria-describedby="password-hint" />
+            <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-control px-2 py-1 text-sm font-semibold text-muted hover:text-default"
+              [attr.aria-pressed]="showPassword()" (click)="showPassword.set(!showPassword())">
+              {{ showPassword() ? 'Hide' : 'Show' }}<span class="sr-only"> password</span>
+            </button>
+          </div>
+          <p id="password-hint" class="mt-1 text-xs text-subtle">At least 8 characters, with an uppercase letter, a lowercase letter and a number.</p>
+          <cs-field-error [control]="details.controls.password" [submitted]="detailsSubmitted()" [messages]="messages.password" />
+        </div>
+        <div>
+          <label for="repeat-password" class="mb-1.5 block text-sm font-semibold">Confirm password</label>
+          <input id="repeat-password" class="input" [type]="showPassword() ? 'text' : 'password'" formControlName="repeatPassword" autocomplete="new-password" />
+          <cs-field-error [control]="details.controls.repeatPassword" [submitted]="detailsSubmitted()" [messages]="messages.repeatPassword" />
+        </div>
+      </fieldset>
+
+      <button csButton size="lg" type="submit" class="w-full" [disabled]="busy()">
+        @if (busy()) { <span class="spinner"></span> Sending code… } @else { Continue }
+      </button>
+    </form>
+
+    <p class="mt-6 text-center text-muted">
+      Already registered?
+      <a routerLink="/theater/login" class="font-semibold text-default underline decoration-accent underline-offset-4">Sign in</a>
+    </p>
+  </cs-auth-shell>
+} @else {
+  <cs-auth-shell heading="Check your email" [subheading]="'Enter the 4-digit code we sent to ' + sentTo() + '.'"
+    pitch="Fill every seat, every show." pitchDetail="Schedule shows, design seat maps and see your revenue as tickets sell.">
+    <form (submit)="$event.preventDefault(); verify()" novalidate class="space-y-4">
+      <div>
+        <label for="otp" class="mb-1.5 block text-sm font-semibold">Verification code</label>
+        <input id="otp" class="input text-center font-display text-3xl tracking-[0.5em]" [formControl]="otp"
+          inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="••••" />
+        <cs-field-error [control]="otp" [submitted]="otpSubmitted()" [messages]="messages.otp" />
       </div>
+
+      <p class="text-sm" aria-live="polite">
+        @if (expired()) {
+          <span class="font-semibold text-danger">This code has expired.</span>
+        } @else {
+          <span class="text-muted">The code expires in <span class="font-semibold tabular-nums text-default">{{ countdown() }}</span></span>
+        }
+      </p>
+
+      <button csButton size="lg" type="submit" class="w-full" [disabled]="busy() || expired()">
+        @if (busy()) { <span class="spinner"></span> Verifying… } @else { Verify and submit for review }
+      </button>
+    </form>
+
+    <div class="mt-6 flex flex-wrap items-center justify-between gap-3 text-sm">
+      @if (canResend()) {
+        <button csButton variant="link" type="button" (click)="resendCode()">Send a new code</button>
+      } @else {
+        <span class="text-subtle">You've used all code resends. Start again to get a new one.</span>
+      }
+      <button csButton variant="link" type="button" (click)="changeDetails()">Change details</button>
     </div>
-  </div>
-</section>
+    @if (resendNote(); as note) {
+      <p class="mt-3 text-sm text-success" role="status">{{ note }}</p>
+    }
+  </cs-auth-shell>
+}

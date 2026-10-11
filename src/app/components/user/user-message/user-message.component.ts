@@ -14,6 +14,7 @@ import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 import { UserNavComponent } from '../user-nav/user-nav.component'
+import { valueOf } from 'src/app/helpers/resource'
 
 interface Contact { id: string, name: string, image: string | null }
 interface DayGroup { day: Date, messages: IChatMessage[] }
@@ -66,11 +67,13 @@ export class UserMessageComponent {
     })
   })
 
-  protected readonly partner = computed(() => this.conversation.value()?.theater ?? null)
+  protected readonly partner = computed(() => valueOf(this.conversation)?.theater ?? null)
   protected readonly isLoadingChat = this.conversation.isLoading
+  protected readonly chatError = this.conversation.error
+  protected reloadChat (): void { this.conversation.reload() }
 
   // Starts from the loaded history; sent and received messages are added locally
-  protected readonly messages = linkedSignal<IChatMessage[]>(() => this.conversation.value()?.messages ?? [])
+  protected readonly messages = linkedSignal<IChatMessage[]>(() => valueOf(this.conversation)?.messages ?? [])
 
   protected readonly days = computed<DayGroup[]>(() => {
     const groups: DayGroup[] = []

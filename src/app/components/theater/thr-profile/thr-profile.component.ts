@@ -1,110 +1,53 @@
-import { Component, type OnDestroy, type OnInit, ChangeDetectionStrategy, inject, effect, Injector } from '@angular/core'
-import { Router } from '@angular/router'
-import { ModalService } from 'src/app/services/modal.service'
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core'
+import { Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { type ITheaterRes } from 'src/app/models/theater'
-import { deleteTheaterFromStore, saveTheaterOnStore } from 'src/app/states/theater/theater.action'
+import { WalletTopUpService } from 'src/app/services/wallet-top-up.service'
+import { imagesFolderPath } from 'src/app/shared/constants'
+import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { deleteTheaterFromStore } from 'src/app/states/theater/theater.action'
 import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import { environments } from 'src/environments/environment'
-import { AddToWalletModalComponent } from '../../common/add-to-wallet-modal/add-to-wallet-modal.component'
-import { RazorpayService } from 'src/app/services/razorpay.service'
-import { type Subscription } from 'rxjs'
-import { type IRazorpayRes } from 'src/app/models/common'
-import { TheaterService } from 'src/app/services/theater.service'
-import { ThrNavComponent } from '../thr-nav/thr-nav.component';
 
 @Component({
-    selector: 'app-thr-profile',
-    templateUrl: './thr-profile.component.html',
-    styleUrls: ['./thr-profile.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ThrNavComponent]
+  selector: 'app-thr-profile',
+  templateUrl: './thr-profile.component.html',
+  styleUrl: './thr-profile.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, AvatarComponent, ButtonDirective]
 })
-export class ThrProfileComponent implements OnInit, OnDestroy {
+export class ThrProfileComponent {
   private readonly store = inject(Store)
-  private readonly injector = inject(Injector)
   private readonly router = inject(Router)
-  private readonly modalService = inject(ModalService)
-  private readonly razorpayService = inject(RazorpayService)
-  private readonly theaterService = inject(TheaterService)
+  private readonly walletTopUp = inject(WalletTopUpService)
 
-  theaterDetails = this.store.selectSignal(selectTheaterDetails)
-  theater!: ITheaterRes
-  profilePic: string = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=200'
-  amountToAdd: number = 0
-  private readonly paymentResultSubscription: Subscription
-  theaterId = ''
+  protected readonly theater = this.store.selectSignal(selectTheaterDetails)
 
-  constructor () {
-    this.paymentResultSubscription = this.razorpayService
-      .getPaymentResultObservable()
-      .subscribe((response: IRazorpayRes | null) => {
-        if (response !== null) {
-          // Payment was successful, handle accordingly
-          this.theaterService.updateTheaterWallet(this.theaterId, this.amountToAdd).subscribe({
-            next: (res) => {
-              this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
-              this.theater.wallet = res.data.wallet
-            }
-          })
-        } else {
-          // Payment failed, handle accordingly
-          console.log('Payment failed')
-        }
-      })
+  protected readonly avatarUrl = computed(() => {
+    const pic = this.theater()?.profilePic
+    return pic !== undefined && pic !== '' ? imagesFolderPath + pic : null
+  })
+
+  protected readonly address = computed(() => {
+    const address = this.theater()?.address
+    if (address === undefined) return null
+    return [address.landmark, address.city, address.district, address.state, address.country].filter(Boolean).join(', ') +
+      (address.zip !== undefined ? ` ${address.zip}` : '')
+  })
+
+  protected readonly mobile = computed(() => {
+    const mobile = this.theater()?.mobile
+    return mobile !== undefined && mobile !== 0 ? `${mobile}` : null
+  })
+
+  protected addMoney (): void {
+    const theater = this.theater()
+    if (theater !== null) this.walletTopUp.addTheaterMoney(theater)
   }
 
-  ngOnInit (): void {
-    effect(() => {
-      const theater = this.theaterDetails()
-      if (theater !== null) {
-        this.theater = theater
-        this.theaterId = theater._id
-        if (theater.profilePic !== undefined) this.profilePic = environments.backendUrl + `/images/${theater.profilePic}`
-      }
-    }, { injector: this.injector })
-  }
-
-  ngOnDestroy (): void {
-    this.paymentResultSubscription.unsubscribe()
-  }
-
-  addToWallet (): void {
-    const modalRef = this.modalService.open(AddToWalletModalComponent, { static: true })
-
-    void modalRef.result.then(
-      (result: { amount: number }) => {
-        console.log('submitted form data', result)
-        this.amountToAdd = result.amount
-        this.razorpayService.initiateRazorpayPayment(result.amount, {
-          name: this.theater.name,
-          email: this.theater.email,
-          mobile: (this.theater.mobile !== undefined) ? `${this.theater.mobile}` : ''
-        })
-      },
-      (reason) => {
-        // Handle dismissal or any other reason
-        console.log('Modal dismissed with reason:', reason)
-      }
-    )
-  }
-
-  redirectToEditPage (): void {
-    void this.router.navigate(['/theater/profile/edit', this.theater._id])
-  }
-
-  redirectToTicketsPage (): void {
-    void this.router.navigate(['/theater/tickets', this.theaterId])
-  }
-
-  logout (): void {
+  protected logout (): void {
     localStorage.removeItem('theaterAccessToken')
     localStorage.removeItem('theaterRefreshToken')
     this.store.dispatch(deleteTheaterFromStore())
-    void this.router.navigate(['/theater/home'])
-  }
-
-  openWalletHistory (): void {
-    void this.router.navigate(['/theater/profile/wallet-history'])
+    void this.router.navigate(['/theater/login'])
   }
 }

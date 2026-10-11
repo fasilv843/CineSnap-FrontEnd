@@ -8,7 +8,6 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): V
   const password = control.get('password')
   const repeatPassword = control.get('repeatPassword')
 
-  console.log(repeatPassword, 'repeat password from password match validator')
 
   if ((password != null) && (repeatPassword != null)) {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
@@ -27,7 +26,6 @@ export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): V
 
 export function validateByTrimming (validators: ValidatorFn[]): ValidatorFn {
   return (control: AbstractControl) => {
-    console.log(control.value, 'control.value in trimming')
     const trimmedValue = control.value.trim()
 
     // Create a new control with the trimmed value
@@ -43,8 +41,6 @@ export const validateDOB: ValidatorFn = (control: AbstractControl): ValidationEr
   if (dob == null) return null
 
   const selectedDate = new Date(dob.value)
-  console.log(dob, 'dob from validateDOB')
-  console.log(selectedDate, 'selectedDate from validateDOB')
 
   const today = new Date()
   const minAgeDate = new Date(today.getFullYear() - MinAge, today.getMonth(), today.getDate())

@@ -17,11 +17,7 @@
       @if (user(); as user) {
         <button type="button" [cdkMenuTriggerFor]="accountMenu" aria-label="Account menu"
           class="ml-1 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
-          @if (avatarUrl(); as url) {
-            <img [src]="url" alt="" class="size-9 rounded-full border-2 border-accent object-cover" />
-          } @else {
-            <span class="flex size-9 items-center justify-center rounded-full border-2 border-accent bg-muted font-semibold">{{ initial() }}</span>
-          }
+          <cs-avatar [name]="user.name" [src]="avatarUrl()" class="border-2 border-accent" />
         </button>
 
         <ng-template #accountMenu>

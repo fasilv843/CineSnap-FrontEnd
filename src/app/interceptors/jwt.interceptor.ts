@@ -1,81 +1,42 @@
-/* eslint-disable @typescript-eslint/semi */
 import { inject } from '@angular/core'
 import { type HttpInterceptorFn } from '@angular/common/http'
+import { switchMap } from 'rxjs'
 import { isTokenExpired } from '../helpers/jwt-token'
 import { AuthService } from '../services/auth.service'
 
 export const jwtInterceptor: HttpInterceptorFn = (request, next) => {
   const authService = inject(AuthService)
 
-  // If there is bypass interceptor header, don't add jwt
-  if (request.headers.has('Bypass-Interceptor')) {
-    console.log('bypassing interceptor from JwtInterceptor');
-    return next(request)
-  }
-  console.log('No bypass interceptor here', request.url);
-  const urlArr = request.url.split('/');
-  const user = urlArr[0]
-  const route = urlArr[1]
+  // Third-party APIs (TMDB, Geoapify) and the token refresh itself carry no CineSnap token
+  if (request.headers.has('Bypass-Interceptor')) return next(request)
 
-  console.log('handling route : ', route);
-  console.warn(urlArr, 'urlArr');
+  // URLs are relative here, e.g. "theater/shows/…": the first segment is the role
+  const [role, route] = request.url.split('/')
 
-  if (route === 'login' || route === 'register') {
-    return next(request)
-  }
+  if (route === 'login' || route === 'register') return next(request)
 
+  // Sign-up code steps use the short-lived token issued at registration
   if (route === 'validateOtp' || route === 'resendOtp') {
-    console.log('getting authToken, inside validateOTp or resend otp');
-    const authToken = localStorage.getItem(user + 'AuthToken')
-    if (authToken != null) {
-      const authRequest = request.clone({
-        setHeaders: { Authorization: `Bearer ${authToken}` }
-      });
-      return next(authRequest);
-    }
-    console.log('authToken not available');
-    return next(request);
+    const authToken = localStorage.getItem(role + 'AuthToken')
+    return next(authToken !== null ? request.clone({ setHeaders: { Authorization: `Bearer ${authToken}` } }) : request)
   }
 
-  // getting access token
-  const accessToken = localStorage.getItem(user + 'AccessToken');
-  console.warn(accessToken, 'access token');
-
-  // If access token is available
+  const accessToken = localStorage.getItem(role + 'AccessToken')
   if (accessToken !== null && !isTokenExpired(accessToken)) {
-    const accessRequest = request.clone({
-      setHeaders: { Authorization: `Bearer ${accessToken}` }
-    });
-    console.log('handling accessed request');
-    return next(accessRequest)
+    return next(request.clone({ setHeaders: { Authorization: `Bearer ${accessToken}` } }))
   }
 
-  // If access token is not available, checking refresh token
-  console.log('removing access token');
-  localStorage.removeItem(user + 'AccessToken')
-  const refreshToken = localStorage.getItem(user + 'RefreshToken')
-  console.warn(refreshToken, 'refresh token');
-
-  // If refresh token is available
-  // TODO: pre-existing bug — the refreshed request below is never returned; the original request goes out without a token
+  // Access token missing or expired: get a new one with the refresh token, then send the request with it
+  localStorage.removeItem(role + 'AccessToken')
+  const refreshToken = localStorage.getItem(role + 'RefreshToken')
   if (refreshToken !== null && !isTokenExpired(refreshToken)) {
-    console.log('accessToken is not available, generating new token');
-    authService.getAccessToken(refreshToken).subscribe({
-      next: (res) => {
-        const newAccessToken = res.accessToken
-        console.log(newAccessToken, 'new access token from backend');
-
-        localStorage.setItem(user + 'AccessToken', newAccessToken)
-        const newAccessRequest = request.clone({
-          setHeaders: { Authorization: `Bearer ${newAccessToken}` }
-        });
-        console.log('handling request with new access token');
-
-        return next(newAccessRequest)
-      }
-    })
+    return authService.getAccessToken(refreshToken).pipe(
+      switchMap(res => {
+        localStorage.setItem(role + 'AccessToken', res.accessToken)
+        return next(request.clone({ setHeaders: { Authorization: `Bearer ${res.accessToken}` } }))
+      })
+    )
   }
 
-  console.warn('handling request without jwt token');
-  return next(request);
+  return next(request)
 }

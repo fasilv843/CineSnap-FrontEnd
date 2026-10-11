@@ -44,6 +44,15 @@ def mongo(js):
     return out.stdout.strip()
 
 
+def settled(locator, state='visible', timeout=3000):
+    """Waits for a UI change. Zoneless Angular renders on the next frame, not inside the click."""
+    try:
+        locator.first.wait_for(state=state, timeout=timeout)
+        return True
+    except Exception:
+        return False
+
+
 def login(page, role, email):
     page.goto(f'{BASE}/{role}/login')
     page.fill('[formControlName="email"]', email)
@@ -142,33 +151,37 @@ def user_flows(browser):
         # Re-login so the store holds the topped-up wallet
         page.evaluate('localStorage.clear()')
         login(page, 'user', USER_EMAIL)
-        # bookTicket() needs the show details, which load asynchronously
-        with page.expect_response(lambda r: f'/show/get/{SHOW_ID}' in r.url, timeout=15000):
-            page.goto(f'{BASE}/user/show/seats/{SHOW_SEAT_ID}?showId={SHOW_ID}&theaterId={THEATER_ID}')
-        page.wait_for_selector('a > .seat', timeout=10000)
-        seat = page.locator('a > .seat:not(.booked)').first
-        seat_name = seat.inner_text().strip()
+        page.goto(f'{BASE}/user/show/seats/{SHOW_SEAT_ID}?showId={SHOW_ID}&theaterId={THEATER_ID}')
+        book = page.get_by_role('button', name='Book', exact=True)
+        check('Book is disabled before any seat is picked', book.is_disabled())
+        page.wait_for_selector('button.seat:not([disabled])', timeout=15000)
+        seat = page.locator('button.seat:not([disabled])').first
+        seat_name = (seat.get_attribute('aria-label') or '').split(',')[0]
+        seat_label = seat.get_attribute('aria-label')
         seat.click()
-        check('seat selection marks seat', 'selected' in (seat.get_attribute('class') or ''), seat_name)
+        # Zoneless renders on the next frame, not synchronously inside the click
+        picked = page.locator(f'button.seat[aria-label="{seat_label}"][aria-pressed="true"]')
+        picked.wait_for(timeout=3000)
+        check('seat selection marks seat', picked.count() == 1, seat_name)
 
         with page.expect_response(lambda r: '/applicable-coupons/' in r.url, timeout=15000) as coupons_res:
-            page.click('button:has-text("Book")')
+            book.click()
             page.wait_for_url(re.compile(r'/user/show/book/\w+'), timeout=15000)
         coupons = (coupons_res.value.json().get('data') or [])
-        page.wait_for_timeout(500)
-        page.wait_for_selector('text=Wallet', timeout=10000)
-        check('booking page shows wallet from store (effect)', page.locator('text=Wallet 1000').count() > 0)
+        page.wait_for_selector('text=Your seats are held for', timeout=10000)
+        check('booking page shows wallet from store', page.get_by_text('₹1000').count() > 0)
 
-        apply_btn = page.locator('button:has-text("Apply")')
+        apply_btn = page.get_by_role('button', name='Apply')
         if apply_btn.count() > 0:
             apply_btn.first.click()
-            check('coupon applies', page.locator('button:has-text("Applied")').count() > 0)
+            check('coupon applies', settled(page.get_by_role('button', name='Remove')))
         else:
             check('coupon suggestion shown', False, f'no Apply button; API returned {len(coupons)} coupon(s)')
 
         page.check('input[type="radio"][value="Wallet"]')
-        page.click('button[type="submit"]:has-text("Pay")')
+        page.get_by_role('button', name=re.compile(r'^Pay ₹')).click()
         page.wait_for_url(re.compile(r'/user/show/book/success/\w+'), timeout=15000)
+        page.wait_for_selector('text=You\'re booked', timeout=10000)
         check('pay with wallet reaches success page', True, seat_name)
     finally:
         mongo(f'db.users.updateOne({{email:"{USER_EMAIL}"}}, {{$set: {{wallet: {wallet_before}}}}})')
@@ -181,20 +194,52 @@ def theater_flows(browser):
     login(page, 'theater', THEATER_EMAIL)
 
     page.goto(f'{BASE}/theater/home')
-    page.wait_for_selector('canvas', timeout=10000)
-    check('revenue chart renders', page.locator('canvas').count() > 0)
+    page.locator('canvas').or_(page.get_by_text('No revenue yet')).first.wait_for(timeout=10000)
+    page.wait_for_timeout(1500)
+    check('dashboard shows the revenue chart or its empty state',
+          page.locator('canvas').count() > 0 or page.get_by_text('No revenue yet').count() > 0)
+    for _ in range(20):  # tiles load independently; give slow requests time
+        if page.locator('cs-stat-tile .skeleton').count() == 0:
+            break
+        page.wait_for_timeout(500)
+    failed_tiles = page.locator('cs-stat-tile', has_text="Couldn't load").all_inner_texts()
+    check('dashboard stat tiles load', page.locator('cs-stat-tile .skeleton').count() == 0 and not failed_tiles,
+          '; '.join(t.split('\n')[0] for t in failed_tiles))
 
     page.goto(f'{BASE}/theater/screens')
     page.wait_for_timeout(1500)
     check('screens list loads for theater (one-shot store read)', page.locator('text=QA Screen').count() > 0)
 
-    page.goto(f'{BASE}/theater/shows')
-    page.wait_for_timeout(1000)
-    page.click('button:has-text("+")')
+    page.goto(f'{BASE}/theater/shows?date=2026-10-11')
+    page.wait_for_timeout(2000)
+    check('shows page lists the QA show for its day (?date)', page.get_by_text('QA Screen').count() > 0)
+    page.get_by_role('button', name='Add show').first.click()
     page.wait_for_selector('select#screen', timeout=5000)
     page.wait_for_timeout(1500)
     options = page.locator('select#screen option').all_inner_texts()
     check('show modal lists theater screens', any('QA Screen' in o for o in options), ', '.join(options))
+    page.get_by_role('button', name='Cancel').click()
+    page.wait_for_timeout(300)
+    check('modal Cancel closes without submitting', page.locator('select#screen').count() == 0)
+
+    page.goto(f'{BASE}/theater/coupons')
+    page.wait_for_timeout(2000)
+    check('coupons page renders a table or empty state',
+          page.locator('table.data-table').count() > 0 or page.get_by_text('No coupons yet').count() > 0)
+
+    page.goto(f'{BASE}/theater/tickets/x?page=1&limit=10')
+    page.wait_for_timeout(2500)
+    check('theater tickets table renders (server paging)', page.locator('table.data-table tbody tr').count() > 0)
+
+    page.goto(f'{BASE}/theater/screens')
+    page.wait_for_timeout(1500)
+    page.get_by_role('link', name='Seat layout').first.click()
+    page.wait_for_selector('button.cell', timeout=10000)
+    first = page.locator('button.cell').first
+    first.click()
+    check('seat editor marks unsaved changes', settled(page.get_by_text('You have unsaved changes')))
+    page.get_by_role('button', name='Discard').click()
+    check('discard clears the change', settled(page.get_by_text('You have unsaved changes'), 'hidden'))
 
     page.goto(f'{BASE}/theater/profile')
     page.wait_for_timeout(1500)

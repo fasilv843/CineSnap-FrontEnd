@@ -12,7 +12,7 @@ import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
   selector: 'app-add-to-wallet-modal',
   imports: [ReactiveFormsModule, ButtonDirective, FieldErrorComponent],
   templateUrl: './add-to-wallet-modal.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddToWalletModalComponent {
   private readonly activeModal = inject(ActiveModal)

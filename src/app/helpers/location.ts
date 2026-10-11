@@ -1,21 +1,14 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/** The browser's current position, or null when it's unsupported or the user declines. */
 export async function getLocation (): Promise<{ lon: number, lat: number } | null> {
-  console.log('getting location, radio clicked')
-
   return await new Promise((resolve) => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude
-          const lon = position.coords.longitude
-          console.log(lat, lon)
-          resolve({ lon, lat })
-        },
-        () => { resolve(null) }
-      )
-    } else {
-      console.log('No support for geolocation')
+    if (!('geolocation' in navigator)) {
       resolve(null)
+      return
     }
+    navigator.geolocation.getCurrentPosition(
+      (position) => { resolve({ lat: position.coords.latitude, lon: position.coords.longitude }) },
+      () => { resolve(null) },
+      { timeout: 15000 }
+    )
   })
 }

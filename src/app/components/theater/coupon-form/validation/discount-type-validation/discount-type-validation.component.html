@@ -1,8 +1,0 @@
-@let control = discountTypeControl();
-@if (isSubmitted() && control && control.errors) {
-  <div>
-    @if (control.errors['required']) {
-      <div style="color: red;">Discount Type is required</div>
-    }
-  </div>
-}

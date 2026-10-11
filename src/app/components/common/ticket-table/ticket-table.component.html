@@ -1,0 +1,78 @@
+<section class="card overflow-hidden" aria-label="Tickets" [attr.aria-busy]="loading()">
+  @if (failed()) {
+    <cs-state-panel heading="Tickets couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="retried.emit()" />
+  } @else if (loading() && rows().length === 0) {
+    <div class="space-y-3 p-5">
+      @for (i of [0, 1, 2, 3, 4]; track i) { <div class="skeleton h-14"></div> }
+    </div>
+  } @else if (total() === 0) {
+    <cs-state-panel heading="No tickets yet" [message]="emptyMessage()" />
+  } @else {
+    <table class="data-table" [class.opacity-60]="loading()">
+      <thead>
+        @for (headerGroup of table.getHeaderGroups(); track headerGroup.id) {
+          <tr>
+            @for (header of headerGroup.headers; track header.id) {
+              <th scope="col" [class.text-right]="header.column.id === 'amount' || header.column.id === 'actions'">{{ header.column.columnDef.header }}</th>
+            }
+          </tr>
+        }
+      </thead>
+      <tbody>
+        @for (row of table.getRowModel().rows; track row.id) {
+          @let t = row.original;
+          <tr [class.opacity-70]="t.status === 'cancelled'">
+            <td>
+              <div class="flex items-center gap-3">
+                @if (t.poster) {
+                  <img [src]="t.poster" alt="" class="h-14 w-10 shrink-0 rounded-sm bg-muted object-cover" loading="lazy" />
+                } @else {
+                  <span class="flex h-14 w-10 shrink-0 items-center justify-center rounded-sm bg-muted font-semibold text-subtle" aria-hidden="true">{{ t.movie.charAt(0) }}</span>
+                }
+                <span class="font-semibold">{{ t.movie }}</span>
+              </div>
+            </td>
+            @if (showTheater()) {
+              <td data-label="Theater" class="font-medium">{{ t.theater }}</td>
+            }
+            <td data-label="Show" class="whitespace-nowrap">
+              {{ t.start | date: 'EEE d MMM, h:mm a' }}
+              <span class="block text-sm text-muted">{{ t.screen }}</span>
+            </td>
+            <td data-label="Customer">
+              <span class="font-medium">{{ t.customer }}</span>
+              @if (t.customerEmail) { <span class="block text-sm text-muted">{{ t.customerEmail }}</span> }
+            </td>
+            <td data-label="Seats">
+              <span class="font-medium">{{ t.seats.join(', ') }}</span>
+              <span class="block text-sm text-muted">{{ t.seats.length }} {{ t.seats.length === 1 ? 'seat' : 'seats' }}</span>
+            </td>
+            <td data-label="Amount" class="whitespace-nowrap text-right tabular-nums">
+              <span class="font-semibold">₹{{ t.amount }}</span>
+              <span class="block text-sm text-muted">{{ t.payment }}</span>
+            </td>
+            <td data-label="Status">
+              <span class="status-pill" [attr.data-tone]="statusTone[t.status]">
+                {{ t.status === 'cancelled' ? cancelledLabel(t) : statusLabel[t.status] }}
+              </span>
+            </td>
+            <td data-label="Actions" class="text-right">
+              @if (t.status === 'upcoming') {
+                <button csButton variant="danger" size="sm" type="button" [disabled]="cancelling() === t.id" (click)="cancel.emit(t)">
+                  @if (cancelling() === t.id) { <span class="spinner"></span> Cancelling… } @else { Cancel }
+                </button>
+              } @else {
+                <span class="text-sm text-subtle">—</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>
+
+@if (total() > 0) {
+  <cs-pagination class="mt-4 block" [page]="paging().page()" [pageSize]="paging().limit()" [total]="total()" [pageSizes]="paging().pageSizes"
+    (pageChange)="paging().goToPage($event)" (pageSizeChange)="paging().setPageSize($event)" />
+}

@@ -1,7 +1,7 @@
 import { inject } from '@angular/core'
 import { type CanActivateFn, Router } from '@angular/router'
-import Swal from 'sweetalert2'
 import { isTokenExpired } from '../helpers/jwt-token'
+import { ToastService } from '../shared/ui/toast.service'
 
 export const authGuard: CanActivateFn = (route) => {
   const router = inject(Router)
@@ -10,24 +10,8 @@ export const authGuard: CanActivateFn = (route) => {
   const token = localStorage.getItem(`${role}RefreshToken`)
 
   if (token === null || isTokenExpired(token)) {
-    if (role !== 'user') {
-      void router.navigate([`/${role}/login`])
-      return false
-    }
-
-    void Swal.fire({
-      title: 'You are not logged in',
-      text: 'Do you want to redirect to login page',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Login',
-      cancelButtonText: 'Cancel'
-    }).then(result => {
-      if (result.isConfirmed) {
-        void router.navigate(['/user/login'])
-      }
-    })
-    return false
+    if (role === 'user') inject(ToastService).info('Log in to continue', 'That page needs your CineSnap account.')
+    return router.createUrlTree([`/${role}/login`])
   }
   return true
 }

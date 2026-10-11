@@ -1,0 +1,30 @@
+.ticket {
+  border-top: 4px solid var(--color-accent);
+}
+
+/* Tear line between the show and the seats, with notches cut from the card edges */
+.perforation {
+  position: relative;
+  border-top: 2px dashed var(--border-color-strong);
+  margin-inline: 1.25rem;
+}
+
+.perforation::before,
+.perforation::after {
+  content: '';
+  position: absolute;
+  top: -0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background: var(--background-color-page);
+  border: 1px solid var(--border-color-default);
+}
+
+.perforation::before {
+  left: -2.05rem;
+}
+
+.perforation::after {
+  right: -2.05rem;
+}

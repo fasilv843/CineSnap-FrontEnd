@@ -17,7 +17,7 @@ export class TheaterService {
   ) { }
 
   getAllTheaters (page: number, limit: number, searchQuery: string): Observable<IApiRes<ITheatersAndCount | null>> {
-    return this.http.get<IApiRes<ITheatersAndCount | null>>(`admin/theaters?page=${page}&limit=${limit}&searchQuery=${searchQuery}`)
+    return this.http.get<IApiRes<ITheatersAndCount | null>>(`admin/theaters?page=${page}&limit=${limit}&searchQuery=${encodeURIComponent(searchQuery)}`)
   }
 
   blockTheater (theaterId: string): Observable<IApiTheaterRes> {

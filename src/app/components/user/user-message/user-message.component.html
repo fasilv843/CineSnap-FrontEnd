@@ -7,7 +7,12 @@
     <aside class="flex min-h-0 flex-col border-default lg:border-r" [class.max-lg:hidden]="theaterId()" aria-label="Conversations">
       <h1 class="border-b border-default px-4 py-3 font-display text-2xl font-extrabold tracking-tight">Messages</h1>
       <div class="min-h-0 flex-1 overflow-y-auto p-2">
-        @if (contacts.value(); as list) {
+        @if (contacts.error()) {
+          <div class="p-3" role="alert">
+            <p class="text-sm text-muted">Conversations couldn't be loaded.</p>
+            <button csButton variant="secondary" size="sm" type="button" class="mt-2" (click)="contacts.reload()">Try again</button>
+          </div>
+        } @else if (contacts.hasValue() && contacts.value(); as list) {
           @if (list.length > 0) {
             <ul role="list">
               @for (contact of list; track contact.id) {
@@ -29,7 +34,7 @@
           }
         } @else {
           @for (i of [0, 1, 2]; track i) {
-            <div class="m-1 h-12 animate-pulse rounded-control bg-muted"></div>
+            <div class="skeleton m-1 h-12"></div>
           }
         }
       </div>
@@ -47,13 +52,21 @@
             <h2 class="min-w-0 flex-1 truncate font-semibold">{{ theater.name }}</h2>
             <a csButton variant="secondary" size="sm" [routerLink]="['/user/theater', theater.id]">View theater</a>
           } @else {
-            <div class="h-10 flex-1 animate-pulse rounded-control bg-muted"></div>
+            <div class="skeleton h-10 flex-1"></div>
           }
         </header>
 
         <div #scroller class="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-6" aria-live="polite">
-          @if (isLoadingChat()) {
-            <p class="text-center text-sm text-muted">Loading messages…</p>
+          @if (chatError()) {
+            <div class="mx-auto max-w-sm text-center" role="alert">
+              <p class="text-muted">Messages couldn't be loaded.</p>
+              <button csButton variant="secondary" size="sm" type="button" class="mt-2" (click)="reloadChat()">Try again</button>
+            </div>
+          } @else if (isLoadingChat()) {
+            <div class="space-y-3">
+              <div class="skeleton h-10 w-2/3"></div>
+              <div class="skeleton ml-auto h-10 w-1/2"></div>
+            </div>
           } @else if (messages().length === 0) {
             <p class="mx-auto max-w-sm text-center text-muted">No messages yet. Ask {{ partner()?.name ?? 'the theater' }} about shows, tickets or anything else.</p>
           }

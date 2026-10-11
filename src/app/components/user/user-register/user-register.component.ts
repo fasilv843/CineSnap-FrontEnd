@@ -10,7 +10,7 @@ import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER, passwordMinLength, userN
 import { emailValidators, nameValidators, otpValidators, passwordValidators } from 'src/app/shared/valiators'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
-import { AuthShellComponent } from '../auth/auth-shell.component'
+import { AuthShellComponent } from 'src/app/shared/ui/auth-shell.component'
 import { GoogleButtonComponent } from '../auth/google-button.component'
 import { connectGoogleSignIn, injectStartSession } from '../auth/user-session'
 
@@ -20,7 +20,7 @@ type Step = 'details' | 'verify'
 @Component({
   selector: 'app-user-register',
   templateUrl: './user-register.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager, // reactive-form validity is read straight from the controls
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, ButtonDirective, FieldErrorComponent, AuthShellComponent, GoogleButtonComponent]
 })
 export class UserRegisterComponent {
@@ -28,6 +28,8 @@ export class UserRegisterComponent {
   private readonly startSession = injectStartSession()
 
   protected readonly step = signal<Step>('details')
+  /** Where the code was sent, shown on the code step */
+  protected readonly sentTo = signal('')
   protected readonly busy = signal(false)
   protected readonly googleFailed = signal(false)
   protected readonly showPassword = signal(false)
@@ -91,6 +93,7 @@ export class UserRegisterComponent {
     this.http.post<{ token: string }>('user/register', { name: name.trim(), email: email.trim(), password, repeatPassword }).subscribe({
       next: res => {
         localStorage.setItem('userAuthToken', res.token) // identifies this sign-up when verifying and resending the code
+        this.sentTo.set(email.trim())
         this.busy.set(false)
         this.step.set('verify')
         this.startCountdown()
@@ -114,7 +117,7 @@ export class UserRegisterComponent {
     if (!this.canResend()) return
     this.http.get('user/resendOtp').subscribe(() => {
       this.resendsUsed.update(count => count + 1)
-      this.resendNote.set(`We sent a new code to ${this.details.controls.email.value}.`)
+      this.resendNote.set(`We sent a new code to ${this.sentTo()}.`)
       this.otp.reset()
       this.otpSubmitted.set(false)
       this.startCountdown()

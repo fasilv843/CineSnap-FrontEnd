@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { WalletTopUpService } from 'src/app/services/wallet-top-up.service'
 import { imagesFolderPath } from 'src/app/shared/constants'
+import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { deleteUserFromStore } from 'src/app/states/user/user.actions'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
@@ -14,7 +15,7 @@ import { UserNavComponent } from '../user-nav/user-nav.component'
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [UserNavComponent, RouterLink, ButtonDirective, DatePipe]
+  imports: [UserNavComponent, RouterLink, AvatarComponent, ButtonDirective, DatePipe]
 })
 export class UserProfileComponent {
   private readonly store = inject(Store)

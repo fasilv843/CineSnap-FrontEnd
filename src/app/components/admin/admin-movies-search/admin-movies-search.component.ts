@@ -1,33 +1,41 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable @typescript-eslint/semi */
+import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { RouterLink, RouterLinkActive } from '@angular/router'
 
-import { Component, ChangeDetectionStrategy, inject, output } from '@angular/core'
-import { SearchComponent } from '../../common/search/search.component';
-import { Router } from '@angular/router';
-
+/** Tabs between the TMDB catalogue (to add movies) and CineSnap's own list (to manage them). */
 @Component({
-    imports: [
-    SearchComponent
-],
-    selector: 'app-admin-movies-search',
-    templateUrl: './admin-movies-search.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    styleUrls: ['./admin-movies-search.component.css']
+  selector: 'app-admin-movies-tabs',
+  imports: [RouterLink, RouterLinkActive],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <nav class="tabs" aria-label="Movie sources">
+      <a routerLink="/admin/movies/tmdb" routerLinkActive="active" ariaCurrentWhenActive="page" class="tab">Add from TMDB</a>
+      <a routerLink="/admin/movies/cinesnap" routerLinkActive="active" ariaCurrentWhenActive="page" class="tab">On CineSnap</a>
+    </nav>
+  `,
+  styles: `
+    .tabs {
+      display: flex;
+      gap: 0.25rem;
+      border-bottom: 1px solid var(--border-color-default);
+    }
+
+    .tab {
+      margin-bottom: -1px;
+      padding: 0.625rem 0.875rem;
+      border-bottom: 2px solid transparent;
+      color: var(--text-color-muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tab:hover {
+      color: var(--text-color-default);
+    }
+
+    .tab.active {
+      border-bottom-color: var(--color-primary);
+      color: var(--text-color-default);
+    }
+  `
 })
-export class AdminMoviesSearchComponent {
-  private readonly router = inject(Router);
-
-  readonly search = output<string>();
-
-  showTmdbMovies (): void {
-    void this.router.navigate(['/admin/movies/tmdb'])
-  }
-
-  showCineSnapMovies (): void {
-    void this.router.navigate(['/admin/movies/cinesnap'])
-  }
-
-  onSearch (movieName: string): void {
-    this.search.emit(movieName);
-  }
-}
+export class AdminMoviesTabsComponent {}

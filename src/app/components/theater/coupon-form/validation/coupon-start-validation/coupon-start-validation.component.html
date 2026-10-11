@@ -1,8 +1,0 @@
-@let control = startControl();
-@if (isSubmitted() && control && control.errors) {
-  <div>
-    @if (control.errors['required']) {
-      <div style="color: red;">Start Date is required</div>
-    }
-  </div>
-}

@@ -1,130 +1,118 @@
-<app-user-nav></app-user-nav>
+<app-user-nav />
 
-<div class="flex flex-col items-center mt-8 overflow-x-auto">
+<main class="container max-w-6xl pb-40 pt-6 sm:pt-8">
+  <a [routerLink]="backLink()" [queryParams]="backQuery()"
+    class="inline-flex items-center gap-1 rounded-control text-sm font-semibold text-muted hover:text-default">
+    <cs-icon name="chevronLeft" class="size-4" /> Other showtimes
+  </a>
 
-  @if (diamond) {
-    <div class="mb-10">
-      <div class="flex justify-between font-bold text-lg px-1 mb-2">
-        <h4 class="">{{ diamond.name }} </h4>
-        <span>&#8377; {{ diamond.price }}</span>
+  <!-- Show -->
+  <header class="mt-3">
+    @if (show.hasValue() && show.value(); as s) {
+      <h1 class="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{{ movie()?.title ?? 'Movie no longer listed' }}</h1>
+      <p class="mt-1 text-muted">
+        {{ s.startTime | date: 'EEEE d MMM, h:mm a' }}
+        @if (movie(); as m) { · {{ m.meta }} }
+      </p>
+    } @else if (show.isLoading()) {
+      <div class="skeleton h-12 w-2/3"></div>
+      <div class="skeleton mt-2 h-5 w-1/3"></div>
+    } @else if (show.error()) {
+      <h1 class="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">Choose your seats</h1>
+    }
+  </header>
+
+  <!-- Seat map -->
+  <section class="card mt-6 p-4 sm:p-6" aria-label="Seat map" [attr.aria-busy]="loading()">
+    @if (failed() && !user()) {
+      <!-- Show details need an account, so signed-out visitors land here -->
+      <cs-state-panel heading="Log in to pick seats" message="You need a CineSnap account to see the seat map and book.">
+        <a csButton size="sm" routerLink="/user/login">Log in</a>
+        <a csButton variant="secondary" size="sm" routerLink="/user/register">Create account</a>
+      </cs-state-panel>
+    } @else if (failed()) {
+      <cs-state-panel heading="The seat map couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="retry()" />
+    } @else if (loading() && categories().length === 0) {
+      <div class="space-y-3">
+        @for (i of [0, 1, 2, 3, 4, 5]; track i) {
+          <div class="skeleton mx-auto h-8 max-w-xl"></div>
+        }
       </div>
-      <div class="flex items-center gap-4">
-        <div>
-          @for (row of diamondKeys; track row) {
-            <div class="flex flex-nowrap items-center">
-              @for (seatCol of diamond.seats[row]; track seatCol; let i = $index) {
-                <div class="flex flex-col">
-                  @if (seatCol.col !== 0 && !seatCol.isBooked) {
-                    <a (click)="selectSeat(row, seatCol)">
-                      <div class="seat p-3 text-center text-sm with-margin relative" appSeatStatus
-                        [row]="row" [col]="seatCol" [holdedSeats]="holdedSeats"
-                        [class.selected]="isSeatSelected(row, seatCol.col)">
-                        {{ row + seatCol.col }}
-                      </div>
-                    </a>
-                  }
-                  @if (seatCol.col !== 0 && seatCol.isBooked) {
-                    <div class="seat booked p-3 text-center text-sm with-margin">
-                      {{ row + seatCol.col }}
+    } @else if (categories().length === 0) {
+      <cs-state-panel heading="This show isn't taking bookings" message="Pick another showtime.">
+        <a csButton variant="secondary" size="sm" [routerLink]="backLink()">Other showtimes</a>
+      </cs-state-panel>
+    } @else {
+      <ul class="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-muted" aria-label="Seat legend">
+        <li class="flex items-center gap-2"><span class="seat-key" data-status="free"></span>Available</li>
+        <li class="flex items-center gap-2"><span class="seat-key" data-status="selected"></span>Your pick</li>
+        <li class="flex items-center gap-2"><span class="seat-key" data-status="held"></span>Being booked</li>
+        <li class="flex items-center gap-2"><span class="seat-key" data-status="sold"></span>Sold</li>
+      </ul>
+
+      <div class="seat-scroll mt-6">
+        <div class="mx-auto w-max space-y-8">
+          @for (category of categories(); track category.key) {
+            <div role="group" [attr.aria-label]="category.name + ' seats, ₹' + category.price">
+              <h2 class="mb-3 border-b border-default pb-2 font-semibold">
+                {{ category.name }} <span class="font-normal text-muted">· ₹{{ category.price }}</span>
+              </h2>
+              <div class="space-y-2">
+                @for (row of category.rows; track row.label) {
+                  <div class="flex items-center gap-3">
+                    <span class="w-5 text-center text-xs font-semibold text-subtle" aria-hidden="true">{{ row.label }}</span>
+                    <div class="flex gap-1.5">
+                      @for (seat of row.seats; track $index) {
+                        @if (seat) {
+                          <button type="button" class="seat" [attr.data-status]="selectedIds().has(seat.id) ? 'selected' : seat.status"
+                            [disabled]="seat.status !== 'free'" [attr.aria-pressed]="selectedIds().has(seat.id)"
+                            [attr.aria-label]="seatLabel(seat, category)" (click)="toggle(seat, category.key)">
+                            {{ seat.col }}
+                          </button>
+                        } @else {
+                          <span class="seat-gap" aria-hidden="true"></span>
+                        }
+                      }
                     </div>
-                  }
-                  @if (seatCol.col === 0) {
-                    <div class="empty-space p-3 text-center text-sm with-margin"></div>
-                  }
-                </div>
-              }
+                    <span class="w-5 text-center text-xs font-semibold text-subtle" aria-hidden="true">{{ row.label }}</span>
+                  </div>
+                }
+              </div>
             </div>
           }
+
+          <div class="screen" aria-hidden="true">
+            <span>Screen this way</span>
+          </div>
         </div>
       </div>
-    </div>
-  }
+    }
+  </section>
+</main>
 
-  @if (gold) {
-    <div class="mb-10">
-      <div class="flex justify-between font-bold text-lg px-1 mb-2">
-        <h4 class="">{{ gold.name }} </h4>
-        <span>&#8377; {{ gold.price }}</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <div>
-          @for (row of goldKeys; track row) {
-            <div class="flex flex-nowrap items-center">
-              @for (seatCol of gold.seats[row]; track seatCol; let i = $index) {
-                <div class="flex flex-col">
-                  @if (seatCol.col !== 0 && !seatCol.isBooked) {
-                    <a (click)="selectSeat(row, seatCol)">
-                      <div class="seat p-3 text-center text-sm with-margin relative" appSeatStatus
-                        [row]="row" [col]="seatCol" [holdedSeats]="holdedSeats"
-                        [class.selected]="isSeatSelected(row, seatCol.col)">
-                        {{ row + seatCol.col }}
-                      </div>
-                    </a>
-                  }
-                  @if (seatCol.col !== 0 && seatCol.isBooked) {
-                    <div class="seat booked p-3 text-center text-sm with-margin relative">
-                      {{ row + seatCol.col }}
-                    </div>
-                  }
-                  @if (seatCol.col === 0) {
-                    <div class="empty-space p-3 text-center text-sm with-margin"></div>
-                  }
-                </div>
-              }
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-  }
-
-  @if (silver) {
-    <div class="mb-32">
-      <div class="flex justify-between font-bold text-lg px-1 mb-2">
-        <h4 class="">{{ silver.name }} </h4>
-        <span>&#8377; {{ silver.price }}</span>
-      </div>
-      <div class="flex items-center gap-4">
-        <div>
-          @for (row of silverKeys; track row) {
-            <div class="flex flex-nowrap items-center">
-              @for (seatCol of silver.seats[row]; track seatCol; let i = $index) {
-                <div class="flex flex-col">
-                  @if (seatCol.col !== 0 && !seatCol.isBooked) {
-                    <a (click)="selectSeat(row, seatCol)">
-                      <div class="seat p-3 text-center text-sm with-margin relative" appSeatStatus
-                        [row]="row" [col]="seatCol" [holdedSeats]="holdedSeats"
-                        [class.selected]="isSeatSelected(row, seatCol.col)">
-                        {{ row + seatCol.col }}
-                      </div>
-                    </a>
-                  }
-                  @if (seatCol.col !== 0 && seatCol.isBooked) {
-                    <div class="seat booked p-3 text-center text-sm with-margin relative">
-                      {{ row + seatCol.col }}
-                    </div>
-                  }
-                  @if (seatCol.col === 0) {
-                    <div class="empty-space p-3 text-center text-sm with-margin"></div>
-                  }
-                </div>
-              }
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-  }
-
-  <div class="fixed flex py-4 w-full bottom-0">
-    <img src="../../../../assets/screen-icon.svg" alt="Screen SVG" class="w-full h-12" />
-    <div>
-      @if (selectedSeats.length) {
-        <button (click)="bookTicket()"
-          class="inline-block rounded-md border px-3 py-1.5 border-transparent items-end text-gray-900 m-4 justify-center bg-amber-500 hover:bg-amber-600">
-          Book Tickets
-        </button>
+<!-- Booking summary: stays in reach while scrolling the map -->
+<div class="summary-bar fixed inset-x-0 z-30 border-t border-default bg-surface/95 backdrop-blur">
+  <div class="container flex max-w-6xl items-center gap-4 py-3">
+    <div class="min-w-0 flex-1" aria-live="polite">
+      @if (summary().count > 0) {
+        <p class="font-semibold">
+          {{ summary().count }} {{ summary().count === 1 ? 'seat' : 'seats' }} · <span class="tabular-nums">₹{{ summary().total }}</span>
+        </p>
+        <p class="truncate text-sm text-muted">
+          {{ summary().labels }}
+          @if (summary().count === maxSeats) { · {{ maxSeats }} seats is the limit per booking }
+        </p>
+      } @else {
+        <p class="font-semibold">Pick your seats</p>
+        <p class="text-sm text-muted">Up to {{ maxSeats }} per booking. Prices include the booking fee.</p>
       }
     </div>
+    @if (user()) {
+      <button csButton size="lg" type="button" [disabled]="!canBook()" (click)="book()">
+        @if (booking()) { <span class="spinner"></span> Holding seats… } @else { Book }
+      </button>
+    } @else {
+      <a csButton size="lg" routerLink="/user/login">Log in to book</a>
+    }
   </div>
 </div>

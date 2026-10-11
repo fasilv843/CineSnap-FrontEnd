@@ -6,11 +6,7 @@
       <!-- Identity -->
       <section class="card p-6" aria-labelledby="profile-name">
         <div class="flex flex-wrap items-center gap-5">
-          @if (avatarUrl(); as url) {
-            <img [src]="url" alt="" class="size-24 rounded-full border-2 border-accent object-cover" />
-          } @else {
-            <span class="flex size-24 items-center justify-center rounded-full border-2 border-accent bg-muted font-display text-5xl font-extrabold text-accent" aria-hidden="true">{{ user.name.charAt(0).toUpperCase() }}</span>
-          }
+          <cs-avatar [name]="user.name" [src]="avatarUrl()" size="xl" class="border-2 border-accent" />
           <div class="min-w-0 flex-1">
             <h1 id="profile-name" class="truncate font-display text-4xl font-extrabold tracking-tight">{{ user.name }}</h1>
             <p class="truncate text-muted">{{ user.email }}</p>
@@ -66,6 +62,6 @@
       <button csButton variant="danger" type="button" (click)="logout()">Log out</button>
     </div>
   } @else {
-    <div class="card h-64 animate-pulse bg-muted" aria-label="Loading profile"></div>
+    <div class="skeleton h-64 rounded-card" aria-label="Loading profile"></div>
   }
 </main>

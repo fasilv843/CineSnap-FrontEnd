@@ -39,8 +39,13 @@
           </div>
         }
       </div>
+    } @else if (featured.error()) {
+      <div class="card flex items-center justify-between gap-3 p-5" role="alert">
+        <p class="text-muted">Featured movies couldn't be loaded.</p>
+        <button csButton variant="secondary" size="sm" type="button" (click)="featured.reload()">Try again</button>
+      </div>
     } @else if (featured.isLoading()) {
-      <div class="hero animate-pulse rounded-card bg-muted"></div>
+      <div class="hero skeleton rounded-card"></div>
     }
   </section>
 
@@ -75,7 +80,12 @@
         </div>
       </div>
     } @else {
-      @if (theaters.value(); as list) {
+      @if (theaters.error()) {
+        <div class="card flex items-center justify-between gap-3 p-5" role="alert">
+          <p class="text-muted">Nearby theaters couldn't be loaded.</p>
+          <button csButton variant="secondary" size="sm" type="button" (click)="theaters.reload()">Try again</button>
+        </div>
+      } @else if (theaters.hasValue() && theaters.value(); as list) {
         @if (list.length > 0) {
           <ul class="rail" role="list">
             @for (theater of list; track theater.id) {
@@ -101,7 +111,7 @@
       } @else {
         <ul class="rail" role="list" aria-label="Loading theaters">
           @for (i of skeletons.slice(0, 3); track i) {
-            <li class="card h-24 animate-pulse bg-muted"></li>
+            <li class="skeleton h-24 rounded-card"></li>
           }
         </ul>
       }
@@ -136,7 +146,7 @@
           }
         } @else {
           @for (i of skeletons; track i) {
-            <li class="aspect-[2/3] animate-pulse rounded-card bg-muted"></li>
+            <li class="skeleton aspect-[2/3] rounded-card"></li>
           }
         }
       </ul>
@@ -144,7 +154,7 @@
   </section>
 
   <!-- Shortcuts into the filtered movie list -->
-  @if (filters.value(); as browse) {
+  @if (filters.hasValue() && filters.value(); as browse) {
     <section aria-labelledby="browse-heading" class="grid gap-8 md:grid-cols-2">
       <h2 id="browse-heading" class="sr-only">Browse movies</h2>
       <div>

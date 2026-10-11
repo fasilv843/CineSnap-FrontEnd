@@ -43,7 +43,6 @@ export class MovieService {
     if (genreStr !== '') url += '&' + genreStr
     if (languageStr !== '') url += '&' + languageStr
     url += `&availability=${filters.availability}`
-    console.warn(url, 'url that passing to backend for filtering');
     return this.http.get<IApiCSMoviesRes>(url)
   }
 
@@ -56,8 +55,8 @@ export class MovieService {
   // }
 
   searchMovie (title: string, isAdmin: boolean): Observable<IApiCSMoviesRes> {
-    if (isAdmin) return this.http.get<IApiCSMoviesRes>(`admin/movies?title=${title}&isAdmin=true`)
-    return this.http.get<IApiCSMoviesRes>(`user/movies?title=${title}`)
+    if (isAdmin) return this.http.get<IApiCSMoviesRes>(`admin/movies?title=${encodeURIComponent(title)}&isAdmin=true`)
+    return this.http.get<IApiCSMoviesRes>(`user/movies?title=${encodeURIComponent(title)}`)
   }
 
   deleteMovie (movieId: string): Observable<IApiCSMovieRes> {
@@ -73,7 +72,6 @@ export class MovieService {
   }
 
   fetchFilterDatas (): Observable<IApiFilters> {
-    console.log('fetching data for filtering');
     return this.http.get<IApiFilters>('user/filters')
   }
 }

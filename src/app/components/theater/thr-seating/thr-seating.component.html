@@ -1,192 +1,84 @@
-<app-thr-nav></app-thr-nav>
+<main class="mx-auto max-w-6xl px-4 pb-32 pt-6 sm:px-8 lg:pt-10">
+  <a routerLink="/theater/screens" class="inline-flex items-center gap-1 rounded-control text-sm font-semibold text-muted hover:text-default">
+    <cs-icon name="chevronLeft" class="size-4" /> Screens
+  </a>
 
+  <cs-page-header class="mt-3" heading="Seat layout" description="Tap a seat to turn it into a gap (an aisle or empty space), and tap a gap to add a seat back." />
 
-<div class="flex flex-col items-center mt-8 overflow-x-auto">
-  @if (getRowKeys(diamond).length) {
-    <div class="mb-20">
-      @if (editMode) {
-        <input [(ngModel)]="diamond.name" />
-      }
-      @if (!editMode) {
-        <h4>{{ diamond.name }}</h4>
-      }
-      <div class="flex items-center gap-4">
-        @if (editMode) {
-          <div class="seat p-3 text-center text-sm with-margin">
-            <button class="btn-icon" (click)="addDummySeatsAt('Start', diamond)">+</button>
+  @if (saved.error()) {
+    <div class="card mt-6">
+      <cs-state-panel heading="The seat layout couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="saved.reload()" />
+    </div>
+  } @else if (saved.isLoading() && !layout()) {
+    <div class="mt-6 space-y-4" aria-busy="true">
+      @for (i of [0, 1, 2]; track i) { <div class="skeleton h-40"></div> }
+    </div>
+  } @else if (layout(); as l) {
+    <p class="mt-4 text-sm text-muted" aria-live="polite">
+      <strong class="text-default">{{ seats() }}</strong> seats in <strong class="text-default">{{ rows() }}</strong> rows
+      @if (rows() >= maxRows) { · 26 rows (A to Z) is the most a screen can have }
+    </p>
+
+    <div class="mt-6 space-y-6">
+      @for (key of keys; track key) {
+        @let category = l[key];
+        <section class="card p-4 sm:p-5" [attr.aria-label]="category.name + ' seats'">
+          <div class="flex flex-wrap items-end gap-3">
+            <div class="w-48">
+              <label [for]="'name-' + key" class="mb-1 block text-xs font-semibold text-muted">Category name</label>
+              <input [id]="'name-' + key" class="input h-9" [value]="category.name" (input)="rename(key, $event)" maxlength="20" />
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              <button csButton variant="secondary" size="sm" type="button" [disabled]="rows() >= maxRows" (click)="addRow(key)">Add row</button>
+              <button csButton variant="ghost" size="sm" type="button" [disabled]="category.rows.length === 0 || rows() <= 1" (click)="removeRow(key)">Remove last row</button>
+              @if (category.rows.length > 0) {
+                <button csButton variant="ghost" size="sm" type="button" (click)="addColumn(key, 'end')">Add column</button>
+                <button csButton variant="ghost" size="sm" type="button" (click)="removeColumn(key, 'end')">Remove last column</button>
+                <button csButton variant="ghost" size="sm" type="button" (click)="addColumn(key, 'start')">Shift right</button>
+                <button csButton variant="ghost" size="sm" type="button" (click)="removeColumn(key, 'start')">Shift left</button>
+              }
+            </div>
           </div>
-        }
-        <div>
-          <!-- <div *ngIf="editMode" class="flex">
-          <div *ngFor="let c of getRows(diamond); index as i" class="seat p-3 text-center text-sm with-margin">
-            <button class="btn-icon" (click)="dummifyColumn(i)"> - </button>
-          </div>
-        </div> -->
-        @for (seatRow of getRowKeys(diamond); track seatRow) {
-          <div class="flex flex-nowrap items-center">
-            @for (seatCol of diamond.seats[seatRow]; track seatCol; let i = $index) {
-              <div class="flex flex-col">
-                @if (seatCol !== 0) {
-                  <div class="seat p-3 text-center text-sm with-margin relative">
-                    {{ seatRow + seatCol }}
-                    @if (editMode) {
-                      <button class="close-btn px-1" (click)="removeSeat(seatRow, i, diamond)">x</button>
-                    }
-                  </div>
-                }
-                @if (seatCol === 0) {
-                  <div class="{{ editMode ? 'seat' : 'empty-space'}} p-3 text-center text-sm with-margin">
-                    @if (editMode) {
-                      <button (click)="addSeat(seatRow, i, diamond)"> + </button>
-                    }
+
+          @if (category.rows.length === 0) {
+            <p class="mt-4 text-sm text-muted">No {{ category.name }} seats. Add a row to sell this category.</p>
+          } @else {
+            <div class="mt-4 overflow-x-auto pb-2">
+              <div class="w-max space-y-1.5">
+                @for (row of category.rows; track $index; let r = $index) {
+                  @let letter = letters()?.[key]?.[r] ?? '';
+                  @let seatNumbers = numbers(row);
+                  <div class="flex items-center gap-2">
+                    <span class="w-5 text-center text-xs font-semibold text-subtle" aria-hidden="true">{{ letter }}</span>
+                    <div class="flex gap-1">
+                      @for (cell of row; track $index; let c = $index) {
+                        <button type="button" class="cell" [class.gap]="!cell" (click)="toggle(key, r, c)"
+                          [attr.aria-label]="cell ? 'Seat ' + letter + seatNumbers[c] + ', make it a gap' : 'Gap in row ' + letter + ', add a seat'">
+                          {{ cell ? seatNumbers[c] : '' }}
+                        </button>
+                      }
+                    </div>
                   </div>
                 }
               </div>
-            }
-          </div>
-        }
-      </div>
-      @if (editMode) {
-        <div>
-          <div class="seat p-3 text-center text-sm with-margin">
-            <button class="btn-icon" (click)="addDummySeatsAt('End', diamond)">+</button>
-          </div>
-          <div class="seat p-3 text-center text-sm with-margin">
-            <button class="btn-icon" (click)="deleteColumn('Diamond')">-</button>
-          </div>
-        </div>
-      }
-    </div>
-    @if (editMode) {
-      <div class="flex justify-center">
-        <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="addRow('Diamond')">Add Row</button>
-        <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="deleteRow('Diamond')">Delete Row</button>
-      </div>
-    }
-  </div>
-}
-
-@if (getRowKeys(gold).length) {
-  <div class="mb-20">
-    <h4>{{ gold.name }}</h4>
-    <div class="flex items-center gap-4">
-      @if (editMode) {
-        <div class="seat p-3 text-center text-sm with-margin">
-          <button class="btn-icon" (click)="addDummySeatsAt('Start', gold)">+</button>
-        </div>
-      }
-      <div>
-        <!-- <div *ngIf="editMode" class="flex">
-        <div *ngFor="let c of getRows(gold); index as i" class="seat p-3 text-center text-sm with-margin">
-          <button class="btn-icon" (click)="dummifyColumn(i)"> - </button>
-        </div>
-      </div> -->
-      @for (seatRow of getRowKeys(gold); track seatRow) {
-        <div class="flex flex-nowrap items-center">
-          @for (seatCol of gold.seats[seatRow]; track seatCol; let i = $index) {
-            <div class="flex flex-col">
-              @if (seatCol !== 0) {
-                <div class="seat p-3 text-center text-sm with-margin relative">
-                  {{ seatRow + seatCol }}
-                  @if (editMode) {
-                    <button class="close-btn px-1" (click)="removeSeat(seatRow, i, gold)">x</button>
-                  }
-                </div>
-              }
-              @if (seatCol === 0) {
-                <div class="{{ editMode ? 'seat' : 'empty-space'}} p-3 text-center text-sm with-margin">
-                  @if (editMode) {
-                    <button (click)="addSeat(seatRow, i, gold)"> + </button>
-                  }
-                </div>
-              }
             </div>
           }
-        </div>
+        </section>
       }
-    </div>
-    @if (editMode) {
-      <div>
-        <div class="seat p-3 text-center text-sm with-margin">
-          <button class="btn-icon" (click)="addDummySeatsAt('End', gold)">+</button>
-        </div>
-        <div class="seat p-3 text-center text-sm with-margin">
-          <button class="btn-icon" (click)="deleteColumn('Gold')">-</button>
-        </div>
-      </div>
-    }
-  </div>
-  @if (editMode) {
-    <div class="flex justify-center">
-      <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="addRow('Gold')">Add Row</button>
-      <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="deleteRow('Gold')">Delete Row</button>
+
+      <div class="screen" aria-hidden="true"><span>Screen</span></div>
     </div>
   }
-</div>
-}
+</main>
 
-@if (getRowKeys(silver).length) {
-  <div class="mb-40">
-    <h4>{{ silver.name }}</h4>
-    <div class="flex items-center gap-4">
-      @if (editMode) {
-        <div class="seat p-3 text-center text-sm with-margin">
-          <button class="btn-icon" (click)="addDummySeatsAt('Start', silver)">+</button>
-        </div>
-      }
-      <div>
-        <!-- <div *ngIf="editMode" class="flex">
-        <div *ngFor="let c of getRows(silver); index as i" class="seat p-3 text-center text-sm with-margin">
-          <button class="btn-icon" (click)="dummifyColumn(i)"> - </button>
-        </div>
-      </div> -->
-      @for (seatRow of getRowKeys(silver); track seatRow) {
-        <div class="flex flex-nowrap items-center">
-          @for (seatCol of silver.seats[seatRow]; track seatCol; let i = $index) {
-            <div class="flex flex-col">
-              @if (seatCol !== 0) {
-                <div class="seat p-3 text-center text-sm with-margin relative">
-                  {{ seatRow + seatCol }}
-                  @if (editMode) {
-                    <button class="close-btn px-1" (click)="removeSeat(seatRow, i, silver)">x</button>
-                  }
-                </div>
-              }
-              @if (seatCol === 0) {
-                <div class="{{ editMode ? 'seat' : 'empty-space'}} p-3 text-center text-sm with-margin">
-                  @if (editMode) {
-                    <button (click)="addSeat(seatRow, i, silver)"> + </button>
-                  }
-                </div>
-              }
-            </div>
-          }
-        </div>
-      }
+@if (dirty()) {
+  <div class="fixed inset-x-0 bottom-0 z-30 border-t border-default bg-surface/95 backdrop-blur lg:left-64">
+    <div class="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-8">
+      <p class="flex-1 font-semibold">You have unsaved changes</p>
+      <button csButton variant="ghost" type="button" [disabled]="saving()" (click)="discard()">Discard</button>
+      <button csButton type="button" [disabled]="saving()" (click)="save()">
+        @if (saving()) { <span class="spinner"></span> Saving… } @else { Save layout }
+      </button>
     </div>
-    @if (editMode) {
-      <div>
-        <div class="seat p-3 text-center text-sm with-margin">
-          <button class="btn-icon" (click)="addDummySeatsAt('End', silver)">+</button>
-        </div>
-        <div class="seat p-3 text-center text-sm with-margin">
-          <button class="btn-icon" (click)="deleteColumn('Silver')">-</button>
-        </div>
-      </div>
-    }
   </div>
-  @if (editMode) {
-    <div class="flex justify-center">
-      <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="addRow('Silver')">Add Row</button>
-      <button class="inline-block rounded-md border px-3 py-1.5 border-gray-300 hover:bg-gray-100" (click)="deleteRow('Silver')">Delete Row</button>
-    </div>
-  }
-</div>
 }
-
-<div class="fixed flex py-4 w-full bottom-0">
-  <img src="../../../../assets/screen-icon.svg" alt="Screen SVG" class="w-full h-12">
-  <button (click)="editScreenSeats()" class="inline-block rounded-md border px-3 py-1.5 border-transparent items-end text-gray-900 m-4 justify-center bg-amber-500 hover:bg-amber-600">{{ editMode ? 'Update' : 'Edit' }}</button>
-</div>
-</div>
-

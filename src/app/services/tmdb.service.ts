@@ -10,7 +10,8 @@ import { Movie, IMoviesObj } from '../models/movie';
   providedIn: 'root'
 })
 export class TMDBService {
-  tmdbApi = environments.tmdbApi
+  // The env value may end with '/'; paths below add their own
+  tmdbApi = environments.tmdbApi.replace(/\/+$/, '')
   tmdbKey = environments.tmdbKey
 
   constructor (
@@ -21,7 +22,7 @@ export class TMDBService {
     headers: new HttpHeaders({ 'Bypass-Interceptor': 'true' })
   }
 
-  fetchMovieByLanguage (lang: string, page: number = 2): Observable<Movie[]> {
+  fetchMovieByLanguage (lang: string, page: number = 1): Observable<Movie[]> {
     return this.http.get<IMoviesObj>(`${this.tmdbApi}/discover/movie?api_key=${this.tmdbKey}&with_original_language=${lang}&sort_by=release_date.desc&page=${page}`, this.httpOptions).pipe(
       map((result) => result.results
         .filter(movie => movie.poster_path)
@@ -40,7 +41,7 @@ export class TMDBService {
   }
 
   searchMovieByName (movieTitle: string): Observable<Movie[]> {
-    return this.http.get<IMoviesObj>(`${this.tmdbApi}/search/movie?query=${movieTitle}&api_key=${this.tmdbKey}`, this.httpOptions).pipe(
+    return this.http.get<IMoviesObj>(`${this.tmdbApi}/search/movie?query=${encodeURIComponent(movieTitle)}&api_key=${this.tmdbKey}`, this.httpOptions).pipe(
       map((result) => result.results
         .filter(movie => movie.poster_path)
         .map(movie => ({
@@ -59,7 +60,7 @@ export class TMDBService {
   }
 
   fetchMoviesByGenreId (genreId: number): Observable<Movie[]> {
-    return this.http.get<IMoviesObj>(`${this.tmdbApi}discover/movie?with_genres=${genreId}&api_key=${this.tmdbKey}`, this.httpOptions).pipe(
+    return this.http.get<IMoviesObj>(`${this.tmdbApi}/discover/movie?with_genres=${genreId}&api_key=${this.tmdbKey}`, this.httpOptions).pipe(
       map((result) => result.results
         .filter(movie => movie.poster_path)
         .map(movie => ({

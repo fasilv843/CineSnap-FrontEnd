@@ -1,58 +1,85 @@
-<app-user-nav></app-user-nav>
-<div class="flex items-center justify-center w-full">
-  <div class="mr-auto"></div>
-  <div class="text-center text-lg text-green-500 py-4">
-    <p class="font-bold">Payment Success</p>
-    <p>Let The Movie Adventure Begin !!! </p>
-  </div>
-  <div class="ml-auto pr-8">
-    <button (click)="downloadInvoice()">Get Invoice</button>
-  </div>
-</div>
+<app-user-nav />
 
-
-@if (ticket) {
-  <div id="invoice-container" class="flex flex-col md:flex-row w-full justify-around h-fit border p-4 my-4 bg-white shadow-lg rounded-lg overflow-hidden">
-    <div class="flex flex-col md:flex-row border p-4">
-      <div class="mb-4 md:mr-4">
-        <img src="https://image.tmdb.org/t/p/original/{{ ticket.movieId.poster_path }}" alt="{{ ticket.movieId.title }} Poster" class=" h-80 object-cover rounded-lg shadow-md">
-      </div>
-      <div class="flex flex-col">
-        <div class="mb-4">
-          <h6 class="text-xl font-semibold mb-2">{{ ticket.movieId.title }}</h6>
-          <span class="text-gray-600">{{ getLanguage(ticket.movieId.language) }}</span>
-        </div>
-        <div class="mb-4">
-          <h6 class="text-xl font-semibold mb-2">{{ ticket.theaterId.name }}</h6>
-          <span class="text-gray-600">
-            {{ ticket.theaterId.address.city }},
-            {{ ticket.theaterId.address.district }},
-            {{ ticket.theaterId.address.state }},
-            {{ ticket.theaterId.address.country }},
-            {{ ticket.theaterId.address.zip }}
-          </span>
-        </div>
-        <div class="flex items-center mb-4">
-          <div class="flex flex-col mr-4">
-            <h6 class="text-lg font-semibold mb-1">{{ ticket.startTime  | date: 'EEE, dd MMM yyyy, hh:mm a' }}</h6>
-            <span class="text-gray-600">{{ ticket.screenId.name }}</span>
-            <div class="flex flex-wrap gap-1 mt-1">
-              @for (seat of seats; track seat) {
-                <span class="bg-green-500 text-white p-1 rounded-sm w-1/6">{{ seat }}</span>
-              }
-            </div>
-          </div>
-          <div class="bg-gray-200 p-2 rounded-md">
-            <p class="text-gray-900 text-lg text-center font-semibold">{{ ticket.seatCount }}</p>
-            <p class="text-gray-700 text-center">Tickets</p>
-          </div>
-        </div>
-      </div>
+<main class="container max-w-3xl pb-16 pt-6 sm:pt-10">
+  @if (ticket.error()) {
+    <div class="card">
+      <cs-state-panel heading="Your ticket couldn't be loaded" message="The booking went through. You can also find it in My bookings." [retry]="true" (retried)="ticket.reload()">
+        @if (user(); as u) {
+          <a csButton variant="ghost" size="sm" [routerLink]="['/user/bookings', u._id]">My bookings</a>
+        }
+      </cs-state-panel>
     </div>
-  </div>
-}
+  } @else if (ticket.isLoading()) {
+    <div aria-busy="true">
+      <div class="skeleton h-14 w-2/3"></div>
+      <div class="skeleton mt-6 h-80"></div>
+    </div>
+  } @else if (ticket.value(); as t) {
+    <header class="flex items-center gap-4">
+      <span class="flex size-12 shrink-0 items-center justify-center rounded-full bg-success text-success-foreground">
+        <cs-icon name="check" class="size-7" />
+      </span>
+      <div>
+        <h1 class="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">You're booked</h1>
+        <p class="text-muted">Your ticket is below and in My bookings. Show it at the counter.</p>
+      </div>
+    </header>
 
+    <!-- Ticket stub -->
+    <article class="ticket card mt-8 overflow-hidden shadow-raised" aria-label="Your ticket">
+      <div class="flex gap-5 p-5 sm:p-6">
+        @if (movie(); as m) {
+          <img [src]="m.poster" [alt]="m.title + ' poster'" class="aspect-[2/3] w-24 shrink-0 self-start rounded-control bg-muted object-cover sm:w-32" />
+        }
+        <div class="min-w-0 flex-1">
+          <h2 class="text-2xl font-semibold">{{ movie()?.title ?? 'Movie no longer listed' }}</h2>
+          @if (movie(); as m) { <p class="text-sm text-muted">{{ m.meta }}</p> }
+          <p class="mt-4 font-display text-3xl font-extrabold text-accent">{{ t.startTime | date: 'EEE d MMM' }} · {{ t.startTime | date: 'h:mm a' }}</p>
+          @let theater = t.theaterId;
+          <p class="mt-1 font-semibold">{{ theater?.name ?? 'Theater no longer listed' }}{{ t.screenId ? ' · ' + t.screenId.name : '' }}</p>
+          @if (theater?.address; as a) {
+            <p class="text-sm text-muted">{{ a.city }}, {{ a.district }}, {{ a.state }}</p>
+          }
+        </div>
+      </div>
 
-<div class="flex justify-center py-3">
-  <button (click)="openBookings()" class="w-1/3 block rounded-full bg-amber-400 hover:bg-amber-600 hover:shadow-lg font-semibold text-gray-800 px-6 py-2">Bookings</button>
-</div>
+      <div class="perforation" aria-hidden="true"></div>
+
+      <dl class="grid grid-cols-2 gap-4 p-5 sm:grid-cols-4 sm:p-6">
+        <div class="col-span-2">
+          <dt class="text-sm text-muted">{{ t.seatCount }} {{ t.seatCount === 1 ? 'seat' : 'seats' }}</dt>
+          <dd class="mt-1 flex flex-wrap gap-1.5">
+            @for (seat of seats(); track seat) { <span class="badge">{{ seat }}</span> }
+          </dd>
+        </div>
+        <div>
+          <dt class="text-sm text-muted">Paid</dt>
+          <dd class="font-semibold tabular-nums">₹{{ t.totalPrice }}</dd>
+        </div>
+        <div>
+          <dt class="text-sm text-muted">Booking ID</dt>
+          <dd class="truncate font-mono text-sm" [title]="t._id">{{ t._id.slice(-8).toUpperCase() }}</dd>
+        </div>
+      </dl>
+    </article>
+
+    <div class="mt-6 flex flex-wrap gap-2">
+      @if (user(); as u) {
+        <a csButton [routerLink]="['/user/bookings', u._id]">My bookings</a>
+      }
+      <button csButton variant="secondary" type="button" [disabled]="sendingInvoice()" (click)="emailInvoice()">
+        @if (sendingInvoice()) { <span class="spinner"></span> Sending… } @else { Email invoice }
+      </button>
+      @if (directions(); as url) {
+        <a csButton variant="secondary" [href]="url" target="_blank" rel="noopener">Directions<span class="sr-only"> (opens Google Maps)</span></a>
+      }
+      <a csButton variant="ghost" routerLink="/user/home">Back to home</a>
+    </div>
+  } @else {
+    <div class="card">
+      <cs-state-panel heading="We couldn't find that ticket" message="Check My bookings for all your tickets.">
+        <a csButton size="sm" routerLink="/user/home">Home</a>
+      </cs-state-panel>
+    </div>
+  }
+</main>

@@ -1,49 +1,52 @@
-import { Injectable, inject, signal } from '@angular/core'
+import { Injectable, inject } from '@angular/core'
 import { Store } from '@ngrx/store'
-import { filter, switchMap } from 'rxjs'
+import { type Observable, tap } from 'rxjs'
+import { type ITheaterRes } from 'src/app/models/theater'
 import { type IUserRes } from 'src/app/models/users'
 import { AddToWalletModalComponent } from '../components/common/add-to-wallet-modal/add-to-wallet-modal.component'
+import { ToastService } from '../shared/ui/toast.service'
+import { saveTheaterOnStore } from '../states/theater/theater.action'
 import { saveUserOnStore } from '../states/user/user.actions'
 import { ModalService } from './modal.service'
-import { RazorpayService } from './razorpay.service'
+import { type IPayer, RazorpayService } from './razorpay.service'
+import { TheaterService } from './theater.service'
 import { UserService } from './user.service'
 
-/**
- * "Add money" for the signed-in user: amount dialog → Razorpay checkout → credit the wallet → refresh the store.
- * One app-wide listener for payment results, so a dismissed checkout can never be credited twice later.
- */
+/** "Add money": amount dialog → Razorpay checkout → credit the wallet → refresh the store. */
 @Injectable({ providedIn: 'root' })
 export class WalletTopUpService {
   private readonly modalService = inject(ModalService)
   private readonly razorpayService = inject(RazorpayService)
   private readonly userService = inject(UserService)
+  private readonly theaterService = inject(TheaterService)
   private readonly store = inject(Store)
-
-  // The top-up waiting for Razorpay to confirm; replaced if the user starts another one
-  private readonly pending = signal<{ userId: string, amount: number } | null>(null)
-
-  constructor () {
-    this.razorpayService.getPaymentResultObservable().pipe(
-      filter(response => response !== null && this.pending() !== null),
-      switchMap(() => {
-        const { userId, amount } = this.pending() as { userId: string, amount: number }
-        this.pending.set(null)
-        return this.userService.updateUserWallet(userId, amount)
-      })
-    ).subscribe(res => { this.store.dispatch(saveUserOnStore({ userDetails: res.data })) })
-  }
+  private readonly toast = inject(ToastService)
 
   addMoney (user: IUserRes): void {
+    this.topUp(toPayer(user), amount => this.userService.updateUserWallet(user._id, amount).pipe(
+      tap(res => { this.store.dispatch(saveUserOnStore({ userDetails: res.data })) })
+    ))
+  }
+
+  addTheaterMoney (theater: ITheaterRes): void {
+    this.topUp(toPayer(theater), amount => this.theaterService.updateTheaterWallet(theater._id, amount).pipe(
+      tap(res => { if (res.data !== null) this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data })) })
+    ))
+  }
+
+  private topUp (payer: IPayer, credit: (amount: number) => Observable<unknown>): void {
     this.modalService.open(AddToWalletModalComponent, { static: true }).result.then(
-      ({ amount }: { amount: string }) => {
-        this.pending.set({ userId: user._id, amount: Number(amount) })
-        this.razorpayService.initiateRazorpayPayment(Number(amount), {
-          name: user.name,
-          email: user.email,
-          mobile: user.mobile !== undefined ? `${user.mobile}` : ''
-        })
+      async ({ amount }: { amount: string }) => {
+        const value = Number(amount)
+        const payment = await this.razorpayService.pay(value, payer, 'Add money to CineSnap wallet')
+        if (payment === null) return // checkout closed without paying
+        credit(value).subscribe(() => { this.toast.success(`₹${value} added to your wallet`) })
       },
       () => {} // dialog dismissed
     )
   }
+}
+
+function toPayer (account: { name: string, email: string, mobile?: number }): IPayer {
+  return { name: account.name, email: account.email, mobile: account.mobile !== undefined && account.mobile !== 0 ? `${account.mobile}` : '' }
 }

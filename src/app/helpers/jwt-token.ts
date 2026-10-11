@@ -1,14 +1,10 @@
-// Function to check is passed jwt token is expired or not
+/** True when the JWT's exp claim has passed. A token that can't be read counts as expired. */
 export function isTokenExpired (token: string): boolean {
-  const payload = JSON.parse(atob(token.split('.')[1]))
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-  if (payload?.exp) {
-    const expireTime = payload.exp * 1000
-    if (expireTime > Date.now()) return false
-    console.warn('token is expired')
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    if (typeof payload?.exp !== 'number') return false // no expiry claim
+    return payload.exp * 1000 <= Date.now()
+  } catch {
     return true
   }
-
-  console.warn('Token don\'t have expiration date')
-  return false
 }

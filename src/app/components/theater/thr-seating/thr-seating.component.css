@@ -1,50 +1,36 @@
-.seat {
-  width: 30px;
-  height: 30px;
-  margin: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.cell {
+  width: 1.875rem;
+  height: 1.875rem;
+  flex-shrink: 0;
+  border-radius: 0.45rem 0.45rem 0.3rem 0.3rem;
+  border: 1.5px solid var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  color: var(--text-color-default);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 120ms, border-color 120ms;
 }
 
-.seat:hover {
-  background-color: #ddd;
+.cell:hover {
+  background: color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+
+.cell.gap {
+  border: 1.5px dashed var(--border-color-strong);
+  background: transparent;
+}
+
+.cell.gap:hover {
+  border-color: var(--color-primary);
 }
 
 .screen {
-  background-color: #ffffff;
-  color: #ffffff;
-  padding: 10px;
+  margin: 0.5rem 10% 0;
+  padding-top: 0.75rem;
+  border-top: 4px solid var(--text-color-muted);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
   text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.with-margin {
-  margin-bottom: 15px; /* Adjust the margin as needed */
-}
-
-.row {
-  white-space: nowrap;
-  overflow-x: auto;
-}
-
-.close-btn {
-  position: absolute;
-  top: -10px;
-  right: -5px;
-  color: #ffffff;
-  background-color: rgb(171, 0, 0);
-  border-radius: 100%;
-  font-size: smaller;
-}
-
-.empty-space {
-  width: 30px;
-  height: 30px;
-  margin: 5px;
-  border: 1px solid #ffffff;
+  font-size: 0.75rem;
+  color: var(--text-color-subtle);
 }

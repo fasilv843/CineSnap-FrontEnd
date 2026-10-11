@@ -1,63 +1,89 @@
-.booked {
-  background-color: #ccc;
+.seat-scroll {
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.seat,
+.seat-gap,
+.seat-key {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+}
+
+.seat-key {
+  display: inline-block;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.seat,
+.seat-key {
+  border-radius: 0.5rem 0.5rem 0.3rem 0.3rem;
+  border: 1.5px solid var(--color-primary);
+  background: transparent;
+  color: var(--text-color-default);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 120ms, color 120ms, transform 120ms;
+}
+
+.seat:not(:disabled):hover {
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+}
+
+.seat:not(:disabled):active {
+  transform: scale(0.92);
+}
+
+[data-status='selected'] {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-foreground);
+  box-shadow: var(--shadow-glow);
+}
+
+.seat[data-status='selected']:hover {
+  background: var(--color-accent-hover);
+}
+
+[data-status='held'] {
+  border-color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 25%, transparent);
+  color: var(--text-color-subtle);
+}
+
+[data-status='sold'] {
+  border-color: transparent;
+  background: var(--background-color-muted);
+  color: var(--text-color-subtle);
+}
+
+.seat:disabled {
   cursor: not-allowed;
 }
 
-.selected {
-  background-color: #ffcc00; /* Yellow or any color of your choice */
-}
-
-.holded {
-  background-color: rgb(255, 132, 0);
-}
-
-.seat {
-  width: 30px;
-  height: 30px;
-  margin: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.seat:hover {
-  background-color: #ddd;
-}
-
+/* The screen sits below the map, closest to the front rows */
 .screen {
-  background-color: #ffffff;
-  color: #ffffff;
-  padding: 10px;
+  margin: 1rem 8% 0;
+  padding-top: 0.75rem;
+  border-top: 4px solid var(--text-color-muted);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
   text-align: center;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 0.75rem;
+  color: var(--text-color-subtle);
 }
 
-.with-margin {
-  margin-bottom: 15px; /* Adjust the margin as needed */
+.summary-bar {
+  bottom: 0;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-.row {
-  white-space: nowrap;
-  overflow-x: auto;
-}
-
-.close-btn {
-  position: absolute;
-  top: -10px;
-  right: -5px;
-  color: #ffffff;
-  background-color: rgb(171, 0, 0);
-  border-radius: 100%;
-  font-size: smaller;
-}
-
-.empty-space {
-  width: 30px;
-  height: 30px;
-  margin: 5px;
-  border: 1px solid #ffffff;
+/* The user area's tab bar takes the bottom on phones */
+@media (width < 40rem) {
+  .summary-bar {
+    bottom: calc(3.75rem + env(safe-area-inset-bottom));
+    padding-bottom: 0;
+  }
 }

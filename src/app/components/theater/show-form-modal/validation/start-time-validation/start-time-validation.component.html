@@ -1,8 +1,0 @@
-@let control = startTimeControl();
-@if (isSubmitted() && control && control.errors) {
-  <div>
-    @if (control.errors['required']) {
-      <div style="color: red;">Time is required</div>
-    }
-  </div>
-}

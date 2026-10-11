@@ -26,7 +26,7 @@
     } @else if (isLoading()) {
       <div class="space-y-3 p-5">
         @for (i of skeletonRows; track i) {
-          <div class="h-14 animate-pulse rounded-control bg-muted"></div>
+          <div class="skeleton h-14"></div>
         }
       </div>
     } @else if (visibleRows().length === 0) {

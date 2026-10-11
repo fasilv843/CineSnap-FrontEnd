@@ -3,7 +3,7 @@
 <main class="container max-w-6xl pb-16 pt-6 sm:pt-8">
   <!-- Theater -->
   <header class="card flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:p-6">
-    @if (theater.value(); as t) {
+    @if (theater.hasValue() && theater.value(); as t) {
       @if (t.image) {
         <img [src]="t.image" alt="" class="size-20 shrink-0 rounded-card object-cover sm:size-24" />
       } @else {
@@ -25,7 +25,7 @@
     } @else if (theater.error()) {
       <p class="text-muted">This theater couldn't be loaded. <a routerLink="/user/theaters" class="font-semibold text-default underline decoration-accent underline-offset-4">Browse theaters</a></p>
     } @else {
-      <div class="h-24 w-full animate-pulse rounded-control bg-muted"></div>
+      <div class="skeleton h-24 w-full"></div>
     }
   </header>
 
@@ -44,10 +44,15 @@
 
     <!-- Shows for that day, grouped by movie -->
     <div class="mt-6" [attr.aria-busy]="shows.isLoading()">
-      @if (shows.isLoading()) {
+      @if (shows.error()) {
+        <div class="card flex items-center justify-between gap-3 p-5" role="alert">
+          <p class="text-muted">Showtimes couldn't be loaded.</p>
+          <button csButton variant="secondary" size="sm" type="button" (click)="shows.reload()">Try again</button>
+        </div>
+      } @else if (shows.isLoading()) {
         <div class="space-y-4">
           @for (i of [0, 1]; track i) {
-            <div class="card h-40 animate-pulse bg-muted"></div>
+            <div class="skeleton h-40 rounded-card"></div>
           }
         </div>
       } @else if ((shows.value() ?? []).length === 0) {

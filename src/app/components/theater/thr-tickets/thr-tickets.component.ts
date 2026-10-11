@@ -1,77 +1,67 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
-import { ITicketRes } from 'src/app/models/ticket'
+import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, signal } from '@angular/core'
+import { rxResource } from '@angular/core/rxjs-interop'
+import { Store } from '@ngrx/store'
+import { map } from 'rxjs'
+import { type TicketRow, toTicketRow } from 'src/app/helpers/ticket-row'
+import { type ITicketView } from 'src/app/models/ticket'
 import { TicketService } from 'src/app/services/ticket.service'
-import { ThrNavComponent } from '../thr-nav/thr-nav.component';
-import { TableFilterComponent } from '../../common/table-filter/table-filter.component';
-import { DatePipe } from '@angular/common';
+import { ConfirmService } from 'src/app/shared/ui/confirm-dialog.component'
+import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
+import { ToastService } from 'src/app/shared/ui/toast.service'
+import { injectUrlPaging } from 'src/app/shared/ui/url-paging'
+import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import { TicketTableComponent } from '../../common/ticket-table/ticket-table.component'
+import { valueOf } from 'src/app/helpers/resource'
 
 @Component({
-    selector: 'app-thr-tickets',
-    templateUrl: './thr-tickets.component.html',
-    styleUrls: ['./thr-tickets.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [ThrNavComponent, TableFilterComponent, DatePipe]
+  selector: 'app-thr-tickets',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [PageHeaderComponent, TicketTableComponent],
+  template: `
+    <main class="mx-auto max-w-6xl px-4 py-6 sm:px-8 lg:py-10">
+      <cs-page-header heading="Tickets" description="Every booking for your shows, newest first. Upcoming tickets can be cancelled with a full refund to the customer." />
+      <app-ticket-table class="mt-6 block" [rows]="rows()" [total]="total()" [paging]="paging" [loading]="tickets.isLoading()"
+        [failed]="!!tickets.error()" [cancelling]="cancelling()" (cancel)="cancel($event)" (retried)="tickets.reload()" />
+    </main>
+  `
 })
-export class ThrTicketsComponent implements OnInit {
-  private readonly route = inject(ActivatedRoute)
+export class ThrTicketsComponent {
   private readonly ticketService = inject(TicketService)
+  private readonly confirm = inject(ConfirmService)
+  private readonly toast = inject(ToastService)
 
-  theaterId = ''
-  tickets: ITicketRes[] = []
-  ticketCount = 0
-  currPage = 1
-  itemsPerPage = 10
-  now = new Date()
+  // The signed-in theater's tickets, whatever id is in the URL
+  private readonly theater = inject(Store).selectSignal(selectTheaterDetails)
+  protected readonly paging = injectUrlPaging()
 
-  constructor () {
-    this.route.params.subscribe(params => {
-      this.theaterId = params['theaterId']
+  protected readonly tickets = rxResource({
+    params: () => ({ theaterId: this.theater()?._id ?? '', page: this.paging.page(), limit: this.paging.limit() }),
+    stream: ({ params }) => this.ticketService.getAllTicketsOfTheater(params.theaterId, params.page, params.limit).pipe(
+      map(res => ({ rows: (res.data?.tickets ?? []).map(ticket => toTicketRow(ticket as ITicketView)), count: res.data?.ticketCount ?? 0 }))
+    )
+  })
+
+  // Local copy so a cancellation shows at once
+  protected readonly rows = linkedSignal(() => valueOf(this.tickets)?.rows ?? [])
+  protected readonly total = computed(() => valueOf(this.tickets)?.count ?? 0)
+  protected readonly cancelling = signal<string | null>(null)
+
+  protected async cancel (row: TicketRow): Promise<void> {
+    const confirmed = await this.confirm.confirm({
+      title: 'Cancel this ticket?',
+      message: `${row.customer}'s ${row.seats.length} ${row.seats.length === 1 ? 'seat' : 'seats'} for ${row.movie}. They get ₹${row.amount} back in their CineSnap wallet.`,
+      confirmLabel: 'Cancel ticket',
+      tone: 'danger'
     })
-  }
-
-  ngOnInit (): void {
-    this.getTickets()
-  }
-
-  getDate (date: Date): Date {
-    return new Date(date)
-  }
-
-  getTickets (): void {
-    this.ticketService.getAllTicketsOfTheater(this.theaterId, this.currPage, this.itemsPerPage).subscribe({
-      next: (res) => {
-        if (res.data !== null) {
-          console.log(res.data, 'res from tickets of theater')
-          this.tickets = res.data.tickets
-          this.ticketCount = res.data.ticketCount
-        }
-      }
-    })
-  }
-
-  onItemsPerPageChange (itemsPerPage: number): void {
-    this.itemsPerPage = itemsPerPage
-    this.currPage = 1
-    this.getTickets()
-  }
-
-  onPageChange (page: number): void {
-    this.currPage = page
-    this.getTickets()
-  }
-
-  cancelTicket (ticketId: string): void {
-    this.ticketService.cancelTicketByTheater(ticketId).subscribe({
+    if (!confirmed) return
+    this.cancelling.set(row.id)
+    this.ticketService.cancelTicketByTheater(row.id).subscribe({
       next: () => {
-        const ticketIdx = this.tickets.findIndex(tkt => tkt._id === ticketId)
-        this.tickets = [
-          ...this.tickets.slice(0, ticketIdx),
-          { ...this.tickets[ticketIdx], isCancelled: true, cancelledBy: 'Theater' },
-          ...this.tickets.slice(ticketIdx + 1)
-        ]
-      }
+        this.cancelling.set(null)
+        this.rows.update(rows => rows.map(r => r.id === row.id ? { ...r, status: 'cancelled', cancelledBy: 'Theater' } : r))
+        this.toast.success('Ticket cancelled', `${row.customer} has been refunded.`)
+      },
+      error: () => { this.cancelling.set(null) }
     })
   }
 }

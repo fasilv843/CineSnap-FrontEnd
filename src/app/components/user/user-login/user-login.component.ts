@@ -7,14 +7,14 @@ import { type IApiUserAuthRes } from 'src/app/models/users'
 import { emailValidators, passwordValidators } from 'src/app/shared/valiators'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
-import { AuthShellComponent } from '../auth/auth-shell.component'
+import { AuthShellComponent } from 'src/app/shared/ui/auth-shell.component'
 import { GoogleButtonComponent } from '../auth/google-button.component'
 import { connectGoogleSignIn, injectStartSession } from '../auth/user-session'
 
 @Component({
   selector: 'app-user-login',
   templateUrl: './user-login.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager, // reactive-form validity is read straight from the controls
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, ButtonDirective, FieldErrorComponent, AuthShellComponent, GoogleButtonComponent]
 })
 export class UserLoginComponent {

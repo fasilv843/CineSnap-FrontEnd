@@ -33,7 +33,7 @@
     } @else if (theaters.value() === undefined) {
       <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list" aria-label="Loading theaters">
         @for (i of skeletons; track i) {
-          <li class="card h-44 animate-pulse bg-muted"></li>
+          <li class="skeleton h-44 rounded-card"></li>
         }
       </ul>
     } @else if (visibleTheaters().length > 0) {

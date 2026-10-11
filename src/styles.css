@@ -194,6 +194,74 @@
   color: var(--color-secondary-foreground);
 }
 
+/*
+  Loaders, used for every API wait:
+    skeleton  placeholder block with the shape of the content that is loading (size it with w-/h- utilities)
+    spinner   small rotating ring for buttons and inline waits; inherits the text color, size with size-*
+*/
+@utility skeleton {
+  display: block;
+  border-radius: var(--radius-control);
+  background: linear-gradient(90deg,
+    var(--background-color-muted) 25%,
+    color-mix(in srgb, var(--background-color-muted) 55%, var(--background-color-surface)) 50%,
+    var(--background-color-muted) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@utility spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 9999px;
+  animation: spinner-turn 0.7s linear infinite;
+}
+
+/* Status pill: <span class="status-pill" data-tone="success">Approved</span>; tones primary | success | warning | danger, none = neutral */
+@utility status-pill {
+  display: inline-block;
+  padding: 0.125rem 0.625rem;
+  border-radius: 9999px;
+  background-color: var(--background-color-muted);
+  color: var(--text-color-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &[data-tone='primary'] {
+    background-color: color-mix(in srgb, var(--color-primary) 15%, transparent);
+    color: var(--color-primary);
+  }
+
+  &[data-tone='success'] {
+    background-color: color-mix(in srgb, var(--color-success) 15%, transparent);
+    color: var(--color-success);
+  }
+
+  &[data-tone='warning'] {
+    background-color: color-mix(in srgb, var(--color-warning) 18%, transparent);
+    color: var(--text-color-default);
+  }
+
+  &[data-tone='danger'] {
+    background-color: color-mix(in srgb, var(--color-danger) 12%, transparent);
+    color: var(--color-danger);
+  }
+}
+
+@keyframes skeleton-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+@keyframes spinner-turn {
+  to { transform: rotate(360deg); }
+}
+
 @layer base {
   /* Tailwind v4 defaults borders to currentcolor; keep the v3 look with the theme border */
   *,
@@ -387,10 +455,12 @@ iframe.razorpay-checkout-frame {
     border-bottom: none;
   }
 
+  /* Label on the left; the cell's lines (text, then secondary spans) stack on the right */
   .data-table td {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 1rem;
+    align-items: start;
     padding: 0.375rem 0;
     border: none;
     text-align: right;
@@ -398,10 +468,15 @@ iframe.razorpay-checkout-frame {
 
   .data-table td[data-label]::before {
     content: attr(data-label);
-    flex-shrink: 0;
+    grid-row: span 3;
     color: var(--text-color-muted);
     font-size: 0.8125rem;
     text-align: left;
+  }
+
+  .data-table td[data-label] > * {
+    grid-column: 2;
+    justify-self: end;
   }
 
   /* A cell without a label (e.g. the movie heading) spans the card width */

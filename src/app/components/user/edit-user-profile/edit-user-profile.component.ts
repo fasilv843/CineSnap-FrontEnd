@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core'
+import { toSignal } from '@angular/core/rxjs-interop'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { map } from 'rxjs'
 import { Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { dateToString } from 'src/app/helpers/date'
@@ -16,7 +18,7 @@ import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 import { selectCoords } from 'src/app/states/coords/coords.selector'
 import { saveUserOnStore } from 'src/app/states/user/user.actions'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
-import { ProfileDpComponent } from '../../common/profile-dp/profile-dp.component'
+import { PhotoPickerComponent } from 'src/app/shared/ui/photo-picker.component'
 import { UserNavComponent } from '../user-nav/user-nav.component'
 
 function text (validators = requiredValidator): FormControl<string> {
@@ -27,8 +29,8 @@ function text (validators = requiredValidator): FormControl<string> {
   selector: 'app-edit-user-profile',
   templateUrl: './edit-user-profile.component.html',
   styleUrl: './edit-user-profile.component.css',
-  changeDetection: ChangeDetectionStrategy.Eager, // reactive-form validity is read straight from the controls
-  imports: [UserNavComponent, ProfileDpComponent, ReactiveFormsModule, RouterLink, ButtonDirective, FieldErrorComponent]
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [UserNavComponent, PhotoPickerComponent, ReactiveFormsModule, RouterLink, ButtonDirective, FieldErrorComponent]
 })
 export class EditUserProfileComponent {
   private readonly userService = inject(UserService)
@@ -64,6 +66,7 @@ export class EditUserProfileComponent {
   }
 
   protected readonly submitted = signal(false)
+  protected readonly formInvalid = toSignal(this.form.statusChanges.pipe(map(status => status === 'INVALID')), { initialValue: this.form.invalid })
   protected readonly saving = signal(false)
   protected readonly locating = signal<'idle' | 'busy' | 'failed'>('idle')
 
@@ -153,21 +156,33 @@ export class EditUserProfileComponent {
 
   // Photo ----------------------------------------------------------------------
 
+  protected readonly photoBusy = signal(false)
+
   protected uploadPhoto (image: Blob): void {
     const user = this.user()
     if (user === null) return
     const formData = new FormData()
     formData.append('image', image, `${user.name}.jpg`)
-    this.userService.updateUserProfile(user._id, formData).subscribe(res => {
-      if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+    this.photoBusy.set(true)
+    this.userService.updateUserProfile(user._id, formData).subscribe({
+      next: res => {
+        this.photoBusy.set(false)
+        if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+      },
+      error: () => { this.photoBusy.set(false) }
     })
   }
 
   protected removePhoto (): void {
     const user = this.user()
     if (user === null) return
-    this.userService.deleteUserProfile(user._id).subscribe(res => {
-      if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+    this.photoBusy.set(true)
+    this.userService.deleteUserProfile(user._id).subscribe({
+      next: res => {
+        this.photoBusy.set(false)
+        if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
+      },
+      error: () => { this.photoBusy.set(false) }
     })
   }
 }

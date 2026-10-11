@@ -14,7 +14,6 @@ export class TicketService {
   ) { }
 
   bookTicket (ticketReqs: ITicketReqs): Observable<IApiTempTicketRes> {
-    console.log(ticketReqs, 'ticket data that passed to backend')
     return this.http.post<IApiTempTicketRes>('user/book/ticket', { ticketReqs })
   }
 

@@ -26,7 +26,6 @@ export class AuthService {
       })
     }
 
-    console.log(refreshToken, 'refresh token from get Access token service')
     // const headers = new HttpHeaders({
     //   Authorization: `Bearer ${refreshToken}`,
     //   'Bypass-Interceptor': 'true'

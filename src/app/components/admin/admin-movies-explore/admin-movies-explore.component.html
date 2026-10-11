@@ -1,30 +1,34 @@
-<app-admin-nav></app-admin-nav>
+<main class="mx-auto max-w-6xl px-4 py-6 sm:px-8 lg:py-10">
+  <a routerLink="/admin/movies/tmdb" class="inline-flex items-center gap-1 rounded-control text-sm font-semibold text-muted hover:text-default">
+    <cs-icon name="chevronLeft" class="size-4" /> All languages
+  </a>
+  <cs-page-header class="mt-2" [heading]="languageName() + ' movies'" description="Newest releases on TMDB first." />
 
-<div class="container mx-auto p-4">
-  <div class="text-lg font-bold mb-3">
-    <h3>Movies</h3>
-  </div>
+  <section class="mt-8" aria-label="Movies" [attr.aria-busy]="isLoading()">
+    @if (isLoading() && movies().length === 0) {
+      <ul class="movie-grid" role="list">
+        @for (i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]; track i) { <li><div class="skeleton aspect-[2/3] rounded-card"></div></li> }
+      </ul>
+    } @else if (movies().length > 0) {
+      <ul class="movie-grid" role="list">
+        @for (movie of movies(); track movie.tmdbId) {
+          <li><app-tmdb-movie-card [movie]="movie" /></li>
+        }
+      </ul>
+    } @else if (!error()) {
+      <div class="card"><cs-state-panel [heading]="'No ' + languageName() + ' movies on TMDB'" /></div>
+    }
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-    @for (movie of movies; track movie) {
-      <!-- For larger screens, use the adjusted design -->
-      <div class="bg-amber-800 overflow-hidden relative">
-        <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster"
-          class="w-full h-80 object-cover" />
-          <div class="bg-gray-900 text-white text-center p-2">
-            <p class="text-base font-medium line-clamp-1">{{ movie.title }}</p>
-            <p class="text-sm">- {{ movie.release_date | date: 'yyyy' }}</p>
-          </div>
-          <div class="bottom-0 left-0 right-0 p-2 bg-amber-400 text-gray-800 text-center cursor-pointer" (click)="addMovie(movie)" >
-            {{ isMovieAlreadyExist(movie.tmdbId) ? 'Update' : 'Add' }}
-          </div>
-        </div>
-      }
-    </div>
-    @if (page < 5) {
-      <div (click)="loadMore()"
-        class="grid grid-cols-1 text-center text-blue-600 font-bold py-7 cursor-pointer">
-        <h5>Load More...</h5>
+    @if (error()) {
+      <div class="card mt-6"><cs-state-panel heading="Movies couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="retry()" /></div>
+    }
+
+    @if (movies().length > 0 && !isComplete()) {
+      <div class="mt-8 flex justify-center">
+        <button csButton variant="secondary" type="button" (csInView)="loadMore()" (click)="loadMore()" [disabled]="!canLoadMore()">
+          @if (isLoading()) { <span class="spinner"></span> Loading… } @else { Load more }
+        </button>
       </div>
     }
-  </div>
+  </section>
+</main>

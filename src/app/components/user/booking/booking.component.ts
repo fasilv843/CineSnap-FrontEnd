@@ -1,247 +1,163 @@
-/* eslint-disable no-var */
-/* eslint-disable quote-props */
-/* eslint-disable @typescript-eslint/quotes */
-/* eslint-disable @typescript-eslint/semi */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, inject, effect, Injector } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { getLanguage } from 'src/app/helpers/movie';
-import { formatTime } from 'src/app/helpers/timer';
-import { ICSMovieRes } from 'src/app/models/movie';
-import { ITheaterRes } from 'src/app/models/theater';
-import { ITempTicketRes, ITicketSeat } from 'src/app/models/ticket';
-import { IUserRes } from 'src/app/models/users';
-import { TicketService } from 'src/app/services/ticket.service';
-import { TICKET_EXPIRE_TIME } from 'src/app/shared/constants';
-import { selectUserDetails } from 'src/app/states/user/user.selector';
-import { IRazorpayRes } from 'src/app/models/common';
-import { RazorpayService } from 'src/app/services/razorpay.service';
-import { Subscription } from 'rxjs';
-import { CouponService } from 'src/app/services/coupon.service';
-import { ICouponRes } from 'src/app/models/coupon';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core'
+import { rxResource, toSignal } from '@angular/core/rxjs-interop'
+import { DatePipe } from '@angular/common'
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'
+import { Store } from '@ngrx/store'
+import { interval, map, of } from 'rxjs'
+import { toMovieCard } from 'src/app/helpers/movie-card'
+import { formatTime } from 'src/app/helpers/timer'
+import { type ICouponRes } from 'src/app/models/coupon'
+import { type ITempTicketView, type ITicketSeat } from 'src/app/models/ticket'
+import { CouponService } from 'src/app/services/coupon.service'
 import { ModalService } from 'src/app/services/modal.service'
-import { CouponModalComponent } from '../coupon-modal/coupon-modal.component';
-import { fetchUserData } from 'src/app/states/user/user.actions';
-import { UserNavComponent } from '../user-nav/user-nav.component';
-import { FormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common';
+import { RazorpayService } from 'src/app/services/razorpay.service'
+import { TicketService } from 'src/app/services/ticket.service'
+import { TICKET_EXPIRE_TIME } from 'src/app/shared/constants'
+import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
+import { adjustUserWallet } from 'src/app/states/user/user.actions'
+import { selectUserDetails } from 'src/app/states/user/user.selector'
+import { CouponModalComponent } from '../coupon-modal/coupon-modal.component'
+import { UserNavComponent } from '../user-nav/user-nav.component'
+import { valueOf } from 'src/app/helpers/resource'
 
-// declare var Razorpay: any;
+type PaymentMethod = 'Razorpay' | 'Wallet'
+
+/** Ticket price before the booking fee; coupons only discount this part */
+function ticketShare (ticket: ITempTicketView): number {
+  return [ticket.diamondSeats, ticket.goldSeats, ticket.silverSeats]
+    .reduce((sum, line) => sum + (line !== undefined ? line.seats.length * line.singlePrice : 0), 0)
+}
+
 @Component({
-    selector: 'app-booking',
-    templateUrl: './booking.component.html',
-    styleUrls: ['./booking.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [UserNavComponent, FormsModule, DatePipe]
+  selector: 'app-booking',
+  templateUrl: './booking.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [UserNavComponent, RouterLink, DatePipe, ButtonDirective, StatePanelComponent]
 })
-export class BookingComponent implements OnInit, OnDestroy {
-  private readonly ticketService = inject(TicketService);
-  private readonly injector = inject(Injector);
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly store = inject(Store);
-  private readonly razorpayService = inject(RazorpayService);
-  private readonly couponService = inject(CouponService);
-  private readonly modalService = inject(ModalService);
+export class BookingComponent {
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly store = inject(Store)
+  private readonly ticketService = inject(TicketService)
+  private readonly couponService = inject(CouponService)
+  private readonly razorpayService = inject(RazorpayService)
+  private readonly modalService = inject(ModalService)
 
-  userDetails = this.store.selectSignal(selectUserDetails)
-  user!: IUserRes
-  movie!: ICSMovieRes
-  tempTicket!: ITempTicketRes
-  ticketId = ''
-  formattedTime = '10:00'
-  remainingTime = 0
-  theater!: ITheaterRes
-  seats: string[] = []
-  coupons: ICouponRes[] = []
-  appliedCouponId = ''
-  appliedCoupon: ICouponRes | undefined
-  suggestionCoupon!: ICouponRes
-  paymentMethod: 'Razorpay' | 'Wallet' = 'Razorpay'
-  useWallet = false
+  protected readonly user = this.store.selectSignal(selectUserDetails)
+  private readonly params = toSignal(this.route.paramMap, { requireSync: true })
+  protected readonly ticketId = computed(() => this.params().get('ticketId') ?? '')
 
-  diamondSeats?: ITicketSeat
-  goldSeats?: ITicketSeat
-  silverSeats?: ITicketSeat
+  protected readonly ticket = rxResource({
+    params: () => this.ticketId(),
+    stream: ({ params }) => this.ticketService.getTempTicketData(params).pipe(map(res => res.data as ITempTicketView | null))
+  })
 
-  private readonly paymentResultSubscription: Subscription;
+  protected readonly coupons = rxResource({
+    params: () => ({ userId: this.user()?._id ?? '', ticketId: this.ticketId() }),
+    stream: ({ params }) => params.userId === ''
+      ? of([])
+      : this.couponService.getApplicableCouopns(params.userId, params.ticketId).pipe(map(res => res.data ?? []))
+  })
 
-  getLanguage = getLanguage
+  // Countdown to when the held seats are released
+  private readonly openedAt = Date.now()
+  private readonly now = toSignal(interval(1000).pipe(map(() => Date.now())), { initialValue: Date.now() })
+  private readonly expiresAt = computed(() => {
+    const expireAt = valueOf(this.ticket)?.expireAt
+    // expireAt is when the hold was created; MongoDB's TTL index removes the ticket TICKET_EXPIRE_TIME later
+    const createdAt = expireAt !== undefined ? new Date(expireAt).getTime() : this.openedAt
+    return createdAt + TICKET_EXPIRE_TIME * 1000
+  })
 
-  constructor () {
-    this.paymentResultSubscription = this.razorpayService
-      .getPaymentResultObservable()
-      .subscribe((response: IRazorpayRes | null) => {
-        if (response !== null) {
-        // Payment was successful, handle accordingly
-          console.log('Payment successful from component, confirming ticket');
-          this.confirmTicket()
-        } else {
-        // Payment failed, handle accordingly
-          console.log('Payment failed');
-        }
-      });
+  protected readonly secondsLeft = computed(() => Math.max(0, Math.floor((this.expiresAt() - this.now()) / 1000)))
+  protected readonly timeLeft = computed(() => formatTime(this.secondsLeft()))
+  protected readonly expired = computed(() => valueOf(this.ticket) != null && this.secondsLeft() === 0)
+
+  protected readonly movie = computed(() => {
+    const movie = valueOf(this.ticket)?.movieId
+    return movie != null ? toMovieCard(movie) : null
+  })
+
+  protected readonly lines = computed(() => {
+    const ticket = valueOf(this.ticket)
+    if (ticket == null) return []
+    return [ticket.diamondSeats, ticket.goldSeats, ticket.silverSeats]
+      .filter((line): line is ITicketSeat => line !== undefined && line.seats.length > 0)
+  })
+
+  protected readonly seats = computed(() => this.lines().flatMap(line => line.seats).sort())
+  protected readonly fees = computed(() => this.lines().reduce((sum, line) => sum + line.CSFeePerTicket * line.seats.length, 0))
+
+  protected readonly appliedCoupon = signal<ICouponRes | null>(null)
+  // The first coupon is offered inline; the rest are one tap away
+  protected readonly suggestedCoupon = computed(() => this.appliedCoupon() ?? valueOf(this.coupons)?.[0] ?? null)
+
+  protected readonly discount = computed(() => {
+    const coupon = this.appliedCoupon()
+    const ticket = valueOf(this.ticket)
+    if (coupon === null || ticket == null) return 0
+    const amount = coupon.discountType === 'Fixed Amount' ? coupon.discount : (ticketShare(ticket) / 100) * coupon.discount
+    return Math.round(amount)
+  })
+
+  protected readonly total = computed(() => Math.max(0, (valueOf(this.ticket)?.totalPrice ?? 0) - this.discount()))
+  protected readonly wallet = computed(() => this.user()?.wallet ?? 0)
+  protected readonly walletCovers = computed(() => this.wallet() >= this.total())
+
+  protected readonly method = signal<PaymentMethod>('Razorpay')
+  protected readonly useWallet = signal(false)
+
+  /** What the payer is charged now (by Razorpay, or from the wallet) */
+  protected readonly payable = computed(() => {
+    if (this.walletCovers()) return this.total()
+    return this.useWallet() ? Math.max(0, this.total() - this.wallet()) : this.total()
+  })
+
+  protected readonly paying = signal(false)
+  protected readonly theaterLink = computed(() => {
+    const theaterId = valueOf(this.ticket)?.theaterId?._id
+    return theaterId !== undefined ? ['/user/theater', theaterId] : ['/user/theaters']
+  })
+
+  protected toggleCoupon (coupon: ICouponRes): void {
+    this.appliedCoupon.update(applied => applied?._id === coupon._id ? null : coupon)
   }
 
-  confirmTicket (): void {
-    this.ticketService.confirmTicket(this.ticketId, this.paymentMethod, this.useWallet, this.appliedCoupon?._id).subscribe({
-      next: (res) => {
-        if (res.data !== null) {
-          this.store.dispatch(fetchUserData({ userId: this.user._id }))
-          void this.router.navigate(['/user/show/book/success', res.data._id])
-        }
-      }
-    })
+  protected showAllCoupons (): void {
+    const ref = this.modalService.open(CouponModalComponent)
+    ref.componentInstance.coupons.set(valueOf(this.coupons) ?? [])
+    ref.componentInstance.appliedId.set(this.appliedCoupon()?._id ?? null)
+    ref.result.then((coupon: ICouponRes) => { this.toggleCoupon(coupon) }, () => {})
   }
 
-  toggleUsewallet (): void {
-    this.useWallet = !this.useWallet
-  }
+  protected async pay (): Promise<void> {
+    const user = this.user()
+    if (user === null || this.paying() || this.expired()) return
+    this.paying.set(true)
 
-  ngOnInit (): void {
-    this.route.params.subscribe(params => {
-      this.ticketId = params['ticketId']
-    })
-
-    // Read synchronously (the coupon request below needs the id), then follow wallet updates
-    const currentUser = this.userDetails()
-    if (currentUser !== null) this.user = currentUser
-    effect(() => {
-      const user = this.userDetails()
-      if (user !== null) {
-        this.user = user
-      }
-    }, { injector: this.injector })
-
-    console.log('getting temp ticket with ticketId : ', this.ticketId)
-    this.ticketService.getTempTicketData(this.ticketId).subscribe({
-      next: (res) => {
-        if (res.data != null) {
-          this.tempTicket = res.data
-          this.movie = res.data.movieId
-          this.theater = res.data.theaterId
-          if (res.data.diamondSeats !== undefined) {
-            this.diamondSeats = res.data.diamondSeats
-            this.seats = [...this.seats, ...res.data.diamondSeats.seats]
-          }
-          if (res.data.goldSeats !== undefined) {
-            this.goldSeats = res.data.goldSeats
-            this.seats = [...this.seats, ...res.data.goldSeats.seats]
-          }
-          if (res.data.silverSeats !== undefined) {
-            this.silverSeats = res.data.silverSeats
-            this.seats = [...this.seats, ...res.data.silverSeats.seats]
-          }
-          this.seats = this.seats.sort()
-        }
-      }
-    })
-
-    this.couponService.getApplicableCouopns(this.user._id, this.ticketId).subscribe({
-      next: (res) => {
-        if (res.data !== null) {
-          this.coupons = res.data
-          this.suggestionCoupon = this.coupons[0]
-        }
-      }
-    })
-
-    this.startTimer()
-  }
-
-  ngOnDestroy (): void {
-    // Unsubscribe to avoid memory leaks
-    this.paymentResultSubscription.unsubscribe();
-  }
-
-  showCouponsModal (): void {
-    console.warn('show more button clicked, but didnt implemented');
-    const modalRef = this.modalService.open(CouponModalComponent, { static: true })
-    modalRef.componentInstance.coupons = this.coupons
-    modalRef.componentInstance.appliedCouponId = this.appliedCouponId
-
-    void modalRef.result.then(
-      (result: ICouponRes) => {
-        if (result._id === this.appliedCouponId) {
-          this.appliedCouponId = ''
-          this.appliedCoupon = undefined
-        } else {
-          console.log(result, 'result of coupon modal')
-          this.appliedCouponId = result._id
-          this.suggestionCoupon = result
-          this.appliedCoupon = this.suggestionCoupon
-        }
-      },
-      (reason) => {
-        console.log('Modal dismissed with reason:', reason)
-      }
-    )
-  }
-
-  calculateTheaterShare (ticket: ITempTicketRes): number {
-    let price = 0
-    if (ticket.diamondSeats !== undefined) {
-      price += ticket.diamondSeats.seats.length * ticket.diamondSeats.singlePrice
-    }
-    if (ticket.goldSeats !== undefined) {
-      price += ticket.goldSeats.seats.length * ticket.goldSeats.singlePrice
-    }
-    if (ticket.silverSeats !== undefined) {
-      price += ticket.silverSeats.seats.length * ticket.silverSeats.singlePrice
-    }
-    return price
-  }
-
-  getDiscountedAmt (appliedCoupon: ICouponRes | undefined): number {
-    if (appliedCoupon === undefined) return 0
-    if (appliedCoupon.discountType === 'Fixed Amount') {
-      return appliedCoupon.discount
-    } else if (appliedCoupon.discountType === 'Percentage') {
-      const totalTicketPrice = this.calculateTheaterShare(this.tempTicket)
-      return (totalTicketPrice / 100) * appliedCoupon.discount
-    }
-    return 0 // never reaches here, discountType only can be 2 types
-  }
-
-  applyCoupon (suggestionCoupon: ICouponRes): void {
-    if (suggestionCoupon._id === this.appliedCouponId) {
-      this.appliedCouponId = ''
-      this.appliedCoupon = undefined
-    } else {
-      this.appliedCouponId = suggestionCoupon._id
-      this.appliedCoupon = suggestionCoupon
-    }
-  }
-
-  getPayAmount (): number {
-    const price = this.tempTicket.totalPrice - this.getDiscountedAmt(this.appliedCoupon)
-    return this.useWallet ? price - this.user.wallet : price
-  }
-
-  payForTicket (amount: number): void {
-    if (this.paymentMethod === 'Razorpay') {
-      if (this.useWallet) amount -= this.user.wallet
-      this.razorpayService.initiateRazorpayPayment(amount, {
-        name: this.user.name,
-        email: this.user.email,
-        mobile: (this.user.mobile !== undefined) ? `${this.user.mobile}` : ''
+    const payWithWallet = this.walletCovers() && this.method() === 'Wallet'
+    if (!payWithWallet) {
+      const payment = await this.razorpayService.pay(this.payable(), {
+        name: user.name,
+        email: user.email,
+        mobile: user.mobile !== undefined ? `${user.mobile}` : ''
       })
-    } else if (this.paymentMethod === 'Wallet') {
-      this.confirmTicket()
+      if (payment === null) { this.paying.set(false); return } // checkout closed
     }
-  }
 
-  startTimer (): void {
-    this.remainingTime = TICKET_EXPIRE_TIME;
-
-    const timer = setInterval(() => {
-      this.remainingTime--;
-
-      if (this.remainingTime <= 0) {
-        clearInterval(timer)
-      }
-      this.formattedTime = formatTime(this.remainingTime)
-    }, 1000); // Update every second
+    const method: PaymentMethod = payWithWallet ? 'Wallet' : 'Razorpay'
+    const partWallet = !this.walletCovers() && this.useWallet()
+    this.ticketService.confirmTicket(this.ticketId(), method, partWallet, this.appliedCoupon()?._id).subscribe({
+      next: res => {
+        if (res.data === null) { this.paying.set(false); return }
+        // Mirror the backend's wallet debit: a wallet payment takes the full ticket price (it ignores the coupon),
+        // part-paying takes the whole balance (GET user/get/:id crashes the backend, so the user isn't refetched)
+        const walletUsed = method === 'Wallet' ? (valueOf(this.ticket)?.totalPrice ?? 0) : partWallet ? user.wallet : 0
+        if (walletUsed > 0) this.store.dispatch(adjustUserWallet({ by: -walletUsed }))
+        void this.router.navigate(['/user/show/book/success', res.data._id], { replaceUrl: true })
+      },
+      error: () => { this.paying.set(false) }
+    })
   }
 }

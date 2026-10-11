@@ -9,6 +9,7 @@ import { LocationService } from 'src/app/services/location.service'
 import { LogoComponent } from 'src/app/shared/ui/logo.component'
 import { ThemeToggleComponent } from 'src/app/shared/ui/theme-toggle.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
+import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
 
 interface NavLink { label: string, path: string, icon: string }
 
@@ -25,7 +26,7 @@ const ICONS = {
   templateUrl: './user-nav.component.html',
   styleUrl: './user-nav.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, CdkMenu, CdkMenuItem, CdkMenuTrigger, LogoComponent, ThemeToggleComponent, ButtonDirective]
+  imports: [RouterLink, RouterLinkActive, CdkMenu, CdkMenuItem, CdkMenuTrigger, LogoComponent, ThemeToggleComponent, ButtonDirective, AvatarComponent]
 })
 export class UserNavComponent {
   private readonly router = inject(Router)
@@ -37,7 +38,6 @@ export class UserNavComponent {
     return pic !== undefined && pic !== '' ? imagesFolderPath + pic : null
   })
 
-  protected readonly initial = computed(() => this.user()?.name.charAt(0).toUpperCase() ?? '')
   protected readonly icons = ICONS
 
   protected readonly links: NavLink[] = [

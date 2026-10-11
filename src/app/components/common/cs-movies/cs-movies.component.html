@@ -1,73 +1,104 @@
+<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+  <p class="text-muted" aria-live="polite">
+    @if (query().search) {
+      Results for “{{ query().search }}”
+    } @else if (admin()) {
+      Every movie in CineSnap, including removed ones
+    } @else {
+      Movies you can schedule shows for
+    }
+  </p>
+  <label class="search relative block w-full sm:w-80">
+    <span class="sr-only">Search movies by title</span>
+    <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-subtle" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
+    </svg>
+    <input type="search" class="input pl-10" placeholder="Search by title" autocomplete="off"
+      [value]="searchText()" (input)="searchText.set($any($event.target).value)" />
+  </label>
+</div>
 
-<div class="flex">
-  <!-- Filter Sidebar -->
-  @if (isLargeScreen || showFilter) {
-    <div class="flex" [ngClass]="{ 'fixed z-30 backdrop': showFilter }">
-      <app-filter class="h-screen" (filterApplied)="filterMovies($event)" [isAdmin]="isAdmin"></app-filter>
-      <div>
-        @if (showFilter) {
-          <button (click)="toggleFilter()" class="text-white bg-transparent z-50 px-4 py-2 rounded-sm hover:bg-gray-100 align-top">X</button>
-        }
-      </div>
+@if (filterOptions.hasValue() && filterOptions.value(); as options) {
+  <section aria-label="Filters" class="mt-6 space-y-3">
+    <div class="filter-row" role="group" aria-label="Languages">
+      <span class="filter-label">Language</span>
+      @for (language of options.languages; track language.value) {
+        <button type="button" class="chip" [attr.aria-pressed]="query().languages.includes(language.value)"
+          (click)="toggleLanguage(language.value)">{{ language.label }}</button>
+      }
+    </div>
+    <div class="filter-row" role="group" aria-label="Genres">
+      <span class="filter-label">Genre</span>
+      @for (genre of options.genres; track genre.value) {
+        <button type="button" class="chip" [attr.aria-pressed]="query().genres.includes(genre.value)"
+          (click)="toggleGenre(genre.value)">{{ genre.label }}</button>
+      }
+    </div>
+    @if (hasFilters()) {
+      <button csButton variant="link" type="button" (click)="clearFilters()" class="text-sm">Clear search and filters</button>
+    }
+  </section>
+} @else if (filterOptions.isLoading()) {
+  <div class="mt-6 space-y-3">
+    <div class="skeleton h-9"></div>
+    <div class="skeleton h-9"></div>
+  </div>
+}
+
+<section aria-label="Movie results" class="mt-8" [attr.aria-busy]="isLoading()">
+  @if (isFirstLoad()) {
+    <ul class="movie-grid" role="list">
+      @for (i of skeletons; track i) {
+        <li><div class="skeleton aspect-[2/3] rounded-card"></div></li>
+      }
+    </ul>
+  } @else if (movies().length > 0) {
+    <ul class="movie-grid" role="list" [class.is-refreshing]="isRefreshing()">
+      @for (movie of movies(); track movie.card.id) {
+        <li>
+          <figure>
+            <div class="relative">
+              <img [src]="movie.card.poster" [alt]="movie.card.title + ' poster'" class="aspect-[2/3] w-full rounded-card bg-muted object-cover"
+                [class.opacity-40]="movie.removed" loading="lazy" />
+              @if (movie.removed) {
+                <span class="absolute left-2 top-2 rounded-full bg-surface shadow-raised"><span class="status-pill" data-tone="danger">Removed</span></span>
+              }
+            </div>
+            <figcaption class="mt-2">
+              <span class="line-clamp-1 font-semibold">{{ movie.card.title }}</span>
+              <span class="line-clamp-2 text-sm text-muted">{{ movie.card.meta }}</span>
+            </figcaption>
+          </figure>
+          @if (admin()) {
+            <button csButton size="sm" type="button" class="mt-2 w-full" [variant]="movie.removed ? 'secondary' : 'danger'"
+              [disabled]="busy() === movie.card.id" (click)="toggleRemoved(movie)">
+              @if (busy() === movie.card.id) { <span class="spinner"></span> }
+              {{ movie.removed ? 'Restore' : 'Remove' }}<span class="sr-only"> {{ movie.card.title }}</span>
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  } @else if (!error()) {
+    <div class="card">
+      <cs-state-panel [heading]="query().search ? 'No movies called “' + query().search + '”' : 'No movies match these filters'"
+        [message]="query().search ? 'Check the spelling, or clear the search.' : 'Turn off a language or genre to see more.'">
+        <button csButton variant="secondary" size="sm" type="button" (click)="clearFilters()">Clear search and filters</button>
+      </cs-state-panel>
     </div>
   }
 
-
-
-  <div class="container mx-auto overflow-y-scroll h-screen flex-1">
-    <div class="flex justify-between">
-      <div class="hidden lg:block"></div>
-      @if (!isLargeScreen) {
-        <button (click)="toggleFilter()">
-          <i class="fas fa-bars text-amber-500 text-lg"></i>
-        </button>
-      }
-      @if (!isAdmin) {
-        <app-search class="justify-end" (searchEvent)="searchCineSnapMovies($event)"></app-search>
-      }
-      @if (isAdmin) {
-        <app-admin-movies-search class="bg-white w-full justify-end" (search)="searchCineSnapMovies($event)"></app-admin-movies-search>
-      }
+  @if (error()) {
+    <div class="card mt-6">
+      <cs-state-panel heading="Movies couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="retry()" />
     </div>
+  }
 
-    <div class="font-bold mb-3 flex justify-between">
-      <h3 class="text-lg ">Movies</h3>
-      @if (showSpellingError) {
-        <p style="color: red;" class="pr-10">This movie is currently not available in CineSnap</p>
-      }
+  @if (movies().length > 0 && !isComplete()) {
+    <div class="mt-8 flex justify-center">
+      <button csButton variant="secondary" type="button" (csInView)="loadMore()" (click)="loadMore()" [disabled]="!canLoadMore()">
+        @if (isLoading()) { <span class="spinner"></span> Loading… } @else { Load more movies }
+      </button>
     </div>
-
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-20">
-      @for (movie of movies; track movie) {
-        <!-- For larger screens, use the adjusted design -->
-        <div class="bg-amber-800 overflow-hidden relative">
-          <img src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}" alt="Movie Poster" loading="lazy"
-            class="w-full h-80 object-cover" />
-            @if (isAdmin) {
-              @if (!movie.isDeleted) {
-                <button (click)="deleteMovie(movie._id, 'Delete')" class="absolute top-2 right-2 flex items-center justify-center bg-red-500 text-white p-1 rounded-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                  </svg>
-                </button>
-              }
-              @if (movie.isDeleted) {
-                <button (click)="deleteMovie(movie._id, 'Add')" class="absolute top-2 right-2 flex items-center justify-center bg-green-500 text-white p-1 rounded-full">
-                  Add
-                </button>
-              }
-            }
-            <div class="bg-gray-900 text-white text-center p-2">
-              <p class="text-base font-medium line-clamp-1">{{ movie.title }}</p>
-              <p class="text-sm">{{ movie.release_date | date: 'yyyy' }}</p>
-            </div>
-          </div>
-        }
-
-      </div>
-      @if (isLoading) {
-        <app-spinner class="items-center my-6"></app-spinner>
-      }
-    </div>
-  </div>
+  }
+</section>

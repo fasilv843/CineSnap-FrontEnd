@@ -13,6 +13,7 @@ import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { selectCoords } from 'src/app/states/coords/coords.selector'
 import { selectUserDetails } from 'src/app/states/user/user.selector'
 import { UserNavComponent } from '../user-nav/user-nav.component'
+import { valueOf } from 'src/app/helpers/resource'
 
 const HERO_INTERVAL_MS = 7000
 
@@ -72,7 +73,7 @@ export class UserHomeComponent {
 
   protected readonly heroIndex = signal(0)
   protected readonly hero = computed(() => {
-    const movies = this.featured.value() ?? []
+    const movies = valueOf(this.featured) ?? []
     return movies.length > 0 ? movies[this.heroIndex() % movies.length] : null
   })
 
@@ -82,7 +83,7 @@ export class UserHomeComponent {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (!reducedMotion) {
       const timer = setInterval(() => {
-        const count = this.featured.value()?.length ?? 0
+        const count = valueOf(this.featured)?.length ?? 0
         if (!this.heroPaused && count > 1) this.heroIndex.update(i => (i + 1) % count)
       }, HERO_INTERVAL_MS)
       inject(DestroyRef).onDestroy(() => { clearInterval(timer) })

@@ -24,7 +24,7 @@
   </header>
 
   <!-- Filters: chips toggle on and off; within a group any match counts -->
-  @if (filterOptions.value(); as options) {
+  @if (filterOptions.hasValue() && filterOptions.value(); as options) {
     <section aria-label="Filters" class="mt-6 space-y-3">
       <div class="filter-row" role="group" aria-label="Languages">
         <span class="filter-label">Language</span>
@@ -51,7 +51,7 @@
     @if (isFirstLoad()) {
       <ul class="movie-grid" role="list">
         @for (i of skeletons; track i) {
-          <li><div class="aspect-[2/3] animate-pulse rounded-card bg-muted"></div></li>
+          <li><div class="skeleton aspect-[2/3] rounded-card"></div></li>
         }
       </ul>
     } @else if (movies().length > 0) {

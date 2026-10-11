@@ -53,7 +53,7 @@
     </p>
   </cs-auth-shell>
 } @else {
-  <cs-auth-shell heading="Check your email" [subheading]="'Enter the 4-digit code we sent to ' + details.controls.email.value + '.'">
+  <cs-auth-shell heading="Check your email" [subheading]="'Enter the 4-digit code we sent to ' + sentTo() + '.'">
     <form (submit)="$event.preventDefault(); verify()" novalidate class="space-y-4">
       <div>
         <label for="otp" class="mb-1.5 block text-sm font-semibold">Verification code</label>
