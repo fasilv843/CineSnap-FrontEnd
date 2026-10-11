@@ -1,0 +1,64 @@
+<main class="mx-auto max-w-5xl px-4 py-6 sm:px-8 lg:py-10">
+  @if (theater(); as t) {
+    <div class="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+      <!-- Identity -->
+      <section class="card p-6" aria-labelledby="theater-name">
+        <div class="flex flex-wrap items-center gap-5">
+          <cs-avatar [name]="t.name" [src]="avatarUrl()" size="lg" class="rounded-full border-2 border-accent" />
+          <div class="min-w-0 flex-1">
+            <h1 id="theater-name" class="truncate font-display text-4xl font-extrabold tracking-tight">{{ t.name }}</h1>
+            <p class="truncate text-muted">{{ t.email }}</p>
+          </div>
+          <a csButton variant="secondary" size="sm" [routerLink]="['/theater/profile/edit', t._id]">Edit profile</a>
+        </div>
+
+        <dl class="mt-6 grid gap-x-6 gap-y-4 border-t border-default pt-6 sm:grid-cols-2">
+          <div>
+            <dt class="text-sm text-muted">Mobile</dt>
+            <dd class="font-medium">{{ mobile() ?? 'Not added' }}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-muted">Licence number</dt>
+            <dd class="font-medium">{{ t.liscenceId }}</dd>
+          </div>
+          <div class="sm:col-span-2">
+            <dt class="text-sm text-muted">Address</dt>
+            <dd class="font-medium">{{ address() ?? 'Not added' }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Wallet -->
+      <section class="card flex flex-col p-6" aria-labelledby="wallet-heading">
+        <h2 id="wallet-heading" class="text-sm font-semibold text-muted">Wallet balance</h2>
+        <p class="mt-1 font-display text-6xl font-extrabold tracking-tight text-accent">₹{{ t.wallet }}</p>
+        <p class="mt-2 text-sm text-muted">Your share of every ticket is paid in here. Refunds for cancelled tickets come out of it.</p>
+        <div class="mt-auto flex flex-wrap gap-2 pt-6">
+          <button csButton type="button" (click)="addMoney()">Add money</button>
+          <a csButton variant="secondary" routerLink="/theater/profile/wallet-history">Wallet history</a>
+        </div>
+      </section>
+    </div>
+
+    <nav aria-label="Manage your theater" class="mt-6 grid gap-3 sm:grid-cols-3">
+      <a [routerLink]="['/theater/tickets', t._id]" class="profile-link card">
+        <span class="font-semibold">Tickets</span>
+        <span class="text-sm text-muted">Every booking, with cancellations</span>
+      </a>
+      <a routerLink="/theater/messages" class="profile-link card">
+        <span class="font-semibold">Messages</span>
+        <span class="text-sm text-muted">Questions from movie-goers</span>
+      </a>
+      <a routerLink="/theater/coupons" class="profile-link card">
+        <span class="font-semibold">Coupons</span>
+        <span class="text-sm text-muted">Discounts for your shows</span>
+      </a>
+    </nav>
+
+    <div class="mt-8 border-t border-default pt-6">
+      <button csButton variant="danger" type="button" (click)="logout()">Log out</button>
+    </div>
+  } @else {
+    <div class="skeleton h-64" aria-label="Loading profile"></div>
+  }
+</main>

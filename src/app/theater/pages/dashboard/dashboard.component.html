@@ -1,0 +1,63 @@
+<main class="mx-auto max-w-6xl px-4 py-6 sm:px-8 lg:py-10">
+  <cs-page-header [heading]="theater()?.name ?? 'Dashboard'" [description]="'Today is ' + (today | date: 'EEEE d MMMM')">
+    <a csButton routerLink="/theater/shows">Add a show</a>
+    <a csButton variant="secondary" routerLink="/theater/coupons">Coupons</a>
+  </cs-page-header>
+
+  <section class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Key figures">
+    <cs-stat-tile label="Wallet balance" [value]="wallet()" [highlight]="true" hint="Your share of every ticket lands here" />
+    <cs-stat-tile label="Revenue in this chart" [value]="revenueTotal()" [loading]="revenue.isLoading()" [error]="!!revenue.error()" (retried)="revenue.reload()" />
+    <cs-stat-tile label="Shows today" [value]="todayCount()" [hint]="soldToday() + ' seats sold so far'"
+      [loading]="shows.isLoading()" [error]="!!shows.error()" (retried)="shows.reload()" />
+    <cs-stat-tile label="Tickets sold" [value]="ticketTotal()" hint="All time"
+      [loading]="ticketCount.isLoading()" [error]="!!ticketCount.error()" (retried)="ticketCount.reload()" />
+  </section>
+
+  <div class="mt-6 grid items-start gap-6 lg:grid-cols-[1fr_22rem]">
+    <section class="card p-5" aria-labelledby="revenue-heading">
+      <h2 id="revenue-heading" class="text-lg font-semibold">Ticket revenue</h2>
+      @if (revenue.error()) {
+        <cs-state-panel heading="Revenue couldn't be loaded" [retry]="true" (retried)="revenue.reload()" />
+      } @else if (revenue.isLoading()) {
+        <div class="skeleton mt-4 h-72"></div>
+      } @else if (!hasRevenue()) {
+        <cs-state-panel heading="No revenue yet" message="Once tickets sell, your earnings show up here." />
+      } @else if (revenue.value(); as data) {
+        <cs-revenue-chart class="mt-4" [revenue]="data" label="Ticket revenue" />
+      }
+    </section>
+
+    <section class="card p-5" aria-labelledby="today-heading">
+      <div class="flex items-baseline justify-between gap-2">
+        <h2 id="today-heading" class="text-lg font-semibold">Today's shows</h2>
+        <a routerLink="/theater/shows" class="text-sm font-semibold text-muted hover:text-default">All shows</a>
+      </div>
+      @if (shows.error()) {
+        <cs-state-panel heading="Shows couldn't be loaded" [retry]="true" (retried)="shows.reload()" />
+      } @else if (shows.isLoading()) {
+        <div class="mt-4 space-y-3">
+          @for (i of [0, 1, 2]; track i) { <div class="skeleton h-14"></div> }
+        </div>
+      } @else if ((shows.value() ?? []).length === 0) {
+        <p class="mt-4 text-muted">Nothing scheduled today.</p>
+        <a csButton variant="secondary" size="sm" class="mt-3" routerLink="/theater/shows">Schedule a show</a>
+      } @else {
+        <ul class="mt-4 space-y-4" role="list">
+          @for (show of shows.value(); track show.id) {
+            <li>
+              <div class="flex items-baseline justify-between gap-3">
+                <p class="min-w-0 truncate font-semibold">{{ show.movie }}</p>
+                <p class="shrink-0 text-sm tabular-nums">{{ show.start | date: 'h:mm a' }}</p>
+              </div>
+              <p class="text-xs text-muted">{{ show.screen }} · {{ show.sold }} of {{ show.total }} seats sold</p>
+              <div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted" role="meter" [attr.aria-valuenow]="fill(show)" aria-valuemin="0" aria-valuemax="100"
+                [attr.aria-label]="show.movie + ' seats sold'">
+                <div class="h-full rounded-full bg-primary" [style.width.%]="fill(show)"></div>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+</main>

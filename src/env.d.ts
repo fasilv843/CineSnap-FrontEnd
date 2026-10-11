@@ -16,7 +16,6 @@ interface ImportMetaEnv {
   readonly NG_APP_TMDB_API: string
   readonly NG_APP_TMDB_KEY: string
   readonly NG_APP_GOOGLE_CLIENT_ID: string
-  readonly NG_APP_GOOGLE_CLIENT_SECRET: string
   readonly NG_APP_RAZORPAY_PUBLIC_KEY: string
   // Add your environment variables below
   // readonly NG_APP_API_URL: string;

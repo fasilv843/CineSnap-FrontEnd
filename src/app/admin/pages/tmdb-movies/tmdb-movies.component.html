@@ -1,0 +1,62 @@
+<main class="mx-auto max-w-6xl px-4 py-6 sm:px-8 lg:py-10">
+  <cs-page-header heading="Movies" description="Add movies from TMDB so theaters can schedule them.">
+    <cs-search-field class="w-full sm:w-72" [value]="search.query()" label="Search TMDB" placeholder="Search TMDB by title" (search)="search.setQuery($event)" />
+  </cs-page-header>
+  <app-admin-movies-tabs class="mt-6 block" />
+
+  @if (search.query()) {
+    <!-- Search results -->
+    <section class="mt-8" [attr.aria-label]="'TMDB results for ' + search.query()" [attr.aria-busy]="results.isLoading()">
+      <h2 class="text-xl font-semibold">Results for “{{ search.query() }}”</h2>
+      @if (results.error()) {
+        <div class="card mt-4"><cs-state-panel heading="TMDB couldn't be searched" [retry]="true" (retried)="results.reload()" /></div>
+      } @else if (results.isLoading()) {
+        <ul class="movie-grid mt-4" role="list">
+          @for (i of [0, 1, 2, 3, 4]; track i) { <li><div class="skeleton aspect-[2/3] rounded-card"></div></li> }
+        </ul>
+      } @else if ((results.value() ?? []).length === 0) {
+        <div class="card mt-4"><cs-state-panel heading="No TMDB movies match" message="Check the spelling or try the original title." /></div>
+      } @else {
+        <ul class="movie-grid mt-4" role="list">
+          @for (movie of results.value(); track movie.tmdbId) {
+            <li><app-tmdb-movie-card [movie]="movie" /></li>
+          }
+        </ul>
+      }
+    </section>
+  } @else {
+    <!-- Newest releases by language -->
+    @if (rows.error()) {
+      <div class="card mt-8"><cs-state-panel heading="TMDB couldn't be reached" message="Check your connection and try again." [retry]="true" (retried)="rows.reload()" /></div>
+    } @else if (rows.isLoading()) {
+      @for (i of [0, 1]; track i) {
+        <div class="mt-8">
+          <div class="skeleton h-7 w-48"></div>
+          <div class="movie-row mt-4">
+            @for (j of [0, 1, 2, 3, 4, 5]; track j) { <div class="skeleton aspect-[2/3] w-40 shrink-0 rounded-card"></div> }
+          </div>
+        </div>
+      }
+    } @else {
+      @for (row of rows.value(); track row.code) {
+        <section class="mt-10" [attr.aria-labelledby]="'row-' + row.code">
+          <div class="flex items-baseline justify-between gap-3">
+            <h2 [id]="'row-' + row.code" class="font-display text-2xl font-extrabold tracking-tight">{{ row.name }}</h2>
+            <a [routerLink]="['/admin/movies', row.code]" class="text-sm font-semibold text-muted hover:text-default">See all {{ row.name }}</a>
+          </div>
+          @if (row.failed) {
+            <p class="mt-3 text-sm text-muted">{{ row.name }} movies couldn't be loaded.</p>
+          } @else if (row.movies.length === 0) {
+            <p class="mt-3 text-sm text-muted">No recent {{ row.name }} releases on TMDB.</p>
+          } @else {
+            <ul class="movie-row mt-4" role="list">
+              @for (movie of row.movies; track movie.tmdbId) {
+                <li class="w-40 shrink-0"><app-tmdb-movie-card [movie]="movie" /></li>
+              }
+            </ul>
+          }
+        </section>
+      }
+    }
+  }
+</main>

@@ -1,0 +1,67 @@
+<app-user-nav />
+
+<main class="container max-w-5xl pb-16 pt-6 sm:pt-8">
+  @if (user(); as user) {
+    <div class="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+      <!-- Identity -->
+      <section class="card p-6" aria-labelledby="profile-name">
+        <div class="flex flex-wrap items-center gap-5">
+          <cs-avatar [name]="user.name" [src]="avatarUrl()" size="xl" class="border-2 border-accent" />
+          <div class="min-w-0 flex-1">
+            <h1 id="profile-name" class="truncate font-display text-4xl font-extrabold tracking-tight">{{ user.name }}</h1>
+            <p class="truncate text-muted">{{ user.email }}</p>
+          </div>
+          <a csButton variant="secondary" size="sm" [routerLink]="['/user/profile/edit', user._id]">Edit profile</a>
+        </div>
+
+        <dl class="mt-6 grid gap-x-6 gap-y-4 border-t border-default pt-6 sm:grid-cols-2">
+          <div>
+            <dt class="text-sm text-muted">Mobile</dt>
+            <dd class="font-medium">{{ user.mobile ?? 'Not added' }}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-muted">Date of birth</dt>
+            <dd class="font-medium">{{ user.dob ? (user.dob | date: 'd MMM y') : 'Not added' }}</dd>
+          </div>
+          <div class="sm:col-span-2">
+            <dt class="text-sm text-muted">Location</dt>
+            <dd class="font-medium">{{ location() ?? 'Not added' }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Wallet -->
+      <section class="card flex flex-col p-6" aria-labelledby="wallet-heading">
+        <h2 id="wallet-heading" class="text-sm font-semibold text-muted">Wallet balance</h2>
+        <p class="mt-1 font-display text-6xl font-extrabold tracking-tight text-accent">₹{{ user.wallet }}</p>
+        <p class="mt-2 text-sm text-muted">Pay for tickets from your wallet. Refunds for cancelled bookings land here too.</p>
+        <div class="mt-auto flex flex-wrap gap-2 pt-6">
+          <button csButton type="button" (click)="addMoney()">Add money</button>
+          <a csButton variant="secondary" routerLink="/user/profile/wallet-history">Wallet history</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Everything else the user can do from here -->
+    <nav aria-label="Your account" class="mt-6 grid gap-3 sm:grid-cols-3">
+      <a [routerLink]="['/user/bookings', user._id]" class="profile-link card">
+        <span class="font-semibold">My bookings</span>
+        <span class="text-sm text-muted">Tickets for upcoming and past shows</span>
+      </a>
+      <a routerLink="/user/messages" class="profile-link card">
+        <span class="font-semibold">Messages</span>
+        <span class="text-sm text-muted">Chats with theaters</span>
+      </a>
+      <a routerLink="/user/theaters" class="profile-link card">
+        <span class="font-semibold">Theaters near you</span>
+        <span class="text-sm text-muted">Find a show and book seats</span>
+      </a>
+    </nav>
+
+    <div class="mt-8 border-t border-default pt-6">
+      <button csButton variant="danger" type="button" (click)="logout()">Log out</button>
+    </div>
+  } @else {
+    <div class="skeleton h-64 rounded-card" aria-label="Loading profile"></div>
+  }
+</main>

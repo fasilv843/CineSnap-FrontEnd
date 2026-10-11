@@ -1,0 +1,157 @@
+<app-user-nav />
+
+<main class="container max-w-5xl pb-16 pt-6 sm:pt-8">
+  <h1 class="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">Review and pay</h1>
+
+  @if (ticket.error()) {
+    <div class="card mt-6">
+      <cs-state-panel heading="This booking couldn't be loaded" message="Your seats may have been released. Try again, or pick your seats again." [retry]="true" (retried)="ticket.reload()">
+        <a csButton variant="ghost" size="sm" routerLink="/user/theaters">Theaters</a>
+      </cs-state-panel>
+    </div>
+  } @else if (ticket.isLoading()) {
+    <div class="mt-6 grid gap-6 lg:grid-cols-[1fr_22rem]" aria-busy="true">
+      <div class="skeleton h-72"></div>
+      <div class="skeleton h-96"></div>
+    </div>
+  } @else if (ticket.value() == null || expired()) {
+    <div class="card mt-6">
+      <cs-state-panel heading="Your seats were released" message="Held seats are kept for 10 minutes. Pick them again to book.">
+        <a csButton size="sm" [routerLink]="theaterLink()">Pick seats again</a>
+      </cs-state-panel>
+    </div>
+  } @else if (ticket.value(); as t) {
+    <p class="hold-banner mt-4" [class.hold-urgent]="secondsLeft() < 120" role="timer" aria-live="off">
+      Your seats are held for <strong class="tabular-nums">{{ timeLeft() }}</strong>
+    </p>
+
+    <div class="mt-6 grid items-start gap-6 lg:grid-cols-[1fr_22rem]">
+      <!-- Order -->
+      <section class="card flex flex-col gap-5 p-5 sm:flex-row" aria-label="Your booking">
+        @if (movie(); as m) {
+          <img [src]="m.poster" [alt]="m.title + ' poster'" class="aspect-[2/3] w-28 shrink-0 self-start rounded-control bg-muted object-cover sm:w-36" />
+        }
+        <div class="min-w-0 flex-1">
+          <h2 class="text-2xl font-semibold">{{ movie()?.title ?? 'Movie no longer listed' }}</h2>
+          @if (movie(); as m) { <p class="text-sm text-muted">{{ m.meta }}</p> }
+
+          <dl class="mt-5 grid gap-4 sm:grid-cols-2">
+            <div>
+              <dt class="text-sm text-muted">When</dt>
+              <dd class="font-semibold">{{ t.startTime | date: 'EEE d MMM, h:mm a' }}</dd>
+            </div>
+            <div>
+              <dt class="text-sm text-muted">Where</dt>
+              @let theater = t.theaterId;
+              @let screen = t.screenId;
+              <dd class="font-semibold">{{ theater?.name ?? 'Theater no longer listed' }}{{ screen ? ' · ' + screen.name : '' }}</dd>
+              @if (theater?.address; as a) {
+                <dd class="text-sm text-muted">{{ a.city }}, {{ a.district }}</dd>
+              }
+            </div>
+            <div class="sm:col-span-2">
+              <dt class="text-sm text-muted">{{ seats().length }} {{ seats().length === 1 ? 'seat' : 'seats' }}</dt>
+              <dd class="mt-1 flex flex-wrap gap-1.5">
+                @for (seat of seats(); track seat) {
+                  <span class="badge">{{ seat }}</span>
+                }
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <!-- Payment -->
+      <section class="card p-5" aria-labelledby="pay-heading">
+        <h2 id="pay-heading" class="text-lg font-semibold">Payment</h2>
+
+        <dl class="mt-4 space-y-2 text-sm">
+          @for (line of lines(); track line.name) {
+            <div class="flex justify-between gap-4">
+              <dt class="text-muted">{{ line.name }} × {{ line.seats.length }}</dt>
+              <dd class="tabular-nums">₹{{ line.singlePrice * line.seats.length }}</dd>
+            </div>
+          }
+          <div class="flex justify-between gap-4">
+            <dt class="text-muted">Booking fee</dt>
+            <dd class="tabular-nums">₹{{ fees() }}</dd>
+          </div>
+          @if (appliedCoupon(); as c) {
+            <div class="flex justify-between gap-4 text-success">
+              <dt>Coupon {{ c.code }}</dt>
+              <dd class="tabular-nums">−₹{{ discount() }}</dd>
+            </div>
+          }
+          <div class="flex justify-between gap-4 border-t border-default pt-3 text-base font-semibold">
+            <dt>Total</dt>
+            <dd class="tabular-nums">₹{{ total() }}</dd>
+          </div>
+        </dl>
+
+        <!-- Coupons -->
+        <div class="mt-5 border-t border-default pt-4">
+          @if (coupons.isLoading()) {
+            <div class="skeleton h-12"></div>
+          } @else if (coupons.error()) {
+            <p class="flex items-center justify-between gap-2 text-sm text-muted">
+              Coupons couldn't be loaded.
+              <button csButton variant="link" type="button" (click)="coupons.reload()">Try again</button>
+            </p>
+          } @else if (suggestedCoupon(); as c) {
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="font-semibold">{{ c.code }}</p>
+                <p class="truncate text-sm text-muted">{{ c.description }}</p>
+              </div>
+              <button csButton size="sm" type="button" [variant]="appliedCoupon()?._id === c._id ? 'secondary' : 'accent'"
+                [attr.aria-pressed]="appliedCoupon()?._id === c._id" (click)="toggleCoupon(c)">
+                {{ appliedCoupon()?._id === c._id ? 'Remove' : 'Apply' }}
+              </button>
+            </div>
+            @if ((coupons.value() ?? []).length > 1) {
+              <button csButton variant="link" type="button" class="mt-2 text-sm" (click)="showAllCoupons()">
+                See all {{ coupons.value()?.length }} coupons
+              </button>
+            }
+          } @else {
+            <p class="text-sm text-muted">No coupons for this booking.</p>
+          }
+        </div>
+
+        <!-- Method -->
+        @if (wallet() > 0) {
+          <fieldset class="mt-5 border-t border-default pt-4">
+            <legend class="sr-only">Pay with</legend>
+            @if (walletCovers()) {
+              <div class="space-y-2">
+                <label class="method">
+                  <input type="radio" name="method" value="Wallet" [checked]="method() === 'Wallet'" (change)="method.set('Wallet')" />
+                  <span class="flex-1">CineSnap wallet</span>
+                  <span class="text-sm text-muted">₹{{ wallet() }}</span>
+                </label>
+                <label class="method">
+                  <input type="radio" name="method" value="Razorpay" [checked]="method() === 'Razorpay'" (change)="method.set('Razorpay')" />
+                  <span class="flex-1">Card, UPI or netbanking</span>
+                </label>
+              </div>
+            } @else {
+              <label class="method">
+                <input type="checkbox" [checked]="useWallet()" (change)="useWallet.set(!useWallet())" />
+                <span class="flex-1">Use wallet balance</span>
+                <span class="text-sm text-muted">₹{{ wallet() }}</span>
+              </label>
+            }
+          </fieldset>
+        }
+
+        <button csButton size="lg" type="button" class="mt-5 w-full" [disabled]="paying() || !user()" (click)="pay()">
+          @if (paying()) { <span class="spinner"></span> Processing… } @else { Pay ₹{{ payable() }} }
+        </button>
+        <p class="mt-2 text-center text-xs text-subtle">
+          @if (walletCovers() && method() === 'Wallet') { Paid from your wallet. } @else { Secure checkout by Razorpay. }
+          Cancel up to 4 hours before the show for a refund to your wallet.
+        </p>
+      </section>
+    </div>
+  }
+</main>

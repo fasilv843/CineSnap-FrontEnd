@@ -1,0 +1,11 @@
+.profile-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 1rem 1.25rem;
+  transition: border-color 150ms ease;
+}
+
+.profile-link:hover {
+  border-color: var(--color-accent);
+}

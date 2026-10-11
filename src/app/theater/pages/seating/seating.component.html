@@ -1,0 +1,84 @@
+<main class="mx-auto max-w-6xl px-4 pb-32 pt-6 sm:px-8 lg:pt-10">
+  <a routerLink="/theater/screens" class="inline-flex items-center gap-1 rounded-control text-sm font-semibold text-muted hover:text-default">
+    <cs-icon name="chevronLeft" class="size-4" /> Screens
+  </a>
+
+  <cs-page-header class="mt-3" heading="Seat layout" description="Tap a seat to turn it into a gap (an aisle or empty space), and tap a gap to add a seat back." />
+
+  @if (saved.error()) {
+    <div class="card mt-6">
+      <cs-state-panel heading="The seat layout couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="saved.reload()" />
+    </div>
+  } @else if (saved.isLoading() && !layout()) {
+    <div class="mt-6 space-y-4" aria-busy="true">
+      @for (i of [0, 1, 2]; track i) { <div class="skeleton h-40"></div> }
+    </div>
+  } @else if (layout(); as l) {
+    <p class="mt-4 text-sm text-muted" aria-live="polite">
+      <strong class="text-default">{{ seats() }}</strong> seats in <strong class="text-default">{{ rows() }}</strong> rows
+      @if (rows() >= maxRows) { · 26 rows (A to Z) is the most a screen can have }
+    </p>
+
+    <div class="mt-6 space-y-6">
+      @for (key of keys; track key) {
+        @let category = l[key];
+        <section class="card p-4 sm:p-5" [attr.aria-label]="category.name + ' seats'">
+          <div class="flex flex-wrap items-end gap-3">
+            <div class="w-48">
+              <label [for]="'name-' + key" class="mb-1 block text-xs font-semibold text-muted">Category name</label>
+              <input [id]="'name-' + key" class="input h-9" [value]="category.name" (input)="rename(key, $event)" maxlength="20" />
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              <button csButton variant="secondary" size="sm" type="button" [disabled]="rows() >= maxRows" (click)="addRow(key)">Add row</button>
+              <button csButton variant="ghost" size="sm" type="button" [disabled]="category.rows.length === 0 || rows() <= 1" (click)="removeRow(key)">Remove last row</button>
+              @if (category.rows.length > 0) {
+                <button csButton variant="ghost" size="sm" type="button" (click)="addColumn(key, 'end')">Add column</button>
+                <button csButton variant="ghost" size="sm" type="button" (click)="removeColumn(key, 'end')">Remove last column</button>
+                <button csButton variant="ghost" size="sm" type="button" (click)="addColumn(key, 'start')">Shift right</button>
+                <button csButton variant="ghost" size="sm" type="button" (click)="removeColumn(key, 'start')">Shift left</button>
+              }
+            </div>
+          </div>
+
+          @if (category.rows.length === 0) {
+            <p class="mt-4 text-sm text-muted">No {{ category.name }} seats. Add a row to sell this category.</p>
+          } @else {
+            <div class="mt-4 overflow-x-auto pb-2">
+              <div class="w-max space-y-1.5">
+                @for (row of category.rows; track $index; let r = $index) {
+                  @let letter = letters()?.[key]?.[r] ?? '';
+                  @let seatNumbers = numbers(row);
+                  <div class="flex items-center gap-2">
+                    <span class="w-5 text-center text-xs font-semibold text-subtle" aria-hidden="true">{{ letter }}</span>
+                    <div class="flex gap-1">
+                      @for (cell of row; track $index; let c = $index) {
+                        <button type="button" class="cell" [class.gap]="!cell" (click)="toggle(key, r, c)"
+                          [attr.aria-label]="cell ? 'Seat ' + letter + seatNumbers[c] + ', make it a gap' : 'Gap in row ' + letter + ', add a seat'">
+                          {{ cell ? seatNumbers[c] : '' }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </section>
+      }
+
+      <div class="screen" aria-hidden="true"><span>Screen</span></div>
+    </div>
+  }
+</main>
+
+@if (dirty()) {
+  <div class="fixed inset-x-0 bottom-0 z-30 border-t border-default bg-surface/95 backdrop-blur lg:left-64">
+    <div class="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-8">
+      <p class="flex-1 font-semibold">You have unsaved changes</p>
+      <button csButton variant="ghost" type="button" [disabled]="saving()" (click)="discard()">Discard</button>
+      <button csButton type="button" [disabled]="saving()" (click)="save()">
+        @if (saving()) { <span class="spinner"></span> Saving… } @else { Save layout }
+      </button>
+    </div>
+  </div>
+}

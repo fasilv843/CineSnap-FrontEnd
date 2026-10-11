@@ -1,0 +1,69 @@
+<app-user-nav />
+
+<main class="container max-w-5xl pb-16 pt-6 sm:pt-8">
+  <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <h1 class="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">Wallet history</h1>
+      <p class="text-muted">Money added, ticket payments and refunds.</p>
+    </div>
+    @if (user(); as user) {
+      <div class="card flex items-center gap-5 px-5 py-3">
+        <div>
+          <p class="text-sm text-muted">Balance</p>
+          <p class="font-display text-3xl font-extrabold text-accent">₹{{ user.wallet }}</p>
+        </div>
+        <button csButton type="button" (click)="addMoney()">Add money</button>
+      </div>
+    }
+  </header>
+
+  <section class="card mt-6 overflow-hidden" aria-label="Transactions" [attr.aria-busy]="history.isLoading()">
+    @if (history.error()) {
+      <div class="flex items-center justify-between gap-3 p-5" role="alert">
+        <p class="text-muted">Wallet history couldn't be loaded.</p>
+        <button csButton variant="secondary" size="sm" type="button" (click)="history.reload()">Try again</button>
+      </div>
+    } @else if (history.isLoading() && total() === 0) {
+      <div class="space-y-3 p-5">
+        @for (i of skeletonRows; track i) {
+          <div class="skeleton h-6"></div>
+        }
+      </div>
+    } @else if (total() === 0) {
+      <div class="p-6">
+        <p class="font-semibold">No wallet activity yet</p>
+        <p class="mt-1 text-muted">Add money to pay for tickets in one tap.</p>
+      </div>
+    } @else {
+      <table class="data-table" [class.opacity-60]="history.isLoading()">
+        <thead>
+          @for (headerGroup of table.getHeaderGroups(); track headerGroup.id) {
+            <tr>
+              @for (header of headerGroup.headers; track header.id) {
+                <th scope="col" [class.text-right]="header.column.id === 'amount'">{{ header.column.columnDef.header }}</th>
+              }
+            </tr>
+          }
+        </thead>
+        <tbody>
+          @for (row of table.getRowModel().rows; track row.id) {
+            @let entry = row.original;
+            <tr>
+              <td data-label="Date" class="whitespace-nowrap text-muted">{{ entry.date | date: 'd MMM y, h:mm a' }}</td>
+              <td data-label="Description">{{ entry.message }}</td>
+              <td data-label="Amount" class="text-right font-semibold tabular-nums"
+                [class.text-success]="entry.amount >= 0" [class.text-danger]="entry.amount < 0">
+                {{ entry.amount >= 0 ? '+' : '−' }}₹{{ entry.amount < 0 ? -entry.amount : entry.amount }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  @if (total() > 0) {
+    <cs-pagination class="mt-4 block" [page]="page()" [pageSize]="limit()" [total]="total()" [pageSizes]="pageSizes"
+      (pageChange)="goToPage($event)" (pageSizeChange)="setPageSize($event)" />
+  }
+</main>

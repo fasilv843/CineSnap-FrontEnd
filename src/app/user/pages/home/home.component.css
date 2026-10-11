@@ -1,0 +1,144 @@
+/* Featured movie */
+.hero {
+  aspect-ratio: 4 / 5;
+  max-height: 70vh;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .hero { aspect-ratio: 16 / 9; }
+}
+
+@media (min-width: 1024px) {
+  .hero { aspect-ratio: 21 / 9; }
+}
+
+.hero-image {
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+
+.hero-image.is-active {
+  opacity: 1;
+}
+
+.hero-scrim {
+  background:
+    linear-gradient(to top, color-mix(in srgb, var(--color-scrim) 92%, transparent) 0%, transparent 65%),
+    linear-gradient(to right, color-mix(in srgb, var(--color-scrim) 70%, transparent) 0%, transparent 60%);
+}
+
+.hero-ghost {
+  color: var(--text-color-on-media);
+  background-color: color-mix(in srgb, var(--text-color-on-media) 14%, transparent);
+}
+
+.hero-ghost:hover {
+  background-color: color-mix(in srgb, var(--text-color-on-media) 24%, transparent);
+}
+
+.hero-thumb {
+  opacity: 0.6;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition: opacity 150ms ease;
+}
+
+.hero-thumb:hover,
+.hero-thumb[aria-pressed='true'] {
+  opacity: 1;
+}
+
+.hero-thumb[aria-pressed='true'] {
+  outline-color: var(--color-accent);
+}
+
+.hero-dot {
+  background-color: color-mix(in srgb, var(--text-color-on-media) 45%, transparent);
+}
+
+.hero-dot[aria-pressed='true'] {
+  background-color: var(--color-accent);
+}
+
+/* Horizontal rails scroll with snap on small screens and become grids on wide ones */
+.rail,
+.poster-rail {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 1rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  margin-inline: -1rem;
+  padding: 0.25rem 1rem;
+}
+
+.rail > *,
+.poster-rail > * {
+  scroll-snap-align: start;
+}
+
+.rail {
+  grid-auto-columns: minmax(16rem, 80%);
+}
+
+.poster-rail {
+  grid-auto-columns: minmax(9rem, 42%);
+}
+
+@media (min-width: 768px) {
+  .rail {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  .poster-rail {
+    grid-auto-columns: minmax(9rem, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .poster-rail {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}
+
+.theater-card {
+  transition: border-color 150ms ease;
+}
+
+.theater-card:hover {
+  border-color: var(--color-accent);
+}
+
+/* Account shortcuts and browse chips */
+.shortcut,
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 2.25rem;
+  padding-inline: 0.875rem;
+  border: 1px solid var(--border-color-default);
+  border-radius: 9999px;
+  background-color: var(--background-color-surface);
+  color: var(--text-color-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.shortcut:hover,
+.chip:hover {
+  border-color: var(--color-accent);
+  color: var(--text-color-default);
+}

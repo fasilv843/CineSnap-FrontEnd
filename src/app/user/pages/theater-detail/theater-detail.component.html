@@ -1,0 +1,99 @@
+<app-user-nav />
+
+<main class="container max-w-6xl pb-16 pt-6 sm:pt-8">
+  <!-- Theater -->
+  <header class="card flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:p-6">
+    @if (theater.hasValue() && theater.value(); as t) {
+      @if (t.image) {
+        <img [src]="t.image" alt="" class="size-20 shrink-0 rounded-card object-cover sm:size-24" />
+      } @else {
+        <cs-avatar [name]="t.name" size="lg" />
+      }
+      <div class="min-w-0 flex-1">
+        <h1 class="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{{ t.name }}</h1>
+        <p class="mt-1 text-muted">{{ t.address }}</p>
+        @if (distance(); as d) {
+          <span class="badge mt-2">{{ d }} from you</span>
+        }
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a csButton variant="secondary" [routerLink]="['/user/messages', theaterId()]">Chat with theater</a>
+        <a csButton variant="secondary" [href]="t.directions" target="_blank" rel="noopener">
+          Directions<span class="sr-only"> (opens Google Maps)</span>
+        </a>
+      </div>
+    } @else if (theater.error()) {
+      <p class="text-muted">This theater couldn't be loaded. <a routerLink="/user/theaters" class="font-semibold text-default underline decoration-accent underline-offset-4">Browse theaters</a></p>
+    } @else {
+      <div class="skeleton h-24 w-full"></div>
+    }
+  </header>
+
+  <!-- Day picker -->
+  <section class="mt-8" aria-labelledby="shows-heading">
+    <h2 id="shows-heading" class="font-display text-3xl font-extrabold tracking-tight">Showtimes</h2>
+    <div class="day-strip mt-3" role="group" aria-label="Choose a day">
+      @for (day of days; track day.key) {
+        <button type="button" class="day" [attr.aria-pressed]="day.key === selectedDay().key" (click)="selectDay(day.key)">
+          <span class="text-xs font-semibold">{{ day.label ?? (day.date | date: 'EEE') }}</span>
+          <span class="font-display text-2xl font-extrabold leading-none">{{ day.date | date: 'd' }}</span>
+          <span class="text-xs">{{ day.date | date: 'MMM' }}</span>
+        </button>
+      }
+    </div>
+
+    <!-- Shows for that day, grouped by movie -->
+    <div class="mt-6" [attr.aria-busy]="shows.isLoading()">
+      @if (shows.error()) {
+        <div class="card flex items-center justify-between gap-3 p-5" role="alert">
+          <p class="text-muted">Showtimes couldn't be loaded.</p>
+          <button csButton variant="secondary" size="sm" type="button" (click)="shows.reload()">Try again</button>
+        </div>
+      } @else if (shows.isLoading()) {
+        <div class="space-y-4">
+          @for (i of [0, 1]; track i) {
+            <div class="skeleton h-40 rounded-card"></div>
+          }
+        </div>
+      } @else if ((shows.value() ?? []).length === 0) {
+        <div class="card flex flex-col items-start gap-3 p-6">
+          <p class="font-semibold">No shows on {{ selectedDay().date | date: 'EEE d MMM' }}</p>
+          <p class="text-muted">Try another day above, or look at other theaters nearby.</p>
+          <a csButton variant="secondary" size="sm" routerLink="/user/theaters">Other theaters</a>
+        </div>
+      } @else {
+        <ul class="space-y-4" role="list">
+          @for (group of shows.value(); track group.movie.id) {
+            <li class="card flex flex-col gap-5 p-5 sm:flex-row">
+              <img [src]="group.movie.poster" [alt]="group.movie.title + ' poster'" class="aspect-[2/3] w-24 shrink-0 self-start rounded-control bg-muted object-cover sm:w-28" loading="lazy" />
+              <div class="min-w-0 flex-1">
+                <h3 class="text-xl font-semibold">{{ group.movie.title }}</h3>
+                <p class="text-sm text-muted">{{ group.movie.meta }}</p>
+
+                <ul class="mt-4 flex flex-wrap gap-2" role="list" [attr.aria-label]="'Showtimes for ' + group.movie.title">
+                  @for (showtime of group.showtimes; track showtime.showId) {
+                    <li>
+                      <button type="button" class="showtime" [attr.data-availability]="showtime.availability"
+                        [disabled]="showtime.availability === 'sold-out'" (click)="openSeats(showtime)">
+                        <span class="text-base font-semibold">{{ showtime.start | date: 'h:mm a' }}</span>
+                        <span class="text-xs text-muted">{{ showtime.screen }}</span>
+                        <span class="seats text-xs font-semibold">
+                          {{ showtime.availability === 'sold-out' ? 'Sold out' : showtime.seatsLeft + ' seats left' }}
+                        </span>
+                      </button>
+                    </li>
+                  }
+                </ul>
+              </div>
+            </li>
+          }
+        </ul>
+        <p class="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs text-muted">
+          <span><span class="legend legend-plenty"></span>Plenty of seats</span>
+          <span><span class="legend legend-filling"></span>Filling up</span>
+          <span><span class="legend legend-few"></span>Almost full</span>
+        </p>
+      }
+    </div>
+  </section>
+</main>

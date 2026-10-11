@@ -1,0 +1,139 @@
+<app-user-nav />
+
+<main class="container max-w-6xl pb-16 pt-6 sm:pt-8">
+  <header class="flex flex-col gap-1">
+    <h1 class="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">My bookings</h1>
+    <p class="text-muted">Tickets you've booked. Cancel up to 4 hours before the show for a refund to your wallet.</p>
+  </header>
+
+  <div class="tabs mt-6" role="tablist" aria-label="Booking filter">
+    @for (t of tabs; track t.id) {
+      <button type="button" role="tab" class="tab" [attr.aria-selected]="tab() === t.id" (click)="selectTab(t.id)">
+        {{ t.label }}
+        @if (!isLoading()) {
+          <span class="tab-count">{{ counts()[t.id] }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  <section class="card mt-4 overflow-hidden" role="tabpanel" [attr.aria-busy]="isLoading()">
+    @if (error()) {
+      <div class="flex items-center justify-between gap-3 p-5" role="alert">
+        <p class="text-muted">Bookings couldn't be loaded.</p>
+        <button csButton variant="secondary" size="sm" type="button" (click)="reload()">Try again</button>
+      </div>
+    } @else if (isLoading()) {
+      <div class="space-y-3 p-5">
+        @for (i of skeletonRows; track i) {
+          <div class="skeleton h-14"></div>
+        }
+      </div>
+    } @else if (visibleRows().length === 0) {
+      <div class="flex flex-col items-start gap-3 p-6">
+        <p class="font-semibold">
+          @switch (tab()) {
+            @case ('upcoming') { No upcoming bookings }
+            @case ('past') { No past bookings yet }
+            @case ('cancelled') { No cancelled bookings }
+            @default { You haven't booked any tickets yet }
+          }
+        </p>
+        <a csButton size="sm" routerLink="/user/theaters">Find a show</a>
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          @for (headerGroup of table.getHeaderGroups(); track headerGroup.id) {
+            <tr>
+              @for (header of headerGroup.headers; track header.id) {
+                <th scope="col" [attr.aria-sort]="sortLabel(header.column.getIsSorted())"
+                  [class.text-right]="header.column.id === 'amount' || header.column.id === 'actions'">
+                  @if (header.column.getCanSort()) {
+                    <button type="button" class="sort-button" (click)="header.column.toggleSorting()">
+                      {{ header.column.columnDef.header }}
+                      <span aria-hidden="true">{{ header.column.getIsSorted() === 'asc' ? '↑' : header.column.getIsSorted() === 'desc' ? '↓' : '↕' }}</span>
+                    </button>
+                  } @else {
+                    {{ header.column.columnDef.header }}
+                  }
+                </th>
+              }
+            </tr>
+          }
+        </thead>
+        <tbody>
+          @for (row of table.getRowModel().rows; track row.id) {
+            @let b = row.original;
+            <tr [class.opacity-70]="b.status === 'cancelled'">
+              <td>
+                <div class="flex items-center gap-3">
+                  @if (b.poster) {
+                    <img [src]="b.poster" alt="" class="h-16 w-11 shrink-0 rounded-sm bg-muted object-cover" loading="lazy" />
+                  } @else {
+                    <span class="flex h-16 w-11 shrink-0 items-center justify-center rounded-sm bg-muted font-semibold text-subtle" aria-hidden="true">{{ b.movie.charAt(0) }}</span>
+                  }
+                  <div class="min-w-0">
+                    <p class="font-semibold">{{ b.movie }}</p>
+                    <p class="text-sm text-muted">{{ b.language }}</p>
+                  </div>
+                </div>
+              </td>
+              <td data-label="Theater">
+                <span class="font-medium">{{ b.theater }}</span>
+                <span class="block text-sm text-muted">{{ b.screen }}</span>
+              </td>
+              <td data-label="Show time" class="whitespace-nowrap">
+                {{ b.startTime | date: 'EEE d MMM' }}
+                <span class="block text-sm text-muted">{{ b.startTime | date: 'h:mm a' }}</span>
+              </td>
+              <td data-label="Seats">
+                <span class="font-medium">{{ b.seats.join(', ') }}</span>
+                <span class="block text-sm text-muted">{{ b.seats.length }} {{ b.seats.length === 1 ? 'seat' : 'seats' }}</span>
+              </td>
+              <td data-label="Amount" class="whitespace-nowrap text-right tabular-nums">
+                <span class="font-semibold">₹{{ b.amount }}</span>
+                <span class="block text-sm text-muted">{{ b.payment }}</span>
+              </td>
+              <td data-label="Status">
+                @switch (b.status) {
+                  @case ('upcoming') { <span class="status status-upcoming">Upcoming</span> }
+                  @case ('showing') { <span class="status status-showing">Showing now</span> }
+                  @case ('watched') { <span class="status">Watched</span> }
+                  @case ('cancelled') {
+                    <span class="status status-cancelled">{{ b.cancelledBy === 'User' || !b.cancelledBy ? 'Cancelled' : 'Cancelled by ' + b.cancelledBy.toLowerCase() }}</span>
+                  }
+                }
+              </td>
+              <td data-label="Actions" class="text-right">
+                <div class="inline-flex flex-wrap justify-end gap-1">
+                  @if (b.status !== 'cancelled') {
+                    @switch (invoiceState()[b.id]) {
+                      @case ('sending') { <span class="px-2 py-1 text-sm text-muted">Sending…</span> }
+                      @case ('sent') { <span class="px-2 py-1 text-sm text-success" role="status">Invoice emailed</span> }
+                      @default {
+                        <button csButton variant="ghost" size="sm" type="button" (click)="emailInvoice(b)">
+                          {{ invoiceState()[b.id] === 'failed' ? 'Retry invoice' : 'Email invoice' }}
+                        </button>
+                      }
+                    }
+                  }
+                  @if (b.canCancel) {
+                    <button csButton variant="danger" size="sm" type="button" (click)="cancel(b)">Cancel</button>
+                  } @else if (b.status === 'upcoming') {
+                    <span class="px-2 py-1 text-xs text-subtle" title="Bookings can be cancelled until 4 hours before the show">Can't cancel now</span>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  @if (!isLoading() && visibleRows().length > 0) {
+    <cs-pagination class="mt-4 block" [page]="page()" [pageSize]="limit()" [total]="visibleRows().length" [pageSizes]="pageSizes"
+      (pageChange)="goToPage($event)" (pageSizeChange)="setPageSize($event)" />
+  }
+</main>

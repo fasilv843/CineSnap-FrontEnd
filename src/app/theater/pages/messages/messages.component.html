@@ -1,0 +1,88 @@
+<main class="mx-auto max-w-6xl px-4 py-4 sm:px-8 lg:py-6">
+  <div class="messages card grid overflow-hidden lg:grid-cols-[18rem_1fr]">
+
+    <!-- Conversation list: always visible on desktop, the whole screen on mobile until one is opened -->
+    <aside class="flex min-h-0 flex-col border-default lg:border-r" [class.max-lg:hidden]="userId()" aria-label="Conversations">
+      <h1 class="border-b border-default px-4 py-3 font-display text-2xl font-extrabold tracking-tight">Messages</h1>
+      <div class="min-h-0 flex-1 overflow-y-auto p-2" [attr.aria-busy]="loadedContacts.isLoading()">
+        @if (loadedContacts.error()) {
+          <cs-state-panel heading="Conversations couldn't be loaded" [retry]="true" (retried)="loadedContacts.reload()" />
+        } @else if (loadedContacts.isLoading() && contacts().length === 0) {
+          @for (i of [0, 1, 2]; track i) { <div class="skeleton m-1 h-12"></div> }
+        } @else if (contacts().length === 0) {
+          <div class="p-3">
+            <p class="font-semibold">No conversations yet</p>
+            <p class="mt-1 text-sm text-muted">When a movie-goer messages your theater, the chat shows up here.</p>
+          </div>
+        } @else {
+          <ul role="list">
+            @for (contact of contacts(); track contact.id) {
+              <li>
+                <a [routerLink]="['/theater/messages', contact.id]" routerLinkActive="bg-muted" ariaCurrentWhenActive="page"
+                  class="flex items-center gap-3 rounded-control px-3 py-2.5 hover:bg-muted">
+                  <cs-avatar [name]="contact.name" [src]="contact.image" />
+                  <span class="min-w-0 flex-1 truncate font-medium" [class.font-semibold]="contact.unread > 0">{{ contact.name }}</span>
+                  @if (contact.unread > 0) {
+                    <span class="unread" [attr.aria-label]="contact.unread + ' unread'">{{ contact.unread }}</span>
+                  }
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </aside>
+
+    <!-- Open conversation -->
+    <section class="flex min-h-0 flex-col" [class.max-lg:hidden]="!userId()" aria-label="Chat">
+      @if (userId()) {
+        <header class="flex items-center gap-3 border-b border-default px-3 py-2.5 sm:px-4">
+          <a routerLink="/theater/messages" class="rounded-control p-2 text-muted hover:bg-muted hover:text-default lg:hidden" aria-label="Back to conversations">
+            <cs-icon name="chevronLeft" class="size-5" />
+          </a>
+          <cs-avatar [name]="partner()?.name ?? '?'" [src]="partner()?.image ?? null" />
+          <h2 class="min-w-0 flex-1 truncate font-semibold">{{ partner()?.name ?? 'Movie-goer' }}</h2>
+        </header>
+
+        <div #scroller class="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-6" aria-live="polite">
+          @if (conversation.error()) {
+            <cs-state-panel heading="Messages couldn't be loaded" [retry]="true" (retried)="conversation.reload()" />
+          } @else if (conversation.isLoading()) {
+            <div class="space-y-3">
+              <div class="skeleton h-10 w-2/3"></div>
+              <div class="skeleton ml-auto h-10 w-1/2"></div>
+              <div class="skeleton h-10 w-3/5"></div>
+            </div>
+          } @else if (messages().length === 0) {
+            <p class="mx-auto max-w-sm text-center text-muted">No messages yet.</p>
+          }
+          @for (group of days(); track group.day.getTime()) {
+            <p class="my-4 text-center text-xs font-semibold text-subtle">
+              {{ group.day.getTime() === today.getTime() ? 'Today' : (group.day | date: 'd MMM y') }}
+            </p>
+            <ol class="space-y-2">
+              @for (message of group.messages; track $index) {
+                <li class="flex flex-col" [class.items-end]="message.sender === 'Theater'" [class.items-start]="message.sender !== 'Theater'">
+                  <p class="bubble" [class.bubble-mine]="message.sender === 'Theater'">{{ message.message }}</p>
+                  <time class="mt-0.5 px-1 text-xs text-subtle">{{ message.time | date: 'h:mm a' }}</time>
+                </li>
+              }
+            </ol>
+          }
+        </div>
+
+        <form (submit)="$event.preventDefault(); send()" class="flex gap-2 border-t border-default p-3">
+          <label class="sr-only" for="chat-draft">Message</label>
+          <input id="chat-draft" class="input" placeholder="Write a reply" autocomplete="off"
+            [value]="draft()" (input)="draft.set($any($event.target).value)" />
+          <button csButton type="submit" [disabled]="draft().trim() === ''">Send</button>
+        </form>
+      } @else {
+        <div class="m-auto max-w-xs p-6 text-center">
+          <p class="font-semibold">Choose a conversation</p>
+          <p class="mt-1 text-sm text-muted">Pick someone from the list to read and reply.</p>
+        </div>
+      }
+    </section>
+  </div>
+</main>

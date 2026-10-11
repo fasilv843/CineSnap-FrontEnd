@@ -1,0 +1,104 @@
+<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+  <p class="text-muted" aria-live="polite">
+    @if (query().search) {
+      Results for “{{ query().search }}”
+    } @else if (manage) {
+      Every movie in CineSnap, including removed ones
+    } @else {
+      Movies you can schedule shows for
+    }
+  </p>
+  <label class="search relative block w-full sm:w-80">
+    <span class="sr-only">Search movies by title</span>
+    <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-subtle" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
+    </svg>
+    <input type="search" class="input pl-10" placeholder="Search by title" autocomplete="off"
+      [value]="searchText()" (input)="searchText.set($any($event.target).value)" />
+  </label>
+</div>
+
+@if (filterOptions.hasValue() && filterOptions.value(); as options) {
+  <section aria-label="Filters" class="mt-6 space-y-3">
+    <div class="filter-row" role="group" aria-label="Languages">
+      <span class="filter-label">Language</span>
+      @for (language of options.languages; track language.value) {
+        <button type="button" class="chip" [attr.aria-pressed]="query().languages.includes(language.value)"
+          (click)="toggleLanguage(language.value)">{{ language.label }}</button>
+      }
+    </div>
+    <div class="filter-row" role="group" aria-label="Genres">
+      <span class="filter-label">Genre</span>
+      @for (genre of options.genres; track genre.value) {
+        <button type="button" class="chip" [attr.aria-pressed]="query().genres.includes(genre.value)"
+          (click)="toggleGenre(genre.value)">{{ genre.label }}</button>
+      }
+    </div>
+    @if (hasFilters()) {
+      <button csButton variant="link" type="button" (click)="clearFilters()" class="text-sm">Clear search and filters</button>
+    }
+  </section>
+} @else if (filterOptions.isLoading()) {
+  <div class="mt-6 space-y-3">
+    <div class="skeleton h-9"></div>
+    <div class="skeleton h-9"></div>
+  </div>
+}
+
+<section aria-label="Movie results" class="mt-8" [attr.aria-busy]="isLoading()">
+  @if (isFirstLoad()) {
+    <ul class="movie-grid" role="list">
+      @for (i of skeletons; track i) {
+        <li><div class="skeleton aspect-[2/3] rounded-card"></div></li>
+      }
+    </ul>
+  } @else if (movies().length > 0) {
+    <ul class="movie-grid" role="list" [class.is-refreshing]="isRefreshing()">
+      @for (movie of movies(); track movie.card.id) {
+        <li>
+          <figure>
+            <div class="relative">
+              <img [src]="movie.card.poster" [alt]="movie.card.title + ' poster'" class="aspect-[2/3] w-full rounded-card bg-muted object-cover"
+                [class.opacity-40]="movie.removed" loading="lazy" />
+              @if (movie.removed) {
+                <span class="absolute left-2 top-2 rounded-full bg-surface shadow-raised"><span class="status-pill" data-tone="danger">Removed</span></span>
+              }
+            </div>
+            <figcaption class="mt-2">
+              <span class="line-clamp-1 font-semibold">{{ movie.card.title }}</span>
+              <span class="line-clamp-2 text-sm text-muted">{{ movie.card.meta }}</span>
+            </figcaption>
+          </figure>
+          @if (manage) {
+            <button csButton size="sm" type="button" class="mt-2 w-full" [variant]="movie.removed ? 'secondary' : 'danger'"
+              [disabled]="busy() === movie.card.id" (click)="toggleRemoved(movie)">
+              @if (busy() === movie.card.id) { <span class="spinner"></span> }
+              {{ movie.removed ? 'Restore' : 'Remove' }}<span class="sr-only"> {{ movie.card.title }}</span>
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  } @else if (!error()) {
+    <div class="card">
+      <cs-state-panel [heading]="query().search ? 'No movies called “' + query().search + '”' : 'No movies match these filters'"
+        [message]="query().search ? 'Check the spelling, or clear the search.' : 'Turn off a language or genre to see more.'">
+        <button csButton variant="secondary" size="sm" type="button" (click)="clearFilters()">Clear search and filters</button>
+      </cs-state-panel>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="card mt-6">
+      <cs-state-panel heading="Movies couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="retry()" />
+    </div>
+  }
+
+  @if (movies().length > 0 && !isComplete()) {
+    <div class="mt-8 flex justify-center">
+      <button csButton variant="secondary" type="button" (csInView)="loadMore()" (click)="loadMore()" [disabled]="!canLoadMore()">
+        @if (isLoading()) { <span class="spinner"></span> Loading… } @else { Load more movies }
+      </button>
+    </div>
+  }
+</section>

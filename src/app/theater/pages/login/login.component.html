@@ -1,0 +1,34 @@
+<cs-auth-shell heading="Theater sign in" subheading="Manage shows, screens, coupons and payouts for your theater."
+  pitch="Fill every seat, every show." pitchDetail="Schedule shows, design seat maps and see your revenue as tickets sell.">
+  <form [formGroup]="form" (ngSubmit)="signIn()" novalidate class="space-y-4">
+    <div>
+      <label for="email" class="mb-1.5 block text-sm font-semibold">Business email</label>
+      <input id="email" type="email" class="input" formControlName="email" autocomplete="email" placeholder="you@yourtheater.com" />
+      <cs-field-error [control]="form.controls.email" [submitted]="submitted()" [messages]="messages.email" />
+    </div>
+
+    <div>
+      <label for="password" class="mb-1.5 block text-sm font-semibold">Password</label>
+      <div class="relative">
+        <input id="password" class="input pr-16" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
+        <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-control px-2 py-1 text-sm font-semibold text-muted hover:text-default"
+          [attr.aria-pressed]="showPassword()" (click)="showPassword.set(!showPassword())">
+          {{ showPassword() ? 'Hide' : 'Show' }}<span class="sr-only"> password</span>
+        </button>
+      </div>
+      <cs-field-error [control]="form.controls.password" [submitted]="submitted()" [messages]="messages.password" />
+    </div>
+
+    <button csButton size="lg" type="submit" class="w-full" [disabled]="signingIn()">
+      @if (signingIn()) { <span class="spinner"></span> Signing in… } @else { Sign in }
+    </button>
+  </form>
+
+  <p class="mt-6 text-center text-muted">
+    New to CineSnap?
+    <a routerLink="/theater/register" class="font-semibold text-default underline decoration-accent underline-offset-4">Register your theater</a>
+  </p>
+  <p class="mt-8 border-t border-default pt-4 text-center text-sm text-subtle">
+    Booking tickets? <a routerLink="/user/login" class="font-semibold text-muted hover:text-default">Movie-goer sign in</a>
+  </p>
+</cs-auth-shell>

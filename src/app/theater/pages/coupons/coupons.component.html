@@ -1,0 +1,77 @@
+<main class="mx-auto max-w-6xl px-4 py-6 sm:px-8 lg:py-10">
+  <cs-page-header heading="Coupons" description="Discounts movie-goers can apply when they book your shows.">
+    <button csButton type="button" (click)="addCoupon()">Create coupon</button>
+  </cs-page-header>
+
+  @if (!coupons.isLoading() && rows().length > 0) {
+    <p class="mt-4 text-sm text-muted">{{ activeCount() }} of {{ rows().length }} coupons active right now</p>
+  }
+
+  <section class="card mt-4 overflow-hidden" aria-label="Coupons" [attr.aria-busy]="coupons.isLoading()">
+    @if (coupons.error()) {
+      <cs-state-panel heading="Coupons couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="coupons.reload()" />
+    } @else if (coupons.isLoading()) {
+      <div class="space-y-3 p-5">
+        @for (i of [0, 1, 2, 3]; track i) { <div class="skeleton h-12"></div> }
+      </div>
+    } @else if (rows().length === 0) {
+      <cs-state-panel heading="No coupons yet" message="Create one to offer a discount on tickets for your shows.">
+        <button csButton size="sm" type="button" (click)="addCoupon()">Create coupon</button>
+      </cs-state-panel>
+    } @else {
+      <table class="data-table">
+        <thead>
+          @for (headerGroup of table.getHeaderGroups(); track headerGroup.id) {
+            <tr>
+              @for (header of headerGroup.headers; track header.id) {
+                <th scope="col" [attr.aria-sort]="sortLabel(header.column.getIsSorted())" [class.text-right]="header.column.id === 'actions'">
+                  @if (header.column.getCanSort()) {
+                    <button type="button" class="sort-button" (click)="header.column.toggleSorting()">
+                      {{ header.column.columnDef.header }}
+                      <span aria-hidden="true">{{ header.column.getIsSorted() === 'asc' ? '↑' : header.column.getIsSorted() === 'desc' ? '↓' : '↕' }}</span>
+                    </button>
+                  } @else {
+                    {{ header.column.columnDef.header }}
+                  }
+                </th>
+              }
+            </tr>
+          }
+        </thead>
+        <tbody>
+          @for (row of table.getRowModel().rows; track row.id) {
+            @let c = row.original;
+            <tr [class.opacity-70]="c.status === 'off' || c.status === 'expired'">
+              <td>
+                <span class="font-mono font-semibold tracking-wide">{{ c.code }}</span>
+                <span class="block max-w-xs text-sm text-muted">{{ c.description }}</span>
+              </td>
+              <td data-label="Discount" class="whitespace-nowrap font-medium">{{ c.discount }}</td>
+              <td data-label="Valid" class="whitespace-nowrap">
+                {{ c.start | date: 'd MMM' }} – {{ c.end | date: 'd MMM y' }}
+              </td>
+              <td data-label="Min. tickets" class="tabular-nums">{{ c.minTickets > 0 ? c.minTickets : 'Any' }}</td>
+              <td data-label="Uses left" class="tabular-nums">{{ c.usesLeft ?? 'No limit' }}</td>
+              <td data-label="Status"><span class="status-pill" [attr.data-tone]="status[c.status].tone">{{ status[c.status].label }}</span></td>
+              <td data-label="Actions" class="text-right">
+                @if (c.status !== 'expired') {
+                  <button csButton size="sm" type="button" [variant]="c.status === 'off' ? 'secondary' : 'danger'" [disabled]="busy() === c.id" (click)="toggle(c)">
+                    @if (busy() === c.id) { <span class="spinner"></span> }
+                    {{ c.status === 'off' ? 'Turn on' : 'Turn off' }}
+                  </button>
+                } @else {
+                  <span class="text-sm text-subtle">—</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  @if (rows().length > 0) {
+    <cs-pagination class="mt-4 block" [page]="paging.page()" [pageSize]="paging.limit()" [total]="rows().length" [pageSizes]="paging.pageSizes"
+      (pageChange)="paging.goToPage($event)" (pageSizeChange)="paging.setPageSize($event)" />
+  }
+</main>

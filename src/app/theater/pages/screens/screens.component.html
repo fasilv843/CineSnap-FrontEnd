@@ -1,0 +1,54 @@
+<main class="mx-auto max-w-6xl px-4 py-6 sm:px-8 lg:py-10">
+  <cs-page-header heading="Screens" description="Each screen's seat layout is used for every show on it.">
+    <button csButton type="button" [disabled]="adding()" (click)="addScreen()">
+      @if (adding()) { <span class="spinner"></span> Adding… } @else { Add screen }
+    </button>
+  </cs-page-header>
+
+  <section class="mt-8" aria-label="Your screens" [attr.aria-busy]="loaded.isLoading()">
+    @if (loaded.error()) {
+      <div class="card">
+        <cs-state-panel heading="Screens couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="loaded.reload()" />
+      </div>
+    } @else if (loaded.isLoading()) {
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @for (i of [0, 1, 2]; track i) { <div class="skeleton h-40"></div> }
+      </div>
+    } @else if (screens().length === 0) {
+      <div class="card">
+        <cs-state-panel heading="No screens yet" message="Add your first screen and lay out its seats. Then you can schedule shows on it.">
+          <button csButton size="sm" type="button" (click)="addScreen()">Add screen</button>
+        </cs-state-panel>
+      </div>
+    } @else {
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+        @for (screen of screens(); track screen._id) {
+          <li class="card flex flex-col p-5">
+            <h2 class="font-display text-3xl font-extrabold tracking-tight">{{ screen.name }}</h2>
+            <dl class="mt-3 grid grid-cols-3 gap-2 text-sm">
+              <div>
+                <dt class="text-muted">Seats</dt>
+                <dd class="font-semibold tabular-nums">{{ screen.seatsCount }}</dd>
+              </div>
+              <div>
+                <dt class="text-muted">Rows</dt>
+                <dd class="font-semibold">A–{{ screen.rows }}</dd>
+              </div>
+              <div>
+                <dt class="text-muted">Per row</dt>
+                <dd class="font-semibold tabular-nums">{{ screen.cols }}</dd>
+              </div>
+            </dl>
+            <div class="mt-5 flex flex-1 items-end gap-2">
+              <a csButton variant="secondary" size="sm" [routerLink]="['/theater/screens/seat', screen.seatId]">Seat layout</a>
+              <button csButton variant="danger" size="sm" type="button" class="ml-auto" [disabled]="deleting() === screen._id"
+                [attr.aria-label]="'Delete ' + screen.name" (click)="deleteScreen(screen)">
+                @if (deleting() === screen._id) { <span class="spinner"></span> } Delete
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</main>

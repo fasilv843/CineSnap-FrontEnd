@@ -1,0 +1,58 @@
+<main class="mx-auto max-w-5xl px-4 py-6 sm:px-8 lg:py-10">
+  <a routerLink="/theater/profile" class="inline-flex items-center gap-1 rounded-control text-sm font-semibold text-muted hover:text-default">
+    <cs-icon name="chevronLeft" class="size-4" /> Profile
+  </a>
+  <cs-page-header class="mt-2" heading="Wallet history" description="Ticket earnings, refunds for cancellations and money you added.">
+    @if (theater(); as t) {
+      <div class="card flex items-center gap-5 px-5 py-3">
+        <div>
+          <p class="text-sm text-muted">Balance</p>
+          <p class="font-display text-3xl font-extrabold text-accent">₹{{ t.wallet }}</p>
+        </div>
+        <button csButton type="button" (click)="addMoney()">Add money</button>
+      </div>
+    }
+  </cs-page-header>
+
+  <section class="card mt-6 overflow-hidden" aria-label="Transactions" [attr.aria-busy]="history.isLoading()">
+    @if (history.error()) {
+      <cs-state-panel heading="Wallet history couldn't be loaded" [retry]="true" (retried)="history.reload()" />
+    } @else if (history.isLoading() && total() === 0) {
+      <div class="space-y-3 p-5">
+        @for (i of [0, 1, 2, 3, 4]; track i) { <div class="skeleton h-6"></div> }
+      </div>
+    } @else if (total() === 0) {
+      <cs-state-panel heading="No wallet activity yet" message="Your share of each ticket sold shows up here." />
+    } @else {
+      <table class="data-table" [class.opacity-60]="history.isLoading()">
+        <thead>
+          @for (headerGroup of table.getHeaderGroups(); track headerGroup.id) {
+            <tr>
+              @for (header of headerGroup.headers; track header.id) {
+                <th scope="col" [class.text-right]="header.column.id === 'amount'">{{ header.column.columnDef.header }}</th>
+              }
+            </tr>
+          }
+        </thead>
+        <tbody>
+          @for (row of table.getRowModel().rows; track row.id) {
+            @let entry = row.original;
+            <tr>
+              <td data-label="Date" class="whitespace-nowrap text-muted">{{ entry.date | date: 'd MMM y, h:mm a' }}</td>
+              <td data-label="Description">{{ entry.message }}</td>
+              <td data-label="Amount" class="text-right font-semibold tabular-nums"
+                [class.text-success]="entry.amount >= 0" [class.text-danger]="entry.amount < 0">
+                {{ entry.amount >= 0 ? '+' : '−' }}₹{{ entry.amount < 0 ? -entry.amount : entry.amount }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  @if (total() > 0) {
+    <cs-pagination class="mt-4 block" [page]="paging.page()" [pageSize]="paging.limit()" [total]="total()" [pageSizes]="paging.pageSizes"
+      (pageChange)="paging.goToPage($event)" (pageSizeChange)="paging.setPageSize($event)" />
+  }
+</main>

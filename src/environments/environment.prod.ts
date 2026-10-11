@@ -8,6 +8,5 @@ export const environments = {
   tmdbApi: import.meta.env.NG_APP_TMDB_API,
   tmdbKey: import.meta.env.NG_APP_TMDB_KEY,
   google_client_id: import.meta.env.NG_APP_GOOGLE_CLIENT_ID,
-  google_client_secret: import.meta.env.NG_APP_GOOGLE_CLIENT_SECRET,
   razorpayPublicKey: import.meta.env.NG_APP_RAZORPAY_PUBLIC_KEY
 }

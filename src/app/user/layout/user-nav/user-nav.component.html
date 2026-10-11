@@ -1,0 +1,59 @@
+<header class="sticky top-0 z-40 border-b border-default bg-surface/90 backdrop-blur supports-[backdrop-filter]:bg-surface/75">
+  <div class="container flex h-16 max-w-6xl items-center gap-6">
+    <cs-logo link="/user/home" />
+
+    <nav class="hidden flex-1 items-center gap-1 sm:flex" aria-label="Main">
+      @for (link of links; track link.path) {
+        <a [routerLink]="link.path" routerLinkActive="bg-secondary text-secondary-foreground" ariaCurrentWhenActive="page"
+          class="rounded-control px-3 py-2 text-sm font-semibold text-muted transition-colors hover:text-default">
+          {{ link.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="ml-auto flex items-center gap-1">
+      <cs-theme-toggle />
+
+      @if (user(); as user) {
+        <button type="button" [cdkMenuTriggerFor]="accountMenu" aria-label="Account menu"
+          class="ml-1 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
+          <cs-avatar [name]="user.name" [src]="avatarUrl()" class="border-2 border-accent" />
+        </button>
+
+        <ng-template #accountMenu>
+          <div cdkMenu class="mt-2 min-w-56 rounded-card border border-default bg-raised p-1.5 text-default shadow-raised">
+            <div class="px-3 pb-2 pt-1.5">
+              <p class="font-semibold">{{ user.name }}</p>
+              <p class="text-sm text-muted">Wallet balance ₹{{ user.wallet }}</p>
+            </div>
+            <div class="my-1 border-t border-default"></div>
+            <a cdkMenuItem routerLink="/user/profile" class="menu-item">Profile</a>
+            <a cdkMenuItem [routerLink]="['/user/bookings', user._id]" class="menu-item">My bookings</a>
+            <a cdkMenuItem routerLink="/user/profile/wallet-history" class="menu-item">Wallet history</a>
+            <a cdkMenuItem routerLink="/user/messages" class="menu-item">Messages</a>
+            <div class="my-1 border-t border-default"></div>
+            <button cdkMenuItem type="button" (click)="logout()" class="menu-item w-full text-left text-danger">Log out</button>
+          </div>
+        </ng-template>
+      } @else {
+        <a csButton size="sm" routerLink="/user/login" class="ml-1">Log in</a>
+      }
+    </div>
+  </div>
+</header>
+
+<!-- Mobile tab bar: the main destinations stay one tap away -->
+<nav class="tab-bar fixed inset-x-0 bottom-0 z-40 border-t border-default bg-surface sm:hidden" aria-label="Main">
+  <div class="grid grid-cols-4">
+    @for (link of links; track link.path) {
+      <a [routerLink]="link.path" routerLinkActive="tab-active" ariaCurrentWhenActive="page" class="tab">
+        <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path [attr.d]="link.icon" /></svg>
+        {{ link.label }}
+      </a>
+    }
+    <a [routerLink]="user() ? '/user/profile' : '/user/login'" routerLinkActive="tab-active" ariaCurrentWhenActive="page" class="tab">
+      <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path [attr.d]="icons.account" /></svg>
+      {{ user() ? 'Account' : 'Log in' }}
+    </a>
+  </div>
+</nav>

@@ -1,0 +1,88 @@
+<div class="card mx-auto max-h-[calc(100dvh-2rem)] w-[min(36rem,calc(100vw-2rem))] overflow-y-auto p-6 shadow-raised" role="dialog" aria-labelledby="coupon-form-title">
+  <h2 id="coupon-form-title" class="text-xl font-semibold">Create a coupon</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="mt-5 space-y-5">
+    <div class="grid gap-4 sm:grid-cols-[12rem_1fr]">
+      <div>
+        <label for="code" class="mb-1.5 block text-sm font-semibold">Code</label>
+        <input id="code" class="input font-mono uppercase tracking-wide" formControlName="code" maxlength="15" placeholder="WEEKEND20" autocomplete="off" />
+        <cs-field-error [control]="form.controls.code" [submitted]="submitted()" [messages]="messages.code" />
+      </div>
+      <div>
+        <label for="description" class="mb-1.5 block text-sm font-semibold">Description</label>
+        <input id="description" class="input" formControlName="description" maxlength="100" placeholder="20% off weekend shows" />
+        <cs-field-error [control]="form.controls.description" [submitted]="submitted()" [messages]="messages.description" />
+      </div>
+    </div>
+
+    <fieldset>
+      <legend class="mb-1.5 text-sm font-semibold">Discount</legend>
+      <div class="flex gap-2" role="radiogroup">
+        <label class="choice">
+          <input type="radio" formControlName="discountType" value="Percentage" /> Percentage
+        </label>
+        <label class="choice">
+          <input type="radio" formControlName="discountType" value="Fixed Amount" /> Fixed amount
+        </label>
+      </div>
+      <div class="mt-3 grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="discount" class="mb-1 block text-sm text-muted">{{ discountType() === 'Percentage' ? 'Percent off ticket price' : 'Rupees off' }}</label>
+          <div class="relative">
+            <input id="discount" class="input" [class.pl-7]="discountType() !== 'Percentage'" [class.pr-8]="discountType() === 'Percentage'"
+              formControlName="discount" inputmode="numeric" />
+            @if (discountType() === 'Percentage') {
+              <span class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-muted">%</span>
+            } @else {
+              <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted">₹</span>
+            }
+          </div>
+          <cs-field-error [control]="form.controls.discount" [submitted]="submitted()" [messages]="messages.discount" />
+        </div>
+        @if (discountType() === 'Percentage') {
+          <div>
+            <label for="cap" class="mb-1 block text-sm text-muted">Up to</label>
+            <div class="relative">
+              <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted">₹</span>
+              <input id="cap" class="input pl-7" formControlName="maxDiscountAmt" inputmode="numeric" />
+            </div>
+            <cs-field-error [control]="form.controls.maxDiscountAmt" [submitted]="submitted()" [messages]="messages.maxDiscountAmt" />
+          </div>
+        }
+      </div>
+      <p class="mt-1 text-xs text-subtle">The discount applies to the ticket price, not the booking fee.</p>
+    </fieldset>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <label for="startDate" class="mb-1.5 block text-sm font-semibold">Starts</label>
+        <input id="startDate" type="date" class="input" formControlName="startDate" [min]="today" />
+        <cs-field-error [control]="form.controls.startDate" [submitted]="submitted()" [messages]="messages.startDate" />
+      </div>
+      <div>
+        <label for="endDate" class="mb-1.5 block text-sm font-semibold">Ends</label>
+        <input id="endDate" type="date" class="input" formControlName="endDate" [min]="startDate() || today" />
+        <cs-field-error [control]="form.controls.endDate" [submitted]="submitted()" [messages]="messages.endDate" />
+      </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div>
+        <label for="minTickets" class="mb-1.5 block text-sm font-semibold">Minimum tickets <span class="font-normal text-subtle">(optional)</span></label>
+        <input id="minTickets" class="input" formControlName="minTicketCount" inputmode="numeric" placeholder="Any" />
+        <cs-field-error [control]="form.controls.minTicketCount" [submitted]="submitted()" [messages]="messages.minTicketCount" />
+      </div>
+      <div>
+        <label for="uses" class="mb-1.5 block text-sm font-semibold">Total uses <span class="font-normal text-subtle">(optional)</span></label>
+        <input id="uses" class="input" formControlName="couponCount" inputmode="numeric" placeholder="No limit" />
+        <cs-field-error [control]="form.controls.couponCount" [submitted]="submitted()" [messages]="messages.couponCount" />
+      </div>
+    </div>
+    <p class="text-xs text-subtle">Each movie-goer can use a coupon once.</p>
+
+    <div class="flex justify-end gap-2 border-t border-default pt-5">
+      <button csButton variant="ghost" type="button" (click)="modal.dismiss('cancel')">Cancel</button>
+      <button csButton type="submit">Create coupon</button>
+    </div>
+  </form>
+</div>

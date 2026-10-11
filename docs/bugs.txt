@@ -1,0 +1,19 @@
+Bugs I found and fixed along the way
+
+The JWT refresh never re-sent the request with the new token. It now does.
+The store effect that reloads the user after a booking or cancellation was never registered, so wallet balances stayed stale until the next login.
+resource.value() throws while a resource is in its error state, which broke error screens on many pages, including user pages from the first round. A valueOf() helper is now used everywhere.
+The admin TMDB requests got a 404 from a double slash in the URL.
+The seat editor's delete-column always edited Diamond, and an empty Gold category couldn't add a row.
+The booking countdown misread when the seat hold started.
+A dismissed wallet top-up could be credited by a later ticket payment.
+Saving the theater profile sent stale coordinates.
+Clicking Book before the show had loaded threw an error.
+
+Backend issues for you (not changed)
+
+The price fields in the add-show form are ignored; the backend uses its fixed default price per seat category.
+Wallet payment ignores the coupon discount (already on your list).
+Show details need a login, so signed-out visitors on the seat page now see "Log in to pick seats".
+There is no admin chat in the backend, so admin Messages shows a "not available yet" pageBackend issues for you (not changed)
+

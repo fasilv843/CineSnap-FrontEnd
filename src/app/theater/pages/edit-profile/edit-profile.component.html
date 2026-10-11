@@ -1,0 +1,89 @@
+<main class="mx-auto max-w-3xl px-4 pb-28 pt-6 sm:px-8 lg:pt-10">
+  <a routerLink="/theater/profile" class="inline-flex items-center gap-1 rounded-control text-sm font-semibold text-muted hover:text-default">
+    <cs-icon name="chevronLeft" class="size-4" /> Profile
+  </a>
+  <h1 class="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">Edit profile</h1>
+
+  <section class="card mt-6 p-6" aria-labelledby="photo-heading">
+    <h2 id="photo-heading" class="font-semibold">Theater photo</h2>
+    <p class="mt-1 text-sm text-muted">Movie-goers see this on your theater page. Photo changes save right away.</p>
+    <cs-photo-picker class="mt-4" [name]="theater()?.name ?? ''" [src]="photoUrl()" [busy]="photoBusy()" (picked)="uploadPhoto($event)" (removed)="removePhoto()" />
+  </section>
+
+  <form id="profile-form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <section class="card mt-6 p-6" aria-labelledby="details-heading">
+      <h2 id="details-heading" class="font-semibold">Theater details</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <label for="name" class="field-label">Theater name</label>
+          <input id="name" class="input" formControlName="name" autocomplete="organization" />
+          <cs-field-error [control]="form.controls.name" [submitted]="submitted()" [messages]="messages.name" />
+        </div>
+        <div>
+          <label for="mobile" class="field-label">Mobile <span class="font-normal text-subtle">(optional)</span></label>
+          <input id="mobile" class="input" formControlName="mobile" inputmode="numeric" autocomplete="tel-national" placeholder="9876543210" />
+          <cs-field-error [control]="form.controls.mobile" [submitted]="submitted()" [messages]="messages.mobile" />
+        </div>
+        <div>
+          <span class="field-label">Business email</span>
+          <p class="flex h-11 items-center truncate rounded-control bg-muted px-3.5 text-muted">{{ theater()?.email }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card mt-6 p-6" aria-labelledby="address-heading">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="address-heading" class="font-semibold">Address</h2>
+        <button csButton variant="secondary" size="sm" type="button" (click)="useCurrentLocation()" [disabled]="locating() === 'busy'">
+          @if (locating() === 'busy') { <span class="spinner"></span> Finding your address… } @else { Use my current location }
+        </button>
+      </div>
+      @if (locating() === 'failed') {
+        <p class="mt-2 text-sm text-danger" role="alert">Couldn't get your location. Allow location access in the browser, or fill in the address yourself.</p>
+      }
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <label for="landmark" class="field-label">Street or landmark <span class="font-normal text-subtle">(optional)</span></label>
+          <input id="landmark" class="input" formControlName="landmark" autocomplete="address-line1" />
+        </div>
+        <div>
+          <label for="city" class="field-label">City</label>
+          <input id="city" class="input" formControlName="city" autocomplete="address-level2" />
+          <cs-field-error [control]="form.controls.city" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="district" class="field-label">District</label>
+          <input id="district" class="input" formControlName="district" />
+          <cs-field-error [control]="form.controls.district" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="state" class="field-label">State</label>
+          <input id="state" class="input" formControlName="state" autocomplete="address-level1" />
+          <cs-field-error [control]="form.controls.state" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="country" class="field-label">Country</label>
+          <input id="country" class="input" formControlName="country" autocomplete="country-name" />
+          <cs-field-error [control]="form.controls.country" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="zip" class="field-label">PIN code</label>
+          <input id="zip" class="input" formControlName="zip" inputmode="numeric" autocomplete="postal-code" />
+          <cs-field-error [control]="form.controls.zip" [submitted]="submitted()" [messages]="messages.zip" />
+        </div>
+      </div>
+    </section>
+  </form>
+</main>
+
+<div class="fixed inset-x-0 bottom-0 z-30 border-t border-default bg-surface/95 backdrop-blur lg:left-64">
+  <div class="mx-auto flex max-w-3xl items-center justify-end gap-2 px-4 py-3 sm:px-8">
+    @if (submitted() && formInvalid()) {
+      <p class="mr-auto text-sm text-danger" role="alert">Fix the highlighted fields to save.</p>
+    }
+    <a csButton variant="ghost" routerLink="/theater/profile">Cancel</a>
+    <button csButton type="submit" form="profile-form" [disabled]="saving()">
+      @if (saving()) { <span class="spinner"></span> Saving… } @else { Save changes }
+    </button>
+  </div>
+</div>

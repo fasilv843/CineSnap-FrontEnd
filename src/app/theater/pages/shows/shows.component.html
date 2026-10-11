@@ -1,0 +1,64 @@
+<main class="mx-auto max-w-6xl px-4 py-6 sm:px-8 lg:py-10">
+  <cs-page-header heading="Shows" description="What's playing on each screen, day by day.">
+    <button csButton type="button" (click)="addShow()">Add show</button>
+  </cs-page-header>
+
+  <cs-day-picker class="mt-6" [count]="7" [selected]="date()" [allowOther]="true" (selectedChange)="selectDate($event)" />
+
+  <section class="mt-6" [attr.aria-busy]="screens.isLoading()" [attr.aria-label]="'Shows on ' + (dateLabel() | date: 'EEEE d MMMM')">
+    @if (screens.error()) {
+      <div class="card">
+        <cs-state-panel heading="Shows couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="screens.reload()" />
+      </div>
+    } @else if (screens.isLoading()) {
+      <div class="space-y-4">
+        @for (i of [0, 1]; track i) { <div class="skeleton h-44"></div> }
+      </div>
+    } @else if ((screens.value() ?? []).length === 0) {
+      <div class="card">
+        <cs-state-panel heading="No shows on {{ dateLabel() | date: 'EEE d MMM' }}" message="Add a show to put tickets on sale for this day.">
+          <button csButton size="sm" type="button" (click)="addShow()">Add show</button>
+        </cs-state-panel>
+      </div>
+    } @else {
+      <div class="space-y-6">
+        @for (screen of screens.value(); track screen.id) {
+          <section class="card p-5" [attr.aria-labelledby]="'screen-' + screen.id">
+            <div class="flex items-baseline justify-between gap-3">
+              <h2 [id]="'screen-' + screen.id" class="font-display text-2xl font-extrabold tracking-tight">{{ screen.name }}</h2>
+              <a routerLink="/theater/screens" class="text-sm font-semibold text-muted hover:text-default">Screens</a>
+            </div>
+
+            <ul class="mt-4 divide-y" role="list">
+              @for (group of screen.movies; track $index) {
+                <li class="flex flex-col gap-4 py-4 first:pt-0 last:pb-0 sm:flex-row">
+                  @if (group.movie; as m) {
+                    <img [src]="m.poster" [alt]="m.title + ' poster'" class="aspect-[2/3] w-16 shrink-0 self-start rounded-control bg-muted object-cover" loading="lazy" />
+                  }
+                  <div class="min-w-0 flex-1">
+                    <h3 class="font-semibold">{{ group.movie?.title ?? 'Movie no longer listed' }}</h3>
+                    @if (group.movie; as m) { <p class="text-sm text-muted">{{ m.meta }}</p> }
+
+                    <ul class="mt-3 flex flex-wrap gap-2" role="list">
+                      @for (show of group.shows; track show.id) {
+                        <li class="w-40 rounded-control border border-default p-3">
+                          <p class="font-semibold tabular-nums">{{ show.start | date: 'h:mm a' }}</p>
+                          <p class="text-xs text-muted">until {{ show.end | date: 'h:mm a' }}</p>
+                          <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-muted" role="meter" aria-valuemin="0" aria-valuemax="100"
+                            [attr.aria-valuenow]="fill(show)" [attr.aria-label]="'Seats sold for ' + (show.start | date: 'h:mm a')">
+                            <div class="h-full rounded-full bg-primary" [style.width.%]="fill(show)"></div>
+                          </div>
+                          <p class="mt-1 text-xs text-muted">{{ show.sold }} of {{ show.total }} sold</p>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                </li>
+              }
+            </ul>
+          </section>
+        }
+      </div>
+    }
+  </section>
+</main>

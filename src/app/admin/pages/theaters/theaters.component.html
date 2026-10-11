@@ -1,0 +1,83 @@
+<main class="mx-auto max-w-6xl px-4 py-6 sm:px-8 lg:py-10">
+  <cs-page-header heading="Theaters" description="Review new registrations and manage theaters on CineSnap.">
+    <cs-search-field class="w-full sm:w-72" [value]="paging.query()" label="Search theaters" placeholder="Search by name or email" (search)="paging.setQuery($event)" />
+  </cs-page-header>
+
+  <section class="card mt-6 overflow-hidden" aria-label="Theaters" [attr.aria-busy]="theaters.isLoading()">
+    @if (theaters.error()) {
+      <cs-state-panel heading="Theaters couldn't be loaded" message="Check your connection and try again." [retry]="true" (retried)="theaters.reload()" />
+    } @else if (theaters.isLoading() && rows().length === 0) {
+      <div class="space-y-3 p-5">
+        @for (i of [0, 1, 2, 3, 4]; track i) { <div class="skeleton h-12"></div> }
+      </div>
+    } @else if (total() === 0) {
+      <cs-state-panel [heading]="paging.query() ? 'No theaters match “' + paging.query() + '”' : 'No theaters yet'"
+        [message]="paging.query() ? 'Try another name or email.' : 'Registrations show up here for review.'" />
+    } @else {
+      <table class="data-table" [class.opacity-60]="theaters.isLoading()">
+        <thead>
+          @for (headerGroup of table.getHeaderGroups(); track headerGroup.id) {
+            <tr>
+              @for (header of headerGroup.headers; track header.id) {
+                <th scope="col" [class.text-right]="header.column.id === 'wallet' || header.column.id === 'actions'">{{ header.column.columnDef.header }}</th>
+              }
+            </tr>
+          }
+        </thead>
+        <tbody>
+          @for (row of table.getRowModel().rows; track row.id) {
+            @let t = row.original;
+            @let s = statusOf(t);
+            <tr>
+              <td>
+                <div class="flex items-center gap-3">
+                  <cs-avatar [name]="t.name" [src]="avatar(t)" />
+                  <div class="min-w-0">
+                    <p class="font-semibold">{{ t.name }}</p>
+                    <p class="text-sm text-muted">Licence {{ t.liscenceId }}</p>
+                  </div>
+                </div>
+              </td>
+              <td data-label="Contact">
+                <span class="break-all">{{ t.email }}</span>
+                @if (t.mobile) { <span class="block text-sm text-muted">{{ t.mobile }}</span> }
+              </td>
+              <td data-label="Location">
+                @if (t.address) {
+                  {{ t.address.city }}<span class="block text-sm text-muted">{{ t.address.state }}</span>
+                } @else {
+                  <span class="text-subtle">Not added</span>
+                }
+              </td>
+              <td data-label="Wallet" class="text-right tabular-nums">₹{{ t.wallet }}</td>
+              <td data-label="Status"><span class="status-pill" [attr.data-tone]="status[s].tone">{{ status[s].label }}</span></td>
+              <td data-label="Actions" class="text-right">
+                <div class="inline-flex flex-wrap justify-end gap-1">
+                  @switch (s) {
+                    @case ('pending') {
+                      <button csButton size="sm" type="button" [disabled]="busy() === t._id" (click)="act(t, 'approve')">Approve</button>
+                      <button csButton variant="danger" size="sm" type="button" [disabled]="busy() === t._id" (click)="act(t, 'reject')">Reject</button>
+                    }
+                    @case ('approved') {
+                      <button csButton variant="danger" size="sm" type="button" [disabled]="busy() === t._id" (click)="act(t, 'block')">Block</button>
+                    }
+                    @case ('blocked') {
+                      <button csButton variant="secondary" size="sm" type="button" [disabled]="busy() === t._id" (click)="act(t, 'unblock')">Unblock</button>
+                    }
+                    @default { <span class="text-sm text-subtle">—</span> }
+                  }
+                  @if (busy() === t._id) { <span class="spinner self-center text-muted" aria-label="Working"></span> }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+
+  @if (total() > 0) {
+    <cs-pagination class="mt-4 block" [page]="paging.page()" [pageSize]="paging.limit()" [total]="total()" [pageSizes]="paging.pageSizes"
+      (pageChange)="paging.goToPage($event)" (pageSizeChange)="paging.setPageSize($event)" />
+  }
+</main>

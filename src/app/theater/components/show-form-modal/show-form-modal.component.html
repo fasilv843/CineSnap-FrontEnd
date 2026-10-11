@@ -1,0 +1,111 @@
+<div class="card mx-auto max-h-[calc(100dvh-2rem)] w-[min(36rem,calc(100vw-2rem))] overflow-y-auto p-6 shadow-raised" role="dialog" aria-labelledby="show-form-title">
+  <h2 id="show-form-title" class="text-xl font-semibold">Add a show</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="mt-5 space-y-5">
+    <!-- Movie -->
+    <div>
+      <span class="mb-1.5 block text-sm font-semibold" id="movie-label">Movie</span>
+      @if (movie(); as m) {
+        <div class="flex items-center gap-3 rounded-control border border-default p-2">
+          <img [src]="'https://image.tmdb.org/t/p/w92' + m.poster_path" alt="" class="h-14 w-10 rounded-sm bg-muted object-cover" />
+          <div class="min-w-0 flex-1">
+            <p class="truncate font-semibold">{{ m.title }}</p>
+            <p class="text-xs text-muted">{{ m.release_date | date: 'yyyy' }} · {{ runtime() }}</p>
+          </div>
+          <button csButton variant="ghost" size="sm" type="button" (click)="changeMovie()">Change</button>
+        </div>
+      } @else {
+        <input id="movie" class="input" type="search" placeholder="Search CineSnap movies" autocomplete="off" aria-labelledby="movie-label"
+          [value]="query()" (input)="query.set($any($event.target).value)" />
+        <div class="mt-2 max-h-56 overflow-y-auto rounded-control border border-default" role="listbox" aria-labelledby="movie-label" [attr.aria-busy]="searching()">
+          @if (searching() && movies().length === 0) {
+            <div class="space-y-2 p-2">
+              @for (i of [0, 1, 2]; track i) { <div class="skeleton h-9"></div> }
+            </div>
+          } @else if (searchFailed()) {
+            <p class="p-3 text-sm text-muted">Movies couldn't be loaded. Edit the search to try again.</p>
+          } @else if (movies().length === 0) {
+            <p class="p-3 text-sm text-muted">No movies match "{{ query() }}". Ask the CineSnap admin to add it.</p>
+          } @else {
+            @for (option of movies(); track option._id) {
+              <button type="button" role="option" aria-selected="false" class="movie-option" (click)="pickMovie(option)">
+                <span class="truncate font-medium">{{ option.title }}</span>
+                <span class="shrink-0 text-xs text-muted">{{ option.release_date | date: 'yyyy' }}</span>
+              </button>
+            }
+          }
+        </div>
+        @if (submitted()) {
+          <p class="mt-1 text-sm text-danger" role="alert">Choose a movie</p>
+        }
+      }
+    </div>
+
+    <!-- Screen -->
+    <div>
+      <label for="screen" class="mb-1.5 block text-sm font-semibold">Screen</label>
+      @if (screens.error()) {
+        <p class="text-sm text-muted">Screens couldn't be loaded. <button csButton variant="link" type="button" (click)="screens.reload()">Try again</button></p>
+      } @else {
+        <select id="screen" class="input" formControlName="screenId" [attr.aria-busy]="screens.isLoading()">
+          <option value="" disabled>{{ screens.isLoading() ? 'Loading screens…' : 'Choose a screen' }}</option>
+          @for (screen of screens.value() ?? []; track screen._id) {
+            <option [value]="screen._id">{{ screen.name }} · {{ screen.seatsCount }} seats</option>
+          }
+        </select>
+        @if (!screens.isLoading() && (screens.value() ?? []).length === 0) {
+          <p class="mt-1 text-sm text-muted">Add a screen first, from the Screens page.</p>
+        }
+        <cs-field-error [control]="form.controls.screenId" [submitted]="submitted()" [messages]="messages.screenId" />
+      }
+    </div>
+
+    <!-- When -->
+    <div class="grid gap-4 sm:grid-cols-3">
+      <div>
+        <label for="date" class="mb-1.5 block text-sm font-semibold">Date</label>
+        <input id="date" type="date" class="input" formControlName="date" [min]="today" />
+        <cs-field-error [control]="form.controls.date" [submitted]="submitted()" [messages]="messages.date" />
+      </div>
+      <div>
+        <label for="startTime" class="mb-1.5 block text-sm font-semibold">Starts</label>
+        <input id="startTime" type="time" class="input" formControlName="startTime" />
+        <cs-field-error [control]="form.controls.startTime" [submitted]="submitted()" [messages]="messages.startTime" />
+      </div>
+      <div>
+        <span class="mb-1.5 block text-sm font-semibold">Ends</span>
+        <p class="flex h-11 items-center rounded-control bg-muted px-3.5 text-muted" aria-live="polite">
+          {{ endTime() ? (endTime() | date: 'h:mm a') : 'Pick a movie and time' }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Prices for the seat categories this screen has -->
+    @if (categories.isLoading()) {
+      <div class="skeleton h-16"></div>
+    } @else if (categories.error()) {
+      <p class="text-sm text-muted">Seat categories couldn't be loaded. <button csButton variant="link" type="button" (click)="categories.reload()">Try again</button></p>
+    } @else if ((categories.value() ?? []).length > 0) {
+      <fieldset>
+        <legend class="mb-1.5 text-sm font-semibold">Ticket prices</legend>
+        <div class="grid gap-4 sm:grid-cols-3">
+          @for (category of categories.value(); track category.key) {
+            <div>
+              <label [for]="category.control" class="mb-1 block text-sm text-muted">{{ category.label }}</label>
+              <div class="relative">
+                <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted">₹</span>
+                <input [id]="category.control" class="input pl-7" inputmode="numeric" [formControlName]="category.control" />
+              </div>
+              <cs-field-error [control]="form.controls[category.control]" [submitted]="submitted()" [messages]="messages.price" />
+            </div>
+          }
+        </div>
+      </fieldset>
+    }
+
+    <div class="flex justify-end gap-2 border-t border-default pt-5">
+      <button csButton variant="ghost" type="button" (click)="modal.dismiss('cancel')">Cancel</button>
+      <button csButton type="submit">Add show</button>
+    </div>
+  </form>
+</div>

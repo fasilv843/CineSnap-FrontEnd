@@ -1,0 +1,86 @@
+<app-user-nav />
+
+<main class="container max-w-3xl pb-28 pt-6 sm:pt-8">
+  <a routerLink="/user/profile" class="text-sm font-semibold text-muted hover:text-default">‹ Back to profile</a>
+  <h1 class="mt-2 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">Edit profile</h1>
+
+  <!-- Photo: uploads immediately, separate from the form below -->
+  <section class="card mt-6 p-6" aria-labelledby="photo-heading">
+    <h2 id="photo-heading" class="font-semibold">Profile photo</h2>
+    <p class="mt-1 text-sm text-muted">Photo changes save right away.</p>
+    <cs-photo-picker class="mt-4" [name]="user()?.name ?? ''" [src]="photoUrl() || null" [busy]="photoBusy()" (picked)="uploadPhoto($event)" (removed)="removePhoto()" />
+  </section>
+
+  <form id="profile-form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <section class="card mt-6 p-6" aria-labelledby="details-heading">
+      <h2 id="details-heading" class="font-semibold">Personal details</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <label for="name" class="field-label">Full name</label>
+          <input id="name" class="input" formControlName="name" autocomplete="name" />
+          <cs-field-error [control]="form.controls.name" [submitted]="submitted()" [messages]="messages.name" />
+        </div>
+        <div>
+          <label for="mobile" class="field-label">Mobile <span class="font-normal text-subtle">(optional)</span></label>
+          <input id="mobile" class="input" formControlName="mobile" inputmode="numeric" autocomplete="tel-national" placeholder="9876543210" />
+          <cs-field-error [control]="form.controls.mobile" [submitted]="submitted()" [messages]="messages.mobile" />
+        </div>
+        <div>
+          <label for="dob" class="field-label">Date of birth</label>
+          <input id="dob" class="input" type="date" formControlName="dob" autocomplete="bday" />
+          <cs-field-error [control]="form.controls.dob" [submitted]="submitted()" [messages]="messages.dob" />
+        </div>
+      </div>
+    </section>
+
+    <section class="card mt-6 p-6" aria-labelledby="address-heading">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="address-heading" class="font-semibold">Address</h2>
+        <button csButton variant="secondary" size="sm" type="button" (click)="useCurrentLocation()" [disabled]="locating() === 'busy'">
+          {{ locating() === 'busy' ? 'Finding your address…' : 'Use my current location' }}
+        </button>
+      </div>
+      @if (locating() === 'failed') {
+        <p class="mt-2 text-sm text-danger" role="alert">Couldn't get your location. Allow location access in the browser, or fill in the address yourself.</p>
+      }
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="city" class="field-label">City</label>
+          <input id="city" class="input" formControlName="city" autocomplete="address-level2" />
+          <cs-field-error [control]="form.controls.city" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="district" class="field-label">District</label>
+          <input id="district" class="input" formControlName="district" />
+          <cs-field-error [control]="form.controls.district" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="state" class="field-label">State</label>
+          <input id="state" class="input" formControlName="state" autocomplete="address-level1" />
+          <cs-field-error [control]="form.controls.state" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="country" class="field-label">Country</label>
+          <input id="country" class="input" formControlName="country" autocomplete="country-name" />
+          <cs-field-error [control]="form.controls.country" [submitted]="submitted()" [messages]="messages.required" />
+        </div>
+        <div>
+          <label for="zip" class="field-label">PIN code</label>
+          <input id="zip" class="input" formControlName="zip" inputmode="numeric" autocomplete="postal-code" />
+          <cs-field-error [control]="form.controls.zip" [submitted]="submitted()" [messages]="messages.zip" />
+        </div>
+      </div>
+    </section>
+  </form>
+</main>
+
+<!-- Actions stay in reach while scrolling the form -->
+<div class="save-bar fixed inset-x-0 z-30 border-t border-default bg-surface/95 backdrop-blur">
+  <div class="container flex max-w-3xl items-center justify-end gap-2 py-3">
+    @if (submitted() && formInvalid()) {
+      <p class="mr-auto text-sm text-danger" role="alert">Fix the highlighted fields to save.</p>
+    }
+    <a csButton variant="ghost" routerLink="/user/profile">Cancel</a>
+    <button csButton type="submit" form="profile-form" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Save changes' }}</button>
+  </div>
+</div>

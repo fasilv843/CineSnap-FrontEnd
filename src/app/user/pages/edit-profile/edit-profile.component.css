@@ -1,0 +1,17 @@
+.field-label {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Sits above the mobile tab bar on phones, at the bottom on wider screens */
+.save-bar {
+  bottom: calc(4rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 640px) {
+  .save-bar {
+    bottom: 0;
+  }
+}

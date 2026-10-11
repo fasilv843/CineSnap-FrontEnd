@@ -1,0 +1,42 @@
+<cs-auth-shell heading="Welcome back" subheading="Sign in to book seats, see your tickets and use your wallet.">
+  <cs-google-button text="signin_with" />
+  @if (googleFailed()) {
+    <p class="mt-2 text-center text-sm text-danger" role="alert">Google sign-in didn't go through. Try again, or use your email.</p>
+  }
+
+  <div class="my-6 flex items-center gap-3 text-sm text-subtle" role="separator">
+    <span class="flex-1 border-t border-default"></span>
+    or sign in with email
+    <span class="flex-1 border-t border-default"></span>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="signIn()" novalidate class="space-y-4">
+    <div>
+      <label for="email" class="mb-1.5 block text-sm font-semibold">Email</label>
+      <input id="email" type="email" class="input" formControlName="email" autocomplete="email" placeholder="you@example.com" />
+      <cs-field-error [control]="form.controls.email" [submitted]="submitted()" [messages]="messages.email" />
+    </div>
+
+    <div>
+      <label for="password" class="mb-1.5 block text-sm font-semibold">Password</label>
+      <div class="relative">
+        <input id="password" class="input pr-16" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
+        <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-control px-2 py-1 text-sm font-semibold text-muted hover:text-default"
+          [attr.aria-pressed]="showPassword()" (click)="showPassword.set(!showPassword())">
+          {{ showPassword() ? 'Hide' : 'Show' }}<span class="sr-only"> password</span>
+        </button>
+      </div>
+      <cs-field-error [control]="form.controls.password" [submitted]="submitted()" [messages]="messages.password" />
+    </div>
+
+    <button csButton size="lg" type="submit" class="w-full" [disabled]="signingIn()">{{ signingIn() ? 'Signing in…' : 'Sign in' }}</button>
+  </form>
+
+  <p class="mt-6 text-center text-muted">
+    New to CineSnap?
+    <a routerLink="/user/register" class="font-semibold text-default underline decoration-accent underline-offset-4">Create an account</a>
+  </p>
+  <p class="mt-8 border-t border-default pt-4 text-center text-sm text-subtle">
+    Run a theater? <a routerLink="/theater/login" class="font-semibold text-muted hover:text-default">Theater login</a>
+  </p>
+</cs-auth-shell>
