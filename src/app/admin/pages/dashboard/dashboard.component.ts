@@ -2,16 +2,16 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { rxResource } from '@angular/core/rxjs-interop'
 import { RouterLink } from '@angular/router'
 import { map } from 'rxjs'
-import { AdminService } from 'src/app/services/admin.service'
-import { TheaterService } from 'src/app/services/theater.service'
-import { TicketService } from 'src/app/services/ticket.service'
-import { UserService } from 'src/app/services/user.service'
+import { AdminDashboardRepo } from 'src/app/admin/repos/dashboard.repo'
+import { AdminTheaterRepo } from 'src/app/admin/repos/theater.repo'
+import { AdminTicketRepo } from 'src/app/admin/repos/ticket.repo'
+import { AdminUserRepo } from 'src/app/admin/repos/user.repo'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
 import { RevenueChartComponent } from 'src/app/shared/ui/revenue-chart.component'
 import { StatTileComponent } from 'src/app/shared/ui/stat-tile.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 const rupees = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })
 
@@ -53,27 +53,27 @@ const rupees = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'IN
     </main>
   `
 })
-export class AdminHomeComponent {
-  private readonly adminService = inject(AdminService)
-  private readonly ticketService = inject(TicketService)
-  private readonly theaterService = inject(TheaterService)
-  private readonly userService = inject(UserService)
+export class AdminDashboardComponent {
+  private readonly dashboardRepo = inject(AdminDashboardRepo)
+  private readonly theaterRepo = inject(AdminTheaterRepo)
+  private readonly ticketRepo = inject(AdminTicketRepo)
+  private readonly userRepo = inject(AdminUserRepo)
 
   protected readonly revenue = rxResource({
-    stream: () => this.adminService.getRevenueData().pipe(map(res => res.data ?? { labels: [], data: [] }))
+    stream: () => this.dashboardRepo.getRevenueData().pipe(map(res => res.data ?? { labels: [], data: [] }))
   })
 
   // Only the counts are needed, so ask for a single row of each list
   protected readonly tickets = rxResource({
-    stream: () => this.ticketService.getAllTickets(1, 1).pipe(map(res => res.data?.ticketCount ?? 0))
+    stream: () => this.ticketRepo.getAllTickets(1, 1).pipe(map(res => res.data?.ticketCount ?? 0))
   })
 
   protected readonly theaters = rxResource({
-    stream: () => this.theaterService.getAllTheaters(1, 1, '').pipe(map(res => res.data?.theaterCount ?? 0))
+    stream: () => this.theaterRepo.getAllTheaters(1, 1, '').pipe(map(res => res.data?.theaterCount ?? 0))
   })
 
   protected readonly users = rxResource({
-    stream: () => this.userService.getAllUsers(1, 1, '').pipe(map(res => res.data?.userCount ?? 0))
+    stream: () => this.userRepo.getAllUsers(1, 1, '').pipe(map(res => res.data?.userCount ?? 0))
   })
 
   protected readonly revenueTotal = computed(() => rupees.format((valueOf(this.revenue)?.data ?? []).reduce((sum, value) => sum + value, 0)))

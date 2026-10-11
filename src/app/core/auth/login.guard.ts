@@ -1,6 +1,6 @@
 import { inject } from '@angular/core'
 import { type CanActivateFn, Router } from '@angular/router'
-import { isTokenExpired } from '../helpers/jwt-token'
+import { isTokenExpired } from './jwt-token'
 
 export const loginGuard: CanActivateFn = (route) => {
   const router = inject(Router)

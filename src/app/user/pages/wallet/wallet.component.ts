@@ -5,14 +5,14 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { createColumnHelper, injectTable, rowPaginationFeature, tableFeatures } from '@tanstack/angular-table'
 import { map } from 'rxjs'
-import { type IWalletHistory } from 'src/app/models/common'
-import { UserService } from 'src/app/services/user.service'
-import { WalletTopUpService } from 'src/app/services/wallet-top-up.service'
+import { type IWalletHistory } from 'src/app/core/models/api.model'
+import { UserAccountRepo } from 'src/app/user/repos/account.repo'
+import { UserWalletService } from 'src/app/user/services/wallet.service'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { PaginationComponent } from 'src/app/shared/ui/pagination.component'
-import { selectUserDetails } from 'src/app/states/user/user.selector'
-import { UserNavComponent } from '../user-nav/user-nav.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { selectUserDetails } from 'src/app/core/state/user/user.selector'
+import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 const PAGE_SIZES = [10, 20, 50]
 
@@ -27,14 +27,14 @@ const columns = column.columns([
 
 @Component({
   selector: 'app-user-wallet',
-  templateUrl: './user-wallet.component.html',
+  templateUrl: './wallet.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [UserNavComponent, ButtonDirective, PaginationComponent, DatePipe]
 })
 export class UserWalletComponent {
   private readonly store = inject(Store)
-  private readonly userService = inject(UserService)
-  private readonly walletTopUp = inject(WalletTopUpService)
+  private readonly accountRepo = inject(UserAccountRepo)
+  private readonly wallet = inject(UserWalletService)
   private readonly router = inject(Router)
   private readonly route = inject(ActivatedRoute)
 
@@ -51,7 +51,7 @@ export class UserWalletComponent {
 
   protected readonly history = rxResource({
     params: () => ({ userId: this.user()?._id ?? '', page: this.page(), limit: this.limit() }),
-    stream: ({ params }) => this.userService.getUserWalletHistory(params.userId, params.page, params.limit).pipe(
+    stream: ({ params }) => this.accountRepo.getUserWalletHistory(params.userId, params.page, params.limit).pipe(
       map(res => res.data ?? { walletHistory: [], count: 0 })
     )
   })
@@ -80,6 +80,6 @@ export class UserWalletComponent {
 
   protected addMoney (): void {
     const user = this.user()
-    if (user !== null) this.walletTopUp.addMoney(user)
+    if (user !== null) this.wallet.addMoney(user)
   }
 }

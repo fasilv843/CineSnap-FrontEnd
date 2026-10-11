@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TheaterPageComponent } from './theater-page.component';
+import { UserTheaterDetailComponent } from './theater-detail.component';
 
-describe('TheaterPageComponent', () => {
-  let component: TheaterPageComponent;
-  let fixture: ComponentFixture<TheaterPageComponent>;
+describe('UserTheaterDetailComponent', () => {
+  let component: UserTheaterDetailComponent;
+  let fixture: ComponentFixture<UserTheaterDetailComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [TheaterPageComponent]
+    imports: [UserTheaterDetailComponent]
 });
-    fixture = TestBed.createComponent(TheaterPageComponent);
+    fixture = TestBed.createComponent(UserTheaterDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

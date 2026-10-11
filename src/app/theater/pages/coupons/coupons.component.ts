@@ -7,19 +7,19 @@ import {
   rowPaginationFeature, rowSortingFeature, type SortingState, tableFeatures
 } from '@tanstack/angular-table'
 import { map } from 'rxjs'
-import { type ICouponReqs, type ICouponRes } from 'src/app/models/coupon'
-import { CouponService } from 'src/app/services/coupon.service'
-import { ModalService } from 'src/app/services/modal.service'
+import { type ICouponReqs, type ICouponRes } from 'src/app/core/models/coupon.model'
+import { TheaterCouponRepo } from 'src/app/theater/repos/coupon.repo'
+import { ModalService } from 'src/app/shared/ui/modal.service'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { ConfirmService } from 'src/app/shared/ui/confirm-dialog.component'
 import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
 import { PaginationComponent } from 'src/app/shared/ui/pagination.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
-import { ToastService } from 'src/app/shared/ui/toast.service'
+import { ToastService } from 'src/app/core/toast/toast.service'
 import { injectUrlPaging } from 'src/app/shared/ui/url-paging'
-import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import { CouponFormComponent } from '../coupon-form/coupon-form.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { selectTheaterDetails } from 'src/app/core/state/theater/theater.selector'
+import { CouponFormComponent } from '../../components/coupon-form/coupon-form.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 type CouponStatus = 'active' | 'scheduled' | 'expired' | 'off'
 
@@ -82,12 +82,12 @@ const columns = column.columns([
 
 @Component({
   selector: 'app-thr-coupon',
-  templateUrl: './thr-coupon.component.html',
+  templateUrl: './coupons.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DatePipe, ButtonDirective, PageHeaderComponent, PaginationComponent, StatePanelComponent]
 })
-export class ThrCouponComponent {
-  private readonly couponService = inject(CouponService)
+export class TheaterCouponsComponent {
+  private readonly couponRepo = inject(TheaterCouponRepo)
   private readonly modalService = inject(ModalService)
   private readonly confirm = inject(ConfirmService)
   private readonly toast = inject(ToastService)
@@ -97,7 +97,7 @@ export class ThrCouponComponent {
 
   protected readonly coupons = rxResource({
     params: () => this.theater()?._id ?? '',
-    stream: ({ params }) => this.couponService.findCouponsOnTheater(params).pipe(map(res => res.data ?? []))
+    stream: ({ params }) => this.couponRepo.findCouponsOnTheater(params).pipe(map(res => res.data ?? []))
   })
 
   // Local copy so new and toggled coupons show at once
@@ -126,7 +126,7 @@ export class ThrCouponComponent {
 
   protected addCoupon (): void {
     this.modalService.open(CouponFormComponent, { static: true }).result.then((coupon: Omit<ICouponReqs, 'theaterId'>) => {
-      this.couponService.saveCoupon({ ...coupon, theaterId: this.theater()?._id ?? '' }).subscribe(res => {
+      this.couponRepo.saveCoupon({ ...coupon, theaterId: this.theater()?._id ?? '' }).subscribe(res => {
         if (res.data === null) return
         const saved = res.data
         this.rows.update(rows => [toCouponRow(saved, new Date()), ...rows])
@@ -148,7 +148,7 @@ export class ThrCouponComponent {
       if (!confirmed) return
     }
     this.busy.set(row.id)
-    this.couponService.cancelCoupon(row.id).subscribe({
+    this.couponRepo.cancelCoupon(row.id).subscribe({
       next: res => {
         this.busy.set(null)
         if (res.data === null) return

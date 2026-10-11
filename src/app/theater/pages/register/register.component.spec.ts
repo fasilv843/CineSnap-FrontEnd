@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ThrRegisterComponent } from './thr-register.component';
+import { TheaterRegisterComponent } from './register.component';
 
-describe('ThrRegisterComponent', () => {
-  let component: ThrRegisterComponent;
-  let fixture: ComponentFixture<ThrRegisterComponent>;
+describe('TheaterRegisterComponent', () => {
+  let component: TheaterRegisterComponent;
+  let fixture: ComponentFixture<TheaterRegisterComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ThrRegisterComponent]
+    imports: [TheaterRegisterComponent]
 });
-    fixture = TestBed.createComponent(ThrRegisterComponent);
+    fixture = TestBed.createComponent(TheaterRegisterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

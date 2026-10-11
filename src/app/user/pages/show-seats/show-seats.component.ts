@@ -4,22 +4,21 @@ import { DatePipe } from '@angular/common'
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { map, of } from 'rxjs'
-import { dateToString } from 'src/app/helpers/date'
-import { toMovieCard } from 'src/app/helpers/movie-card'
-import { type ICSMovieRes } from 'src/app/models/movie'
-import { type IShow } from 'src/app/models/show'
-import { type IShowSeatCategoryRes } from 'src/app/models/showSeat'
-import { type ITicketReqs, type ITicketSeat } from 'src/app/models/ticket'
-import { ShowSeatService } from 'src/app/services/show-seat.service'
-import { ShowService } from 'src/app/services/show.service'
-import { TicketService } from 'src/app/services/ticket.service'
-import { ChargePerDiamondTicket, ChargePerGoldTicket, ChargePerSilverTicket } from 'src/app/shared/constants'
+import { dateToString } from 'src/app/shared/utils/date'
+import { toMovieCard } from 'src/app/shared/utils/movie-card'
+import { type ICSMovieRes } from 'src/app/core/models/movie.model'
+import { type IShow } from 'src/app/core/models/show.model'
+import { type IShowSeatCategoryRes } from 'src/app/core/models/show-seat.model'
+import { type ITicketReqs, type ITicketSeat } from 'src/app/core/models/ticket.model'
+import { UserShowRepo } from 'src/app/user/repos/show.repo'
+import { UserTicketRepo } from 'src/app/user/repos/ticket.repo'
+import { ChargePerDiamondTicket, ChargePerGoldTicket, ChargePerSilverTicket } from 'src/app/core/constants/constants'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { IconComponent } from 'src/app/shared/ui/icon.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
-import { selectUserDetails } from 'src/app/states/user/user.selector'
-import { UserNavComponent } from '../user-nav/user-nav.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { selectUserDetails } from 'src/app/core/state/user/user.selector'
+import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 interface IShowWithMovie extends Omit<IShow, 'movieId'> {
   movieId: ICSMovieRes | null
@@ -58,13 +57,12 @@ function toCategory (key: CategoryKey, category: IShowSeatCategoryRes | undefine
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [UserNavComponent, RouterLink, DatePipe, ButtonDirective, IconComponent, StatePanelComponent]
 })
-export class ShowSeatsComponent {
+export class UserShowSeatsComponent {
   private readonly route = inject(ActivatedRoute)
   private readonly router = inject(Router)
   private readonly store = inject(Store)
-  private readonly showService = inject(ShowService)
-  private readonly ticketService = inject(TicketService)
-  private readonly showSeatService = inject(ShowSeatService)
+  private readonly showRepo = inject(UserShowRepo)
+  private readonly ticketRepo = inject(UserTicketRepo)
 
   protected readonly user = this.store.selectSignal(selectUserDetails)
   protected readonly maxSeats = MAX_SEATS
@@ -77,12 +75,12 @@ export class ShowSeatsComponent {
 
   protected readonly seatMap = rxResource({
     params: () => this.seatMapId(),
-    stream: ({ params }) => this.showSeatService.getShowSeatDetails(params).pipe(map(res => res.data))
+    stream: ({ params }) => this.showRepo.getShowSeatDetails(params).pipe(map(res => res.data))
   })
 
   protected readonly show = rxResource({
     params: () => this.showId(),
-    stream: ({ params }) => this.showService.getShowDetails(params).pipe(map(res => res.data as unknown as IShowWithMovie | null))
+    stream: ({ params }) => this.showRepo.getShowDetails(params).pipe(map(res => res.data as unknown as IShowWithMovie | null))
   })
 
   // Seats other people are paying for right now
@@ -90,7 +88,7 @@ export class ShowSeatsComponent {
     params: () => this.showId(),
     stream: ({ params }) => params === ''
       ? of(new Set<string>())
-      : this.ticketService.getHoldedSeats(params).pipe(map(res => new Set((res.data ?? []).flatMap(ticket =>
+      : this.ticketRepo.getHoldedSeats(params).pipe(map(res => new Set((res.data ?? []).flatMap(ticket =>
         CATEGORY_KEYS.flatMap(key => ticket[SEAT_LISTS[key]]?.seats ?? [])))))
   })
 
@@ -188,7 +186,7 @@ export class ShowSeatsComponent {
     }
 
     this.booking.set(true)
-    this.ticketService.bookTicket(ticket).subscribe({
+    this.ticketRepo.bookTicket(ticket).subscribe({
       next: res => {
         this.booking.set(false)
         if (res.data != null) void this.router.navigate(['/user/show/book', res.data._id])

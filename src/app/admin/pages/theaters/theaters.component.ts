@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, sig
 import { rxResource } from '@angular/core/rxjs-interop'
 import { createColumnHelper, injectTable, rowPaginationFeature, tableFeatures } from '@tanstack/angular-table'
 import { type Observable, map } from 'rxjs'
-import { type ITheaterRes } from 'src/app/models/theater'
-import { TheaterService } from 'src/app/services/theater.service'
-import { imagesFolderPath } from 'src/app/shared/constants'
+import { type ITheaterRes } from 'src/app/core/models/theater.model'
+import { AdminTheaterRepo } from 'src/app/admin/repos/theater.repo'
+import { imagesFolderPath } from 'src/app/core/constants/constants'
 import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { ConfirmService } from 'src/app/shared/ui/confirm-dialog.component'
@@ -12,9 +12,9 @@ import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
 import { PaginationComponent } from 'src/app/shared/ui/pagination.component'
 import { SearchFieldComponent } from 'src/app/shared/ui/search-field.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
-import { ToastService } from 'src/app/shared/ui/toast.service'
+import { ToastService } from 'src/app/core/toast/toast.service'
 import { injectUrlPaging } from 'src/app/shared/ui/url-paging'
-import { valueOf } from 'src/app/helpers/resource'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 type TheaterStatus = 'pending' | 'approved' | 'rejected' | 'blocked'
 type Action = 'approve' | 'reject' | 'block' | 'unblock'
@@ -46,12 +46,12 @@ const columns = column.columns([
 
 @Component({
   selector: 'app-admin-theaters',
-  templateUrl: './admin-theaters.component.html',
+  templateUrl: './theaters.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AvatarComponent, ButtonDirective, PageHeaderComponent, PaginationComponent, SearchFieldComponent, StatePanelComponent]
 })
 export class AdminTheatersComponent {
-  private readonly theaterService = inject(TheaterService)
+  private readonly theaterRepo = inject(AdminTheaterRepo)
   private readonly confirm = inject(ConfirmService)
   private readonly toast = inject(ToastService)
 
@@ -59,7 +59,7 @@ export class AdminTheatersComponent {
 
   protected readonly theaters = rxResource({
     params: () => ({ page: this.paging.page(), limit: this.paging.limit(), q: this.paging.query() }),
-    stream: ({ params }) => this.theaterService.getAllTheaters(params.page, params.limit, params.q).pipe(
+    stream: ({ params }) => this.theaterRepo.getAllTheaters(params.page, params.limit, params.q).pipe(
       map(res => res.data ?? { theaters: [], theaterCount: 0 })
     )
   })
@@ -97,8 +97,8 @@ export class AdminTheatersComponent {
     if (!confirmed) return
 
     const request: Observable<unknown> = action === 'approve'
-      ? this.theaterService.approveTheater(theater._id)
-      : action === 'reject' ? this.theaterService.rejectTheater(theater._id) : this.theaterService.blockTheater(theater._id)
+      ? this.theaterRepo.approveTheater(theater._id)
+      : action === 'reject' ? this.theaterRepo.rejectTheater(theater._id) : this.theaterRepo.blockTheater(theater._id)
 
     const change: Partial<ITheaterRes> = action === 'approve'
       ? { approvalStatus: 'Approved' }

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdminMoviesSearchComponent } from './admin-movies-search.component';
+import { AdminMoviesSearchComponent } from './movies-tabs.component';
 
 describe('AdminMoviesSearchComponent', () => {
   let component: AdminMoviesSearchComponent;

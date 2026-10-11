@@ -1,5 +1,5 @@
-import { type ColNumType } from 'src/app/models/common'
-import { type IScreenSeatCategoryRes, type IScreenSeatRes } from 'src/app/models/screenSeat'
+import { type ColNumType } from 'src/app/core/models/api.model'
+import { type IScreenSeatCategoryRes, type IScreenSeatRes } from 'src/app/core/models/screen-seat.model'
 
 /**
  * Editable seat layout. Each cell is a seat (true) or a gap (false); seat numbers and row letters are derived,

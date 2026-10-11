@@ -1,18 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, signal } from '@angular/core'
+import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, signal } from '@angular/core'
 import { rxResource, takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop'
 import { ActivatedRoute, type ParamMap, Router } from '@angular/router'
 import { debounceTime, distinctUntilChanged, map, type Observable } from 'rxjs'
-import { isGenreType, isLangType } from 'src/app/helpers/movie'
-import { type MovieCard, toFilterOptions, toMovieCard } from 'src/app/helpers/movie-card'
-import { type genreType, type langType } from 'src/app/models/filter'
-import { type ICSMovieRes } from 'src/app/models/movie'
-import { MovieService } from 'src/app/services/movie.service'
+import { isGenreType, isLangType } from 'src/app/shared/utils/movie'
+import { type MovieCard, toFilterOptions, toMovieCard } from 'src/app/shared/utils/movie-card'
+import { type genreType, type langType } from 'src/app/core/models/filter.model'
+import { type ICSMovieRes } from 'src/app/core/models/movie.model'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { ConfirmService } from 'src/app/shared/ui/confirm-dialog.component'
 import { InViewDirective } from 'src/app/shared/ui/in-view.directive'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
-import { ToastService } from 'src/app/shared/ui/toast.service'
-import { valueOf } from 'src/app/helpers/resource'
+import { ToastService } from 'src/app/core/toast/toast.service'
+import { valueOf } from 'src/app/shared/utils/resource'
+import { MovieCatalogSource } from './movie-catalog-source'
 
 const PAGE_SIZE = 10 // fixed by the backend
 const SEARCH_DEBOUNCE_MS = 350
@@ -49,23 +49,25 @@ function toEntry (movie: ICSMovieRes): CatalogueMovie {
 
 /**
  * The CineSnap movie catalogue with search, genre and language chips, all kept in the URL (?q=&genre=&lang=).
- * [admin]="true" also lists removed movies and adds Remove / Restore on each card.
+ * Movies come from the MovieCatalogSource the host page provides; a source that can delete also lists removed movies
+ * and adds Remove / Restore on each card.
  */
 @Component({
-  selector: 'app-cs-movies',
-  templateUrl: './cs-movies.component.html',
-  styleUrl: './cs-movies.component.css',
+  selector: 'app-movie-catalog',
+  templateUrl: './movie-catalog.component.html',
+  styleUrl: './movie-catalog.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ButtonDirective, InViewDirective, StatePanelComponent]
 })
-export class CsMoviesComponent {
+export class MovieCatalogComponent {
   private readonly router = inject(Router)
   private readonly route = inject(ActivatedRoute)
-  private readonly movieService = inject(MovieService)
+  private readonly source = inject(MovieCatalogSource)
   private readonly confirm = inject(ConfirmService)
   private readonly toast = inject(ToastService)
 
-  readonly admin = input(false)
+  /** Manage mode: removed movies are listed too, with Remove / Restore */
+  protected readonly manage = this.source.deleteMovie !== undefined
 
   private readonly params = toSignal(this.route.queryParamMap, { requireSync: true })
   protected readonly query = computed(() => readQuery(this.params()), { equal: sameQuery })
@@ -75,7 +77,7 @@ export class CsMoviesComponent {
   })
 
   protected readonly filterOptions = rxResource({
-    stream: () => this.movieService.fetchFilterDatas().pipe(map(res => toFilterOptions(res.genres, res.languages)))
+    stream: () => this.source.fetchFilterDatas().pipe(map(res => toFilterOptions(res.genres, res.languages)))
   })
 
   protected readonly searchText = linkedSignal(() => this.query().search)
@@ -83,8 +85,8 @@ export class CsMoviesComponent {
   private readonly page = linkedSignal({ source: this.query, computation: () => 1 })
 
   private readonly pageResource = rxResource({
-    params: () => ({ query: this.query(), page: this.page(), admin: this.admin() }),
-    stream: ({ params }) => this.fetchPage(params.query, params.page, params.admin)
+    params: () => ({ query: this.query(), page: this.page() }),
+    stream: ({ params }) => this.fetchPage(params.query, params.page)
   })
 
   /** All pages loaded so far; Remove / Restore update entries in place */
@@ -130,7 +132,7 @@ export class CsMoviesComponent {
     this.pageResource.reload()
   }
 
-  /** Admin: hide a movie from movie-goers and theaters, or bring it back */
+  /** Manage mode: hide a movie from movie-goers and theaters, or bring it back */
   protected async toggleRemoved (movie: CatalogueMovie): Promise<void> {
     const removing = !movie.removed
     if (removing) {
@@ -142,8 +144,9 @@ export class CsMoviesComponent {
       })
       if (!confirmed) return
     }
+    if (this.source.deleteMovie === undefined) return
     this.busy.set(movie.card.id)
-    this.movieService.deleteMovie(movie.card.id).subscribe({
+    this.source.deleteMovie(movie.card.id).subscribe({
       next: () => {
         this.busy.set(null)
         this.movies.update(list => list.map(m => m.card.id === movie.card.id ? { ...m, removed: removing } : m))
@@ -167,17 +170,17 @@ export class CsMoviesComponent {
     })
   }
 
-  private fetchPage (query: MovieQuery, page: number, admin: boolean): Observable<MoviePage> {
+  private fetchPage (query: MovieQuery, page: number): Observable<MoviePage> {
     if (query.search !== '') {
       // Title search isn't paginated or filtered by the backend, so apply the chips here
-      return this.movieService.searchMovie(query.search, admin).pipe(map(res => ({
+      return this.source.searchMovie(query.search).pipe(map(res => ({
         page: 1,
         complete: true,
         movies: res.data.filter(movie => matchesFilters(movie, query)).map(toEntry)
       })))
     }
-    const filters = { availability: admin ? 'All' as const : 'Available' as const, filterGenres: query.genres, filterLanguages: query.languages }
-    return this.movieService.findCineSnapFilteredMovies(filters, page).pipe(map(res => ({
+    const filters = { availability: this.manage ? 'All' as const : 'Available' as const, filterGenres: query.genres, filterLanguages: query.languages }
+    return this.source.findCineSnapFilteredMovies(filters, page).pipe(map(res => ({
       page,
       complete: res.data.length < PAGE_SIZE,
       movies: res.data.map(toEntry)

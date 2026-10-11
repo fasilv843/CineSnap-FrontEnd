@@ -1,6 +1,6 @@
-import { type valueType, type genreType, type langType } from '../models/filter'
-import { GENRE_NAMES } from '../shared/genreIds'
-import { LanguageAbbreviation } from '../shared/langAbbreviation'
+import { type valueType, type genreType, type langType } from '../../core/models/filter.model'
+import { GENRE_NAMES } from '../../core/constants/genres'
+import { LanguageAbbreviation } from '../../core/constants/languages'
 
 export function getGenre (genre: keyof typeof GENRE_NAMES): string {
   return GENRE_NAMES[genre]

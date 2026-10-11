@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store'
-import { type IUserRes } from 'src/app/models/users'
+import { type IUserRes } from 'src/app/core/models/user.model'
 import { adjustUserWallet, deleteUserFromStore, saveUserOnStore } from './user.actions'
 
 export interface UserState {

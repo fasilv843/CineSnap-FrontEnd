@@ -2,7 +2,7 @@
   <p class="text-muted" aria-live="polite">
     @if (query().search) {
       Results for “{{ query().search }}”
-    } @else if (admin()) {
+    } @else if (manage) {
       Every movie in CineSnap, including removed ones
     } @else {
       Movies you can schedule shows for
@@ -69,7 +69,7 @@
               <span class="line-clamp-2 text-sm text-muted">{{ movie.card.meta }}</span>
             </figcaption>
           </figure>
-          @if (admin()) {
+          @if (manage) {
             <button csButton size="sm" type="button" class="mt-2 w-full" [variant]="movie.removed ? 'secondary' : 'danger'"
               [disabled]="busy() === movie.card.id" (click)="toggleRemoved(movie)">
               @if (busy() === movie.card.id) { <span class="spinner"></span> }

@@ -2,13 +2,13 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
-import { IRevenueData } from '../models/charts'
-import { IApiRes } from '../models/common'
+import { IRevenueData } from '../../core/models/chart.model'
+import { IApiRes } from '../../core/models/api.model'
 
 @Injectable({
   providedIn: 'root'
 })
-export class AdminService {
+export class AdminDashboardRepo {
   constructor (
     private readonly http: HttpClient
   ) { }

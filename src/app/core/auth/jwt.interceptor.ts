@@ -1,11 +1,11 @@
 import { inject } from '@angular/core'
 import { type HttpInterceptorFn } from '@angular/common/http'
 import { switchMap } from 'rxjs'
-import { isTokenExpired } from '../helpers/jwt-token'
-import { AuthService } from '../services/auth.service'
+import { isTokenExpired } from './jwt-token'
+import { AuthRepo } from './auth.repo'
 
 export const jwtInterceptor: HttpInterceptorFn = (request, next) => {
-  const authService = inject(AuthService)
+  const authRepo = inject(AuthRepo)
 
   // Third-party APIs (TMDB, Geoapify) and the token refresh itself carry no CineSnap token
   if (request.headers.has('Bypass-Interceptor')) return next(request)
@@ -30,7 +30,7 @@ export const jwtInterceptor: HttpInterceptorFn = (request, next) => {
   localStorage.removeItem(role + 'AccessToken')
   const refreshToken = localStorage.getItem(role + 'RefreshToken')
   if (refreshToken !== null && !isTokenExpired(refreshToken)) {
-    return authService.getAccessToken(refreshToken).pipe(
+    return authRepo.getAccessToken(refreshToken).pipe(
       switchMap(res => {
         localStorage.setItem(role + 'AccessToken', res.accessToken)
         return next(request.clone({ setHeaders: { Authorization: `Bearer ${res.accessToken}` } }))

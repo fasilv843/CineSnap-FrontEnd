@@ -1,6 +1,6 @@
 import { Validators } from '@angular/forms'
-import { userNameMinLength, userNameMaxLength, nameRegex, emailRegex, OTPRegex, passwordMinLength, passwordRegex, ZipRegex, MAX_COLS, charRegex, numRegex, MAX_TICKET_PRICE, MIN_COLS, MIN_TICKET_PRICE, screenNameMinLength, screenNameMaxLength, screenNameRegex, mobileRegex, MAX_WALLET_ADD, MIN_WALLET_ADD } from './constants'
-import { validateDOB } from '../helpers/validations'
+import { userNameMinLength, userNameMaxLength, nameRegex, emailRegex, OTPRegex, passwordMinLength, passwordRegex, ZipRegex, MAX_COLS, charRegex, numRegex, MAX_TICKET_PRICE, MIN_COLS, MIN_TICKET_PRICE, screenNameMinLength, screenNameMaxLength, screenNameRegex, mobileRegex, MAX_WALLET_ADD, MIN_WALLET_ADD } from '../../core/constants/constants'
+import { validateDOB } from './custom-validators'
 
 export const nameValidators = [
   Validators.required,

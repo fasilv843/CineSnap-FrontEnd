@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'
 import { toSignal } from '@angular/core/rxjs-interop'
 import { type AbstractControl, FormControl, FormGroup, ReactiveFormsModule, type ValidationErrors, Validators } from '@angular/forms'
-import { dateToString } from 'src/app/helpers/date'
-import { validateByTrimming } from 'src/app/helpers/validations'
-import { type ICouponReqs } from 'src/app/models/coupon'
-import { ActiveModal } from 'src/app/services/modal.service'
+import { dateToString } from 'src/app/shared/utils/date'
+import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
+import { type ICouponReqs } from 'src/app/core/models/coupon.model'
+import { ActiveModal } from 'src/app/shared/ui/modal.service'
 import {
   codeValidators, couponCountValidators, descriptionValidators, discountValidators, endDateValidators,
   maxDiscountAmtValidators, minTicketCountValidators, startDateValidators
-} from 'src/app/shared/valiators'
+} from 'src/app/shared/utils/form-validators'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 

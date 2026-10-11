@@ -1,7 +1,7 @@
 import { type Routes } from '@angular/router'
 import { GoogleLoginProvider, SOCIAL_AUTH_CONFIG, SocialAuthService, type SocialAuthServiceConfig } from '@abacritt/angularx-social-login'
-import { authGuard } from 'src/app/guards/auth.guard'
-import { loginGuard } from 'src/app/guards/login.guard'
+import { authGuard } from 'src/app/core/auth/auth.guard'
+import { loginGuard } from 'src/app/core/auth/login.guard'
 import { environments } from 'src/environments/environment'
 
 export const USER_ROUTES: Routes = [
@@ -27,29 +27,29 @@ export const USER_ROUTES: Routes = [
       {
         path: 'home',
         title: 'CineSnap | Home',
-        loadComponent: async () => await import('./user-home/user-home.component').then(m => m.UserHomeComponent)
+        loadComponent: async () => await import('./pages/home/home.component').then(m => m.UserHomeComponent)
       },
       {
         path: 'login',
         title: 'CineSnap | Login',
-        loadComponent: async () => await import('./user-login/user-login.component').then(m => m.UserLoginComponent),
+        loadComponent: async () => await import('./pages/login/login.component').then(m => m.UserLoginComponent),
         canActivate: [loginGuard]
       },
       {
         path: 'register',
         title: 'CineSnap | Register',
-        loadComponent: async () => await import('./user-register/user-register.component').then(m => m.UserRegisterComponent),
+        loadComponent: async () => await import('./pages/register/register.component').then(m => m.UserRegisterComponent),
         canActivate: [loginGuard]
       },
       {
         path: 'movies',
         title: 'CineSnap | Movies',
-        loadComponent: async () => await import('./user-movies/user-movies.component').then(m => m.UserMoviesComponent)
+        loadComponent: async () => await import('./pages/movies/movies.component').then(m => m.UserMoviesComponent)
       },
       {
         path: 'theaters',
         title: 'CineSnap | Theaters',
-        loadComponent: async () => await import('./user-theaters/user-theaters.component').then(m => m.UserTheatersComponent)
+        loadComponent: async () => await import('./pages/theaters/theaters.component').then(m => m.UserTheatersComponent)
       },
       {
         path: 'theater',
@@ -57,7 +57,7 @@ export const USER_ROUTES: Routes = [
         children: [
           {
             path: ':theaterId',
-            loadComponent: async () => await import('./theater-page/theater-page.component').then(m => m.TheaterPageComponent)
+            loadComponent: async () => await import('./pages/theater-detail/theater-detail.component').then(m => m.UserTheaterDetailComponent)
           }
         ]
       },
@@ -67,18 +67,18 @@ export const USER_ROUTES: Routes = [
         children: [
           {
             path: 'seats/:seatId',
-            loadComponent: async () => await import('./show-seats/show-seats.component').then(m => m.ShowSeatsComponent)
+            loadComponent: async () => await import('./pages/show-seats/show-seats.component').then(m => m.UserShowSeatsComponent)
           },
           {
             path: 'book',
             children: [
               {
                 path: ':ticketId',
-                loadComponent: async () => await import('./booking/booking.component').then(m => m.BookingComponent)
+                loadComponent: async () => await import('./pages/checkout/checkout.component').then(m => m.UserCheckoutComponent)
               },
               {
                 path: 'success/:ticketId',
-                loadComponent: async () => await import('./booking-success/booking-success.component').then(m => m.BookingSuccessComponent)
+                loadComponent: async () => await import('./pages/booking-success/booking-success.component').then(m => m.UserBookingSuccessComponent)
               }
             ]
           }
@@ -91,34 +91,34 @@ export const USER_ROUTES: Routes = [
         children: [
           {
             path: '',
-            loadComponent: async () => await import('./user-profile/user-profile.component').then(m => m.UserProfileComponent)
+            loadComponent: async () => await import('./pages/profile/profile.component').then(m => m.UserProfileComponent)
           },
           {
             path: 'edit/:userId',
-            loadComponent: async () => await import('./edit-user-profile/edit-user-profile.component').then(m => m.EditUserProfileComponent)
+            loadComponent: async () => await import('./pages/edit-profile/edit-profile.component').then(m => m.UserEditProfileComponent)
           },
           {
             path: 'wallet-history',
-            loadComponent: async () => await import('./user-wallet/user-wallet.component').then(m => m.UserWalletComponent)
+            loadComponent: async () => await import('./pages/wallet/wallet.component').then(m => m.UserWalletComponent)
           }
         ]
       },
       {
         path: 'bookings/:userId',
         title: 'CineSnap | Bookings',
-        loadComponent: async () => await import('./user-bookings/user-bookings.component').then(m => m.UserBookingsComponent),
+        loadComponent: async () => await import('./pages/bookings/bookings.component').then(m => m.UserBookingsComponent),
         canActivate: [authGuard]
       },
       {
         path: 'messages',
         title: 'CineSnap | Messages',
-        loadComponent: async () => await import('./user-message/user-message.component').then(m => m.UserMessageComponent),
+        loadComponent: async () => await import('./pages/messages/messages.component').then(m => m.UserMessagesComponent),
         canActivate: [authGuard]
       },
       {
         path: 'messages/:id',
         title: 'CineSnap | Messages',
-        loadComponent: async () => await import('./user-message/user-message.component').then(m => m.UserMessageComponent),
+        loadComponent: async () => await import('./pages/messages/messages.component').then(m => m.UserMessagesComponent),
         canActivate: [authGuard]
       },
       {

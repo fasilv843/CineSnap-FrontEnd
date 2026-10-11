@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core'
-import { ThemeService } from 'src/app/services/theme.service'
+import { ThemeService } from 'src/app/core/theme/theme.service'
 
 @Component({
   selector: 'cs-theme-toggle',

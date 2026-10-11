@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ShowSeatsComponent } from './show-seats.component';
+import { UserShowSeatsComponent } from './show-seats.component';
 
-describe('ShowSeatsComponent', () => {
-  let component: ShowSeatsComponent;
-  let fixture: ComponentFixture<ShowSeatsComponent>;
+describe('UserShowSeatsComponent', () => {
+  let component: UserShowSeatsComponent;
+  let fixture: ComponentFixture<UserShowSeatsComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ShowSeatsComponent]
+    imports: [UserShowSeatsComponent]
 });
-    fixture = TestBed.createComponent(ShowSeatsComponent);
+    fixture = TestBed.createComponent(UserShowSeatsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

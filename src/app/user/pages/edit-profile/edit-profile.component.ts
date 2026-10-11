@@ -4,22 +4,22 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { map } from 'rxjs'
 import { Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { dateToString } from 'src/app/helpers/date'
-import { getLocation } from 'src/app/helpers/location'
-import { validateByTrimming, validateDOB } from 'src/app/helpers/validations'
-import { type ICoords } from 'src/app/models/common'
-import { type IUserUpdate } from 'src/app/models/users'
-import { GeoLocationService } from 'src/app/services/geo-location.service'
-import { UserService } from 'src/app/services/user.service'
-import { MinAge, imagesFolderPath, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants'
-import { mobileValidators, nameValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators'
+import { dateToString } from 'src/app/shared/utils/date'
+import { getLocation } from 'src/app/shared/utils/location'
+import { validateByTrimming, validateDOB } from 'src/app/shared/utils/custom-validators'
+import { type ICoords } from 'src/app/core/models/api.model'
+import { type IUserUpdate } from 'src/app/core/models/user.model'
+import { GeoLocationRepo } from 'src/app/shared/repos/geo-location.repo'
+import { UserAccountRepo } from 'src/app/user/repos/account.repo'
+import { MinAge, imagesFolderPath, userNameMaxLength, userNameMinLength } from 'src/app/core/constants/constants'
+import { mobileValidators, nameValidators, requiredValidator, zipValidators } from 'src/app/shared/utils/form-validators'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
-import { selectCoords } from 'src/app/states/coords/coords.selector'
-import { saveUserOnStore } from 'src/app/states/user/user.actions'
-import { selectUserDetails } from 'src/app/states/user/user.selector'
+import { selectCoords } from 'src/app/core/state/coords/coords.selector'
+import { saveUserOnStore } from 'src/app/core/state/user/user.actions'
+import { selectUserDetails } from 'src/app/core/state/user/user.selector'
 import { PhotoPickerComponent } from 'src/app/shared/ui/photo-picker.component'
-import { UserNavComponent } from '../user-nav/user-nav.component'
+import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
 
 function text (validators = requiredValidator): FormControl<string> {
   return new FormControl('', { nonNullable: true, validators: [validateByTrimming(validators)] })
@@ -27,14 +27,14 @@ function text (validators = requiredValidator): FormControl<string> {
 
 @Component({
   selector: 'app-edit-user-profile',
-  templateUrl: './edit-user-profile.component.html',
-  styleUrl: './edit-user-profile.component.css',
+  templateUrl: './edit-profile.component.html',
+  styleUrl: './edit-profile.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [UserNavComponent, PhotoPickerComponent, ReactiveFormsModule, RouterLink, ButtonDirective, FieldErrorComponent]
 })
-export class EditUserProfileComponent {
-  private readonly userService = inject(UserService)
-  private readonly geoLocation = inject(GeoLocationService)
+export class UserEditProfileComponent {
+  private readonly accountRepo = inject(UserAccountRepo)
+  private readonly geoLocation = inject(GeoLocationRepo)
   private readonly store = inject(Store)
   private readonly router = inject(Router)
 
@@ -145,7 +145,7 @@ export class EditUserProfileComponent {
     }
 
     this.saving.set(true)
-    this.userService.updateUserDetails(user._id, update).subscribe({
+    this.accountRepo.updateUserDetails(user._id, update).subscribe({
       next: res => {
         if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
         void this.router.navigate(['/user/profile'])
@@ -164,7 +164,7 @@ export class EditUserProfileComponent {
     const formData = new FormData()
     formData.append('image', image, `${user.name}.jpg`)
     this.photoBusy.set(true)
-    this.userService.updateUserProfile(user._id, formData).subscribe({
+    this.accountRepo.updateUserProfile(user._id, formData).subscribe({
       next: res => {
         this.photoBusy.set(false)
         if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))
@@ -177,7 +177,7 @@ export class EditUserProfileComponent {
     const user = this.user()
     if (user === null) return
     this.photoBusy.set(true)
-    this.userService.deleteUserProfile(user._id).subscribe({
+    this.accountRepo.deleteUserProfile(user._id).subscribe({
       next: res => {
         this.photoBusy.set(false)
         if (res.data !== null) this.store.dispatch(saveUserOnStore({ userDetails: res.data }))

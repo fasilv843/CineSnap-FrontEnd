@@ -7,7 +7,7 @@ import { environments } from 'src/environments/environment'
 @Injectable({
   providedIn: 'root'
 })
-export class WebSocketService {
+export class ChatSocketService {
   socket!: Socket
 
   // constructor (id: string) {

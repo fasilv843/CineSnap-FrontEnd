@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'
 import { ImageCropperComponent, type ImageCroppedEvent } from 'ngx-image-cropper'
-import { ActiveModal } from 'src/app/services/modal.service'
+import { ActiveModal } from 'src/app/shared/ui/modal.service'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 
 export interface CropperDialogueResult {
@@ -33,7 +33,7 @@ export interface CropperDialogueResult {
     </div>
   `
 })
-export class CropperDialogueComponent {
+export class ImageCropperDialogComponent {
   protected readonly modal = inject(ActiveModal)
   readonly image = signal<File | null>(null)
   protected readonly result = signal<CropperDialogueResult | undefined>(undefined)

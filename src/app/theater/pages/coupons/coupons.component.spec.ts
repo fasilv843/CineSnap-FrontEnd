@@ -1,16 +1,16 @@
 import { type ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { ThrCouponComponent } from './thr-coupon.component'
+import { TheaterCouponsComponent } from './coupons.component'
 
-describe('ThrCouponComponent', () => {
-  let component: ThrCouponComponent
-  let fixture: ComponentFixture<ThrCouponComponent>
+describe('TheaterCouponsComponent', () => {
+  let component: TheaterCouponsComponent
+  let fixture: ComponentFixture<TheaterCouponsComponent>
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ThrCouponComponent]
+    imports: [TheaterCouponsComponent]
 })
-    fixture = TestBed.createComponent(ThrCouponComponent)
+    fixture = TestBed.createComponent(TheaterCouponsComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

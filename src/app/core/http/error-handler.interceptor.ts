@@ -3,7 +3,7 @@ import { type HttpErrorResponse, type HttpInterceptorFn } from '@angular/common/
 import { catchError, throwError } from 'rxjs'
 import { Router } from '@angular/router'
 import { environments } from 'src/environments/environment'
-import { ToastService } from '../shared/ui/toast.service'
+import { ToastService } from '../toast/toast.service'
 
 export const errorHandlerInterceptor: HttpInterceptorFn = (request, next) => {
   const router = inject(Router)

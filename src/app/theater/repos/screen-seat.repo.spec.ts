@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ScreenSeatService } from './screen-seat.service';
+import { TheaterScreenSeatRepo } from './screen-seat.repo';
 
-describe('ScreenSeatService', () => {
-  let service: ScreenSeatService;
+describe('TheaterScreenSeatRepo', () => {
+  let service: TheaterScreenSeatRepo;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ScreenSeatService);
+    service = TestBed.inject(TheaterScreenSeatRepo);
   });
 
   it('should be created', () => {

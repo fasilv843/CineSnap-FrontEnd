@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { environments } from 'src/environments/environment'
-import { type IRazorpayRes } from '../models/common'
+import { type IRazorpayRes } from '../../core/models/api.model'
 
 export interface IPayer {
   name: string

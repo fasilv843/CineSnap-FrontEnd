@@ -4,16 +4,16 @@ import { DatePipe } from '@angular/common'
 import { ActivatedRoute, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { map } from 'rxjs'
-import { toMovieCard } from 'src/app/helpers/movie-card'
-import { type ITicketView } from 'src/app/models/ticket'
-import { TicketService } from 'src/app/services/ticket.service'
+import { toMovieCard } from 'src/app/shared/utils/movie-card'
+import { type ITicketView } from 'src/app/core/models/ticket.model'
+import { UserTicketRepo } from 'src/app/user/repos/ticket.repo'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { IconComponent } from 'src/app/shared/ui/icon.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
-import { ToastService } from 'src/app/shared/ui/toast.service'
-import { selectUserDetails } from 'src/app/states/user/user.selector'
-import { UserNavComponent } from '../user-nav/user-nav.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { ToastService } from 'src/app/core/toast/toast.service'
+import { selectUserDetails } from 'src/app/core/state/user/user.selector'
+import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 @Component({
   selector: 'app-booking-success',
@@ -22,9 +22,9 @@ import { valueOf } from 'src/app/helpers/resource'
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [UserNavComponent, RouterLink, DatePipe, ButtonDirective, IconComponent, StatePanelComponent]
 })
-export class BookingSuccessComponent {
+export class UserBookingSuccessComponent {
   private readonly route = inject(ActivatedRoute)
-  private readonly ticketService = inject(TicketService)
+  private readonly ticketRepo = inject(UserTicketRepo)
   private readonly toast = inject(ToastService)
 
   protected readonly user = inject(Store).selectSignal(selectUserDetails)
@@ -33,7 +33,7 @@ export class BookingSuccessComponent {
 
   protected readonly ticket = rxResource({
     params: () => this.ticketId(),
-    stream: ({ params }) => this.ticketService.getTicketData(params).pipe(map(res => res.data as ITicketView | null))
+    stream: ({ params }) => this.ticketRepo.getTicketData(params).pipe(map(res => res.data as ITicketView | null))
   })
 
   protected readonly movie = computed(() => {
@@ -56,7 +56,7 @@ export class BookingSuccessComponent {
 
   protected emailInvoice (): void {
     this.sendingInvoice.set(true)
-    this.ticketService.sendInvoiceRequest(this.ticketId()).subscribe({
+    this.ticketRepo.sendInvoiceRequest(this.ticketId()).subscribe({
       next: () => {
         this.sendingInvoice.set(false)
         this.toast.success('Invoice sent', `Check ${this.user()?.email ?? 'your email'} in a minute.`)

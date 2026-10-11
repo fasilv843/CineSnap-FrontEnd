@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdminMessagesComponent } from './admin-messages.component';
+import { AdminMessagesComponent } from './messages.component';
 
 describe('AdminMessagesComponent', () => {
   let component: AdminMessagesComponent;

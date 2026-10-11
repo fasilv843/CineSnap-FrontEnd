@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MovieRowComponent } from './movie-row.component';
+import { MovieRowComponent } from './tmdb-movie-card.component';
 
 describe('MovieRowComponent', () => {
   let component: MovieRowComponent;

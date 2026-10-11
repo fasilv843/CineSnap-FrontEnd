@@ -2,15 +2,15 @@ import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal } fr
 import { rxResource, takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop'
 import { ActivatedRoute, type ParamMap, Router } from '@angular/router'
 import { debounceTime, distinctUntilChanged, map, type Observable } from 'rxjs'
-import { isGenreType, isLangType } from 'src/app/helpers/movie'
-import { type MovieCard, toFilterOptions, toMovieCard } from 'src/app/helpers/movie-card'
-import { type genreType, type langType } from 'src/app/models/filter'
-import { type ICSMovieRes } from 'src/app/models/movie'
-import { MovieService } from 'src/app/services/movie.service'
+import { isGenreType, isLangType } from 'src/app/shared/utils/movie'
+import { type MovieCard, toFilterOptions, toMovieCard } from 'src/app/shared/utils/movie-card'
+import { type genreType, type langType } from 'src/app/core/models/filter.model'
+import { type ICSMovieRes } from 'src/app/core/models/movie.model'
+import { UserMovieRepo } from 'src/app/user/repos/movie.repo'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { InViewDirective } from 'src/app/shared/ui/in-view.directive'
-import { UserNavComponent } from '../user-nav/user-nav.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 const PAGE_SIZE = 10 // fixed by the backend
 const SEARCH_DEBOUNCE_MS = 350
@@ -53,15 +53,15 @@ function toggle<T> (list: T[], value: T): T[] {
 
 @Component({
   selector: 'app-user-movies',
-  templateUrl: './user-movies.component.html',
-  styleUrl: './user-movies.component.css',
+  templateUrl: './movies.component.html',
+  styleUrl: './movies.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [UserNavComponent, ButtonDirective, InViewDirective]
 })
 export class UserMoviesComponent {
   private readonly router = inject(Router)
   private readonly route = inject(ActivatedRoute)
-  private readonly movieService = inject(MovieService)
+  private readonly movieRepo = inject(UserMovieRepo)
 
   // Query -------------------------------------------------------------------
   // The URL is the single source of truth, so back/forward and shared links restore the same list.
@@ -75,7 +75,7 @@ export class UserMoviesComponent {
   })
 
   protected readonly filterOptions = rxResource({
-    stream: () => this.movieService.fetchFilterDatas().pipe(map(res => toFilterOptions(res.genres, res.languages)))
+    stream: () => this.movieRepo.fetchFilterDatas().pipe(map(res => toFilterOptions(res.genres, res.languages)))
   })
 
   // What's typed in the search box. Follows the URL (e.g. on back), and is written to the URL after a pause in typing.
@@ -160,14 +160,14 @@ export class UserMoviesComponent {
   private fetchPage (query: MovieQuery, page: number): Observable<MoviePage> {
     if (query.search !== '') {
       // Title search isn't paginated or filtered by the backend, so apply the chips here
-      return this.movieService.searchMovie(query.search, false).pipe(map(res => ({
+      return this.movieRepo.searchMovie(query.search).pipe(map(res => ({
         page: 1,
         complete: true,
         movies: res.data.filter(movie => matchesFilters(movie, query)).map(toMovieCard)
       })))
     }
     const filters = { availability: 'Available' as const, filterGenres: query.genres, filterLanguages: query.languages }
-    return this.movieService.findCineSnapFilteredMovies(filters, page).pipe(map(res => ({
+    return this.movieRepo.findCineSnapFilteredMovies(filters, page).pipe(map(res => ({
       page,
       complete: res.data.length < PAGE_SIZE,
       movies: res.data.map(toMovieCard)

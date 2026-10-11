@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core'
 import { Store } from '@ngrx/store'
-import { saveCoords } from 'src/app/states/coords/coords.actions'
+import { saveCoords } from 'src/app/core/state/coords/coords.actions'
 
 export type LocationStatus = 'idle' | 'pending' | 'granted' | 'denied' | 'unsupported'
 

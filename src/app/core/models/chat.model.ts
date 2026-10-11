@@ -1,4 +1,4 @@
-import { type IApiRes } from './common'
+import { type IApiRes } from './api.model'
 
 export interface IChatMessage {
   sender: 'User' | 'Theater' | 'Admin'

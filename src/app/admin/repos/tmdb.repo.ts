@@ -4,12 +4,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environments } from 'src/environments/environment';
-import { Movie, IMoviesObj } from '../models/movie';
+import { Movie, IMoviesObj } from '../../core/models/movie.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TMDBService {
+export class AdminTmdbRepo {
   // The env value may end with '/'; paths below add their own
   tmdbApi = environments.tmdbApi.replace(/\/+$/, '')
   tmdbKey = environments.tmdbKey

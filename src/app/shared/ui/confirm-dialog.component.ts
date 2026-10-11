@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Injectable, inject, signal } from '@angular/core'
-import { ActiveModal, ModalService } from 'src/app/services/modal.service'
+import { ActiveModal, ModalService } from 'src/app/shared/ui/modal.service'
 import { ButtonDirective } from './button.directive'
 
 export interface ConfirmOptions {

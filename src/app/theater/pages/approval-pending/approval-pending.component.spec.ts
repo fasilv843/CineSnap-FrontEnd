@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ApprovalPendingComponent } from './approval-pending.component';
+import { TheaterApprovalPendingComponent } from './approval-pending.component';
 
-describe('ApprovalPendingComponent', () => {
-  let component: ApprovalPendingComponent;
-  let fixture: ComponentFixture<ApprovalPendingComponent>;
+describe('TheaterApprovalPendingComponent', () => {
+  let component: TheaterApprovalPendingComponent;
+  let fixture: ComponentFixture<TheaterApprovalPendingComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ApprovalPendingComponent]
+    imports: [TheaterApprovalPendingComponent]
 });
-    fixture = TestBed.createComponent(ApprovalPendingComponent);
+    fixture = TestBed.createComponent(TheaterApprovalPendingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

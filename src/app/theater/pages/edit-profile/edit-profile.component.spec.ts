@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditTheaterProfileComponent } from './edit-theater-profile.component';
+import { TheaterEditProfileComponent } from './edit-profile.component';
 
-describe('EditTheaterProfileComponent', () => {
-  let component: EditTheaterProfileComponent;
-  let fixture: ComponentFixture<EditTheaterProfileComponent>;
+describe('TheaterEditProfileComponent', () => {
+  let component: TheaterEditProfileComponent;
+  let fixture: ComponentFixture<TheaterEditProfileComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [EditTheaterProfileComponent]
+    imports: [TheaterEditProfileComponent]
 });
-    fixture = TestBed.createComponent(EditTheaterProfileComponent);
+    fixture = TestBed.createComponent(TheaterEditProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

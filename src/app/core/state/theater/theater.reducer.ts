@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store'
-import { type ITheaterRes } from 'src/app/models/theater'
+import { type ITheaterRes } from 'src/app/core/models/theater.model'
 import { deleteTheaterFromStore, saveTheaterOnStore } from './theater.action'
 
 export interface TheaterState {

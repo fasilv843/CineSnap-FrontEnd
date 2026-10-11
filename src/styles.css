@@ -355,6 +355,11 @@ iframe.razorpay-checkout-frame {
   color-scheme: normal;
 }
 
+/* Google's sign-in button is an iframe too; the same mismatch paints a white box around it on the dark theme */
+cs-google-button iframe {
+  color-scheme: normal;
+}
+
 /* ModalService (CDK dialog) */
 .app-modal-backdrop {
   background: rgb(0 0 0 / 0.55);

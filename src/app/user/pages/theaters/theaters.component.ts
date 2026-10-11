@@ -3,15 +3,15 @@ import { rxResource, takeUntilDestroyed, toObservable, toSignal } from '@angular
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { debounceTime, distinctUntilChanged, map } from 'rxjs'
-import { distanceKm, formatDistance } from 'src/app/helpers/distance'
-import { type ITheaterRes } from 'src/app/models/theater'
-import { LocationService } from 'src/app/services/location.service'
-import { TheaterService } from 'src/app/services/theater.service'
-import { imagesFolderPath } from 'src/app/shared/constants'
+import { distanceKm, formatDistance } from 'src/app/user/utils/distance'
+import { type ITheaterRes } from 'src/app/core/models/theater.model'
+import { LocationService } from 'src/app/user/services/location.service'
+import { UserTheaterRepo } from 'src/app/user/repos/theater.repo'
+import { imagesFolderPath } from 'src/app/core/constants/constants'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
-import { selectCoords } from 'src/app/states/coords/coords.selector'
-import { UserNavComponent } from '../user-nav/user-nav.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { selectCoords } from 'src/app/core/state/coords/coords.selector'
+import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 // Used when the browser can't share a location: Ramanattukara
 const FALLBACK = { name: 'Ramanattukara', coordinates: [75.869032, 11.178324] }
@@ -43,13 +43,13 @@ function toTheaterCard (theater: ITheaterRes, from: number[]): TheaterCard {
 
 @Component({
   selector: 'app-user-theaters',
-  templateUrl: './user-theaters.component.html',
+  templateUrl: './theaters.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [UserNavComponent, RouterLink, ButtonDirective]
 })
 export class UserTheatersComponent {
   private readonly store = inject(Store)
-  private readonly theaterService = inject(TheaterService)
+  private readonly theaterRepo = inject(UserTheaterRepo)
   private readonly router = inject(Router)
   private readonly route = inject(ActivatedRoute)
   protected readonly location = inject(LocationService)
@@ -72,7 +72,7 @@ export class UserTheatersComponent {
 
   protected readonly theaters = rxResource({
     params: () => this.origin(),
-    stream: ({ params: origin }) => this.theaterService.getNearestTheaters(origin[0], origin[1]).pipe(
+    stream: ({ params: origin }) => this.theaterRepo.getNearestTheaters(origin[0], origin[1]).pipe(
       map(res => res.data.map(theater => toTheaterCard(theater, origin)))
     )
   })

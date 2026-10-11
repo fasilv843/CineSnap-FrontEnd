@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BookingSuccessComponent } from './booking-success.component';
+import { UserBookingSuccessComponent } from './booking-success.component';
 
-describe('BookingSuccessComponent', () => {
-  let component: BookingSuccessComponent;
-  let fixture: ComponentFixture<BookingSuccessComponent>;
+describe('UserBookingSuccessComponent', () => {
+  let component: UserBookingSuccessComponent;
+  let fixture: ComponentFixture<UserBookingSuccessComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [BookingSuccessComponent]
+    imports: [UserBookingSuccessComponent]
 });
-    fixture = TestBed.createComponent(BookingSuccessComponent);
+    fixture = TestBed.createComponent(UserBookingSuccessComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

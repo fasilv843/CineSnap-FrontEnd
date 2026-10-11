@@ -1,9 +1,9 @@
-import { type IApiRes } from './common'
-import { type ICSMovieRes } from './movie'
-import { type IScreen } from './screens'
-import { type IShowRes } from './show'
-import { type ITheaterRes } from './theater'
-import { type IUserRes } from './users'
+import { type IApiRes } from './api.model'
+import { type ICSMovieRes } from './movie.model'
+import { type IScreen } from './screen.model'
+import { type IShowRes } from './show.model'
+import { type ITheaterRes } from './theater.model'
+import { type IUserRes } from './user.model'
 
 export interface ISelectedSeat {
   row: string

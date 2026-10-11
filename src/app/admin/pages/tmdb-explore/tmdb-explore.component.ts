@@ -2,17 +2,17 @@ import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal } fr
 import { rxResource, toSignal } from '@angular/core/rxjs-interop'
 import { ActivatedRoute, RouterLink } from '@angular/router'
 import { map } from 'rxjs'
-import { type Movie } from 'src/app/models/movie'
-import { TMDBService } from 'src/app/services/tmdb.service'
-import { type Language, LanguageAbbreviation } from 'src/app/shared/langAbbreviation'
+import { type Movie } from 'src/app/core/models/movie.model'
+import { AdminTmdbRepo } from 'src/app/admin/repos/tmdb.repo'
+import { type Language, LanguageAbbreviation } from 'src/app/core/constants/languages'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { IconComponent } from 'src/app/shared/ui/icon.component'
 import { InViewDirective } from 'src/app/shared/ui/in-view.directive'
 import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
-import { TmdbMovieCardComponent } from '../../common/movie-row/movie-row.component'
-import { TmdbImportService } from '../tmdb-import.service'
-import { valueOf } from 'src/app/helpers/resource'
+import { TmdbMovieCardComponent } from '../../components/tmdb-movie-card/tmdb-movie-card.component'
+import { TmdbImportService } from '../../services/tmdb-import.service'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 const MAX_PAGES = 10
 const TMDB_PAGE_SIZE = 20
@@ -22,13 +22,13 @@ interface MoviePage { lang: string, page: number, movies: Movie[] }
 /** Every recent TMDB release in one language: /admin/movies/:lang */
 @Component({
   selector: 'app-admin-movies-explore',
-  templateUrl: './admin-movies-explore.component.html',
-  styleUrl: '../admin-movies/admin-movies.component.css',
+  templateUrl: './tmdb-explore.component.html',
+  styleUrl: '../tmdb-movies/tmdb-movies.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, ButtonDirective, IconComponent, InViewDirective, PageHeaderComponent, StatePanelComponent, TmdbMovieCardComponent]
 })
-export class AdminMoviesExploreComponent {
-  private readonly tmdb = inject(TMDBService)
+export class AdminTmdbExploreComponent {
+  private readonly tmdb = inject(AdminTmdbRepo)
   private readonly importer = inject(TmdbImportService)
 
   protected readonly lang = toSignal(inject(ActivatedRoute).paramMap.pipe(map(params => params.get('lang') ?? 'ml')), { requireSync: true })

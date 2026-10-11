@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
-import { ActiveModal } from 'src/app/services/modal.service'
-import { validateByTrimming } from 'src/app/helpers/validations'
-import { walletAmountValidators } from 'src/app/shared/valiators'
-import { MAX_WALLET_ADD, MIN_WALLET_ADD } from 'src/app/shared/constants'
+import { ActiveModal } from 'src/app/shared/ui/modal.service'
+import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
+import { walletAmountValidators } from 'src/app/shared/utils/form-validators'
+import { MAX_WALLET_ADD, MIN_WALLET_ADD } from 'src/app/core/constants/constants'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 

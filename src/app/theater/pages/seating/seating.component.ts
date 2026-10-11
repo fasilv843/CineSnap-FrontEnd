@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, sig
 import { rxResource, toSignal } from '@angular/core/rxjs-interop'
 import { ActivatedRoute, RouterLink } from '@angular/router'
 import { map } from 'rxjs'
-import { ScreenSeatService } from 'src/app/services/screen-seat.service'
+import { TheaterScreenSeatRepo } from 'src/app/theater/repos/screen-seat.repo'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { IconComponent } from 'src/app/shared/ui/icon.component'
 import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
-import { ToastService } from 'src/app/shared/ui/toast.service'
-import { valueOf } from 'src/app/helpers/resource'
+import { ToastService } from 'src/app/core/toast/toast.service'
+import { valueOf } from 'src/app/shared/utils/resource'
 import {
   CATEGORY_KEYS, MAX_ROWS, type CategoryKey, type Layout,
   addColumn, addRow, fromScreenSeat, numberRow, removeColumn, removeRow, rename, rowLetters, seatCount, toScreenSeat, toggleSeat, totalRows
@@ -16,13 +16,13 @@ import {
 
 @Component({
   selector: 'app-thr-seating',
-  templateUrl: './thr-seating.component.html',
-  styleUrl: './thr-seating.component.css',
+  templateUrl: './seating.component.html',
+  styleUrl: './seating.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, ButtonDirective, IconComponent, PageHeaderComponent, StatePanelComponent]
 })
-export class ThrSeatingComponent {
-  private readonly screenSeatService = inject(ScreenSeatService)
+export class TheaterSeatingComponent {
+  private readonly screenSeatRepo = inject(TheaterScreenSeatRepo)
   private readonly toast = inject(ToastService)
 
   private readonly params = toSignal(inject(ActivatedRoute).paramMap, { requireSync: true })
@@ -30,7 +30,7 @@ export class ThrSeatingComponent {
 
   protected readonly saved = rxResource({
     params: () => this.seatId(),
-    stream: ({ params }) => this.screenSeatService.getScreenSeatData(params).pipe(map(res => res.data !== null ? fromScreenSeat(res.data) : null))
+    stream: ({ params }) => this.screenSeatRepo.getScreenSeatData(params).pipe(map(res => res.data !== null ? fromScreenSeat(res.data) : null))
   })
 
   /** Working copy; resets whenever a saved layout loads */
@@ -63,7 +63,7 @@ export class ThrSeatingComponent {
     const layout = this.layout()
     if (layout === null || this.saving()) return
     this.saving.set(true)
-    this.screenSeatService.updateScreenSeat(toScreenSeat(this.seatId(), layout)).subscribe({
+    this.screenSeatRepo.updateScreenSeat(toScreenSeat(this.seatId(), layout)).subscribe({
       next: res => {
         this.saving.set(false)
         if (res.data !== null) this.saved.set(fromScreenSeat(res.data))

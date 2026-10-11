@@ -26,7 +26,7 @@ import { StatusPageComponent } from 'src/app/shared/ui/status-page.component'
     }
   `
 })
-export class ApprovalRejectedComponent {
+export class TheaterApprovalRejectedComponent {
   private readonly query = toSignal(inject(ActivatedRoute).queryParamMap, { requireSync: true })
   protected readonly rejected = computed(() => this.query().get('reason') === 'Rejection')
 

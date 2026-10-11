@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ThrScreensComponent } from './thr-screens.component';
+import { TheaterScreensComponent } from './screens.component';
 
-describe('ThrScreensComponent', () => {
-  let component: ThrScreensComponent;
-  let fixture: ComponentFixture<ThrScreensComponent>;
+describe('TheaterScreensComponent', () => {
+  let component: TheaterScreensComponent;
+  let fixture: ComponentFixture<TheaterScreensComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ThrScreensComponent]
+    imports: [TheaterScreensComponent]
 });
-    fixture = TestBed.createComponent(ThrScreensComponent);
+    fixture = TestBed.createComponent(TheaterScreensComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

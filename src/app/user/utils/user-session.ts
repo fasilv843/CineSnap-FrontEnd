@@ -5,8 +5,8 @@ import { Router } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { SocialAuthService, type SocialUser } from '@abacritt/angularx-social-login'
 import { EMPTY, catchError, filter, switchMap } from 'rxjs'
-import { type IApiUserAuthRes, type IUserSocialAuth } from 'src/app/models/users'
-import { saveUserOnStore } from 'src/app/states/user/user.actions'
+import { type IApiUserAuthRes, type IUserSocialAuth } from 'src/app/core/models/user.model'
+import { saveUserOnStore } from 'src/app/core/state/user/user.actions'
 
 /**
  * Signs the user in once the backend has issued tokens: stores them, puts the user in the store and opens home.

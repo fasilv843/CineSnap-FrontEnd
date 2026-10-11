@@ -1,19 +1,13 @@
 import { HttpClient } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
-import { type IApiScreenRes, type IApiScreensRes, type IScreenRequirements } from '../models/screens'
+import { type IApiScreenRes, type IApiScreensRes, type IAvailCatsOnScreen, type IScreenRequirements } from '../../core/models/screen.model'
 import { type Observable } from 'rxjs'
-import { type IApiRes } from '../models/common'
-
-export interface IAvailCatsOnScreen {
-  diamond: string | undefined
-  gold: string | undefined
-  silver: string | undefined
-}
+import { type IApiRes } from '../../core/models/api.model'
 
 @Injectable({
   providedIn: 'root'
 })
-export class ScreenService {
+export class TheaterScreenRepo {
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient
   ) { }

@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store'
 import { saveCoords } from './coords.actions'
-import { type ICoords } from 'src/app/models/common'
+import { type ICoords } from 'src/app/core/models/api.model'
 
 export interface ICoordState {
   coords: ICoords | null

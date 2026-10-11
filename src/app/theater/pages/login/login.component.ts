@@ -3,21 +3,21 @@ import { HttpClient } from '@angular/common/http'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { validateByTrimming } from 'src/app/helpers/validations'
-import { type IApiTheaterAuthRes } from 'src/app/models/theater'
-import { emailValidators, requiredValidator } from 'src/app/shared/valiators'
+import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
+import { type IApiTheaterAuthRes } from 'src/app/core/models/theater.model'
+import { emailValidators, requiredValidator } from 'src/app/shared/utils/form-validators'
 import { AuthShellComponent } from 'src/app/shared/ui/auth-shell.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
-import { saveTheaterOnStore } from 'src/app/states/theater/theater.action'
+import { saveTheaterOnStore } from 'src/app/core/state/theater/theater.action'
 
 @Component({
   selector: 'app-thr-login',
-  templateUrl: './thr-login.component.html',
+  templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, AuthShellComponent, ButtonDirective, FieldErrorComponent]
 })
-export class ThrLoginComponent {
+export class TheaterLoginComponent {
   private readonly http = inject(HttpClient)
   private readonly router = inject(Router)
   private readonly store = inject(Store)

@@ -2,16 +2,16 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core'
 import { rxResource } from '@angular/core/rxjs-interop'
 import { RouterLink } from '@angular/router'
 import { catchError, forkJoin, map, of } from 'rxjs'
-import { type Movie } from 'src/app/models/movie'
-import { TMDBService } from 'src/app/services/tmdb.service'
-import { Language, LanguageAbbreviation } from 'src/app/shared/langAbbreviation'
+import { type Movie } from 'src/app/core/models/movie.model'
+import { AdminTmdbRepo } from 'src/app/admin/repos/tmdb.repo'
+import { Language, LanguageAbbreviation } from 'src/app/core/constants/languages'
 import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
 import { SearchFieldComponent } from 'src/app/shared/ui/search-field.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
 import { injectUrlPaging } from 'src/app/shared/ui/url-paging'
-import { TmdbMovieCardComponent } from '../../common/movie-row/movie-row.component'
-import { AdminMoviesTabsComponent } from '../admin-movies-search/admin-movies-search.component'
-import { TmdbImportService } from '../tmdb-import.service'
+import { TmdbMovieCardComponent } from '../../components/tmdb-movie-card/tmdb-movie-card.component'
+import { AdminMoviesTabsComponent } from '../../components/movies-tabs/movies-tabs.component'
+import { TmdbImportService } from '../../services/tmdb-import.service'
 
 const ROW_LANGUAGES = [Language.MALAYALAM, Language.TAMIL, Language.HINDI, Language.TELUGU, Language.KANNADA, Language.ENGLISH]
 
@@ -19,13 +19,13 @@ interface LanguageRow { code: Language, name: string, movies: Movie[], failed: b
 
 @Component({
   selector: 'app-admin-movies',
-  templateUrl: './admin-movies.component.html',
-  styleUrl: './admin-movies.component.css',
+  templateUrl: './tmdb-movies.component.html',
+  styleUrl: './tmdb-movies.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, PageHeaderComponent, SearchFieldComponent, StatePanelComponent, TmdbMovieCardComponent, AdminMoviesTabsComponent]
 })
-export class AdminMoviesComponent {
-  private readonly tmdb = inject(TMDBService)
+export class AdminTmdbMoviesComponent {
+  private readonly tmdb = inject(AdminTmdbRepo)
   protected readonly importer = inject(TmdbImportService)
 
   // Only ?q= is used here (search); the rows aren't paged

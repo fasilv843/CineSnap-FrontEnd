@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core'
 import { GoogleSigninButtonDirective } from '@abacritt/angularx-social-login'
-import { ThemeService } from 'src/app/services/theme.service'
+import { ThemeService } from 'src/app/core/theme/theme.service'
 
 /**
  * Google's own sign-in button (Google Identity Services renders it in an iframe; its look can't be restyled).

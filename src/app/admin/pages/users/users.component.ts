@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, sig
 import { rxResource } from '@angular/core/rxjs-interop'
 import { createColumnHelper, injectTable, rowPaginationFeature, tableFeatures } from '@tanstack/angular-table'
 import { map } from 'rxjs'
-import { type IUserRes } from 'src/app/models/users'
-import { UserService } from 'src/app/services/user.service'
-import { imagesFolderPath } from 'src/app/shared/constants'
+import { type IUserRes } from 'src/app/core/models/user.model'
+import { AdminUserRepo } from 'src/app/admin/repos/user.repo'
+import { imagesFolderPath } from 'src/app/core/constants/constants'
 import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { ConfirmService } from 'src/app/shared/ui/confirm-dialog.component'
@@ -12,9 +12,9 @@ import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
 import { PaginationComponent } from 'src/app/shared/ui/pagination.component'
 import { SearchFieldComponent } from 'src/app/shared/ui/search-field.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
-import { ToastService } from 'src/app/shared/ui/toast.service'
+import { ToastService } from 'src/app/core/toast/toast.service'
 import { injectUrlPaging } from 'src/app/shared/ui/url-paging'
-import { valueOf } from 'src/app/helpers/resource'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 // The server pages and searches, so the table only needs pagination state
 const features = tableFeatures({ rowPaginationFeature })
@@ -30,12 +30,12 @@ const columns = column.columns([
 
 @Component({
   selector: 'app-admin-users',
-  templateUrl: './admin-users.component.html',
+  templateUrl: './users.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [AvatarComponent, ButtonDirective, PageHeaderComponent, PaginationComponent, SearchFieldComponent, StatePanelComponent]
 })
 export class AdminUsersComponent {
-  private readonly userService = inject(UserService)
+  private readonly userRepo = inject(AdminUserRepo)
   private readonly confirm = inject(ConfirmService)
   private readonly toast = inject(ToastService)
 
@@ -43,7 +43,7 @@ export class AdminUsersComponent {
 
   protected readonly users = rxResource({
     params: () => ({ page: this.paging.page(), limit: this.paging.limit(), q: this.paging.query() }),
-    stream: ({ params }) => this.userService.getAllUsers(params.page, params.limit, params.q).pipe(
+    stream: ({ params }) => this.userRepo.getAllUsers(params.page, params.limit, params.q).pipe(
       map(res => res.data ?? { users: [], userCount: 0 })
     )
   })
@@ -80,7 +80,7 @@ export class AdminUsersComponent {
     })
     if (!confirmed) return
     this.busy.set(user._id)
-    this.userService.blockUser(user._id).subscribe({
+    this.userRepo.blockUser(user._id).subscribe({
       next: () => {
         this.busy.set(null)
         this.rows.update(rows => rows.map(row => row._id === user._id ? { ...row, isBlocked: blocking } : row))

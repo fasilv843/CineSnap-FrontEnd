@@ -4,18 +4,18 @@ import { DatePipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { Store } from '@ngrx/store'
 import { catchError, debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs'
-import { dateToString } from 'src/app/helpers/date'
-import { validateByTrimming } from 'src/app/helpers/validations'
-import { type ICSMovieRes } from 'src/app/models/movie'
-import { ActiveModal } from 'src/app/services/modal.service'
-import { MovieService } from 'src/app/services/movie.service'
-import { ScreenService } from 'src/app/services/screen.service'
-import { MAX_TICKET_PRICE, MIN_TICKET_PRICE } from 'src/app/shared/constants'
-import { defaultPriceValidators, requiredValidator } from 'src/app/shared/valiators'
+import { dateToString } from 'src/app/shared/utils/date'
+import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
+import { type ICSMovieRes } from 'src/app/core/models/movie.model'
+import { ActiveModal } from 'src/app/shared/ui/modal.service'
+import { TheaterMovieRepo } from 'src/app/theater/repos/movie.repo'
+import { TheaterScreenRepo } from 'src/app/theater/repos/screen.repo'
+import { MAX_TICKET_PRICE, MIN_TICKET_PRICE } from 'src/app/core/constants/constants'
+import { defaultPriceValidators, requiredValidator } from 'src/app/shared/utils/form-validators'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
-import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import { valueOf } from 'src/app/helpers/resource'
+import { selectTheaterDetails } from 'src/app/core/state/theater/theater.selector'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 type Category = 'diamond' | 'gold' | 'silver'
 const CATEGORIES: Category[] = ['diamond', 'gold', 'silver']
@@ -40,8 +40,8 @@ export interface ShowFormResult {
 })
 export class ShowFormModalComponent {
   protected readonly modal = inject(ActiveModal)
-  private readonly movieService = inject(MovieService)
-  private readonly screenService = inject(ScreenService)
+  private readonly movieRepo = inject(TheaterMovieRepo)
+  private readonly screenRepo = inject(TheaterScreenRepo)
   private readonly theater = inject(Store).selectSignal(selectTheaterDetails)
 
   /** Day the form opens on */
@@ -83,7 +83,7 @@ export class ShowFormModalComponent {
     switchMap(text => {
       this.searching.set(true)
       this.searchFailed.set(false)
-      const request = text === '' ? this.movieService.findAllMovies() : this.movieService.searchMovie(text, false)
+      const request = text === '' ? this.movieRepo.findAllMovies() : this.movieRepo.searchMovie(text)
       return request.pipe(
         map(res => { this.searching.set(false); return (res.data ?? []).slice(0, 8) }),
         catchError(() => { this.searching.set(false); this.searchFailed.set(true); return of([]) })
@@ -95,7 +95,7 @@ export class ShowFormModalComponent {
 
   protected readonly screens = rxResource({
     params: () => this.theater()?._id ?? '',
-    stream: ({ params }) => this.screenService.findScreens(params).pipe(map(res => res.data ?? []))
+    stream: ({ params }) => this.screenRepo.findScreens(params).pipe(map(res => res.data ?? []))
   })
 
   private readonly screenId = toSignal(this.form.controls.screenId.valueChanges.pipe(startWith('')), { initialValue: '' })
@@ -104,7 +104,7 @@ export class ShowFormModalComponent {
     params: () => this.screenId(),
     stream: ({ params }) => params === ''
       ? of([])
-      : this.screenService.getAvailSeatsOnScreen(params).pipe(map(res => {
+      : this.screenRepo.getAvailSeatsOnScreen(params).pipe(map(res => {
         const names = res.data
         if (names === null) return []
         return CATEGORIES.filter(key => names[key] !== undefined && names[key] !== null && names[key] !== '')

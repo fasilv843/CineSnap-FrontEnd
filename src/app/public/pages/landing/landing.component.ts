@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core'
 import { RouterLink } from '@angular/router'
-import { isTokenExpired } from 'src/app/helpers/jwt-token'
+import { isTokenExpired } from 'src/app/core/auth/jwt-token'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { LogoComponent } from 'src/app/shared/ui/logo.component'
 import { ThemeToggleComponent } from 'src/app/shared/ui/theme-toggle.component'

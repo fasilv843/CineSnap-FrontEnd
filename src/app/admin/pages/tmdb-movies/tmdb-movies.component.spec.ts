@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdminMoviesComponent } from './admin-movies.component';
+import { AdminTmdbMoviesComponent } from './tmdb-movies.component';
 
-describe('AdminMoviesComponent', () => {
-  let component: AdminMoviesComponent;
-  let fixture: ComponentFixture<AdminMoviesComponent>;
+describe('AdminTmdbMoviesComponent', () => {
+  let component: AdminTmdbMoviesComponent;
+  let fixture: ComponentFixture<AdminTmdbMoviesComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [AdminMoviesComponent]
+    imports: [AdminTmdbMoviesComponent]
 });
-    fixture = TestBed.createComponent(AdminMoviesComponent);
+    fixture = TestBed.createComponent(AdminTmdbMoviesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

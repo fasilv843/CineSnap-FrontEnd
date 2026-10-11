@@ -1,7 +1,7 @@
 import { inject } from '@angular/core'
 import { type CanActivateFn, Router } from '@angular/router'
-import { isTokenExpired } from '../helpers/jwt-token'
-import { ToastService } from '../shared/ui/toast.service'
+import { isTokenExpired } from './jwt-token'
+import { ToastService } from '../toast/toast.service'
 
 export const authGuard: CanActivateFn = (route) => {
   const router = inject(Router)

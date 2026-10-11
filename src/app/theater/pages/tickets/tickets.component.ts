@@ -2,16 +2,16 @@ import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, sig
 import { rxResource } from '@angular/core/rxjs-interop'
 import { Store } from '@ngrx/store'
 import { map } from 'rxjs'
-import { type TicketRow, toTicketRow } from 'src/app/helpers/ticket-row'
-import { type ITicketView } from 'src/app/models/ticket'
-import { TicketService } from 'src/app/services/ticket.service'
+import { type TicketRow, toTicketRow } from 'src/app/shared/utils/ticket-row'
+import { type ITicketView } from 'src/app/core/models/ticket.model'
+import { TheaterTicketRepo } from 'src/app/theater/repos/ticket.repo'
 import { ConfirmService } from 'src/app/shared/ui/confirm-dialog.component'
 import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
-import { ToastService } from 'src/app/shared/ui/toast.service'
+import { ToastService } from 'src/app/core/toast/toast.service'
 import { injectUrlPaging } from 'src/app/shared/ui/url-paging'
-import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import { TicketTableComponent } from '../../common/ticket-table/ticket-table.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { selectTheaterDetails } from 'src/app/core/state/theater/theater.selector'
+import { TicketTableComponent } from '../../../shared/components/ticket-table/ticket-table.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 @Component({
   selector: 'app-thr-tickets',
@@ -25,8 +25,8 @@ import { valueOf } from 'src/app/helpers/resource'
     </main>
   `
 })
-export class ThrTicketsComponent {
-  private readonly ticketService = inject(TicketService)
+export class TheaterTicketsComponent {
+  private readonly ticketRepo = inject(TheaterTicketRepo)
   private readonly confirm = inject(ConfirmService)
   private readonly toast = inject(ToastService)
 
@@ -36,7 +36,7 @@ export class ThrTicketsComponent {
 
   protected readonly tickets = rxResource({
     params: () => ({ theaterId: this.theater()?._id ?? '', page: this.paging.page(), limit: this.paging.limit() }),
-    stream: ({ params }) => this.ticketService.getAllTicketsOfTheater(params.theaterId, params.page, params.limit).pipe(
+    stream: ({ params }) => this.ticketRepo.getAllTicketsOfTheater(params.theaterId, params.page, params.limit).pipe(
       map(res => ({ rows: (res.data?.tickets ?? []).map(ticket => toTicketRow(ticket as ITicketView)), count: res.data?.ticketCount ?? 0 }))
     )
   })
@@ -55,7 +55,7 @@ export class ThrTicketsComponent {
     })
     if (!confirmed) return
     this.cancelling.set(row.id)
-    this.ticketService.cancelTicketByTheater(row.id).subscribe({
+    this.ticketRepo.cancelTicketByTheater(row.id).subscribe({
       next: () => {
         this.cancelling.set(null)
         this.rows.update(rows => rows.map(r => r.id === row.id ? { ...r, status: 'cancelled', cancelledBy: 'Theater' } : r))

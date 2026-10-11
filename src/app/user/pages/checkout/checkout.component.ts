@@ -4,22 +4,22 @@ import { DatePipe } from '@angular/common'
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { interval, map, of } from 'rxjs'
-import { toMovieCard } from 'src/app/helpers/movie-card'
-import { formatTime } from 'src/app/helpers/timer'
-import { type ICouponRes } from 'src/app/models/coupon'
-import { type ITempTicketView, type ITicketSeat } from 'src/app/models/ticket'
-import { CouponService } from 'src/app/services/coupon.service'
-import { ModalService } from 'src/app/services/modal.service'
-import { RazorpayService } from 'src/app/services/razorpay.service'
-import { TicketService } from 'src/app/services/ticket.service'
-import { TICKET_EXPIRE_TIME } from 'src/app/shared/constants'
+import { toMovieCard } from 'src/app/shared/utils/movie-card'
+import { formatTime } from 'src/app/shared/utils/timer'
+import { type ICouponRes } from 'src/app/core/models/coupon.model'
+import { type ITempTicketView, type ITicketSeat } from 'src/app/core/models/ticket.model'
+import { UserCouponRepo } from 'src/app/user/repos/coupon.repo'
+import { UserTicketRepo } from 'src/app/user/repos/ticket.repo'
+import { ModalService } from 'src/app/shared/ui/modal.service'
+import { RazorpayService } from 'src/app/shared/services/razorpay.service'
+import { TICKET_EXPIRE_TIME } from 'src/app/core/constants/constants'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
-import { adjustUserWallet } from 'src/app/states/user/user.actions'
-import { selectUserDetails } from 'src/app/states/user/user.selector'
-import { CouponModalComponent } from '../coupon-modal/coupon-modal.component'
-import { UserNavComponent } from '../user-nav/user-nav.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { adjustUserWallet } from 'src/app/core/state/user/user.actions'
+import { selectUserDetails } from 'src/app/core/state/user/user.selector'
+import { CouponModalComponent } from '../../components/coupon-modal/coupon-modal.component'
+import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 type PaymentMethod = 'Razorpay' | 'Wallet'
 
@@ -31,16 +31,16 @@ function ticketShare (ticket: ITempTicketView): number {
 
 @Component({
   selector: 'app-booking',
-  templateUrl: './booking.component.html',
+  templateUrl: './checkout.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [UserNavComponent, RouterLink, DatePipe, ButtonDirective, StatePanelComponent]
 })
-export class BookingComponent {
+export class UserCheckoutComponent {
   private readonly route = inject(ActivatedRoute)
   private readonly router = inject(Router)
   private readonly store = inject(Store)
-  private readonly ticketService = inject(TicketService)
-  private readonly couponService = inject(CouponService)
+  private readonly couponRepo = inject(UserCouponRepo)
+  private readonly ticketRepo = inject(UserTicketRepo)
   private readonly razorpayService = inject(RazorpayService)
   private readonly modalService = inject(ModalService)
 
@@ -50,14 +50,14 @@ export class BookingComponent {
 
   protected readonly ticket = rxResource({
     params: () => this.ticketId(),
-    stream: ({ params }) => this.ticketService.getTempTicketData(params).pipe(map(res => res.data as ITempTicketView | null))
+    stream: ({ params }) => this.ticketRepo.getTempTicketData(params).pipe(map(res => res.data as ITempTicketView | null))
   })
 
   protected readonly coupons = rxResource({
     params: () => ({ userId: this.user()?._id ?? '', ticketId: this.ticketId() }),
     stream: ({ params }) => params.userId === ''
       ? of([])
-      : this.couponService.getApplicableCouopns(params.userId, params.ticketId).pipe(map(res => res.data ?? []))
+      : this.couponRepo.getApplicableCouopns(params.userId, params.ticketId).pipe(map(res => res.data ?? []))
   })
 
   // Countdown to when the held seats are released
@@ -148,7 +148,7 @@ export class BookingComponent {
 
     const method: PaymentMethod = payWithWallet ? 'Wallet' : 'Razorpay'
     const partWallet = !this.walletCovers() && this.useWallet()
-    this.ticketService.confirmTicket(this.ticketId(), method, partWallet, this.appliedCoupon()?._id).subscribe({
+    this.ticketRepo.confirmTicket(this.ticketId(), method, partWallet, this.appliedCoupon()?._id).subscribe({
       next: res => {
         if (res.data === null) { this.paying.set(false); return }
         // Mirror the backend's wallet debit: a wallet payment takes the full ticket price (it ignores the coupon),

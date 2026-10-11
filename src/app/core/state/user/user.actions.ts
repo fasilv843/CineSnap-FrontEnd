@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store'
-import { type IUserRes } from 'src/app/models/users'
+import { type IUserRes } from 'src/app/core/models/user.model'
 
 export const saveUserOnStore = createAction('[User] Save User Data On Store', props<{ userDetails: IUserRes }>())
 export const deleteUserFromStore = createAction('[User] Delete User Data From Store')

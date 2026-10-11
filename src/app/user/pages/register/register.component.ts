@@ -3,23 +3,23 @@ import { HttpClient } from '@angular/common/http'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { RouterLink } from '@angular/router'
 import { type Subscription, map, take, timer } from 'rxjs'
-import { formatTime } from 'src/app/helpers/timer'
-import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations'
-import { type IApiUserAuthRes } from 'src/app/models/users'
-import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants'
-import { emailValidators, nameValidators, otpValidators, passwordValidators } from 'src/app/shared/valiators'
+import { formatTime } from 'src/app/shared/utils/timer'
+import { passwordMatchValidator, validateByTrimming } from 'src/app/shared/utils/custom-validators'
+import { type IApiUserAuthRes } from 'src/app/core/models/user.model'
+import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/core/constants/constants'
+import { emailValidators, nameValidators, otpValidators, passwordValidators } from 'src/app/shared/utils/form-validators'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 import { AuthShellComponent } from 'src/app/shared/ui/auth-shell.component'
-import { GoogleButtonComponent } from '../auth/google-button.component'
-import { connectGoogleSignIn, injectStartSession } from '../auth/user-session'
+import { GoogleButtonComponent } from '../../components/google-button.component'
+import { connectGoogleSignIn, injectStartSession } from '../../utils/user-session'
 
 type Step = 'details' | 'verify'
 
 /** Sign-up in two steps: account details, then the 4-digit code the backend emails. */
 @Component({
   selector: 'app-user-register',
-  templateUrl: './user-register.component.html',
+  templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, ButtonDirective, FieldErrorComponent, AuthShellComponent, GoogleButtonComponent]
 })

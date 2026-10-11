@@ -1,4 +1,4 @@
-import { type genreType, type langType } from '../models/filter'
+import { type genreType, type IFilterEvent, type langType } from '../../core/models/filter.model'
 
 export function getGenreQuery (genreFilters: genreType[]): string {
   let genreStr = ''
@@ -16,4 +16,16 @@ export function getLanguageQuery (langFilters: langType[]): string {
     if (i !== langFilters.length) langStr += '&'
   }
   return langStr
+}
+
+/** user/movies?page=&g1=&l1=&availability= — the catalogue listing every section reads */
+export function filteredMoviesUrl (filters: IFilterEvent, page: number): string {
+  let url = `user/movies?page=${page}`
+  const genreStr = getGenreQuery(filters.filterGenres)
+  const languageStr = getLanguageQuery(filters.filterLanguages)
+
+  if (genreStr !== '') url += '&' + genreStr
+  if (languageStr !== '') url += '&' + languageStr
+  url += `&availability=${filters.availability}`
+  return url
 }

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core'
 import { Router, RouterOutlet } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { imagesFolderPath } from 'src/app/shared/constants'
+import { imagesFolderPath } from 'src/app/core/constants/constants'
 import { ConsoleShellComponent, type ConsoleLink } from 'src/app/shared/ui/console-shell.component'
-import { deleteTheaterFromStore } from 'src/app/states/theater/theater.action'
-import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import { deleteTheaterFromStore } from 'src/app/core/state/theater/theater.action'
+import { selectTheaterDetails } from 'src/app/core/state/theater/theater.selector'
 
 /** Layout route for the signed-in theater area; pages render in the outlet. */
 @Component({
@@ -18,7 +18,7 @@ import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
     </cs-console-shell>
   `
 })
-export class ThrShellComponent {
+export class TheaterShellComponent {
   private readonly store = inject(Store)
   private readonly router = inject(Router)
 

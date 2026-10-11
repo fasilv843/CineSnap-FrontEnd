@@ -5,17 +5,17 @@ import { RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { createColumnHelper, injectTable, rowPaginationFeature, tableFeatures } from '@tanstack/angular-table'
 import { map } from 'rxjs'
-import { type IWalletHistory } from 'src/app/models/common'
-import { TheaterService } from 'src/app/services/theater.service'
-import { WalletTopUpService } from 'src/app/services/wallet-top-up.service'
+import { type IWalletHistory } from 'src/app/core/models/api.model'
+import { TheaterAccountRepo } from 'src/app/theater/repos/account.repo'
+import { TheaterWalletService } from 'src/app/theater/services/wallet.service'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { IconComponent } from 'src/app/shared/ui/icon.component'
 import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
 import { PaginationComponent } from 'src/app/shared/ui/pagination.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
 import { injectUrlPaging } from 'src/app/shared/ui/url-paging'
-import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import { valueOf } from 'src/app/helpers/resource'
+import { selectTheaterDetails } from 'src/app/core/state/theater/theater.selector'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 // The server pages the history, so the table only needs pagination state (no client row models)
 const features = tableFeatures({ rowPaginationFeature })
@@ -28,20 +28,20 @@ const columns = column.columns([
 
 @Component({
   selector: 'app-thr-wallet',
-  templateUrl: './thr-wallet.component.html',
+  templateUrl: './wallet.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, DatePipe, ButtonDirective, IconComponent, PageHeaderComponent, PaginationComponent, StatePanelComponent]
 })
-export class ThrWalletComponent {
-  private readonly theaterService = inject(TheaterService)
-  private readonly walletTopUp = inject(WalletTopUpService)
+export class TheaterWalletComponent {
+  private readonly accountRepo = inject(TheaterAccountRepo)
+  private readonly wallet = inject(TheaterWalletService)
 
   protected readonly theater = inject(Store).selectSignal(selectTheaterDetails)
   protected readonly paging = injectUrlPaging()
 
   protected readonly history = rxResource({
     params: () => ({ theaterId: this.theater()?._id ?? '', page: this.paging.page(), limit: this.paging.limit() }),
-    stream: ({ params }) => this.theaterService.getTheaterWalletHistory(params.theaterId, params.page, params.limit).pipe(
+    stream: ({ params }) => this.accountRepo.getTheaterWalletHistory(params.theaterId, params.page, params.limit).pipe(
       map(res => res.data ?? { walletHistory: [], count: 0 })
     )
   })
@@ -60,6 +60,6 @@ export class ThrWalletComponent {
 
   protected addMoney (): void {
     const theater = this.theater()
-    if (theater !== null) this.walletTopUp.addTheaterMoney(theater)
+    if (theater !== null) this.wallet.addMoney(theater)
   }
 }

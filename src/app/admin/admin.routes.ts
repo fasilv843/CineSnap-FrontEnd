@@ -1,39 +1,39 @@
 import { type Routes } from '@angular/router'
-import { authGuard } from 'src/app/guards/auth.guard'
-import { loginGuard } from 'src/app/guards/login.guard'
+import { authGuard } from 'src/app/core/auth/auth.guard'
+import { loginGuard } from 'src/app/core/auth/login.guard'
 
 export const ADMIN_ROUTES: Routes = [
   {
     path: 'login',
     title: 'CineSnap | Admin Login',
-    loadComponent: async () => await import('./admin-login/admin-login.component').then(m => m.AdminLoginComponent),
+    loadComponent: async () => await import('./pages/login/login.component').then(m => m.AdminLoginComponent),
     canActivate: [loginGuard]
   },
   {
     // Signed-in admin area: the shell holds the navigation, pages render inside it
     path: '',
-    loadComponent: async () => await import('./admin-shell/admin-shell.component').then(m => m.AdminShellComponent),
+    loadComponent: async () => await import('./layout/admin-shell/admin-shell.component').then(m => m.AdminShellComponent),
     canActivate: [authGuard],
     children: [
       {
         path: 'home',
         title: 'CineSnap | Dashboard',
-        loadComponent: async () => await import('./admin-home/admin-home.component').then(m => m.AdminHomeComponent)
+        loadComponent: async () => await import('./pages/dashboard/dashboard.component').then(m => m.AdminDashboardComponent)
       },
       {
         path: 'theaters',
         title: 'CineSnap | Theaters',
-        loadComponent: async () => await import('./admin-theaters/admin-theaters.component').then(m => m.AdminTheatersComponent)
+        loadComponent: async () => await import('./pages/theaters/theaters.component').then(m => m.AdminTheatersComponent)
       },
       {
         path: 'users',
         title: 'CineSnap | Users',
-        loadComponent: async () => await import('./admin-users/admin-users.component').then(m => m.AdminUsersComponent)
+        loadComponent: async () => await import('./pages/users/users.component').then(m => m.AdminUsersComponent)
       },
       {
         path: 'messages',
         title: 'CineSnap | Messages',
-        loadComponent: async () => await import('./admin-messages/admin-messages.component').then(m => m.AdminMessagesComponent)
+        loadComponent: async () => await import('./pages/messages/messages.component').then(m => m.AdminMessagesComponent)
       },
       {
         path: 'movies',
@@ -42,17 +42,17 @@ export const ADMIN_ROUTES: Routes = [
           {
             path: 'cinesnap',
             title: 'CineSnap | CineSnap Movies',
-            loadComponent: async () => await import('./admin-cs-movies/admin-cs-movies.component').then(m => m.AdminCsMoviesComponent)
+            loadComponent: async () => await import('./pages/movies/movies.component').then(m => m.AdminMoviesComponent)
           },
           {
             path: 'tmdb',
             title: 'CineSnap | TMDB Movies',
-            loadComponent: async () => await import('./admin-movies/admin-movies.component').then(m => m.AdminMoviesComponent)
+            loadComponent: async () => await import('./pages/tmdb-movies/tmdb-movies.component').then(m => m.AdminTmdbMoviesComponent)
           },
           {
             path: ':lang',
             title: 'CineSnap | Browse Movies',
-            loadComponent: async () => await import('./admin-movies-explore/admin-movies-explore.component').then(m => m.AdminMoviesExploreComponent)
+            loadComponent: async () => await import('./pages/tmdb-explore/tmdb-explore.component').then(m => m.AdminTmdbExploreComponent)
           },
           {
             path: '',
@@ -64,7 +64,7 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'tickets',
         title: 'CineSnap | Tickets',
-        loadComponent: async () => await import('./admin-tickets/admin-tickets.component').then(m => m.AdminTicketsComponent)
+        loadComponent: async () => await import('./pages/tickets/tickets.component').then(m => m.AdminTicketsComponent)
       },
       {
         path: '',

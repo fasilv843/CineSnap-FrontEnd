@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ThrShowsComponent } from './thr-shows.component';
+import { TheaterShowsComponent } from './shows.component';
 
-describe('ThrShowsComponent', () => {
-  let component: ThrShowsComponent;
-  let fixture: ComponentFixture<ThrShowsComponent>;
+describe('TheaterShowsComponent', () => {
+  let component: TheaterShowsComponent;
+  let fixture: ComponentFixture<TheaterShowsComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ThrShowsComponent]
+    imports: [TheaterShowsComponent]
 });
-    fixture = TestBed.createComponent(ThrShowsComponent);
+    fixture = TestBed.createComponent(TheaterShowsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

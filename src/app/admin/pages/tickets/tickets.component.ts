@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, signal } from '@angular/core'
 import { rxResource } from '@angular/core/rxjs-interop'
 import { map } from 'rxjs'
-import { type TicketRow, toTicketRow } from 'src/app/helpers/ticket-row'
-import { type ITicketView } from 'src/app/models/ticket'
-import { TicketService } from 'src/app/services/ticket.service'
+import { type TicketRow, toTicketRow } from 'src/app/shared/utils/ticket-row'
+import { type ITicketView } from 'src/app/core/models/ticket.model'
+import { AdminTicketRepo } from 'src/app/admin/repos/ticket.repo'
 import { ConfirmService } from 'src/app/shared/ui/confirm-dialog.component'
 import { PageHeaderComponent } from 'src/app/shared/ui/page-header.component'
-import { ToastService } from 'src/app/shared/ui/toast.service'
+import { ToastService } from 'src/app/core/toast/toast.service'
 import { injectUrlPaging } from 'src/app/shared/ui/url-paging'
-import { TicketTableComponent } from '../../common/ticket-table/ticket-table.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { TicketTableComponent } from '../../../shared/components/ticket-table/ticket-table.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 @Component({
   selector: 'app-admin-tickets',
@@ -26,7 +26,7 @@ import { valueOf } from 'src/app/helpers/resource'
   `
 })
 export class AdminTicketsComponent {
-  private readonly ticketService = inject(TicketService)
+  private readonly ticketRepo = inject(AdminTicketRepo)
   private readonly confirm = inject(ConfirmService)
   private readonly toast = inject(ToastService)
 
@@ -34,7 +34,7 @@ export class AdminTicketsComponent {
 
   protected readonly tickets = rxResource({
     params: () => ({ page: this.paging.page(), limit: this.paging.limit() }),
-    stream: ({ params }) => this.ticketService.getAllTickets(params.page, params.limit).pipe(
+    stream: ({ params }) => this.ticketRepo.getAllTickets(params.page, params.limit).pipe(
       map(res => ({ rows: (res.data?.tickets ?? []).map(ticket => toTicketRow(ticket as ITicketView)), count: res.data?.ticketCount ?? 0 }))
     )
   })
@@ -53,7 +53,7 @@ export class AdminTicketsComponent {
     })
     if (!confirmed) return
     this.cancelling.set(row.id)
-    this.ticketService.cancelTicketByAdmin(row.id).subscribe({
+    this.ticketRepo.cancelTicketByAdmin(row.id).subscribe({
       next: () => {
         this.cancelling.set(null)
         this.rows.update(rows => rows.map(r => r.id === row.id ? { ...r, status: 'cancelled', cancelledBy: 'Admin' } : r))

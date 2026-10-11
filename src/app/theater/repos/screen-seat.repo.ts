@@ -2,12 +2,12 @@
 import { HttpClient } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
-import { IApiScreenSeatRes, IScreenSeatRes } from '../models/screenSeat'
+import { IApiScreenSeatRes, IScreenSeatRes } from '../../core/models/screen-seat.model'
 
 @Injectable({
   providedIn: 'root'
 })
-export class ScreenSeatService {
+export class TheaterScreenSeatRepo {
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient
   ) { }

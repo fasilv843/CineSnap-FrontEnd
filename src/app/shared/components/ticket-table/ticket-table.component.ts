@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core'
 import { DatePipe } from '@angular/common'
 import { createColumnHelper, injectTable, rowPaginationFeature, tableFeatures } from '@tanstack/angular-table'
-import { STATUS_LABEL, STATUS_TONE, type TicketRow, cancelledLabel } from 'src/app/helpers/ticket-row'
+import { STATUS_LABEL, STATUS_TONE, type TicketRow, cancelledLabel } from 'src/app/shared/utils/ticket-row'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { PaginationComponent } from 'src/app/shared/ui/pagination.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'

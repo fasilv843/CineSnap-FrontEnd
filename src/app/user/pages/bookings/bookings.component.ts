@@ -8,18 +8,18 @@ import {
   rowPaginationFeature, rowSortingFeature, type SortingState, tableFeatures
 } from '@tanstack/angular-table'
 import { map, switchMap } from 'rxjs'
-import { getLanguage } from 'src/app/helpers/movie'
-import { type ITicketRes } from 'src/app/models/ticket'
-import { TicketService } from 'src/app/services/ticket.service'
-import { UserService } from 'src/app/services/user.service'
-import { ToastService } from 'src/app/shared/ui/toast.service'
+import { getLanguage } from 'src/app/shared/utils/movie'
+import { type ITicketRes } from 'src/app/core/models/ticket.model'
+import { UserAccountRepo } from 'src/app/user/repos/account.repo'
+import { UserTicketRepo } from 'src/app/user/repos/ticket.repo'
+import { ToastService } from 'src/app/core/toast/toast.service'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { ConfirmService } from 'src/app/shared/ui/confirm-dialog.component'
 import { PaginationComponent } from 'src/app/shared/ui/pagination.component'
-import { adjustUserWallet } from 'src/app/states/user/user.actions'
-import { selectUserDetails } from 'src/app/states/user/user.selector'
-import { UserNavComponent } from '../user-nav/user-nav.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { adjustUserWallet } from 'src/app/core/state/user/user.actions'
+import { selectUserDetails } from 'src/app/core/state/user/user.selector'
+import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 const PAGE_SIZES = [10, 20, 50]
 const CANCEL_CUTOFF_HOURS = 4 // backend rule: bookings can be cancelled until 4 hours before the show
@@ -100,14 +100,14 @@ const columns = column.columns([
 
 @Component({
   selector: 'app-user-bookings',
-  templateUrl: './user-bookings.component.html',
-  styleUrl: './user-bookings.component.css',
+  templateUrl: './bookings.component.html',
+  styleUrl: './bookings.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [UserNavComponent, RouterLink, ButtonDirective, PaginationComponent, DatePipe]
 })
 export class UserBookingsComponent {
-  private readonly ticketService = inject(TicketService)
-  private readonly userService = inject(UserService)
+  private readonly accountRepo = inject(UserAccountRepo)
+  private readonly ticketRepo = inject(UserTicketRepo)
   private readonly toast = inject(ToastService)
   private readonly confirmService = inject(ConfirmService)
   private readonly store = inject(Store)
@@ -140,7 +140,7 @@ export class UserBookingsComponent {
   // Data -----------------------------------------------------------------------
 
   private readonly tickets = rxResource({
-    stream: () => this.ticketService.getTicketsOfUser(this.userId).pipe(map(res => res.data as StoredTicket[]))
+    stream: () => this.ticketRepo.getTicketsOfUser(this.userId).pipe(map(res => res.data as StoredTicket[]))
   })
 
   // Rows built from the response; cancelling updates a row here without refetching
@@ -206,9 +206,9 @@ export class UserBookingsComponent {
     })
     if (!confirmed) return
     const cancelledAt = Date.now()
-    this.ticketService.cancelTicket(row.id).pipe(
+    this.ticketRepo.cancelTicket(row.id).pipe(
       // The refund is tiered on the backend, so read what it credited from the newest wallet entries
-      switchMap(() => this.userService.getUserWalletHistory(this.userId, 1, 5))
+      switchMap(() => this.accountRepo.getUserWalletHistory(this.userId, 1, 5))
     ).subscribe(res => {
       this.rows.update(rows => rows.map(r => r.id === row.id ? { ...r, status: 'cancelled', cancelledBy: 'User', canCancel: false } : r))
       const refunded = (res.data?.walletHistory ?? [])
@@ -225,7 +225,7 @@ export class UserBookingsComponent {
 
   protected emailInvoice (row: BookingRow): void {
     this.invoiceState.update(state => ({ ...state, [row.id]: 'sending' }))
-    this.ticketService.sendInvoiceRequest(row.id).subscribe({
+    this.ticketRepo.sendInvoiceRequest(row.id).subscribe({
       next: () => { this.invoiceState.update(state => ({ ...state, [row.id]: 'sent' })) },
       error: () => { this.invoiceState.update(state => ({ ...state, [row.id]: 'failed' })) }
     })

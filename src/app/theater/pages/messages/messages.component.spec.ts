@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ThrMessagesComponent } from './thr-messages.component';
+import { TheaterMessagesComponent } from './messages.component';
 
-describe('ThrMessagesComponent', () => {
-  let component: ThrMessagesComponent;
-  let fixture: ComponentFixture<ThrMessagesComponent>;
+describe('TheaterMessagesComponent', () => {
+  let component: TheaterMessagesComponent;
+  let fixture: ComponentFixture<TheaterMessagesComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ThrMessagesComponent]
+    imports: [TheaterMessagesComponent]
 });
-    fixture = TestBed.createComponent(ThrMessagesComponent);
+    fixture = TestBed.createComponent(TheaterMessagesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
-import { ThemeService } from './services/theme.service'
-import { ToastHostComponent } from './shared/ui/toast-host.component'
+import { ThemeService } from './core/theme/theme.service'
+import { ToastHostComponent } from './core/toast/toast-host.component'
 
 @Component({
   selector: 'app-root',

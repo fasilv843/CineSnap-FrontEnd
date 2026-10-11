@@ -18,4 +18,4 @@ import { StatusPageComponent } from 'src/app/shared/ui/status-page.component'
     </cs-status-page>
   `
 })
-export class ApprovalPendingComponent {}
+export class TheaterApprovalPendingComponent {}

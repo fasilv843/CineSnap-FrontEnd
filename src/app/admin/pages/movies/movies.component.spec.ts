@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdminCsMoviesComponent } from './admin-cs-movies.component';
+import { AdminMoviesComponent } from './movies.component';
 
-describe('AdminCsMoviesComponent', () => {
-  let component: AdminCsMoviesComponent;
-  let fixture: ComponentFixture<AdminCsMoviesComponent>;
+describe('AdminMoviesComponent', () => {
+  let component: AdminMoviesComponent;
+  let fixture: ComponentFixture<AdminMoviesComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [AdminCsMoviesComponent]
+    imports: [AdminMoviesComponent]
 });
-    fixture = TestBed.createComponent(AdminCsMoviesComponent);
+    fixture = TestBed.createComponent(AdminMoviesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

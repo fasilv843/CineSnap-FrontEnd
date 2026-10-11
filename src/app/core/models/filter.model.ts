@@ -1,5 +1,5 @@
-import { type GENRE_NAMES } from '../shared/genreIds'
-import { type LanguageAbbreviation } from '../shared/langAbbreviation'
+import { type GENRE_NAMES } from '../constants/genres'
+import { type LanguageAbbreviation } from '../constants/languages'
 
 export type genreType = keyof typeof GENRE_NAMES
 export type langType = keyof typeof LanguageAbbreviation

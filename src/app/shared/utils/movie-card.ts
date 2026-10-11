@@ -1,5 +1,5 @@
-import { type ICSMovieRes } from '../models/movie'
-import { type genreType, type langType } from '../models/filter'
+import { type ICSMovieRes } from '../../core/models/movie.model'
+import { type genreType, type langType } from '../../core/models/filter.model'
 import { getGenre, getLanguage } from './movie'
 
 const TMDB_IMAGE = 'https://image.tmdb.org/t/p/'

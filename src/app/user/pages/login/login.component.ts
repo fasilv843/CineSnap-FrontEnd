@@ -2,18 +2,18 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { HttpClient } from '@angular/common/http'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { RouterLink } from '@angular/router'
-import { validateByTrimming } from 'src/app/helpers/validations'
-import { type IApiUserAuthRes } from 'src/app/models/users'
-import { emailValidators, passwordValidators } from 'src/app/shared/valiators'
+import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
+import { type IApiUserAuthRes } from 'src/app/core/models/user.model'
+import { emailValidators, passwordValidators } from 'src/app/shared/utils/form-validators'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 import { AuthShellComponent } from 'src/app/shared/ui/auth-shell.component'
-import { GoogleButtonComponent } from '../auth/google-button.component'
-import { connectGoogleSignIn, injectStartSession } from '../auth/user-session'
+import { GoogleButtonComponent } from '../../components/google-button.component'
+import { connectGoogleSignIn, injectStartSession } from '../../utils/user-session'
 
 @Component({
   selector: 'app-user-login',
-  templateUrl: './user-login.component.html',
+  templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, ButtonDirective, FieldErrorComponent, AuthShellComponent, GoogleButtonComponent]
 })

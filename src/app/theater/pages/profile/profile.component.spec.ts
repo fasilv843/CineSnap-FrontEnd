@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ThrProfileComponent } from './thr-profile.component';
+import { TheaterProfileComponent } from './profile.component';
 
-describe('ThrProfileComponent', () => {
-  let component: ThrProfileComponent;
-  let fixture: ComponentFixture<ThrProfileComponent>;
+describe('TheaterProfileComponent', () => {
+  let component: TheaterProfileComponent;
+  let fixture: ComponentFixture<TheaterProfileComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ThrProfileComponent]
+    imports: [TheaterProfileComponent]
 });
-    fixture = TestBed.createComponent(ThrProfileComponent);
+    fixture = TestBed.createComponent(TheaterProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
 import { type Observable, type Subscription, catchError, map, of, switchMap, take, timer } from 'rxjs'
-import { getLocation } from 'src/app/helpers/location'
-import { formatTime } from 'src/app/helpers/timer'
-import { passwordMatchValidator, validateByTrimming } from 'src/app/helpers/validations'
-import { GeoLocationService } from 'src/app/services/geo-location.service'
-import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants'
-import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators'
+import { getLocation } from 'src/app/shared/utils/location'
+import { formatTime } from 'src/app/shared/utils/timer'
+import { passwordMatchValidator, validateByTrimming } from 'src/app/shared/utils/custom-validators'
+import { GeoLocationRepo } from 'src/app/shared/repos/geo-location.repo'
+import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/core/constants/constants'
+import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/utils/form-validators'
 import { AuthShellComponent } from 'src/app/shared/ui/auth-shell.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
@@ -19,14 +19,14 @@ interface Coords { lat: number, lon: number }
 /** Theater sign-up in two steps: theater details, then the 4-digit code the backend emails. Approval follows. */
 @Component({
   selector: 'app-thr-register',
-  templateUrl: './thr-register.component.html',
+  templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, AuthShellComponent, ButtonDirective, FieldErrorComponent]
 })
-export class ThrRegisterComponent {
+export class TheaterRegisterComponent {
   private readonly http = inject(HttpClient)
   private readonly router = inject(Router)
-  private readonly geo = inject(GeoLocationService)
+  private readonly geo = inject(GeoLocationRepo)
 
   protected readonly step = signal<Step>('details')
   /** Where the code was sent, shown on the code step */

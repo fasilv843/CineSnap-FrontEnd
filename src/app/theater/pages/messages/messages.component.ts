@@ -4,17 +4,16 @@ import { DatePipe } from '@angular/common'
 import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { map } from 'rxjs'
-import { type IApiChatRes, type IChatMessage, type IChatReqs, type IUsersListForChats } from 'src/app/models/chat'
-import { TheaterService } from 'src/app/services/theater.service'
-import { UserService } from 'src/app/services/user.service'
-import { WebSocketService } from 'src/app/services/web-socket.service'
-import { imagesFolderPath } from 'src/app/shared/constants'
+import { type IApiChatRes, type IChatMessage, type IChatReqs, type IUsersListForChats } from 'src/app/core/models/chat.model'
+import { TheaterChatRepo } from 'src/app/theater/repos/chat.repo'
+import { ChatSocketService } from 'src/app/shared/services/chat-socket.service'
+import { imagesFolderPath } from 'src/app/core/constants/constants'
 import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { IconComponent } from 'src/app/shared/ui/icon.component'
 import { StatePanelComponent } from 'src/app/shared/ui/state-panel.component'
-import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
-import { valueOf } from 'src/app/helpers/resource'
+import { selectTheaterDetails } from 'src/app/core/state/theater/theater.selector'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 interface Contact { id: string, name: string, image: string | null, unread: number }
 interface DayGroup { day: Date, messages: IChatMessage[] }
@@ -36,22 +35,21 @@ function startOfDay (date: Date | string): Date {
 
 @Component({
   selector: 'app-thr-messages',
-  templateUrl: './thr-messages.component.html',
-  styleUrl: './thr-messages.component.css',
+  templateUrl: './messages.component.html',
+  styleUrl: './messages.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive, DatePipe, AvatarComponent, ButtonDirective, IconComponent, StatePanelComponent]
 })
-export class ThrMessagesComponent {
-  private readonly socket = inject(WebSocketService)
-  private readonly theaterService = inject(TheaterService)
-  private readonly userService = inject(UserService)
+export class TheaterMessagesComponent {
+  private readonly socket = inject(ChatSocketService)
+  private readonly chatRepo = inject(TheaterChatRepo)
 
   private readonly theaterId = inject(Store).selectSignal(selectTheaterDetails)()?._id ?? ''
 
   // Conversation list --------------------------------------------------------
 
   protected readonly loadedContacts = rxResource({
-    stream: () => this.userService.getUsersChattedWith(this.theaterId).pipe(map(res => (res.data ?? []).map(toContact)))
+    stream: () => this.chatRepo.getUsersChattedWith(this.theaterId).pipe(map(res => (res.data ?? []).map(toContact)))
   })
 
   /** Local copy so unread counts change without refetching */
@@ -63,7 +61,7 @@ export class ThrMessagesComponent {
 
   protected readonly conversation = rxResource({
     params: () => this.userId() ?? undefined,
-    stream: ({ params: userId }) => this.theaterService.getChatHistory(this.theaterId, userId).pipe(map(res => res.data?.messages ?? []))
+    stream: ({ params: userId }) => this.chatRepo.getChatHistory(this.theaterId, userId).pipe(map(res => res.data?.messages ?? []))
   })
 
   protected readonly partner = computed(() => this.contacts().find(contact => contact.id === this.userId()) ?? null)
@@ -94,7 +92,7 @@ export class ThrMessagesComponent {
       if (chat.userId === this.userId()) {
         this.messages.set(chat.messages)
         const last = chat.messages.at(-1)
-        if (last !== undefined) this.theaterService.markLastMessageAsRead(chat.userId, chat.theaterId, chat.adminId, last._id).subscribe()
+        if (last !== undefined) this.chatRepo.markLastMessageAsRead(chat.userId, chat.theaterId, chat.adminId, last._id).subscribe()
       } else if (this.contacts().some(contact => contact.id === chat.userId)) {
         this.contacts.update(list => list.map(c => c.id === chat.userId ? { ...c, unread: c.unread + 1 } : c))
       } else {

@@ -1,4 +1,4 @@
-import { type ITicketView } from '../models/ticket'
+import { type ITicketView } from '../../core/models/ticket.model'
 
 export type TicketStatus = 'upcoming' | 'showing' | 'over' | 'cancelled'
 

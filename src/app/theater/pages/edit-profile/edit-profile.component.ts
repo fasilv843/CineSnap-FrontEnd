@@ -4,21 +4,21 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { type Observable, catchError, map, of, switchMap } from 'rxjs'
-import { getLocation } from 'src/app/helpers/location'
-import { validateByTrimming } from 'src/app/helpers/validations'
-import { type ICoords } from 'src/app/models/common'
-import { type ITheaterRes, type ITheaterUpdate } from 'src/app/models/theater'
-import { GeoLocationService } from 'src/app/services/geo-location.service'
-import { TheaterService } from 'src/app/services/theater.service'
-import { imagesFolderPath, userNameMaxLength, userNameMinLength } from 'src/app/shared/constants'
-import { mobileValidators, nameValidators, requiredValidator, zipValidators } from 'src/app/shared/valiators'
+import { getLocation } from 'src/app/shared/utils/location'
+import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
+import { type ICoords } from 'src/app/core/models/api.model'
+import { type ITheaterRes, type ITheaterUpdate } from 'src/app/core/models/theater.model'
+import { GeoLocationRepo } from 'src/app/shared/repos/geo-location.repo'
+import { TheaterAccountRepo } from 'src/app/theater/repos/account.repo'
+import { imagesFolderPath, userNameMaxLength, userNameMinLength } from 'src/app/core/constants/constants'
+import { mobileValidators, nameValidators, requiredValidator, zipValidators } from 'src/app/shared/utils/form-validators'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 import { IconComponent } from 'src/app/shared/ui/icon.component'
 import { PhotoPickerComponent } from 'src/app/shared/ui/photo-picker.component'
-import { ToastService } from 'src/app/shared/ui/toast.service'
-import { saveTheaterOnStore } from 'src/app/states/theater/theater.action'
-import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import { ToastService } from 'src/app/core/toast/toast.service'
+import { saveTheaterOnStore } from 'src/app/core/state/theater/theater.action'
+import { selectTheaterDetails } from 'src/app/core/state/theater/theater.selector'
 
 function text (validators = requiredValidator): FormControl<string> {
   return new FormControl('', { nonNullable: true, validators: [validateByTrimming(validators)] })
@@ -28,14 +28,14 @@ const ADDRESS_FIELDS = ['city', 'district', 'state', 'country', 'zip'] as const
 
 @Component({
   selector: 'app-edit-theater-profile',
-  templateUrl: './edit-theater-profile.component.html',
-  styleUrl: './edit-theater-profile.component.css',
+  templateUrl: './edit-profile.component.html',
+  styleUrl: './edit-profile.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, ButtonDirective, FieldErrorComponent, IconComponent, PhotoPickerComponent]
 })
-export class EditTheaterProfileComponent {
-  private readonly theaterService = inject(TheaterService)
-  private readonly geo = inject(GeoLocationService)
+export class TheaterEditProfileComponent {
+  private readonly accountRepo = inject(TheaterAccountRepo)
+  private readonly geo = inject(GeoLocationRepo)
   private readonly store = inject(Store)
   private readonly router = inject(Router)
   private readonly toast = inject(ToastService)
@@ -145,7 +145,7 @@ export class EditTheaterProfileComponent {
             zip: Number(value.zip)
           }
         }
-        return this.theaterService.updatetheaterDetails(theater._id, update)
+        return this.accountRepo.updatetheaterDetails(theater._id, update)
       })
     ).subscribe({
       next: res => {
@@ -178,7 +178,7 @@ export class EditTheaterProfileComponent {
     const formData = new FormData()
     formData.append('image', image, `${theater.name}.jpg`)
     this.photoBusy.set(true)
-    this.theaterService.updateTheaterProfilePic(theater._id, formData).subscribe({
+    this.accountRepo.updateTheaterProfilePic(theater._id, formData).subscribe({
       next: res => {
         this.photoBusy.set(false)
         if (res.data != null) this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))
@@ -191,7 +191,7 @@ export class EditTheaterProfileComponent {
     const theater = this.theater()
     if (theater === null) return
     this.photoBusy.set(true)
-    this.theaterService.deleteTheaterProfilePic(theater._id).subscribe({
+    this.accountRepo.deleteTheaterProfilePic(theater._id).subscribe({
       next: res => {
         this.photoBusy.set(false)
         if (res.data != null) this.store.dispatch(saveTheaterOnStore({ theaterDetails: res.data }))

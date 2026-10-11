@@ -1,4 +1,4 @@
-import { type IApiRes, type ColNumType } from './common'
+import { type IApiRes, type ColNumType } from './api.model'
 
 export interface IScreenSeatCategory {
   name: string

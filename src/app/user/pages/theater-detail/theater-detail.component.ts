@@ -4,18 +4,18 @@ import { DatePipe } from '@angular/common'
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { map } from 'rxjs'
-import { dateToString } from 'src/app/helpers/date'
-import { distanceKm, formatDistance } from 'src/app/helpers/distance'
-import { type MovieCard, toMovieCard } from 'src/app/helpers/movie-card'
-import { type IShowsOnAScreen } from 'src/app/models/show'
-import { ShowService } from 'src/app/services/show.service'
-import { TheaterService } from 'src/app/services/theater.service'
-import { imagesFolderPath } from 'src/app/shared/constants'
+import { dateToString } from 'src/app/shared/utils/date'
+import { distanceKm, formatDistance } from 'src/app/user/utils/distance'
+import { type MovieCard, toMovieCard } from 'src/app/shared/utils/movie-card'
+import { type IShowsOnAScreen } from 'src/app/core/models/show.model'
+import { UserShowRepo } from 'src/app/user/repos/show.repo'
+import { UserTheaterRepo } from 'src/app/user/repos/theater.repo'
+import { imagesFolderPath } from 'src/app/core/constants/constants'
 import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
-import { selectCoords } from 'src/app/states/coords/coords.selector'
-import { UserNavComponent } from '../user-nav/user-nav.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { selectCoords } from 'src/app/core/state/coords/coords.selector'
+import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 const DAYS_AHEAD = 7
 
@@ -67,16 +67,16 @@ function groupByMovie (screens: IShowsOnAScreen[]): MovieShows[] {
 
 @Component({
   selector: 'app-theater-page',
-  templateUrl: './theater-page.component.html',
-  styleUrl: './theater-page.component.css',
+  templateUrl: './theater-detail.component.html',
+  styleUrl: './theater-detail.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [UserNavComponent, RouterLink, ButtonDirective, AvatarComponent, DatePipe]
 })
-export class TheaterPageComponent {
+export class UserTheaterDetailComponent {
   private readonly route = inject(ActivatedRoute)
   private readonly router = inject(Router)
-  private readonly showService = inject(ShowService)
-  private readonly theaterService = inject(TheaterService)
+  private readonly showRepo = inject(UserShowRepo)
+  private readonly theaterRepo = inject(UserTheaterRepo)
   private readonly store = inject(Store)
 
   protected readonly theaterId = toSignal(this.route.paramMap.pipe(map(params => params.get('theaterId') ?? '')), { requireSync: true })
@@ -99,7 +99,7 @@ export class TheaterPageComponent {
 
   protected readonly theater = rxResource({
     params: () => this.theaterId(),
-    stream: ({ params: id }) => this.theaterService.getTheaterData(id).pipe(map(res => {
+    stream: ({ params: id }) => this.theaterRepo.getTheaterData(id).pipe(map(res => {
       const t = res.data
       const [lon, lat] = t.coords.coordinates
       return {
@@ -123,7 +123,7 @@ export class TheaterPageComponent {
 
   protected readonly shows = rxResource({
     params: () => ({ theaterId: this.theaterId(), date: this.selectedDay().key }),
-    stream: ({ params }) => this.showService.findShowsOnDate(params.theaterId, params.date).pipe(
+    stream: ({ params }) => this.showRepo.findShowsOnDate(params.theaterId, params.date).pipe(
       map(res => groupByMovie(res.data ?? []))
     )
   })

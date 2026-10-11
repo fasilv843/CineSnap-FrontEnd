@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core'
-import { CropperDialogueComponent, type CropperDialogueResult } from 'src/app/components/common/cropper-dialogue/cropper-dialogue.component'
-import { ModalService } from 'src/app/services/modal.service'
+import { ImageCropperDialogComponent, type CropperDialogueResult } from 'src/app/shared/components/image-cropper-dialog/image-cropper-dialog.component'
+import { ModalService } from 'src/app/shared/ui/modal.service'
 import { AvatarComponent } from './avatar.component'
 import { ButtonDirective } from './button.directive'
 
@@ -42,7 +42,7 @@ export class PhotoPickerComponent {
   protected pick (event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0]
     if (file === undefined) return
-    const ref = this.modalService.open(CropperDialogueComponent, { static: true })
+    const ref = this.modalService.open(ImageCropperDialogComponent, { static: true })
     ref.componentInstance.image.set(file)
     ref.result.then((result: CropperDialogueResult | undefined) => {
       if (result !== undefined) this.picked.emit(result.blob)

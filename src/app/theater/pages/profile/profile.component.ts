@@ -1,24 +1,24 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core'
 import { Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { WalletTopUpService } from 'src/app/services/wallet-top-up.service'
-import { imagesFolderPath } from 'src/app/shared/constants'
+import { TheaterWalletService } from 'src/app/theater/services/wallet.service'
+import { imagesFolderPath } from 'src/app/core/constants/constants'
 import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
-import { deleteTheaterFromStore } from 'src/app/states/theater/theater.action'
-import { selectTheaterDetails } from 'src/app/states/theater/theater.selector'
+import { deleteTheaterFromStore } from 'src/app/core/state/theater/theater.action'
+import { selectTheaterDetails } from 'src/app/core/state/theater/theater.selector'
 
 @Component({
   selector: 'app-thr-profile',
-  templateUrl: './thr-profile.component.html',
-  styleUrl: './thr-profile.component.css',
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, AvatarComponent, ButtonDirective]
 })
-export class ThrProfileComponent {
+export class TheaterProfileComponent {
   private readonly store = inject(Store)
   private readonly router = inject(Router)
-  private readonly walletTopUp = inject(WalletTopUpService)
+  private readonly wallet = inject(TheaterWalletService)
 
   protected readonly theater = this.store.selectSignal(selectTheaterDetails)
 
@@ -41,7 +41,7 @@ export class ThrProfileComponent {
 
   protected addMoney (): void {
     const theater = this.theater()
-    if (theater !== null) this.walletTopUp.addTheaterMoney(theater)
+    if (theater !== null) this.wallet.addMoney(theater)
   }
 
   protected logout (): void {

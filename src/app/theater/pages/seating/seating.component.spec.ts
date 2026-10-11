@@ -1,16 +1,16 @@
 import { type ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { ThrSeatingComponent } from './thr-seating.component'
+import { TheaterSeatingComponent } from './seating.component'
 
-describe('ThrSeatingComponent', () => {
-  let component: ThrSeatingComponent
-  let fixture: ComponentFixture<ThrSeatingComponent>
+describe('TheaterSeatingComponent', () => {
+  let component: TheaterSeatingComponent
+  let fixture: ComponentFixture<TheaterSeatingComponent>
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ThrSeatingComponent]
+    imports: [TheaterSeatingComponent]
 })
-    fixture = TestBed.createComponent(ThrSeatingComponent)
+    fixture = TestBed.createComponent(TheaterSeatingComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

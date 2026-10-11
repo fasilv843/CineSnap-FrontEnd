@@ -1,4 +1,4 @@
-import { type IWalletHistory, type ICoords, type IUserAddress, type IApiRes } from './common'
+import { type IWalletHistory, type ICoords, type IUserAddress, type IApiRes } from './api.model'
 
 export interface IUserSocialAuth {
   name: string

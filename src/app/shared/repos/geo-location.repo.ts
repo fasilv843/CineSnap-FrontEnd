@@ -2,14 +2,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
 import { map, type Observable } from 'rxjs'
 import { environments } from 'src/environments/environment'
-import { type ICoords, type IUserAddress } from '../models/common'
+import { type ICoords, type IUserAddress } from '../../core/models/api.model'
 
 const { geoapifyApi, geoapifyKey } = environments
 
 @Injectable({
   providedIn: 'root'
 })
-export class GeoLocationService {
+export class GeoLocationRepo {
   constructor (
     @Inject(HttpClient) private readonly http: HttpClient
   ) { }

@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core'
 import { DatePipe } from '@angular/common'
-import { type Movie } from 'src/app/models/movie'
+import { type Movie } from 'src/app/core/models/movie.model'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
-import { TmdbImportService } from '../../admin/tmdb-import.service'
+import { TmdbImportService } from '../../services/tmdb-import.service'
 
 /** A TMDB movie poster with "Add to CineSnap" (or "Update" when it's already there). */
 @Component({

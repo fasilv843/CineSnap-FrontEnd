@@ -3,30 +3,30 @@ import { rxResource } from '@angular/core/rxjs-interop'
 import { RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { map } from 'rxjs'
-import { toFilterOptions, toMovieCard } from 'src/app/helpers/movie-card'
-import { distanceKm, formatDistance } from 'src/app/helpers/distance'
-import { LocationService } from 'src/app/services/location.service'
-import { MovieService } from 'src/app/services/movie.service'
-import { TheaterService } from 'src/app/services/theater.service'
-import { imagesFolderPath } from 'src/app/shared/constants'
+import { toFilterOptions, toMovieCard } from 'src/app/shared/utils/movie-card'
+import { distanceKm, formatDistance } from 'src/app/user/utils/distance'
+import { LocationService } from 'src/app/user/services/location.service'
+import { UserMovieRepo } from 'src/app/user/repos/movie.repo'
+import { UserTheaterRepo } from 'src/app/user/repos/theater.repo'
+import { imagesFolderPath } from 'src/app/core/constants/constants'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
-import { selectCoords } from 'src/app/states/coords/coords.selector'
-import { selectUserDetails } from 'src/app/states/user/user.selector'
-import { UserNavComponent } from '../user-nav/user-nav.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { selectCoords } from 'src/app/core/state/coords/coords.selector'
+import { selectUserDetails } from 'src/app/core/state/user/user.selector'
+import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 const HERO_INTERVAL_MS = 7000
 
 @Component({
   selector: 'app-user-home',
-  templateUrl: './user-home.component.html',
-  styleUrl: './user-home.component.css',
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [UserNavComponent, RouterLink, ButtonDirective]
 })
 export class UserHomeComponent {
-  private readonly movieService = inject(MovieService)
-  private readonly theaterService = inject(TheaterService)
+  private readonly movieRepo = inject(UserMovieRepo)
+  private readonly theaterRepo = inject(UserTheaterRepo)
   private readonly store = inject(Store)
   protected readonly location = inject(LocationService)
 
@@ -42,23 +42,23 @@ export class UserHomeComponent {
   // Data ---------------------------------------------------------------------
 
   protected readonly featured = rxResource({
-    stream: () => this.movieService.getBannerMovies().pipe(map(res => res.data.map(toMovieCard).filter(m => m.backdrop !== null)))
+    stream: () => this.movieRepo.getBannerMovies().pipe(map(res => res.data.map(toMovieCard).filter(m => m.backdrop !== null)))
   })
 
   protected readonly nowShowing = rxResource({
-    stream: () => this.movieService
+    stream: () => this.movieRepo
       .findCineSnapFilteredMovies({ availability: 'Available', filterGenres: [], filterLanguages: [] }, 1)
       .pipe(map(res => res.data.map(toMovieCard)))
   })
 
   protected readonly filters = rxResource({
-    stream: () => this.movieService.fetchFilterDatas().pipe(map(res => toFilterOptions(res.genres, res.languages)))
+    stream: () => this.movieRepo.fetchFilterDatas().pipe(map(res => toFilterOptions(res.genres, res.languages)))
   })
 
   // Re-fetches whenever the stored coordinates change; stays idle (no request) until the location is known
   protected readonly theaters = rxResource({
     params: () => this.coordinates(),
-    stream: ({ params: [lon, lat] }) => this.theaterService.getNearestTheaters(lon, lat).pipe(
+    stream: ({ params: [lon, lat] }) => this.theaterRepo.getNearestTheaters(lon, lat).pipe(
       map(res => res.data.map(theater => ({
         id: theater._id,
         name: theater.name,

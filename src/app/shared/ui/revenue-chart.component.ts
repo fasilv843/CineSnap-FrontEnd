@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, type ElementRef, effect, inject, input, viewChild } from '@angular/core'
 import { CategoryScale, Chart, Filler, LineController, LineElement, LinearScale, PointElement, Tooltip } from 'chart.js'
-import { type IRevenueData } from 'src/app/models/charts'
-import { ThemeService } from 'src/app/services/theme.service'
+import { type IRevenueData } from 'src/app/core/models/chart.model'
+import { ThemeService } from 'src/app/core/theme/theme.service'
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler)
 

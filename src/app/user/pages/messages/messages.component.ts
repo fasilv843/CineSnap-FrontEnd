@@ -4,17 +4,17 @@ import { DatePipe } from '@angular/common'
 import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { forkJoin, map } from 'rxjs'
-import { type IApiChatRes, type IChatMessage, type IChatReqs } from 'src/app/models/chat'
-import { type ITheaterRes } from 'src/app/models/theater'
-import { TheaterService } from 'src/app/services/theater.service'
-import { UserService } from 'src/app/services/user.service'
-import { WebSocketService } from 'src/app/services/web-socket.service'
-import { imagesFolderPath } from 'src/app/shared/constants'
+import { type IApiChatRes, type IChatMessage, type IChatReqs } from 'src/app/core/models/chat.model'
+import { type ITheaterRes } from 'src/app/core/models/theater.model'
+import { UserChatRepo } from 'src/app/user/repos/chat.repo'
+import { UserTheaterRepo } from 'src/app/user/repos/theater.repo'
+import { ChatSocketService } from 'src/app/shared/services/chat-socket.service'
+import { imagesFolderPath } from 'src/app/core/constants/constants'
 import { AvatarComponent } from 'src/app/shared/ui/avatar.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
-import { selectUserDetails } from 'src/app/states/user/user.selector'
-import { UserNavComponent } from '../user-nav/user-nav.component'
-import { valueOf } from 'src/app/helpers/resource'
+import { selectUserDetails } from 'src/app/core/state/user/user.selector'
+import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
+import { valueOf } from 'src/app/shared/utils/resource'
 
 interface Contact { id: string, name: string, image: string | null }
 interface DayGroup { day: Date, messages: IChatMessage[] }
@@ -35,15 +35,15 @@ function startOfDay (date: Date | string): Date {
 
 @Component({
   selector: 'app-user-message',
-  templateUrl: './user-message.component.html',
-  styleUrl: './user-message.component.css',
+  templateUrl: './messages.component.html',
+  styleUrl: './messages.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [UserNavComponent, RouterLink, RouterLinkActive, ButtonDirective, AvatarComponent, DatePipe]
 })
-export class UserMessageComponent {
-  private readonly socket = inject(WebSocketService)
-  private readonly theaterService = inject(TheaterService)
-  private readonly userService = inject(UserService)
+export class UserMessagesComponent {
+  private readonly socket = inject(ChatSocketService)
+  private readonly chatRepo = inject(UserChatRepo)
+  private readonly theaterRepo = inject(UserTheaterRepo)
   private readonly route = inject(ActivatedRoute)
   private readonly store = inject(Store)
 
@@ -52,7 +52,7 @@ export class UserMessageComponent {
   // Conversation list ------------------------------------------------------
 
   protected readonly contacts = rxResource({
-    stream: () => this.theaterService.getTheatersChattedWith(this.userId).pipe(map(res => res.data.map(toContact)))
+    stream: () => this.chatRepo.getTheatersChattedWith(this.userId).pipe(map(res => res.data.map(toContact)))
   })
 
   // Open conversation: /user/messages/:id ------------------------------------
@@ -62,8 +62,8 @@ export class UserMessageComponent {
   private readonly conversation = rxResource({
     params: () => this.theaterId() ?? undefined,
     stream: ({ params: theaterId }) => forkJoin({
-      theater: this.theaterService.getTheaterData(theaterId).pipe(map(res => toContact(res.data))),
-      messages: this.userService.getChatHistory(theaterId, this.userId).pipe(map(res => res.data?.messages ?? []))
+      theater: this.theaterRepo.getTheaterData(theaterId).pipe(map(res => toContact(res.data))),
+      messages: this.chatRepo.getChatHistory(theaterId, this.userId).pipe(map(res => res.data?.messages ?? []))
     })
   })
 

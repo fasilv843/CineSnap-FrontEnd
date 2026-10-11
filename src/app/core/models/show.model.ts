@@ -1,4 +1,4 @@
-import { type ICSMovieRes } from './movie'
+import { type ICSMovieRes } from './movie.model'
 
 export interface IShowSeat {
   col: number

@@ -1,4 +1,4 @@
-import { type IApiRes, type ICoords, type ITheaterAddress, type IWalletHistory } from './common'
+import { type IApiRes, type ICoords, type ITheaterAddress, type IWalletHistory } from './api.model'
 
 // export interface ITheater {
 //   _id: string

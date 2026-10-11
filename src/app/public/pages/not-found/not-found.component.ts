@@ -26,7 +26,7 @@ import { ThemeToggleComponent } from 'src/app/shared/ui/theme-toggle.component'
     </div>
   `
 })
-export class PageNotFoundComponent {
+export class NotFoundComponent {
   protected goBack (): void {
     window.history.back()
   }

@@ -5,11 +5,11 @@ import { provideStore } from '@ngrx/store'
 import { provideStoreDevtools } from '@ngrx/store-devtools'
 
 import { routes } from './app.routes'
-import { jwtInterceptor } from './interceptors/jwt.interceptor'
-import { transformUrlInterceptor } from './interceptors/transform-url.interceptor'
-import { errorHandlerInterceptor } from './interceptors/error-handler.interceptor'
-import { hydrationMetaReducer } from './states/hydration.reducer'
-import { reducers } from './states/app.state'
+import { jwtInterceptor } from './core/auth/jwt.interceptor'
+import { transformUrlInterceptor } from './core/http/transform-url.interceptor'
+import { errorHandlerInterceptor } from './core/http/error-handler.interceptor'
+import { hydrationMetaReducer } from './core/state/hydration.reducer'
+import { reducers } from './core/state/app.state'
 
 export const appConfig: ApplicationConfig = {
   providers: [

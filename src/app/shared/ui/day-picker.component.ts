@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core'
 import { DatePipe } from '@angular/common'
-import { dateToString } from 'src/app/helpers/date'
+import { dateToString } from 'src/app/shared/utils/date'
 
 export interface PickerDay { key: string, date: Date, label: string | null }
 

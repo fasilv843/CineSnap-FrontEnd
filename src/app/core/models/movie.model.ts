@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-delimiter-style */
 
-import { type IApiRes } from './common'
-import { type genreType, type langType } from './filter'
+import { type IApiRes } from './api.model'
+import { type genreType, type langType } from './filter.model'
 
 /* eslint-disable @typescript-eslint/indent */
 export interface IMovie {

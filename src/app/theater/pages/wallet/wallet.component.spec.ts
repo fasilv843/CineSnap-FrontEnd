@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ThrWalletComponent } from './thr-wallet.component';
+import { TheaterWalletComponent } from './wallet.component';
 
-describe('ThrWalletComponent', () => {
-  let component: ThrWalletComponent;
-  let fixture: ComponentFixture<ThrWalletComponent>;
+describe('TheaterWalletComponent', () => {
+  let component: TheaterWalletComponent;
+  let fixture: ComponentFixture<TheaterWalletComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [ThrWalletComponent]
+    imports: [TheaterWalletComponent]
 });
-    fixture = TestBed.createComponent(ThrWalletComponent);
+    fixture = TestBed.createComponent(TheaterWalletComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

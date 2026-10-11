@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'
-import { type ICouponRes } from 'src/app/models/coupon'
-import { ActiveModal } from 'src/app/services/modal.service'
+import { type ICouponRes } from 'src/app/core/models/coupon.model'
+import { ActiveModal } from 'src/app/shared/ui/modal.service'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 
 /** Lists every coupon for a booking; closes with the coupon the user taps (tapping the applied one removes it). */
