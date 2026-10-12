@@ -1,41 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'
-import { toSignal } from '@angular/core/rxjs-interop'
-import { type AbstractControl, FormControl, FormGroup, ReactiveFormsModule, type ValidationErrors, Validators } from '@angular/forms'
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core'
+import { FormField, form, maxLength, validate } from '@angular/forms/signals'
 import { dateToString } from 'src/app/shared/utils/date'
-import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
+import { checkText, textRules } from 'src/app/shared/utils/form-rules'
 import { type ICouponReqs } from 'src/app/core/models/coupon.model'
 import { ActiveModal } from 'src/app/shared/ui/modal.service'
-import {
-  codeValidators, couponCountValidators, descriptionValidators, discountValidators, endDateValidators,
-  maxDiscountAmtValidators, minTicketCountValidators, startDateValidators
-} from 'src/app/shared/utils/form-validators'
+import { numRegex } from 'src/app/core/constants/constants'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 
 type DiscountType = ICouponReqs['discountType']
-
-/** End date on or after the start date; a percentage coupon needs a cap (the backend requires one) */
-function couponRules (group: AbstractControl): ValidationErrors | null {
-  const start = group.get('startDate')
-  const end = group.get('endDate')
-  const type = group.get('discountType')?.value as DiscountType
-  const cap = group.get('maxDiscountAmt')
-
-  if (start?.value !== '' && end?.value !== '' && end !== null && end.value < start?.value) {
-    end.setErrors({ ...end.errors, beforeStart: true })
-  } else if (end?.hasError('beforeStart') === true) {
-    const { beforeStart, ...rest } = end.errors ?? {}
-    end.setErrors(Object.keys(rest).length > 0 ? rest : null)
-  }
-
-  if (type === 'Percentage' && (cap?.value ?? '') === '') {
-    cap?.setErrors({ ...cap.errors, required: true })
-  } else if (cap?.hasError('required') === true && type !== 'Percentage') {
-    const { required, ...rest } = cap.errors ?? {}
-    cap.setErrors(Object.keys(rest).length > 0 ? rest : null)
-  }
-  return null
-}
 
 /** Creates a coupon; closes with the coupon fields (the page adds the theater id). */
 @Component({
@@ -43,53 +16,62 @@ function couponRules (group: AbstractControl): ValidationErrors | null {
   templateUrl: './coupon-form.component.html',
   styleUrl: './coupon-form.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, ButtonDirective, FieldErrorComponent]
+  imports: [FormField, ButtonDirective, FieldErrorComponent]
 })
 export class CouponFormComponent {
   protected readonly modal = inject(ActiveModal)
   protected readonly today = dateToString(new Date())
 
-  protected readonly form = new FormGroup({
-    code: new FormControl('', { nonNullable: true, validators: [validateByTrimming(codeValidators)] }),
-    description: new FormControl('', { nonNullable: true, validators: [validateByTrimming(descriptionValidators)] }),
-    discountType: new FormControl<DiscountType>('Percentage', { nonNullable: true, validators: [Validators.required] }),
-    discount: new FormControl('', { nonNullable: true, validators: [validateByTrimming(discountValidators)] }),
-    maxDiscountAmt: new FormControl('', { nonNullable: true, validators: [validateByTrimming(maxDiscountAmtValidators)] }),
-    startDate: new FormControl(this.today, { nonNullable: true, validators: [validateByTrimming(startDateValidators)] }),
-    endDate: new FormControl('', { nonNullable: true, validators: [validateByTrimming(endDateValidators)] }),
-    minTicketCount: new FormControl('', { nonNullable: true, validators: [validateByTrimming(minTicketCountValidators)] }),
-    couponCount: new FormControl('', { nonNullable: true, validators: [validateByTrimming(couponCountValidators)] })
-  }, { validators: couponRules })
+  private readonly model = signal({
+    code: '',
+    description: '',
+    discountType: 'Percentage' as DiscountType,
+    discount: '',
+    maxDiscountAmt: '',
+    startDate: this.today,
+    endDate: '',
+    minTicketCount: '',
+    couponCount: ''
+  })
 
-  protected readonly discountType = toSignal(this.form.controls.discountType.valueChanges, { initialValue: this.form.controls.discountType.value })
-  protected readonly startDate = toSignal(this.form.controls.startDate.valueChanges, { initialValue: this.form.controls.startDate.value })
-  protected readonly submitted = signal(false)
-
-  protected readonly messages = {
-    code: { required: 'Enter a code', pattern: '3 to 15 capital letters or numbers' },
-    description: { required: 'Describe the offer', minlength: 'Use at least 10 characters', maxlength: 'Use at most 100 characters' },
-    discount: { required: 'Enter the discount', min: 'At least 1', max: 'At most 1000', pattern: 'Use a whole number' },
-    maxDiscountAmt: { required: 'Percentage coupons need a cap', max: 'At most ₹5000', pattern: 'Use whole rupees' },
-    startDate: { required: 'Choose a start date' },
-    endDate: { required: 'Choose an end date', beforeStart: 'Ends before it starts' },
-    minTicketCount: { max: 'At most 10', pattern: 'Use a whole number' },
-    couponCount: { pattern: 'Use a whole number' }
-  }
-
-  constructor () {
-    // Codes are capitals; accept lowercase typing
-    this.form.controls.code.valueChanges.subscribe(value => {
-      if (value !== value.toUpperCase()) this.form.controls.code.setValue(value.toUpperCase(), { emitEvent: false })
+  protected readonly form = form(this.model, p => {
+    // Codes are capitals; lowercase typing is accepted and shown uppercase
+    validate(p.code, ({ value }) => checkText(value().trim().toUpperCase(), {
+      required: 'Enter a code',
+      pattern: [/^[A-Z0-9]{3,15}$/, '3 to 15 capital letters or numbers']
+    }))
+    maxLength(p.code, 15)
+    textRules(p.description, {
+      required: 'Describe the offer',
+      minLength: [10, 'Use at least 10 characters'],
+      maxLength: [100, 'Use at most 100 characters']
     })
-  }
+    maxLength(p.description, 100)
+    textRules(p.discount, { required: 'Enter the discount', pattern: [numRegex, 'Use a whole number'], min: [1, 'At least 1'], max: [1000, 'At most 1000'] })
+    // A percentage coupon needs a cap (the backend requires one); a fixed one has none
+    validate(p.maxDiscountAmt, ({ value, valueOf }) => valueOf(p.discountType) !== 'Percentage'
+      ? undefined
+      : checkText(value().trim(), { required: 'Percentage coupons need a cap', pattern: [numRegex, 'Use whole rupees'], max: [5000, 'At most ₹5000'] }))
+    textRules(p.startDate, { required: 'Choose a start date' })
+    validate(p.endDate, ({ value, valueOf }) => {
+      if (value() === '') return { kind: 'required', message: 'Choose an end date' }
+      const start = valueOf(p.startDate)
+      return start !== '' && value() < start ? { kind: 'beforeStart', message: 'Ends before it starts' } : undefined
+    })
+    textRules(p.minTicketCount, { pattern: [numRegex, 'Use a whole number'], max: [10, 'At most 10'] })
+    textRules(p.couponCount, { pattern: [numRegex, 'Use a whole number'] })
+  })
+
+  protected readonly discountType = computed(() => this.model().discountType)
+  protected readonly startDate = computed(() => this.model().startDate)
+  protected readonly submitted = signal(false)
 
   protected submit (): void {
     this.submitted.set(true)
-    this.form.updateValueAndValidity()
-    if (this.form.invalid) return
-    const v = this.form.getRawValue()
+    if (this.form().invalid()) return
+    const v = this.model()
     const coupon: Omit<ICouponReqs, 'theaterId'> = {
-      code: v.code.trim(),
+      code: v.code.trim().toUpperCase(),
       description: v.description.trim(),
       couponType: 'Once',
       discountType: v.discountType,

@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { FormField, form, maxLength } from '@angular/forms/signals'
 import { Router, RouterLink } from '@angular/router'
 import { type Observable, type Subscription, catchError, map, of, switchMap, take, timer } from 'rxjs'
 import { getLocation } from 'src/app/shared/utils/location'
 import { formatTime } from 'src/app/shared/utils/timer'
-import { passwordMatchValidator, validateByTrimming } from 'src/app/shared/utils/custom-validators'
 import { GeoLocationRepo } from 'src/app/shared/repos/geo-location.repo'
-import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER, passwordMinLength, userNameMaxLength, userNameMinLength } from 'src/app/core/constants/constants'
-import { emailValidators, nameValidators, otpValidators, passwordValidators, requiredValidator, zipValidators } from 'src/app/shared/utils/form-validators'
+import { MAX_OTP_LIMIT, OTP_RESEND_MAX_TIME, OTP_TIMER } from 'src/app/core/constants/constants'
+import { emailRules, matchRule, nameRules, newPasswordRules, otpRules, requiredText, zipRules } from 'src/app/shared/utils/form-rules'
 import { AuthShellComponent } from 'src/app/shared/ui/auth-shell.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
@@ -21,7 +20,7 @@ interface Coords { lat: number, lon: number }
   selector: 'app-thr-register',
   templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, AuthShellComponent, ButtonDirective, FieldErrorComponent]
+  imports: [FormField, RouterLink, AuthShellComponent, ButtonDirective, FieldErrorComponent]
 })
 export class TheaterRegisterComponent {
   private readonly http = inject(HttpClient)
@@ -36,44 +35,36 @@ export class TheaterRegisterComponent {
 
   // Step 1: details -------------------------------------------------------------
 
-  protected readonly details = new FormGroup({
-    name: new FormControl('', { nonNullable: true, validators: [validateByTrimming(nameValidators)] }),
-    email: new FormControl('', { nonNullable: true, validators: [validateByTrimming(emailValidators)] }),
-    liscenceId: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
-    landmark: new FormControl('', { nonNullable: true }),
-    city: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
-    district: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
-    state: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
-    country: new FormControl('India', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
-    zip: new FormControl('', { nonNullable: true, validators: [validateByTrimming(zipValidators)] }),
-    password: new FormControl('', { nonNullable: true, validators: [validateByTrimming(passwordValidators)] }),
-    repeatPassword: new FormControl('', { nonNullable: true })
-  }, { validators: passwordMatchValidator })
+  private readonly detailsModel = signal({
+    name: '',
+    email: '',
+    liscenceId: '',
+    landmark: '',
+    city: '',
+    district: '',
+    state: '',
+    country: 'India',
+    zip: '',
+    password: '',
+    repeatPassword: ''
+  })
+
+  protected readonly details = form(this.detailsModel, p => {
+    nameRules(p.name, 'Enter the theater name')
+    emailRules(p.email, 'Enter your business email')
+    requiredText(p.liscenceId, 'Enter your theater licence number')
+    requiredText(p.city, 'Enter the city')
+    requiredText(p.district, 'Enter the district')
+    requiredText(p.state, 'Enter the state')
+    requiredText(p.country, 'Enter the country')
+    zipRules(p.zip, 'Enter the PIN code', 'PIN codes are 6 digits')
+    maxLength(p.zip, 6)
+    newPasswordRules(p.password)
+    matchRule(p.repeatPassword, p.password)
+  })
 
   protected readonly detailsSubmitted = signal(false)
 
-  protected readonly messages = {
-    name: {
-      required: 'Enter the theater name',
-      minlength: `Use at least ${userNameMinLength} letters`,
-      maxlength: `Use at most ${userNameMaxLength} letters`,
-      pattern: 'Use letters and spaces only'
-    },
-    email: { required: 'Enter your business email', pattern: 'Enter a valid email address' },
-    liscenceId: { required: 'Enter your theater licence number' },
-    city: { required: 'Enter the city' },
-    district: { required: 'Enter the district' },
-    state: { required: 'Enter the state' },
-    country: { required: 'Enter the country' },
-    zip: { required: 'Enter the PIN code', pattern: 'PIN codes are 6 digits' },
-    password: {
-      required: 'Choose a password',
-      minlength: `Use at least ${passwordMinLength} characters`,
-      pattern: 'Include an uppercase letter, a lowercase letter and a number'
-    },
-    repeatPassword: { required: 'Type the password again', passwordMismatch: "The passwords don't match" },
-    otp: { required: 'Enter the 4-digit code', pattern: 'The code is 4 digits' }
-  }
 
   // Where the theater is: from the browser, or looked up from the typed address when sending
   private readonly coords = signal<Coords | null>(null)
@@ -82,7 +73,8 @@ export class TheaterRegisterComponent {
 
   // Step 2: email code -------------------------------------------------------------
 
-  protected readonly otp = new FormControl('', { nonNullable: true, validators: [validateByTrimming(otpValidators)] })
+  protected readonly otp = signal('')
+  protected readonly otpForm = form(this.otp, otpRules)
   protected readonly otpSubmitted = signal(false)
   protected readonly secondsLeft = signal(0)
   protected readonly countdown = computed(() => formatTime(this.secondsLeft()))
@@ -114,13 +106,14 @@ export class TheaterRegisterComponent {
     this.coords.set(position)
     this.geo.getAddress(position.lat, position.lon).subscribe({
       next: address => {
-        this.details.patchValue({
+        this.detailsModel.update(value => ({
+          ...value,
           city: address.city ?? '',
           district: address.district ?? '',
           state: address.state ?? '',
           country: address.country ?? '',
           zip: address.zip !== undefined ? String(address.zip) : ''
-        })
+        }))
         this.locating.set(false)
         this.locationNote.set({ tone: 'success', text: 'Address filled in from your location. Check it before continuing.' })
       },
@@ -133,9 +126,9 @@ export class TheaterRegisterComponent {
 
   protected sendCode (): void {
     this.detailsSubmitted.set(true)
-    if (this.details.invalid) return
+    if (this.details().invalid()) return
     this.busy.set(true)
-    const value = this.details.getRawValue()
+    const value = this.detailsModel()
     const trimmed = Object.fromEntries(Object.entries(value).map(([key, field]) => [key, key.toLowerCase().includes('password') ? field : field.trim()]))
 
     this.resolveCoords(value.city, value.country, Number(value.zip)).pipe(
@@ -159,10 +152,10 @@ export class TheaterRegisterComponent {
 
   protected verify (): void {
     this.otpSubmitted.set(true)
-    if (this.otp.invalid || this.expired()) return
+    if (this.otpForm().invalid() || this.expired()) return
     this.busy.set(true)
     const authToken = localStorage.getItem('theaterAuthToken')
-    this.http.post('theater/validateOtp', { otp: this.otp.value.trim(), authToken }).subscribe({
+    this.http.post('theater/validateOtp', { otp: this.otp().trim(), authToken }).subscribe({
       next: () => {
         localStorage.removeItem('theaterAuthToken')
         void this.router.navigate(['/theater/approval/pending'])
@@ -176,8 +169,7 @@ export class TheaterRegisterComponent {
     this.http.get('theater/resendOtp').subscribe(() => {
       this.resendsUsed.update(count => count + 1)
       this.resendNote.set(`We sent a new code to ${this.sentTo()}.`)
-      this.otp.reset()
-      this.otpSubmitted.set(false)
+      this.resetOtp()
       this.startCountdown()
     })
   }
@@ -186,7 +178,12 @@ export class TheaterRegisterComponent {
     this.countdownSub?.unsubscribe()
     this.step.set('details')
     this.resendNote.set(null)
-    this.otp.reset()
+    this.resetOtp()
+  }
+
+  private resetOtp (): void {
+    this.otp.set('')
+    this.otpForm().reset()
     this.otpSubmitted.set(false)
   }
 

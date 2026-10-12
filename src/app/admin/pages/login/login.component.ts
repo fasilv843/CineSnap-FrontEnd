@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { FormField, form } from '@angular/forms/signals'
 import { Router } from '@angular/router'
-import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
 import { type IApiAdminAuthRes } from 'src/app/core/models/admin.model'
-import { emailValidators, requiredValidator } from 'src/app/shared/utils/form-validators'
+import { emailRules, requiredText } from 'src/app/shared/utils/form-rules'
 import { AuthShellComponent } from 'src/app/shared/ui/auth-shell.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
@@ -12,26 +11,26 @@ import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 @Component({
   selector: 'app-admin-login',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, AuthShellComponent, ButtonDirective, FieldErrorComponent],
+  imports: [FormField, AuthShellComponent, ButtonDirective, FieldErrorComponent],
   template: `
     <cs-auth-shell heading="Admin sign in" subheading="For the CineSnap team only."
       pitch="Every theater, every seat, one place." pitchDetail="Approve theaters, manage movies and keep an eye on bookings and revenue.">
-      <form [formGroup]="form" (ngSubmit)="signIn()" novalidate class="space-y-4">
+      <form (submit)="$event.preventDefault(); signIn()" novalidate class="space-y-4">
         <div>
           <label for="email" class="mb-1.5 block text-sm font-semibold">Email</label>
-          <input id="email" type="email" class="input" formControlName="email" autocomplete="username" />
-          <cs-field-error [control]="form.controls.email" [submitted]="submitted()" [messages]="messages.email" />
+          <input id="email" type="email" class="input" [formField]="form.email" autocomplete="username" />
+          <cs-field-error [field]="form.email" [submitted]="submitted()" />
         </div>
         <div>
           <label for="password" class="mb-1.5 block text-sm font-semibold">Password</label>
           <div class="relative">
-            <input id="password" class="input pr-16" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
+            <input id="password" class="input pr-16" [type]="showPassword() ? 'text' : 'password'" [formField]="form.password" autocomplete="current-password" />
             <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-control px-2 py-1 text-sm font-semibold text-muted hover:text-default"
               [attr.aria-pressed]="showPassword()" (click)="showPassword.set(!showPassword())">
               {{ showPassword() ? 'Hide' : 'Show' }}<span class="sr-only"> password</span>
             </button>
           </div>
-          <cs-field-error [control]="form.controls.password" [submitted]="submitted()" [messages]="messages.password" />
+          <cs-field-error [field]="form.password" [submitted]="submitted()" />
         </div>
         <button csButton size="lg" type="submit" class="w-full" [disabled]="signingIn()">
           @if (signingIn()) { <span class="spinner"></span> Signing in… } @else { Sign in }
@@ -44,15 +43,12 @@ export class AdminLoginComponent {
   private readonly http = inject(HttpClient)
   private readonly router = inject(Router)
 
-  protected readonly form = new FormGroup({
-    email: new FormControl('', { nonNullable: true, validators: [validateByTrimming(emailValidators)] }),
-    password: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] })
+  private readonly model = signal({ email: '', password: '' })
+  protected readonly form = form(this.model, p => {
+    emailRules(p.email)
+    requiredText(p.password, 'Enter your password')
   })
 
-  protected readonly messages = {
-    email: { required: 'Enter your email', pattern: 'Enter a valid email address' },
-    password: { required: 'Enter your password' }
-  }
 
   protected readonly submitted = signal(false)
   protected readonly signingIn = signal(false)
@@ -60,9 +56,9 @@ export class AdminLoginComponent {
 
   protected signIn (): void {
     this.submitted.set(true)
-    if (this.form.invalid) return
+    if (this.form().invalid()) return
     this.signingIn.set(true)
-    const { email, password } = this.form.getRawValue()
+    const { email, password } = this.model()
     // Wrong credentials are reported by the global HTTP error handler
     this.http.post<IApiAdminAuthRes>('admin/login', { email: email.trim(), password }).subscribe({
       next: res => {

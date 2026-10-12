@@ -10,19 +10,19 @@
     <cs-photo-picker class="mt-4" [name]="theater()?.name ?? ''" [src]="photoUrl()" [busy]="photoBusy()" (picked)="uploadPhoto($event)" (removed)="removePhoto()" />
   </section>
 
-  <form id="profile-form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <form id="profile-form" (submit)="$event.preventDefault(); save()" novalidate>
     <section class="card mt-6 p-6" aria-labelledby="details-heading">
       <h2 id="details-heading" class="font-semibold">Theater details</h2>
       <div class="mt-4 grid gap-4 sm:grid-cols-2">
         <div class="sm:col-span-2">
           <label for="name" class="field-label">Theater name</label>
-          <input id="name" class="input" formControlName="name" autocomplete="organization" />
-          <cs-field-error [control]="form.controls.name" [submitted]="submitted()" [messages]="messages.name" />
+          <input id="name" class="input" [formField]="form.name" autocomplete="organization" />
+          <cs-field-error [field]="form.name" [submitted]="submitted()" />
         </div>
         <div>
           <label for="mobile" class="field-label">Mobile <span class="font-normal text-subtle">(optional)</span></label>
-          <input id="mobile" class="input" formControlName="mobile" inputmode="numeric" autocomplete="tel-national" placeholder="9876543210" />
-          <cs-field-error [control]="form.controls.mobile" [submitted]="submitted()" [messages]="messages.mobile" />
+          <input id="mobile" class="input" [formField]="form.mobile" inputmode="numeric" autocomplete="tel-national" placeholder="9876543210" />
+          <cs-field-error [field]="form.mobile" [submitted]="submitted()" />
         </div>
         <div>
           <span class="field-label">Business email</span>
@@ -44,32 +44,32 @@
       <div class="mt-4 grid gap-4 sm:grid-cols-2">
         <div class="sm:col-span-2">
           <label for="landmark" class="field-label">Street or landmark <span class="font-normal text-subtle">(optional)</span></label>
-          <input id="landmark" class="input" formControlName="landmark" autocomplete="address-line1" />
+          <input id="landmark" class="input" [formField]="form.landmark" autocomplete="address-line1" />
         </div>
         <div>
           <label for="city" class="field-label">City</label>
-          <input id="city" class="input" formControlName="city" autocomplete="address-level2" />
-          <cs-field-error [control]="form.controls.city" [submitted]="submitted()" [messages]="messages.required" />
+          <input id="city" class="input" [formField]="form.city" autocomplete="address-level2" />
+          <cs-field-error [field]="form.city" [submitted]="submitted()" />
         </div>
         <div>
           <label for="district" class="field-label">District</label>
-          <input id="district" class="input" formControlName="district" />
-          <cs-field-error [control]="form.controls.district" [submitted]="submitted()" [messages]="messages.required" />
+          <input id="district" class="input" [formField]="form.district" />
+          <cs-field-error [field]="form.district" [submitted]="submitted()" />
         </div>
         <div>
           <label for="state" class="field-label">State</label>
-          <input id="state" class="input" formControlName="state" autocomplete="address-level1" />
-          <cs-field-error [control]="form.controls.state" [submitted]="submitted()" [messages]="messages.required" />
+          <input id="state" class="input" [formField]="form.state" autocomplete="address-level1" />
+          <cs-field-error [field]="form.state" [submitted]="submitted()" />
         </div>
         <div>
           <label for="country" class="field-label">Country</label>
-          <input id="country" class="input" formControlName="country" autocomplete="country-name" />
-          <cs-field-error [control]="form.controls.country" [submitted]="submitted()" [messages]="messages.required" />
+          <input id="country" class="input" [formField]="form.country" autocomplete="country-name" />
+          <cs-field-error [field]="form.country" [submitted]="submitted()" />
         </div>
         <div>
           <label for="zip" class="field-label">PIN code</label>
-          <input id="zip" class="input" formControlName="zip" inputmode="numeric" autocomplete="postal-code" />
-          <cs-field-error [control]="form.controls.zip" [submitted]="submitted()" [messages]="messages.zip" />
+          <input id="zip" class="input" [formField]="form.zip" inputmode="numeric" autocomplete="postal-code" />
+          <cs-field-error [field]="form.zip" [submitted]="submitted()" />
         </div>
       </div>
     </section>

@@ -73,9 +73,8 @@
 
         <form (submit)="$event.preventDefault(); send()" class="flex gap-2 border-t border-default p-3">
           <label class="sr-only" for="chat-draft">Message</label>
-          <input id="chat-draft" class="input" placeholder="Write a reply" autocomplete="off"
-            [value]="draft()" (input)="draft.set($any($event.target).value)" />
-          <button csButton type="submit" [disabled]="draft().trim() === ''">Send</button>
+          <input id="chat-draft" class="input" placeholder="Write a reply" autocomplete="off" [formField]="draftForm" />
+          <button csButton type="submit" [disabled]="draftForm().invalid()">Send</button>
         </form>
       } @else {
         <div class="m-auto max-w-xs p-6 text-center">

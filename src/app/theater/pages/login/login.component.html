@@ -1,22 +1,22 @@
 <cs-auth-shell heading="Theater sign in" subheading="Manage shows, screens, coupons and payouts for your theater."
   pitch="Fill every seat, every show." pitchDetail="Schedule shows, design seat maps and see your revenue as tickets sell.">
-  <form [formGroup]="form" (ngSubmit)="signIn()" novalidate class="space-y-4">
+  <form (submit)="$event.preventDefault(); signIn()" novalidate class="space-y-4">
     <div>
       <label for="email" class="mb-1.5 block text-sm font-semibold">Business email</label>
-      <input id="email" type="email" class="input" formControlName="email" autocomplete="email" placeholder="you@yourtheater.com" />
-      <cs-field-error [control]="form.controls.email" [submitted]="submitted()" [messages]="messages.email" />
+      <input id="email" type="email" class="input" [formField]="form.email" autocomplete="email" placeholder="you@yourtheater.com" />
+      <cs-field-error [field]="form.email" [submitted]="submitted()" />
     </div>
 
     <div>
       <label for="password" class="mb-1.5 block text-sm font-semibold">Password</label>
       <div class="relative">
-        <input id="password" class="input pr-16" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
+        <input id="password" class="input pr-16" [type]="showPassword() ? 'text' : 'password'" [formField]="form.password" autocomplete="current-password" />
         <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-control px-2 py-1 text-sm font-semibold text-muted hover:text-default"
           [attr.aria-pressed]="showPassword()" (click)="showPassword.set(!showPassword())">
           {{ showPassword() ? 'Hide' : 'Show' }}<span class="sr-only"> password</span>
         </button>
       </div>
-      <cs-field-error [control]="form.controls.password" [submitted]="submitted()" [messages]="messages.password" />
+      <cs-field-error [field]="form.password" [submitted]="submitted()" />
     </div>
 
     <button csButton size="lg" type="submit" class="w-full" [disabled]="signingIn()">

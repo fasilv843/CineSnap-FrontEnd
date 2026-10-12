@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, type ElementRef, computed, effect, inject, linkedSignal, signal, viewChild } from '@angular/core'
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop'
 import { DatePipe } from '@angular/common'
+import { FormField, form } from '@angular/forms/signals'
 import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { forkJoin, map } from 'rxjs'
@@ -15,6 +16,7 @@ import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { selectUserDetails } from 'src/app/core/state/user/user.selector'
 import { UserNavComponent } from '../../layout/user-nav/user-nav.component'
 import { valueOf } from 'src/app/shared/utils/resource'
+import { requiredText } from 'src/app/shared/utils/form-rules'
 
 interface Contact { id: string, name: string, image: string | null }
 interface DayGroup { day: Date, messages: IChatMessage[] }
@@ -38,7 +40,7 @@ function startOfDay (date: Date | string): Date {
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [UserNavComponent, RouterLink, RouterLinkActive, ButtonDirective, AvatarComponent, DatePipe]
+  imports: [FormField, UserNavComponent, RouterLink, RouterLinkActive, ButtonDirective, AvatarComponent, DatePipe]
 })
 export class UserMessagesComponent {
   private readonly socket = inject(ChatSocketService)
@@ -88,6 +90,7 @@ export class UserMessagesComponent {
 
   protected readonly today = startOfDay(new Date())
   protected readonly draft = signal('')
+  protected readonly draftForm = form(this.draft, draft => { requiredText(draft) })
 
   private readonly scroller = viewChild<ElementRef<HTMLElement>>('scroller')
 
@@ -110,7 +113,7 @@ export class UserMessagesComponent {
   protected send (): void {
     const text = this.draft().trim()
     const theaterId = this.theaterId()
-    if (text === '' || theaterId === null) return
+    if (this.draftForm().invalid() || theaterId === null) return
     const request: IChatReqs = { userId: this.userId, theaterId, sender: 'User', message: text }
     this.socket.emit('send-message', request)
     this.messages.update(list => [...list, { sender: 'User', message: text, time: new Date(), isRead: false }])
