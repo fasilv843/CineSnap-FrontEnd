@@ -1,17 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core'
-import { toSignal } from '@angular/core/rxjs-interop'
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { FormField, form } from '@angular/forms/signals'
 import { Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { type Observable, catchError, map, of, switchMap } from 'rxjs'
 import { getLocation } from 'src/app/shared/utils/location'
-import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
 import { type ICoords } from 'src/app/core/models/api.model'
 import { type ITheaterRes, type ITheaterUpdate } from 'src/app/core/models/theater.model'
 import { GeoLocationRepo } from 'src/app/shared/repos/geo-location.repo'
 import { TheaterAccountRepo } from 'src/app/theater/repos/account.repo'
-import { imagesFolderPath, userNameMaxLength, userNameMinLength } from 'src/app/core/constants/constants'
-import { mobileValidators, nameValidators, requiredValidator, zipValidators } from 'src/app/shared/utils/form-validators'
+import { imagesFolderPath } from 'src/app/core/constants/constants'
+import { mobileRules, nameRules, requiredText, zipRules } from 'src/app/shared/utils/form-rules'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 import { IconComponent } from 'src/app/shared/ui/icon.component'
@@ -20,10 +18,6 @@ import { ToastService } from 'src/app/core/toast/toast.service'
 import { saveTheaterOnStore } from 'src/app/core/state/theater/theater.action'
 import { selectTheaterDetails } from 'src/app/core/state/theater/theater.selector'
 
-function text (validators = requiredValidator): FormControl<string> {
-  return new FormControl('', { nonNullable: true, validators: [validateByTrimming(validators)] })
-}
-
 const ADDRESS_FIELDS = ['city', 'district', 'state', 'country', 'zip'] as const
 
 @Component({
@@ -31,7 +25,7 @@ const ADDRESS_FIELDS = ['city', 'district', 'state', 'country', 'zip'] as const
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, ButtonDirective, FieldErrorComponent, IconComponent, PhotoPickerComponent]
+  imports: [FormField, RouterLink, ButtonDirective, FieldErrorComponent, IconComponent, PhotoPickerComponent]
 })
 export class TheaterEditProfileComponent {
   private readonly accountRepo = inject(TheaterAccountRepo)
@@ -42,31 +36,20 @@ export class TheaterEditProfileComponent {
 
   protected readonly theater = this.store.selectSignal(selectTheaterDetails)
 
-  protected readonly form = new FormGroup({
-    name: text(nameValidators),
-    mobile: new FormControl('', { nonNullable: true, validators: [validateByTrimming(mobileValidators)] }),
-    landmark: new FormControl('', { nonNullable: true }),
-    city: text(),
-    district: text(),
-    state: text(),
-    country: text(),
-    zip: text(zipValidators)
+  private readonly model = signal({ name: '', mobile: '', landmark: '', city: '', district: '', state: '', country: '', zip: '' })
+  protected readonly form = form(this.model, p => {
+    nameRules(p.name, 'Enter the theater name')
+    mobileRules(p.mobile)
+    requiredText(p.city)
+    requiredText(p.district)
+    requiredText(p.state)
+    requiredText(p.country)
+    zipRules(p.zip, 'Enter the PIN code')
   })
 
-  protected readonly messages = {
-    name: {
-      required: 'Enter the theater name',
-      minlength: `Use at least ${userNameMinLength} letters`,
-      maxlength: `Use at most ${userNameMaxLength} letters`,
-      pattern: 'Use letters and spaces only'
-    },
-    mobile: { pattern: 'Enter a 10-digit mobile number' },
-    zip: { required: 'Enter the PIN code', pattern: 'Enter a 6-digit PIN code' },
-    required: { required: 'This field is required' }
-  }
 
   protected readonly submitted = signal(false)
-  protected readonly formInvalid = toSignal(this.form.statusChanges.pipe(map(status => status === 'INVALID')), { initialValue: this.form.invalid })
+  protected readonly formInvalid = computed(() => this.form().invalid())
   protected readonly saving = signal(false)
   protected readonly photoBusy = signal(false)
   protected readonly locating = signal<'idle' | 'busy' | 'failed'>('idle')
@@ -85,7 +68,7 @@ export class TheaterEditProfileComponent {
       if (theater === null || filled) return
       filled = true
       untracked(() => {
-        this.form.patchValue({
+        this.model.set({
           name: theater.name,
           mobile: theater.mobile !== undefined && theater.mobile !== 0 ? String(theater.mobile) : '',
           landmark: theater.address?.landmark ?? '',
@@ -109,13 +92,14 @@ export class TheaterEditProfileComponent {
     this.pickedCoords.set({ type: 'Point', coordinates: [position.lon, position.lat] })
     this.geo.getAddress(position.lat, position.lon).subscribe({
       next: address => {
-        this.form.patchValue({
+        this.model.update(value => ({
+          ...value,
           city: address.city ?? '',
           district: address.district ?? '',
           state: address.state ?? '',
           country: address.country ?? '',
           zip: address.zip !== undefined ? String(address.zip) : ''
-        })
+        }))
         this.locating.set('idle')
       },
       error: () => { this.locating.set('failed') }
@@ -125,9 +109,9 @@ export class TheaterEditProfileComponent {
   protected save (): void {
     this.submitted.set(true)
     const theater = this.theater()
-    if (this.form.invalid || theater === null) return
+    if (this.form().invalid() || theater === null) return
 
-    const value = this.form.getRawValue()
+    const value = this.model()
     this.saving.set(true)
     // Wait for the coordinates before saving, so the map pin matches the address
     this.resolveCoords(theater).pipe(
@@ -161,7 +145,7 @@ export class TheaterEditProfileComponent {
   private resolveCoords (theater: ITheaterRes): Observable<ICoords> {
     const picked = this.pickedCoords()
     if (picked !== null) return of(picked)
-    const value = this.form.getRawValue()
+    const value = this.model()
     const changed = ADDRESS_FIELDS.some(field => String(theater.address?.[field] ?? '') !== value[field].trim())
     if (!changed) return of(theater.coords)
     return this.geo.getCoords(value.city.trim(), value.country.trim(), Number(value.zip)).pipe(

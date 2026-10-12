@@ -1,40 +1,40 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { FormField, form } from '@angular/forms/signals'
 import { ActiveModal } from 'src/app/shared/ui/modal.service'
-import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
-import { walletAmountValidators } from 'src/app/shared/utils/form-validators'
-import { MAX_WALLET_ADD, MIN_WALLET_ADD } from 'src/app/core/constants/constants'
+import { textRules } from 'src/app/shared/utils/form-rules'
+import { MAX_WALLET_ADD, MIN_WALLET_ADD, numRegex } from 'src/app/core/constants/constants'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 
 /** Asks for an amount to add to a wallet. Closes with `{ amount }` (the typed string); payment happens in the caller. */
 @Component({
   selector: 'app-add-to-wallet-modal',
-  imports: [ReactiveFormsModule, ButtonDirective, FieldErrorComponent],
+  imports: [FormField, ButtonDirective, FieldErrorComponent],
   templateUrl: './add-to-wallet-modal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddToWalletModalComponent {
   private readonly activeModal = inject(ActiveModal)
 
-  protected readonly amount = new FormControl('', { nonNullable: true, validators: [validateByTrimming(walletAmountValidators)] })
-  protected readonly form = new FormGroup({ amount: this.amount })
+  private readonly amount = signal('')
+  protected readonly amountForm = form(this.amount, p => {
+    textRules(p, {
+      required: 'Enter an amount',
+      pattern: [numRegex, 'Use whole rupees, numbers only'],
+      min: [MIN_WALLET_ADD, `The minimum is ₹${MIN_WALLET_ADD}`],
+      max: [MAX_WALLET_ADD, `The maximum is ₹${MAX_WALLET_ADD}`]
+    })
+  })
   protected readonly submitted = signal(false)
   protected readonly presets = [100, 500, 1000]
-  protected readonly errorMessages = {
-    required: 'Enter an amount',
-    pattern: 'Use whole rupees, numbers only',
-    min: `The minimum is ₹${MIN_WALLET_ADD}`,
-    max: `The maximum is ₹${MAX_WALLET_ADD}`
-  }
 
   protected usePreset (value: number): void {
-    this.amount.setValue(String(value))
+    this.amount.set(String(value))
   }
 
   protected onSubmit (): void {
     this.submitted.set(true)
-    if (this.amount.valid) this.activeModal.close({ amount: this.amount.value })
+    if (this.amountForm().valid()) this.activeModal.close({ amount: this.amount() })
   }
 
   protected onCancel (): void {

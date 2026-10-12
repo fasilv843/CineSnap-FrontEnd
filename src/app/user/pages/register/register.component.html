@@ -11,23 +11,23 @@
       <span class="flex-1 border-t border-default"></span>
     </div>
 
-    <form [formGroup]="details" (ngSubmit)="sendCode()" novalidate class="space-y-4">
+    <form (submit)="$event.preventDefault(); sendCode()" novalidate class="space-y-4">
       <div>
         <label for="name" class="mb-1.5 block text-sm font-semibold">Full name</label>
-        <input id="name" class="input" formControlName="name" autocomplete="name" />
-        <cs-field-error [control]="details.controls.name" [submitted]="detailsSubmitted()" [messages]="messages.name" />
+        <input id="name" class="input" [formField]="details.name" autocomplete="name" />
+        <cs-field-error [field]="details.name" [submitted]="detailsSubmitted()" />
       </div>
 
       <div>
         <label for="email" class="mb-1.5 block text-sm font-semibold">Email</label>
-        <input id="email" type="email" class="input" formControlName="email" autocomplete="email" placeholder="you@example.com" />
-        <cs-field-error [control]="details.controls.email" [submitted]="detailsSubmitted()" [messages]="messages.email" />
+        <input id="email" type="email" class="input" [formField]="details.email" autocomplete="email" placeholder="you@example.com" />
+        <cs-field-error [field]="details.email" [submitted]="detailsSubmitted()" />
       </div>
 
       <div>
         <label for="password" class="mb-1.5 block text-sm font-semibold">Password</label>
         <div class="relative">
-          <input id="password" class="input pr-16" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
+          <input id="password" class="input pr-16" [type]="showPassword() ? 'text' : 'password'" [formField]="details.password"
             autocomplete="new-password" aria-describedby="password-hint" />
           <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-control px-2 py-1 text-sm font-semibold text-muted hover:text-default"
             [attr.aria-pressed]="showPassword()" (click)="showPassword.set(!showPassword())">
@@ -35,13 +35,13 @@
           </button>
         </div>
         <p id="password-hint" class="mt-1 text-xs text-subtle">At least 8 characters, with an uppercase letter, a lowercase letter and a number.</p>
-        <cs-field-error [control]="details.controls.password" [submitted]="detailsSubmitted()" [messages]="messages.password" />
+        <cs-field-error [field]="details.password" [submitted]="detailsSubmitted()" />
       </div>
 
       <div>
         <label for="repeat-password" class="mb-1.5 block text-sm font-semibold">Confirm password</label>
-        <input id="repeat-password" class="input" [type]="showPassword() ? 'text' : 'password'" formControlName="repeatPassword" autocomplete="new-password" />
-        <cs-field-error [control]="details.controls.repeatPassword" [submitted]="detailsSubmitted()" [messages]="messages.repeatPassword" />
+        <input id="repeat-password" class="input" [type]="showPassword() ? 'text' : 'password'" [formField]="details.repeatPassword" autocomplete="new-password" />
+        <cs-field-error [field]="details.repeatPassword" [submitted]="detailsSubmitted()" />
       </div>
 
       <button csButton size="lg" type="submit" class="w-full" [disabled]="busy()">{{ busy() ? 'Sending code…' : 'Continue' }}</button>
@@ -57,9 +57,9 @@
     <form (submit)="$event.preventDefault(); verify()" novalidate class="space-y-4">
       <div>
         <label for="otp" class="mb-1.5 block text-sm font-semibold">Verification code</label>
-        <input id="otp" class="input text-center font-display text-3xl tracking-[0.5em]" [formControl]="otp"
-          inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="••••" />
-        <cs-field-error [control]="otp" [submitted]="otpSubmitted()" [messages]="messages.otp" />
+        <input id="otp" class="input text-center font-display text-3xl tracking-[0.5em]" [formField]="otpForm"
+          inputmode="numeric" autocomplete="one-time-code" placeholder="••••" />
+        <cs-field-error [field]="otpForm" [submitted]="otpSubmitted()" />
       </div>
 
       <p class="text-sm" aria-live="polite">

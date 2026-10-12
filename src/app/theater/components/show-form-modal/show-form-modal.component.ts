@@ -1,17 +1,16 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core'
 import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop'
 import { DatePipe } from '@angular/common'
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { FormField, form, validate } from '@angular/forms/signals'
 import { Store } from '@ngrx/store'
-import { catchError, debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs'
+import { catchError, debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs'
 import { dateToString } from 'src/app/shared/utils/date'
-import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
 import { type ICSMovieRes } from 'src/app/core/models/movie.model'
 import { ActiveModal } from 'src/app/shared/ui/modal.service'
 import { TheaterMovieRepo } from 'src/app/theater/repos/movie.repo'
 import { TheaterScreenRepo } from 'src/app/theater/repos/screen.repo'
-import { MAX_TICKET_PRICE, MIN_TICKET_PRICE } from 'src/app/core/constants/constants'
-import { defaultPriceValidators, requiredValidator } from 'src/app/shared/utils/form-validators'
+import { MAX_TICKET_PRICE, MIN_TICKET_PRICE, numRegex } from 'src/app/core/constants/constants'
+import { checkText, textRules } from 'src/app/shared/utils/form-rules'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
 import { selectTheaterDetails } from 'src/app/core/state/theater/theater.selector'
@@ -36,7 +35,7 @@ export interface ShowFormResult {
   templateUrl: './show-form-modal.component.html',
   styleUrl: './show-form-modal.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, DatePipe, ButtonDirective, FieldErrorComponent]
+  imports: [FormField, DatePipe, ButtonDirective, FieldErrorComponent]
 })
 export class ShowFormModalComponent {
   protected readonly modal = inject(ActiveModal)
@@ -48,27 +47,25 @@ export class ShowFormModalComponent {
   readonly date = signal(dateToString(new Date()))
   protected readonly today = dateToString(new Date())
 
-  protected readonly form = new FormGroup({
-    screenId: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
-    date: new FormControl(this.today, { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
-    startTime: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] }),
-    diamondPrice: new FormControl({ value: '', disabled: true }, { nonNullable: true, validators: [validateByTrimming(defaultPriceValidators)] }),
-    goldPrice: new FormControl({ value: '', disabled: true }, { nonNullable: true, validators: [validateByTrimming(defaultPriceValidators)] }),
-    silverPrice: new FormControl({ value: '', disabled: true }, { nonNullable: true, validators: [validateByTrimming(defaultPriceValidators)] })
+  private readonly model = signal({ screenId: '', date: this.today, startTime: '', diamondPrice: '', goldPrice: '', silverPrice: '' })
+  protected readonly form = form(this.model, p => {
+    textRules(p.screenId, { required: 'Choose a screen' })
+    textRules(p.date, { required: 'Choose a date' })
+    textRules(p.startTime, { required: 'Choose a start time' })
+    // Only categories the chosen screen has need a price
+    for (const key of CATEGORIES) {
+      validate(p[`${key}Price`], ({ value }) => this.available().has(key)
+        ? checkText(value().trim(), {
+          required: 'Enter a ticket price',
+          pattern: [numRegex, 'Use whole rupees'],
+          min: [MIN_TICKET_PRICE, `At least ₹${MIN_TICKET_PRICE}`],
+          max: [MAX_TICKET_PRICE, `At most ₹${MAX_TICKET_PRICE}`]
+        })
+        : undefined)
+    }
   })
 
   protected readonly submitted = signal(false)
-  protected readonly messages = {
-    screenId: { required: 'Choose a screen' },
-    date: { required: 'Choose a date' },
-    startTime: { required: 'Choose a start time' },
-    price: {
-      required: 'Enter a ticket price',
-      pattern: 'Use whole rupees',
-      min: `At least ₹${MIN_TICKET_PRICE}`,
-      max: `At most ₹${MAX_TICKET_PRICE}`
-    }
-  }
 
   // Movie search ------------------------------------------------------------------------
 
@@ -98,7 +95,7 @@ export class ShowFormModalComponent {
     stream: ({ params }) => this.screenRepo.findScreens(params).pipe(map(res => res.data ?? []))
   })
 
-  private readonly screenId = toSignal(this.form.controls.screenId.valueChanges.pipe(startWith('')), { initialValue: '' })
+  private readonly screenId = computed(() => this.model().screenId)
 
   protected readonly categories = rxResource({
     params: () => this.screenId(),
@@ -112,9 +109,11 @@ export class ShowFormModalComponent {
       }))
   })
 
+  private readonly available = computed(() => new Set((valueOf(this.categories) ?? []).map(category => category.key)))
+
   // Show length -------------------------------------------------------------------------
 
-  private readonly startTime = toSignal(this.form.controls.startTime.valueChanges, { initialValue: '' })
+  private readonly startTime = computed(() => this.model().startTime)
   protected readonly endTime = computed(() => {
     const movie = this.movie()
     const start = this.startTime()
@@ -132,16 +131,9 @@ export class ShowFormModalComponent {
 
   constructor () {
     // Open on the day the theater was looking at
-    effect(() => { this.form.controls.date.setValue(this.date() < this.today ? this.today : this.date()) })
-
-    // Only categories the chosen screen has need a price
     effect(() => {
-      const available = new Set((valueOf(this.categories) ?? []).map(category => category.key))
-      for (const key of CATEGORIES) {
-        const control = this.form.controls[`${key}Price`]
-        if (available.has(key)) control.enable()
-        else { control.disable(); control.reset() }
-      }
+      const date = this.date() < this.today ? this.today : this.date()
+      this.model.update(value => ({ ...value, date }))
     })
   }
 
@@ -156,9 +148,9 @@ export class ShowFormModalComponent {
   protected submit (): void {
     this.submitted.set(true)
     const movie = this.movie()
-    if (this.form.invalid || movie === null) return
+    if (this.form().invalid() || movie === null) return
 
-    const value = this.form.getRawValue()
+    const value = this.model()
     const [hours, minutes] = value.startTime.split(':').map(Number)
     const [year, month, day] = value.date.split('-').map(Number)
     const result: ShowFormResult = {

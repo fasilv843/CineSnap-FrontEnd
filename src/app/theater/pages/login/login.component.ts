@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { FormField, form } from '@angular/forms/signals'
 import { Router, RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
-import { validateByTrimming } from 'src/app/shared/utils/custom-validators'
 import { type IApiTheaterAuthRes } from 'src/app/core/models/theater.model'
-import { emailValidators, requiredValidator } from 'src/app/shared/utils/form-validators'
+import { emailRules, requiredText } from 'src/app/shared/utils/form-rules'
 import { AuthShellComponent } from 'src/app/shared/ui/auth-shell.component'
 import { ButtonDirective } from 'src/app/shared/ui/button.directive'
 import { FieldErrorComponent } from 'src/app/shared/ui/field-error.component'
@@ -15,22 +14,19 @@ import { saveTheaterOnStore } from 'src/app/core/state/theater/theater.action'
   selector: 'app-thr-login',
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, AuthShellComponent, ButtonDirective, FieldErrorComponent]
+  imports: [FormField, RouterLink, AuthShellComponent, ButtonDirective, FieldErrorComponent]
 })
 export class TheaterLoginComponent {
   private readonly http = inject(HttpClient)
   private readonly router = inject(Router)
   private readonly store = inject(Store)
 
-  protected readonly form = new FormGroup({
-    email: new FormControl('', { nonNullable: true, validators: [validateByTrimming(emailValidators)] }),
-    password: new FormControl('', { nonNullable: true, validators: [validateByTrimming(requiredValidator)] })
+  private readonly model = signal({ email: '', password: '' })
+  protected readonly form = form(this.model, p => {
+    emailRules(p.email, 'Enter your business email')
+    requiredText(p.password, 'Enter your password')
   })
 
-  protected readonly messages = {
-    email: { required: 'Enter your business email', pattern: 'Enter a valid email address' },
-    password: { required: 'Enter your password' }
-  }
 
   protected readonly submitted = signal(false)
   protected readonly signingIn = signal(false)
@@ -38,9 +34,9 @@ export class TheaterLoginComponent {
 
   protected signIn (): void {
     this.submitted.set(true)
-    if (this.form.invalid) return
+    if (this.form().invalid()) return
     this.signingIn.set(true)
-    const { email, password } = this.form.getRawValue()
+    const { email, password } = this.model()
     // Wrong credentials are reported by the global HTTP error handler
     this.http.post<IApiTheaterAuthRes>('theater/login', { email: email.trim(), password }).subscribe({
       next: res => {
